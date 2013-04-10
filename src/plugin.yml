@@ -1,0 +1,28 @@
+name: PupleIRC
+version: 0.0.1
+description: Bukkit IRC Bot
+author: cnaude
+main: me.cnaude.plugin.PurpleIRC.PIRCMain
+commands:
+    irc:
+        description: Various irc commands
+        usage: /irc join
+permissions:
+  'irc.reload':
+    description: Gives player access to the /irc reload.
+    default: op
+  'irc.reconnect':
+    description: Gives player access to the /irc reconnect.
+    default: op
+  'irc.message.chat':
+    description: Receive IRC chat messages.
+    default: true
+  'irc.message.action':
+    description: Receive IRC chat actions (/me).
+    default: true
+  'irc.listbots':
+    description: Gives player access to the /irc listbots command.
+    default: op
+  'irc.list':
+    description: Gives player access to the /irc list command.
+    default: op  
