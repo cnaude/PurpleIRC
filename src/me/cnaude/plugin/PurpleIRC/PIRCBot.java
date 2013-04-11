@@ -4,8 +4,10 @@
  */
 package me.cnaude.plugin.PurpleIRC;
 
+import java.io.File;
 import java.util.ArrayList;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jibble.pircbot.PircBot;
 
@@ -17,24 +19,45 @@ public class PIRCBot extends PircBot {
     private ArrayList<String> botChannels;
     private String botServer;
     private String botNick;
+    private String botServerPass;
+    private int botServerPort;
     private final PIRCMain plugin;
+    private YamlConfiguration config;
     
-    public PIRCBot(String nick, ArrayList<String> channels, String server, PIRCMain plugin) {
-        this.setName(nick);
-        this.botNick = nick;
-        this.botChannels = channels;
-        this.botServer = server;
-        this.plugin = plugin;        
-        
+    private void loadConfig(File file) {
         try {
-            this.plugin.logInfo("Connecting to " + this.botServer + " as " + this.getName());
-            this.connect(this.botServer);
-            
+            config.load(file);
+            botNick = config.getString("nick","");
+            botServer = config.getString("server","");
+            botServerPort  = config.getInt("port");
+            botServerPass = config.getString("password","");
+            plugin.logInfo("Nick   => " + botNick);
+            plugin.logInfo("Server => " + botServer);
+            plugin.logInfo("Port   => " + botServerPort);
+            plugin.logDebug("Pass   => " + botServerPass);                    
+            botChannels = new ArrayList<String>();
+            for (String s : config.getStringList("channels")) {    
+                plugin.logInfo("Channel  => " + s);
+                botChannels.add(s);
+            }
         } catch (Exception ex) {
-            this.plugin.logError("Problem connecting to " + this.botServer + " => " 
-                    + " as " + this.getName() + " [Error: " + ex.getMessage() + "]");
+            plugin.logError(ex.getMessage());
         }
-        
+    }
+    
+    public PIRCBot(File file, PIRCMain plugin) {
+        this.plugin = plugin;     
+        config = new YamlConfiguration();
+        loadConfig(file);
+        this.setName(botNick);
+
+        try {
+            this.plugin.logInfo("Connecting to " + botServer + " as " + getName());
+            this.connect(botServer, botServerPort, botServerPass);
+        } catch (Exception ex) {
+            this.plugin.logError("Problem connecting to " + botServer + " => " 
+                    + " as " + getName() + " [Error: " + ex.getMessage() + "]");
+        }
     }
     
     @Override

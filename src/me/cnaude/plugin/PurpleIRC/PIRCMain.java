@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -34,18 +35,13 @@ public class PIRCMain extends JavaPlugin {
         botsFolder = new File (pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
         createConfig();
-        this.getConfig().options().copyDefaults(true);
+        getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
         getServer().getPluginManager().registerEvents(new PIRCListener(this), this);
         getCommand("irc").setExecutor(new PIRCCommands(this));     
         
-        loadBots();
-        ArrayList<String> b1Channels = new ArrayList<String>();
-        b1Channels.add("#minecraft-test");
-        //b1Channels.add("#minecraft-test2");
-        //b1Channels.add("#minecraft-test3");
-        ircBots.put("SDF_MC_Test", new PIRCBot("SDF_MC_Test", b1Channels, "irc.sdf.org",this));
+        loadBots();        
     }
     
     @Override
@@ -56,7 +52,7 @@ public class PIRCMain extends JavaPlugin {
     }    
     
     private void loadConfig() {
-        debugEnabled = getConfig().getBoolean("debug-enabled");
+        debugEnabled = getConfig().getBoolean("Debug");
         logDebug("Debug enabled");
     }
     
@@ -65,6 +61,7 @@ public class PIRCMain extends JavaPlugin {
             logInfo("Checking for bot files in " +  botsFolder);
             for (File file : botsFolder.listFiles()) {
                 logInfo("Loading bot: " + file.getName());
+                ircBots.put(file.getName().replace(".bot",""), new PIRCBot(file,this));
             }
         }
     }
