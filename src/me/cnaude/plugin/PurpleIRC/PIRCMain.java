@@ -1,20 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.cnaude.plugin.PurpleIRC;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naudé
  */
 public class PIRCMain extends JavaPlugin {
     
@@ -23,6 +19,7 @@ public class PIRCMain extends JavaPlugin {
     private File pluginFolder;
     private File botsFolder;
     private File configFile; 
+    public static long startTime;
     
     private boolean debugEnabled;
     
@@ -46,8 +43,13 @@ public class PIRCMain extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        for (PIRCBot ircBot : ircBots.values()) {
-            ircBot.disconnect();
+        if (ircBots.isEmpty()) {
+            logInfo("No IRC bots to disconnect.");
+        } else {
+            logInfo("Disconnecting IRC bots.");
+            for (PIRCBot ircBot : ircBots.values()) {
+                ircBot.disconnect();
+            }
         }
     }    
     
@@ -56,12 +58,14 @@ public class PIRCMain extends JavaPlugin {
         logDebug("Debug enabled");
     }
     
-    private void loadBots() {   
+    private void loadBots() {
         if (botsFolder.exists()) {
             logInfo("Checking for bot files in " +  botsFolder);
             for (File file : botsFolder.listFiles()) {
-                logInfo("Loading bot: " + file.getName());
-                ircBots.put(file.getName().replace(".bot",""), new PIRCBot(file,this));
+                if (file.getName().endsWith("bot")) {
+                    logInfo("Loading bot: " + file.getName());
+                    ircBots.put(file.getName().replace(".bot",""), new PIRCBot(file,this));
+                }
             }
         }
     }
@@ -104,5 +108,25 @@ public class PIRCMain extends JavaPlugin {
         if (debugEnabled) {
             log.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, _message));
         }
+    }
+    
+    public String getMCUptime() {
+        long jvmUptime = ManagementFactory.getRuntimeMXBean().getUptime();
+        String msg = "Server uptime: " + (int)(jvmUptime / 86400000L) + " days" 
+                + " " + (int)(jvmUptime / 3600000L % 24L) + " hours" 
+                + " " + (int)(jvmUptime / 60000L % 60L) + " minutes" 
+                + " " + (int)(jvmUptime / 1000L % 60L) + " seconds.";
+        return msg;
+    }
+    
+    public String getMCPlayers() {
+        String msg = "Players currently online("
+                + getServer().getOnlinePlayers().length
+                + "/" + getServer().getMaxPlayers() + "): ";
+        for (Player p : getServer().getOnlinePlayers()) {
+            msg = msg + p.getName() + ", ";
+        }
+        msg = msg.substring(0, msg.length() - 1);
+        return msg;
     }
 }

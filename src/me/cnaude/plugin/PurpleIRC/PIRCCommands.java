@@ -40,6 +40,20 @@ public class PIRCCommands implements CommandExecutor {
                     }
                 }
             }
+            if (subCmd.equals("connect")) {
+                if (args.length == 1) {                    
+                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                        ircBot.connect(sender);
+                    }
+                }
+            }
+            if (subCmd.equals("disconnect")) {
+                if (args.length == 1) {                    
+                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                        ircBot.disconnect(sender);
+                    }
+                }
+            }
             if (subCmd.equals("list")) {
                 if (args.length == 1) {                    
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
