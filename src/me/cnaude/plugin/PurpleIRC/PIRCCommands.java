@@ -50,7 +50,14 @@ public class PIRCCommands implements CommandExecutor {
             if (subCmd.equals("disconnect")) {
                 if (args.length == 1) {                    
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
-                        ircBot.disconnect(sender);
+                        ircBot.quit(sender);
+                    }
+                }
+            }
+            if (subCmd.equals("topic")) {
+                if (args.length == 1) {                    
+                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                        ircBot.sendTopic(sender);
                     }
                 }
             }

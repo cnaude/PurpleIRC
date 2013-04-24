@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,6 +24,7 @@ public final class PIRCBot extends PircBot {
     private int botServerPort;
     private String channelPrefix;
     private String commandPrefix;
+    private String quitMessage;
     private final PIRCMain plugin;
     private YamlConfiguration config;
     // channel, #channel
@@ -32,6 +34,8 @@ public final class PIRCBot extends PircBot {
     private HashMap<String, String> channelPassword = new HashMap<String, String>();
     // channel, topic
     private HashMap<String, String> channelTopic = new HashMap<String, String>();
+    // channel, topic
+    private HashMap<String, String> activeTopic = new HashMap<String, String>();
     private HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
     private HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
     private Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
@@ -49,12 +53,14 @@ public final class PIRCBot extends PircBot {
             botServerPass = config.getString("password", "");
             channelPrefix = config.getString("channel-prefix", "");
             commandPrefix = config.getString("command-prefix", ".");
+            quitMessage = config.getString("quit-message","");
             plugin.logInfo("Nick => " + botNick);
             plugin.logInfo("Server => " + botServer);
             plugin.logInfo("Port => " + botServerPort);
             plugin.logInfo("Channel Prefix => " + channelPrefix);
             plugin.logInfo("Command Prefix => " + commandPrefix);
             plugin.logDebug("Server Password => " + botServerPass);
+            plugin.logInfo("Quit Message => " + quitMessage);
             for (String channel : config.getConfigurationSection("channels").getKeys(false)) {
                 plugin.logInfo("Channel  => " + channelPrefix + channel);
                 botChannels.put(channel,channelPrefix + channel);
@@ -73,12 +79,20 @@ public final class PIRCBot extends PircBot {
                 plugin.logInfo("  Topic Protected => " + channelTopicProtected.get(channel).toString());
 
                 // build channel op list
-                Collection<String> c = new ArrayList<String>();
+                Collection<String> cOps = new ArrayList<String>();
                 for (String channelOper : config.getStringList("channels." + channel + ".ops")) {
-                    c.add(channelOper);
+                    cOps.add(channelOper);
                     plugin.logInfo("  Channel Op => " + channelOper);
                 }
-                opsList.put(channel, c);
+                opsList.put(channel, cOps);
+                
+                // build mute list
+                Collection<String> m = new ArrayList<String>();
+                for (String channelOper : config.getStringList("channels." + channel + ".muted")) {
+                    m.add(channelOper);
+                    plugin.logInfo("  Channel Mute => " + channelOper);
+                }
+                opsList.put(channel, m);
                 
                 // build command map
                 Map<String, Map<String,String>> map = new HashMap<String, Map<String,String>>();
@@ -156,8 +170,10 @@ public final class PIRCBot extends PircBot {
                     sendMessage(channel, plugin.getMCPlayers());
                 } else if (gameCommand.equals("@uptime")) {
                     sendMessage(channel, plugin.getMCUptime());
-                } else {
-                    sendMessage(channel, "Command: " + command);
+                } else if (gameCommand.equals("@help")) {
+                    sendCommands(channel);
+                } else {                    
+                    plugin.getServer().dispatchCommand(new PIRCCommandSender(this, channel), gameCommand);
                 }
             } else {
                 sendMessage(channel, "I'm sorry, I don't understand that command. Try the .help command.");
@@ -202,9 +218,11 @@ public final class PIRCBot extends PircBot {
             this.sendMessage(channel, "[" + world + "] " + message);
         }
     }
-    
-    @Override 
-    public void onTopic(String channel,String topic){        
+      
+    public void fixTopic(String channel, String topic, String setBy) {
+        if (setBy.equals(botNick)) {
+            return;
+        }
         String myChannel = channelKeys.get(channel);
         if (channelTopic.containsKey(myChannel)) {
             if (channelTopicProtected.containsKey(myChannel)) {
@@ -215,6 +233,13 @@ public final class PIRCBot extends PircBot {
                     }
                 }
             }
+        }        
+    }
+    
+    public void saveTopic(String channel, String topic) {
+        String myChannel = channelKeys.get(channel);
+        if (channelTopic.containsKey(myChannel)) {            
+            channelTopic.put(myChannel,topic);
         }        
     }
 
@@ -244,10 +269,14 @@ public final class PIRCBot extends PircBot {
 
     @Override
     public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        if (!botChannels.containsValue(channel)) {
+        if (!botChannels.containsValue(channel) || !changed) {
             return;
         }
-        plugin.getServer().broadcast("[IRC] " + setBy + " changed the topic: " + topic, "irc.message.topic");
+        fixTopic(channel,topic,setBy);
+        if (changed) {
+            plugin.getServer().broadcast("[IRC] " + setBy + " changed the topic: " + topic, "irc.message.topic");
+        }
+        activeTopic.put(channelKeys.get(channel), topic);
     }
 
     @Override
@@ -264,8 +293,17 @@ public final class PIRCBot extends PircBot {
         plugin.getServer().broadcast("[" + botNick + "] Disconnected from IRC server.", "irc.message.disconnect");
     }
     
-    public void disconnect (CommandSender sender) {
-        sender.sendMessage("Disconnecting " + getName() + " from IRC server" + botServer);
+    public void quit(CommandSender sender) {
+        sender.sendMessage("Disconnecting " + getName() + " from IRC server " + botServer);
+        quit();
+    }
+    
+    public void quit() {
+        if (quitMessage.isEmpty()) {               
+            quitServer();
+        } else {            
+            quitServer(quitMessage);
+        }
     }
 
     @Override
@@ -291,6 +329,25 @@ public final class PIRCBot extends PircBot {
                 } else {
                     this.plugin.logInfo("Not auto joining channel " + botChannels.get(channel));
                 }
+            }
+        }
+    }
+    
+    public void sendCommands(String channel) {
+        String myChannel = channelKeys.get(channel);
+        if (commandMap.containsKey(myChannel)) {
+            String commands = "";
+            for (String command : commandMap.get(myChannel).keySet()) {
+                commands = commands + ", " + command;
+            }
+            sendMessage(channel, "Valid commands:" + commands.substring(1));
+        }
+    }
+    
+    public void sendTopic(CommandSender sender) {
+        for (String channel : this.botChannels.keySet()) {
+            if (commandMap.containsKey(channel)) {            
+                sender.sendMessage(channel + "topic: " + activeTopic.get(channel));
             }
         }
     }

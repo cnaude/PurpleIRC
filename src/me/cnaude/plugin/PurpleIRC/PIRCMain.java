@@ -48,7 +48,7 @@ public class PIRCMain extends JavaPlugin {
         } else {
             logInfo("Disconnecting IRC bots.");
             for (PIRCBot ircBot : ircBots.values()) {
-                ircBot.disconnect();
+                ircBot.quit();
             }
         }
     }    
