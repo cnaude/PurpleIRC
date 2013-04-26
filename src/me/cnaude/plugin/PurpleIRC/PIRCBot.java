@@ -1,16 +1,19 @@
 package me.cnaude.plugin.PurpleIRC;
 
 import java.io.File;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jibble.pircbot.PircBot;
+import org.jibble.pircbot.User;
 
 /**
  *
@@ -48,6 +51,7 @@ public final class PIRCBot extends PircBot {
             config.load(file);
             autoConnect = config.getBoolean("autoconnect", true);
             botNick = config.getString("nick", "");
+            plugin.ircBots.put(botNick, this);
             botServer = config.getString("server", "");
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
@@ -92,7 +96,7 @@ public final class PIRCBot extends PircBot {
                     m.add(channelOper);
                     plugin.logInfo("  Channel Mute => " + channelOper);
                 }
-                opsList.put(channel, m);
+                muteList.put(channel, m);
                 
                 // build command map
                 Map<String, Map<String,String>> map = new HashMap<String, Map<String,String>>();
@@ -156,6 +160,9 @@ public final class PIRCBot extends PircBot {
             return;
         }
         String myChannel = channelKeys.get(channel);
+        if (muteList.get(myChannel).contains(sender)) {
+            return;
+        }        
         if (message.startsWith(commandPrefix)) {        
             String command = message.split(" ")[0].substring(1);
             plugin.logDebug("IRC command detected: " + command);
@@ -176,11 +183,15 @@ public final class PIRCBot extends PircBot {
                     plugin.getServer().dispatchCommand(new PIRCCommandSender(this, channel), gameCommand);
                 }
             } else {
-                sendMessage(channel, "I'm sorry, I don't understand that command. Try the .help command.");
+                sendMessage(channel, "I'm sorry, I don't understand that command. For a list of commands type \""+commandPrefix+"help\".");
             }
         } else {
-            plugin.getServer().broadcast("[IRC]<" + sender + "> " + message, "irc.message.chat");
+            plugin.getServer().broadcast(parseMCMessage(sender,message), "irc.message.chat");
         }
+    }
+    
+    public String parseMCMessage(String sender, String message) {
+        return plugin.minecraftMsg.replaceAll("%NAME%", sender).replaceAll("%MESSAGE%", message);                
     }
 
     public void message(Player player, String message) {
@@ -248,7 +259,55 @@ public final class PIRCBot extends PircBot {
         if (!botChannels.containsValue(channel)) {
             return;
         }
-        plugin.getServer().broadcast("[IRC] " + sender + " has entered the room.", "irc.message.join");        
+        plugin.getServer().broadcast("[IRC] " + sender + " has entered the room.", "irc.message.join");  
+        opFriends(channel, sender, login, hostname);
+    }
+    
+    //http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
+    private static String createRegexFromGlob(String glob) {
+        String out = "^";
+        for(int i = 0; i < glob.length(); ++i) {
+            final char c = glob.charAt(i);
+            switch(c) {
+                case '*': out += ".*"; break;
+                case '?': out += '.'; break;
+                case '.': out += "\\."; break;
+                case '\\': out += "\\\\"; break;
+                default: out += c;
+            }
+        }
+        out += '$';
+        return out;
+    }
+    
+    private void opFriends(String channel, String sender, String login, String hostname) {
+        if (sender.equals(botNick)) {
+            return;
+        }        
+        String myChannel = channelKeys.get(channel);
+        for (String user : opsList.get(myChannel)) {
+            plugin.logDebug("OP => " + user);
+            //sender!*login@hostname
+            String mask[] = user.split("[\\!\\@]", 3);
+            if (mask.length == 3) {
+                String gUser = createRegexFromGlob(mask[0]);
+                String gLogin = createRegexFromGlob(mask[1]);
+                String gHost = createRegexFromGlob(mask[2]);
+                plugin.logDebug("Nick: " + sender + " =~ " + gUser + " = " + sender.matches(gUser));
+                plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
+                plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
+                if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
+                    plugin.logInfo("Auto-opping " + sender + " on " + channel);
+                    this.op(channel, sender);
+                    // leave after our first match
+                    return;
+                } else {
+                    plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
+                }
+            } else {
+                plugin.logInfo("Invalid op mask: " + user);
+            }
+        }
     }
 
     @Override
@@ -269,7 +328,7 @@ public final class PIRCBot extends PircBot {
 
     @Override
     public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        if (!botChannels.containsValue(channel) || !changed) {
+        if (!botChannels.containsValue(channel)) {
             return;
         }
         fixTopic(channel,topic,setBy);
@@ -346,9 +405,32 @@ public final class PIRCBot extends PircBot {
     
     public void sendTopic(CommandSender sender) {
         for (String channel : this.botChannels.keySet()) {
-            if (commandMap.containsKey(channel)) {            
-                sender.sendMessage(channel + "topic: " + activeTopic.get(channel));
+            if (commandMap.containsKey(channel)) {                 
+                sender.sendMessage(botChannels.get(channel) + " topic: " + activeTopic.get(channel));
             }
+        }
+    }
+    
+    public void sendUserList(CommandSender sender, String channel) {
+        if (!botChannels.containsValue(channel)) {
+            sender.sendMessage(ChatColor.RED + "Invalid channel name.");
+            return;
+        }
+        sender.sendMessage(ChatColor.RED + "-----[  " + ChatColor.WHITE + channel 
+                + ChatColor.RED + " - " + ChatColor.WHITE + getName() + ChatColor.RED + " ]-----");                                
+        List<String> channelUsers = new ArrayList<String>();
+        for (User user : this.getUsers(channel)) {
+            channelUsers.add(user.toString());                
+        }
+        Collections.sort(channelUsers,Collator.getInstance());
+        for (String userName : channelUsers) {
+            sender.sendMessage(ChatColor.RED + "  " + ChatColor.WHITE + userName);
+        }
+    }
+    
+    public void sendUserList(CommandSender sender) {        
+        for (String channel : botChannels.values()) {
+            sendUserList(sender,channel);            
         }
     }
 }

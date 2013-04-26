@@ -16,7 +16,7 @@ import org.jibble.pircbot.User;
  */
 public class PIRCCommands implements CommandExecutor {
 
-    private PIRCMain plugin;
+    private PIRCMain plugin;        
 
     public PIRCCommands(PIRCMain plugin) {
         this.plugin = plugin;
@@ -45,6 +45,16 @@ public class PIRCCommands implements CommandExecutor {
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
                         ircBot.connect(sender);
                     }
+                } else if (args.length == 2) {                    
+                    String bot = args[1];                    
+                    if (plugin.ircBots.containsKey(bot)) {    
+                        plugin.ircBots.get(bot).connect(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc connect ([bot])");
                 }
             }
             if (subCmd.equals("disconnect")) {
@@ -52,6 +62,16 @@ public class PIRCCommands implements CommandExecutor {
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
                         ircBot.quit(sender);
                     }
+                } else if (args.length == 2) {                    
+                    String bot = args[1];                    
+                    if (plugin.ircBots.containsKey(bot)) {    
+                        plugin.ircBots.get(bot).quit(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc disconnect ([bot])");
                 }
             }
             if (subCmd.equals("topic")) {
@@ -59,42 +79,74 @@ public class PIRCCommands implements CommandExecutor {
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
                         ircBot.sendTopic(sender);
                     }
+                } else if (args.length >= 2) {                    
+                    String bot = args[1];
+                    String channel = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {    
+                        String topic = "";
+                        for (int i = 2; i < args.length; i++) {                                              
+                            topic = topic + " " + args[i];                            
+                        }
+                        plugin.ircBots.get(bot).setTopic(channel, topic.substring(1));
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
+                }
+            }
+            if (subCmd.equals("op")) {
+                if (args.length >= 2) {                    
+                    String bot = args[1];
+                    String channel = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {                           
+                        for (int i = 2; i < args.length; i++) {                                              
+                            // #channel, user
+                            plugin.ircBots.get(bot).op(channel, args[i]);
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
+                }
+            }
+            if (subCmd.equals("deop")) {
+                if (args.length >= 2) {                    
+                    String bot = args[1];
+                    String channel = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {                           
+                        for (int i = 2; i < args.length; i++) {                                              
+                            // #channel, user
+                            plugin.ircBots.get(bot).deOp(channel, args[i]);
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc deop [bot] [channel] [user(s)]");
                 }
             }
             if (subCmd.equals("list")) {
-                if (args.length == 1) {                    
+                if (args.length == 1) {  
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
-                        sender.sendMessage(ChatColor.RED + "-----[  " 
-                                + ChatColor.WHITE + "IRC Users"
-                                + " - " + ircBot.getName() + ChatColor.RED + " ]-----");                        
-                        for (String channel : ircBot.getChannels()) {
-                            sender.sendMessage(ChatColor.RED + " " + ChatColor.GRAY + channel);
-                            for (User user : ircBot.getUsers(channel)) {
-                                sender.sendMessage(ChatColor.RED + "  " + ChatColor.WHITE + user.toString());
-                            }
-                        }
+                        ircBot.sendUserList(sender);                        
                     }
                 } else if (args.length > 1) {
-                    if (plugin.ircBots.containsKey(args[1])) {
-                        PIRCBot ircBot = plugin.ircBots.get(args[1]);
-                        sender.sendMessage(ChatColor.RED + "* " + ChatColor.WHITE + ircBot.getName());
+                    String bot = args[1];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        PIRCBot ircBot = plugin.ircBots.get(bot);                       
                         if (args.length > 2) {
-                            for (String channel : ircBot.getChannels()) {
-                                if (args[2].equalsIgnoreCase(channel)) {
-                                    sender.sendMessage(ChatColor.RED + " " + ChatColor.GRAY + channel);
-                                    for (User user : ircBot.getUsers(channel)) {
-                                        sender.sendMessage(ChatColor.RED + "  " + ChatColor.WHITE + user.toString());
-                                    }
-                                }
-                            }
+                            ircBot.sendUserList(sender,args[2]);
                         } else {
-                            for (String channel : ircBot.getChannels()) {
-                                sender.sendMessage(ChatColor.RED + " " + ChatColor.GRAY + channel);
-                                for (User user : ircBot.getUsers(channel)) {
-                                    sender.sendMessage(ChatColor.RED + "  " + ChatColor.WHITE + user.toString());
-                                }
-                            }
+                            ircBot.sendUserList(sender);
                         }
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
                     }
                 }
             }

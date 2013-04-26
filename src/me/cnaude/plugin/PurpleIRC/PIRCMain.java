@@ -5,8 +5,10 @@ import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jibble.pircbot.Colors;
 
 /**
  *
@@ -20,6 +22,8 @@ public class PIRCMain extends JavaPlugin {
     private File botsFolder;
     private File configFile; 
     public static long startTime;
+    public String minecraftMsg;
+    public String ircMsg;
     
     private boolean debugEnabled;
     
@@ -55,6 +59,8 @@ public class PIRCMain extends JavaPlugin {
     
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
+        minecraftMsg = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.minecraft"));
+        ircMsg = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.minecraft"));
         logDebug("Debug enabled");
     }
     
@@ -64,7 +70,8 @@ public class PIRCMain extends JavaPlugin {
             for (File file : botsFolder.listFiles()) {
                 if (file.getName().endsWith("bot")) {
                     logInfo("Loading bot: " + file.getName());
-                    ircBots.put(file.getName().replace(".bot",""), new PIRCBot(file,this));
+                    //ircBots.put(file.getName().replace(".bot",""), new PIRCBot(file,this));
+                    PIRCBot pircBot = new PIRCBot(file,this);
                 }
             }
         }
@@ -128,5 +135,60 @@ public class PIRCMain extends JavaPlugin {
         }
         msg = msg.substring(0, msg.length() - 1);
         return msg;
+    }
+    
+    public String getIRCColor(ChatColor color) {
+        if (color.equals(ChatColor.AQUA)) {
+            return Colors.CYAN;
+        }
+        if (color.equals(ChatColor.BLACK)) {
+            return Colors.BLACK;
+        }
+        if (color.equals(ChatColor.BLUE)) {
+            return Colors.BLUE;
+        }
+        if (color.equals(ChatColor.BOLD)) {
+            return Colors.BOLD;
+        }
+        if (color.equals(ChatColor.DARK_AQUA)) {
+            return Colors.TEAL;
+        }
+        if (color.equals(ChatColor.DARK_BLUE)) {
+            return Colors.DARK_BLUE;
+        }
+        if (color.equals(ChatColor.DARK_GRAY)) {
+            return Colors.DARK_GRAY;
+        }
+        if (color.equals(ChatColor.DARK_GREEN)) {
+            return Colors.DARK_GREEN;
+        }
+        if (color.equals(ChatColor.DARK_PURPLE)) {
+            return Colors.PURPLE;
+        }
+        if (color.equals(ChatColor.DARK_RED)) {
+            return Colors.RED;
+        }
+        if (color.equals(ChatColor.GOLD)) {
+            return Colors.YELLOW;
+        }
+        if (color.equals(ChatColor.GRAY)) {
+            return Colors.DARK_GRAY;
+        }
+        if (color.equals(ChatColor.GREEN)) {
+            return Colors.GREEN;
+        }        
+        if (color.equals(ChatColor.LIGHT_PURPLE)) {
+            return Colors.MAGENTA;
+        }
+        if (color.equals(ChatColor.RED)) {
+            return Colors.RED;
+        }
+        if (color.equals(ChatColor.YELLOW)) {
+            return Colors.YELLOW;
+        }
+        if (color.equals(ChatColor.WHITE)) {
+            return Colors.WHITE;
+        }
+        return Colors.NORMAL;
     }
 }

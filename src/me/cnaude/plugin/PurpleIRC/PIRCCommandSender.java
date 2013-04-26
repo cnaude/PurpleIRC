@@ -1,11 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.cnaude.plugin.PurpleIRC;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -22,12 +19,15 @@ public class PIRCCommandSender implements CommandSender {
     private String channel;
     
     @Override
-    public void sendMessage(String message) {       
-        ircBot.sendMessage(channel, message);        
+    public void sendMessage(String message) {            
+        ircBot.sendMessage(channel, ChatColor.stripColor(message));        
     }
     
     @Override 
-    public void sendMessage(String[] messages) {        
+    public void sendMessage(String[] messages) {  
+        for (String message : messages) {
+            ircBot.sendMessage(channel, ChatColor.stripColor(message));  
+        }
     }
     
     public PIRCCommandSender(PIRCBot ircBot, String channel) {

@@ -30,25 +30,22 @@ public class PIRCListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        Player player = event.getPlayer();
         for (PIRCBot ircBot : plugin.ircBots.values()) {
-            ircBot.message(player, event.getMessage());
+            ircBot.message(event.getPlayer(), event.getMessage());
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
         for (PIRCBot ircBot : plugin.ircBots.values()) {
-            ircBot.quitMessage(player, event.getQuitMessage());
+            ircBot.quitMessage(event.getPlayer(), event.getQuitMessage());
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
         for (PIRCBot ircBot : plugin.ircBots.values()) {
-            ircBot.joinMessage(player, event.getJoinMessage());
+            ircBot.joinMessage(event.getPlayer(), event.getJoinMessage());
         }
     }
     
@@ -56,18 +53,17 @@ public class PIRCListener implements Listener {
     public void onPlayerCommandPreprocessEvent (PlayerCommandPreprocessEvent  event) {
         if (event.isCancelled()) {
             return;
-        }
-        Player player = event.getPlayer();
+        }        
         String msg = event.getMessage();
         if (msg.startsWith("/me ")) {
             for (PIRCBot ircBot : plugin.ircBots.values()) {
-                ircBot.action(player, msg.replaceAll("/me", "*** " + player.getName()));
+                ircBot.action(event.getPlayer(), msg.replaceAll("/me", "*** " + event.getPlayer().getName()));
             }
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerDeathEvent (PlayerDeathEvent  event) {        
+    public void onPlayerDeathEvent (PlayerDeathEvent event) {        
         for (PIRCBot ircBot : plugin.ircBots.values()) {
             ircBot.death((Player)event.getEntity(), event.getDeathMessage());
         }

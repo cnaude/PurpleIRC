@@ -1,2 +1,5 @@
 # Configuration for PurpleIRC
 Debug: false
+message-format:
+  minecraft: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'
+  irc: '&f[%WORLD%&f]<%NAME%&f> %MESSAGE%'
