@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.jibble.pircbot.User;
 
 /**
  *
@@ -43,18 +42,35 @@ public class PIRCCommands implements CommandExecutor {
             if (subCmd.equals("connect")) {
                 if (args.length == 1) {                    
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
-                        ircBot.connect(sender);
+                        ircBot.asyncConnect(sender,true);
                     }
                 } else if (args.length == 2) {                    
                     String bot = args[1];                    
                     if (plugin.ircBots.containsKey(bot)) {    
-                        plugin.ircBots.get(bot).connect(sender);
+                        plugin.ircBots.get(bot).asyncConnect(sender,true);
                     } else {
                         sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
                                 + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc connect ([bot])");
+                }
+            }
+            if (subCmd.equals("reload")) {
+                if (args.length == 1) {                    
+                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                        ircBot.reload(sender);
+                    }
+                } else if (args.length == 2) {                    
+                    String bot = args[1];                    
+                    if (plugin.ircBots.containsKey(bot)) {    
+                        plugin.ircBots.get(bot).reload(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reload ([bot])");
                 }
             }
             if (subCmd.equals("disconnect")) {

@@ -2,7 +2,6 @@ package me.cnaude.plugin.PurpleIRC;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -12,27 +11,31 @@ import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
+ * We have to implement our own CommandSender so that we can
+ * receive output from the command dispatcher.
  */
 public class PIRCCommandSender implements CommandSender {
     private final PIRCBot ircBot;
     private String channel;
+    private final PIRCMain plugin;
     
     @Override
     public void sendMessage(String message) {            
-        ircBot.sendMessage(channel, ChatColor.stripColor(message));        
+        ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));        
     }
     
     @Override 
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
-            ircBot.sendMessage(channel, ChatColor.stripColor(message));  
+            ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));  
         }
     }
     
-    public PIRCCommandSender(PIRCBot ircBot, String channel) {
+    public PIRCCommandSender(PIRCBot ircBot, String channel, PIRCMain plugin) {
         this.ircBot = ircBot;
         this.channel = channel;
+        this.plugin = plugin;
     }
     
     @Override 
