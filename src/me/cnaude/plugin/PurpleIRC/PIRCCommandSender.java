@@ -17,24 +17,24 @@ import org.bukkit.plugin.Plugin;
  */
 public class PIRCCommandSender implements CommandSender {
     private final PIRCBot ircBot;
-    private String channel;
+    private String target;
     private final PIRCMain plugin;
     
     @Override
     public void sendMessage(String message) {             
-        ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));                
+        ircBot.sendMessage(target, plugin.gameColorsToIrc(message));                
     }
     
     @Override 
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
-            ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));  
+            ircBot.sendMessage(target, plugin.gameColorsToIrc(message));  
         }
     }
     
-    public PIRCCommandSender(PIRCBot ircBot, String channel, PIRCMain plugin) {
+    public PIRCCommandSender(PIRCBot ircBot, String target, PIRCMain plugin) {
         this.ircBot = ircBot;
-        this.channel = channel;
+        this.target = target;
         this.plugin = plugin;
     }
     

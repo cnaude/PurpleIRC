@@ -138,7 +138,7 @@ public final class PIRCBot extends PircBot {
             botServerPass = config.getString("password", "");
             channelPrefix = config.getString("channel-prefix", "");
             commandPrefix = config.getString("command-prefix", ".");
-            quitMessage = config.getString("quit-message", "");
+            quitMessage = ChatColor.translateAlternateColorCodes('&',config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Server => " + botServer);
             plugin.logDebug("Port => " + botServerPort);
@@ -209,6 +209,28 @@ public final class PIRCBot extends PircBot {
             plugin.logError(ex.getMessage());
         }
     }
+    
+    private boolean isOp(String user, String channel) {
+        User users[] = getUsers(channel);
+        for (User u : users) {
+            if (u.isOp()) {
+                plugin.logDebug("User '"+ user +"' prefix: " + u.getPrefix());
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean hasVoice(String user, String channel) {
+        User users[] = getUsers(channel);
+        for (User u : users) {
+            if (u.hasVoice()) {
+                plugin.logDebug("User '"+ user +"' prefix: " + u.getPrefix());
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
@@ -226,17 +248,33 @@ public final class PIRCBot extends PircBot {
                 String gameCommand = (String) commandMap.get(myChannel).get(command).get("game_command");
                 String modes = (String) commandMap.get(myChannel).get(command).get("modes");
                 boolean privateCommand = Boolean.parseBoolean(commandMap.get(myChannel).get(command).get("private"));
+                String target = channel;
+                if (privateCommand) {
+                    target = sender;
+                }
+                plugin.logDebug(target + ":" + gameCommand + ":" + modes + ":" + privateCommand);    
+                
+                boolean modeOkay = false;
+                if (modes.equals("*")) {
+                    modeOkay = true;
+                } else if (modes.contains("o")) {
+                    modeOkay = isOp(sender,channel);
+                } else if (modes.contains("v")) {
+                    modeOkay = hasVoice(sender,channel);
+                }
 
-                plugin.logDebug(gameCommand + ":" + modes + ":" + privateCommand);
-
-                if (gameCommand.equals("@list")) {
-                    sendMessage(channel, plugin.getMCPlayers());
-                } else if (gameCommand.equals("@uptime")) {
-                    sendMessage(channel, plugin.getMCUptime());
-                } else if (gameCommand.equals("@help")) {
-                    sendCommands(channel);
+                if (modeOkay) {
+                    if (gameCommand.equals("@list")) {
+                        sendMessage(target, plugin.getMCPlayers());                    
+                    } else if (gameCommand.equals("@uptime")) {
+                        sendMessage(target, plugin.getMCUptime());
+                    } else if (gameCommand.equals("@help")) {
+                        sendCommands(target);
+                    } else {
+                        plugin.getServer().dispatchCommand(new PIRCCommandSender(this, target, plugin), gameCommand);
+                    }
                 } else {
-                    plugin.getServer().dispatchCommand(new PIRCCommandSender(this, channel, plugin), gameCommand);
+                    plugin.logDebug("User '" + sender + "' mode not okay");
                 }
             } else {
                 sendMessage(channel, "I'm sorry, I don't understand that command. For a list of commands type \"" + commandPrefix + "help\".");
@@ -475,7 +513,7 @@ public final class PIRCBot extends PircBot {
         if (quitMessage.isEmpty()) {
             quitServer();
         } else {
-            quitServer(quitMessage);
+            quitServer(plugin.gameColorsToIrc(quitMessage));
         }
     }
 
