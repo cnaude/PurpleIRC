@@ -21,7 +21,7 @@ public class PIRCBotWatcher {
                     if (!ircBot.isConnected()) {
                         if (ircBot.autoConnect) {
                             plugin.logInfo("IRC bot '" + ircBot.getName() + "' is not connected! Attempting reconnect...");
-                            ircBot.asyncConnect(plugin.getServer().getConsoleSender(), true);
+                            ircBot.asyncReConnect();
                         }
                     } else {
                         plugin.logDebug("IRC bot '" + ircBot.getName() + "' is connected!");

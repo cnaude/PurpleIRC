@@ -30,8 +30,10 @@ public class PIRCListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        for (PIRCBot ircBot : plugin.ircBots.values()) {
-            ircBot.gameChat(event.getPlayer(), event.getMessage());
+        if (event.getPlayer().hasPermission("irc.message.gamechat")) {
+            for (PIRCBot ircBot : plugin.ircBots.values()) {
+                ircBot.gameChat(event.getPlayer(), event.getMessage());
+            }
         }
     }
     
@@ -54,16 +56,18 @@ public class PIRCListener implements Listener {
         if (event.isCancelled()) {
             return;
         }        
-        String msg = event.getMessage();
-        if (msg.startsWith("/me ")) {
-            for (PIRCBot ircBot : plugin.ircBots.values()) {
-                ircBot.gameAction(event.getPlayer(), msg.replaceAll("/me", ""));
+        if (event.getPlayer().hasPermission("irc.message.gamechat")) {
+            String msg = event.getMessage();
+            if (msg.startsWith("/me ")) {
+                for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    ircBot.gameAction(event.getPlayer(), msg.replaceAll("/me", ""));
+                }
             }
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerDeathEvent (PlayerDeathEvent event) {        
+    public void onPlayerDeathEvent (PlayerDeathEvent event) {
         for (PIRCBot ircBot : plugin.ircBots.values()) {
             ircBot.gameDeath((Player)event.getEntity(), event.getDeathMessage());
         }

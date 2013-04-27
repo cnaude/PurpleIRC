@@ -56,7 +56,7 @@ public class PIRCCommands implements CommandExecutor {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc connect ([bot])");
                 }
             }
-            if (subCmd.equals("reload")) {
+            if (subCmd.equals("reloadbot")) {
                 if (args.length == 1) {                    
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
                         ircBot.reload(sender);
@@ -70,7 +70,24 @@ public class PIRCCommands implements CommandExecutor {
                                 + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
                     }
                 } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reload ([bot])");
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot ([bot])");
+                }
+            }
+            if (subCmd.equals("reloadbotconfig")) {
+                if (args.length == 1) {                    
+                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                        ircBot.reloadConfig(sender);
+                    }
+                } else if (args.length == 2) {                    
+                    String bot = args[1];                    
+                    if (plugin.ircBots.containsKey(bot)) {    
+                        plugin.ircBots.get(bot).reloadConfig(sender);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + bot 
+                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.");
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfig ([bot])");
                 }
             }
             if (subCmd.equals("disconnect")) {

@@ -21,8 +21,8 @@ public class PIRCCommandSender implements CommandSender {
     private final PIRCMain plugin;
     
     @Override
-    public void sendMessage(String message) {            
-        ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));        
+    public void sendMessage(String message) {             
+        ircBot.sendMessage(channel, plugin.gameColorsToIrc(message));                
     }
     
     @Override 

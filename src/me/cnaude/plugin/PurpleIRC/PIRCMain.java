@@ -24,12 +24,14 @@ public class PIRCMain extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String ircChat, ircAction, ircPart, ircQuit, ircJoin;
+    public String ircChat, ircAction, ircPart, ircKick, ircJoin;
     private boolean debugEnabled;
     private boolean stripGameColors;
+    private boolean stripIRCColors;
     Long ircConnCheckInterval;
     PIRCBotWatcher botWatcher;
-    EnumMap<ChatColor,String> colorMap = new EnumMap<ChatColor,String>(ChatColor.class);
+    EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
+    HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     public HashMap<String, PIRCBot> ircBots = new HashMap<String, PIRCBot>();
 
     @Override
@@ -44,7 +46,8 @@ public class PIRCMain extends JavaPlugin {
         loadConfig();
         getServer().getPluginManager().registerEvents(new PIRCListener(this), this);
         getCommand("irc").setExecutor(new PIRCCommands(this));
-        buildColorMap();
+        buildIRCColorMap();
+        buildGameColorMap();
         loadBots();
         botWatcher = new PIRCBotWatcher(this);
     }
@@ -65,33 +68,31 @@ public class PIRCMain extends JavaPlugin {
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
-        gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action"));
-        gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat"));        
-        gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death"));
-        gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join"));
-        gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit"));
-        
-        ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action"));
-        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat"));        
-        ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join"));
-        ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part"));
-        ircQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-quit"));
-        
-        
-        
-        
+        stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
+        gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
+        gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
+        gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
+        gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
+        gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
+
+        ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
+        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
+        ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
+        ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
+        ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
+
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         logDebug("Debug enabled");
     }
 
-    private void loadBots() {        
+    private void loadBots() {
         if (botsFolder.exists()) {
             logInfo("Checking for bot files in " + botsFolder);
             for (final File file : botsFolder.listFiles()) {
                 if (file.getName().endsWith("bot")) {
-                    logInfo("Loading bot: " + file.getName());                    
+                    logInfo("Loading bot: " + file.getName());
                     PIRCBot pircBot = new PIRCBot(file, this);
-                    
+
                 }
             }
         }
@@ -157,36 +158,55 @@ public class PIRCMain extends JavaPlugin {
         return msg;
     }
 
-    private void buildColorMap() {
-        colorMap.put(ChatColor.AQUA,Colors.CYAN);       
-        colorMap.put(ChatColor.BLACK,Colors.BLACK);        
-        colorMap.put(ChatColor.BLUE,Colors.BLUE);        
-        colorMap.put(ChatColor.BOLD,Colors.BOLD);        
-        colorMap.put(ChatColor.DARK_AQUA,Colors.TEAL);        
-        colorMap.put(ChatColor.DARK_BLUE,Colors.DARK_BLUE);        
-        colorMap.put(ChatColor.DARK_GRAY,Colors.DARK_GRAY);        
-        colorMap.put(ChatColor.DARK_GREEN,Colors.DARK_GREEN);        
-        colorMap.put(ChatColor.DARK_PURPLE,Colors.PURPLE);        
-        colorMap.put(ChatColor.DARK_RED,Colors.RED);        
-        colorMap.put(ChatColor.GOLD,Colors.YELLOW);        
-        colorMap.put(ChatColor.GRAY,Colors.DARK_GRAY);        
-        colorMap.put(ChatColor.GREEN,Colors.GREEN);        
-        colorMap.put(ChatColor.LIGHT_PURPLE,Colors.MAGENTA);        
-        colorMap.put(ChatColor.RED,Colors.RED);        
-        colorMap.put(ChatColor.YELLOW,Colors.YELLOW);        
-        colorMap.put(ChatColor.WHITE,Colors.WHITE);
+    private void buildIRCColorMap() {
+        ircColorMap.put(ChatColor.AQUA, Colors.CYAN);
+        ircColorMap.put(ChatColor.BLACK, Colors.BLACK);
+        ircColorMap.put(ChatColor.BLUE, Colors.BLUE);
+        ircColorMap.put(ChatColor.BOLD, Colors.BOLD);
+        ircColorMap.put(ChatColor.DARK_AQUA, Colors.TEAL);
+        ircColorMap.put(ChatColor.DARK_BLUE, Colors.DARK_BLUE);
+        ircColorMap.put(ChatColor.DARK_GRAY, Colors.DARK_GRAY);
+        ircColorMap.put(ChatColor.DARK_GREEN, Colors.DARK_GREEN);
+        ircColorMap.put(ChatColor.DARK_PURPLE, Colors.PURPLE);
+        ircColorMap.put(ChatColor.DARK_RED, Colors.RED);
+        ircColorMap.put(ChatColor.GOLD, Colors.YELLOW);
+        ircColorMap.put(ChatColor.GRAY, Colors.DARK_GRAY);
+        ircColorMap.put(ChatColor.GREEN, Colors.GREEN);
+        ircColorMap.put(ChatColor.LIGHT_PURPLE, Colors.MAGENTA);
+        ircColorMap.put(ChatColor.RED, Colors.RED);
+        ircColorMap.put(ChatColor.YELLOW, Colors.YELLOW);
+        ircColorMap.put(ChatColor.WHITE, Colors.WHITE);
     }
-    
-    public String gameColorsToIrc(String message) {  
+
+    private void buildGameColorMap() {
+        for (ChatColor chatColor : ircColorMap.keySet()) {
+            gameColorMap.put(ircColorMap.get(chatColor), chatColor);
+        }
+    }
+
+    public String gameColorsToIrc(String message) {
         if (stripGameColors) {
             return ChatColor.stripColor(message);
         } else {
-            String newMessage = message;        
-            for (ChatColor chatColor : colorMap.keySet()) {
-                newMessage = newMessage.replaceAll(chatColor.toString(), colorMap.get(chatColor));
+            String newMessage = message;
+            for (ChatColor gameColor : ircColorMap.keySet()) {
+                newMessage = newMessage.replaceAll(gameColor.toString(), ircColorMap.get(gameColor));
             }
             // We return the message with the remaining MC color codes stripped out
             return ChatColor.stripColor(newMessage);
+        }
+    }
+    
+    public String ircColorsToGame(String message) {
+        if (stripIRCColors) {
+            return Colors.removeFormattingAndColors(message);
+        } else {
+            String newMessage = message;
+            for (String ircColor : gameColorMap.keySet()) {
+                newMessage = newMessage.replaceAll(ircColor.toString(), gameColorMap.get(ircColor).toString());
+            }            
+            // We return the message with the remaining IRC color codes stripped out
+            return Colors.removeFormattingAndColors(message);
         }
     }
 }
