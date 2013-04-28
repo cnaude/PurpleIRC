@@ -42,8 +42,7 @@ public class PIRCMain extends JavaPlugin {
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
         createConfig();
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        getConfig();
         loadConfig();
         getServer().getPluginManager().registerEvents(new PIRCListener(this), this);
         getCommand("irc").setExecutor(new PIRCCommands(this));

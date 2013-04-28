@@ -20,7 +20,7 @@ message-format:
   irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
   irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
   irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
-  irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason: %REASON%)'
+  irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  
   irc-topic: '&f[&4IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
 # Prevent game colors from appearing in IRC
