@@ -33,6 +33,7 @@ public class PIRCMain extends JavaPlugin {
     EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     public HashMap<String, PIRCBot> ircBots = new HashMap<String, PIRCBot>();
+    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
 
     @Override
     public void onEnable() {

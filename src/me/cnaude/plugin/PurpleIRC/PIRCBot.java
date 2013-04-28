@@ -133,6 +133,7 @@ public final class PIRCBot extends PircBot {
             botNick = config.getString("nick", "");
             setName(botNick);
             plugin.ircBots.put(botNick, this);
+            plugin.botConnected.put(botNick, false);
             botServer = config.getString("server", "");
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
@@ -291,9 +292,9 @@ public final class PIRCBot extends PircBot {
     public void gameChat(Player player, String message) {
         if (!this.isConnected()) {
             return;
-        }
-        for (String channel : botChannels.values()) {
-            if (enabledMessages.get(channelKeys.get(channel)).contains("game-chat")) {
+        }        
+        for (String channel : botChannels.values()) {        
+            if (enabledMessages.get(channelKeys.get(channel)).contains("game-chat")) {        
                 this.sendMessage(channel, plugin.gameColorsToIrc(plugin.gameChat.replaceAll("%NAME%", player.getName())
                     .replaceAll("%MESSAGE%", message)
                     .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -501,6 +502,7 @@ public final class PIRCBot extends PircBot {
 
     @Override
     public void onDisconnect() {
+        plugin.botConnected.put(botNick, false);
         plugin.getServer().broadcast("[" + botNick + "] Disconnected from IRC server.", "irc.message.disconnect");
     }
 
@@ -535,6 +537,7 @@ public final class PIRCBot extends PircBot {
 
     @Override
     public void onConnect() {
+        plugin.botConnected.put(botNick, true);
         for (String channel : this.botChannels.keySet()) {
             if (channelAutoJoin.containsKey(channel)) {
                 if (channelAutoJoin.get(channel)) {
