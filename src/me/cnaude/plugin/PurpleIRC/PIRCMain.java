@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +25,7 @@ public class PIRCMain extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String ircChat, ircAction, ircPart, ircKick, ircJoin;
+    public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
@@ -37,7 +38,7 @@ public class PIRCMain extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        LOG_HEADER = "[" + this.getName() + "]";
+        LOG_HEADER = "[" + ChatColor.DARK_PURPLE + this.getName() + ChatColor.RESET + "]";
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
@@ -80,6 +81,7 @@ public class PIRCMain extends JavaPlugin {
         ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
+        ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         logDebug("Debug enabled");
@@ -190,7 +192,7 @@ public class PIRCMain extends JavaPlugin {
         } else {
             String newMessage = message;
             for (ChatColor gameColor : ircColorMap.keySet()) {
-                newMessage = newMessage.replaceAll(gameColor.toString(), ircColorMap.get(gameColor));
+                newMessage = Matcher.quoteReplacement(newMessage).replaceAll(gameColor.toString(), ircColorMap.get(gameColor));
             }
             // We return the message with the remaining MC color codes stripped out
             return ChatColor.stripColor(newMessage);
@@ -203,7 +205,7 @@ public class PIRCMain extends JavaPlugin {
         } else {
             String newMessage = message;
             for (String ircColor : gameColorMap.keySet()) {
-                newMessage = newMessage.replaceAll(ircColor.toString(), gameColorMap.get(ircColor).toString());
+                newMessage = Matcher.quoteReplacement(newMessage).replaceAll(ircColor.toString(), gameColorMap.get(ircColor).toString());
             }            
             // We return the message with the remaining IRC color codes stripped out
             return Colors.removeFormattingAndColors(message);

@@ -4,6 +4,7 @@
  */
 package me.cnaude.plugin.PurpleIRC;
 
+import java.util.regex.Matcher;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,13 +34,9 @@ public class PIRCListener implements Listener {
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    PIRCBot ircBot = plugin.ircBots.get(botName);
-                    plugin.logDebug("YES-CHAT: " + event.getPlayer().getName() + " => " + event.getMessage());
-                    ircBot.gameChat(event.getPlayer(), event.getMessage());
-                } else {
-                    plugin.logDebug("NO-CHAT: " + event.getPlayer().getName() + " => " + event.getMessage());
-                }
+                if (plugin.botConnected.get(botName)) {                                       
+                    plugin.ircBots.get(botName).gameChat(event.getPlayer(), Matcher.quoteReplacement(event.getMessage()));
+                } 
             }
         }
     }
@@ -47,9 +44,8 @@ public class PIRCListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                PIRCBot ircBot = plugin.ircBots.get(botName);
-                ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
+            if (plugin.botConnected.get(botName)) {                
+                plugin.ircBots.get(botName).gameQuit(event.getPlayer(), Matcher.quoteReplacement(event.getQuitMessage()));
             }
         }
     }
@@ -57,9 +53,8 @@ public class PIRCListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                PIRCBot ircBot = plugin.ircBots.get(botName);
-                ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());
+            if (plugin.botConnected.get(botName)) {                
+                plugin.ircBots.get(botName).gameJoin(event.getPlayer(), Matcher.quoteReplacement(event.getJoinMessage()));
             }
         }
     }
@@ -70,12 +65,11 @@ public class PIRCListener implements Listener {
             return;
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
-            String msg = event.getMessage();
+            String msg = Matcher.quoteReplacement(event.getMessage());
             if (msg.startsWith("/me ")) {
                 for (String botName : plugin.ircBots.keySet()) {
-                    if (plugin.botConnected.get(botName)) {
-                        PIRCBot ircBot = plugin.ircBots.get(botName);
-                        ircBot.gameAction(event.getPlayer(), msg.replaceAll("/me", ""));
+                    if (plugin.botConnected.get(botName)) {                        
+                        plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replaceAll("/me", ""));
                     }
                 }
             }
@@ -85,9 +79,8 @@ public class PIRCListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                PIRCBot ircBot = plugin.ircBots.get(botName);
-                ircBot.gameDeath((Player) event.getEntity(), event.getDeathMessage());
+            if (plugin.botConnected.get(botName)) {                
+                plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), Matcher.quoteReplacement(event.getDeathMessage()));
             }
         }
     }
