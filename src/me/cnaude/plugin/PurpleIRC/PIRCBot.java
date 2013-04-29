@@ -168,6 +168,7 @@ public final class PIRCBot extends PircBot {
     
     public void changeNick(CommandSender sender, String nick) {
         setName(nick);
+        changeNick(nick);
         sender.sendMessage("Setting nickname to " + nick);
         config.set("nick", nick);
     }
@@ -429,7 +430,7 @@ public final class PIRCBot extends PircBot {
         this.botServer = botServer;
         config.set("server", botServer);
         this.autoConnect = autoConnect;
-        config.set("autoconnect", autoConnect.toString());
+        config.set("autoconnect", autoConnect);
         sender.sendMessage("IRC server changed to \"" + botServer + "\". (AutoConnect: " + autoConnect.toString() + ")");
     }
     

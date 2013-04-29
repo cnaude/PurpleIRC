@@ -234,7 +234,16 @@ public class PIRCCommands implements CommandExecutor {
                     String bot = args[1];
                     String nick = args[2];
                     if (plugin.ircBots.containsKey(bot)) {         
-                        plugin.ircBots.get(bot).changeNick(sender, nick);                                               
+                        if (plugin.ircBots.containsKey(nick)) {
+                            sender.sendMessage(ChatColor.RED + "There is already a bot with that nick!");
+                            return true;
+                        } else {
+                            plugin.ircBots.get(bot).changeNick(sender, nick);
+                            PIRCBot ircBot = plugin.ircBots.remove(bot);
+                            plugin.ircBots.put(nick, ircBot);                            
+                            boolean isConnected = plugin.botConnected.remove(bot);
+                            plugin.botConnected.put(nick,isConnected);
+                        }
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
