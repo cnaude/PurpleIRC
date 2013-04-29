@@ -628,8 +628,15 @@ public final class PIRCBot extends PircBot {
     public void sendCommands(String channel) {
         String myChannel = channelKeys.get(channel);
         if (commandMap.containsKey(myChannel)) {
-            String commands = "";
+            
+            List<String> sortedCommands = new ArrayList<String>();
             for (String command : commandMap.get(myChannel).keySet()) {
+                sortedCommands.add(command);
+            }
+            Collections.sort(sortedCommands, Collator.getInstance());      
+            
+            String commands = "";
+            for (String command : sortedCommands) {
                 commands = commands + ", " + command;
             }
             sendMessage(channel, "Valid commands:" + commands.substring(1));
