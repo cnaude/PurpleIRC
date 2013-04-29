@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.cnaude.plugin.PurpleIRC;
 
 import org.bukkit.ChatColor;
@@ -116,6 +112,7 @@ public class PIRCCommands implements CommandExecutor {
                 if (args.length == 1) {
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
                         ircBot.sendTopic(sender);
+                        sender.sendMessage(ChatColor.WHITE + "To change the topic: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
                     }
                 } else if (args.length >= 4) {
                     String bot = args[1];

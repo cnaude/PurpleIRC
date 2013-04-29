@@ -1,6 +1,9 @@
 package me.cnaude.plugin.PurpleIRC;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ public class PIRCMain extends JavaPlugin {
 
     public static String LOG_HEADER;
     static final Logger log = Logger.getLogger("Minecraft");
+    private final String sampleFileName = "SampleBot.yml";
     private File pluginFolder;
     private File botsFolder;
     private File configFile;
@@ -50,6 +54,7 @@ public class PIRCMain extends JavaPlugin {
         buildIRCColorMap();
         buildGameColorMap();
         loadBots();
+        createSampleBot();
         botWatcher = new PIRCBotWatcher(this);
     }
 
@@ -91,11 +96,28 @@ public class PIRCMain extends JavaPlugin {
         if (botsFolder.exists()) {
             logInfo("Checking for bot files in " + botsFolder);
             for (final File file : botsFolder.listFiles()) {
-                if (file.getName().endsWith("bot")) {
+                if (file.getName().endsWith(".yml")) {
                     logInfo("Loading bot: " + file.getName());
                     PIRCBot pircBot = new PIRCBot(file, this);
-
                 }
+            }
+        }
+    }
+
+    private void createSampleBot() {
+        File file = new File(pluginFolder + "/" + sampleFileName);
+        if (!file.exists()) {
+            try {
+                InputStream in = PIRCMain.class.getResourceAsStream("/me/cnaude/plugin/PurpleIRC/Sample/" + sampleFileName);
+                byte[] buf = new byte[1024];
+                int len;
+                OutputStream out = new FileOutputStream(file);
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+            } catch (Exception ex) {
+                logError(ex.getMessage());
             }
         }
     }
@@ -198,7 +220,7 @@ public class PIRCMain extends JavaPlugin {
             return ChatColor.stripColor(newMessage);
         }
     }
-    
+
     public String ircColorsToGame(String message) {
         if (stripIRCColors) {
             return Colors.removeFormattingAndColors(message);
@@ -206,7 +228,7 @@ public class PIRCMain extends JavaPlugin {
             String newMessage = message;
             for (String ircColor : gameColorMap.keySet()) {
                 newMessage = Matcher.quoteReplacement(newMessage).replaceAll(ircColor.toString(), gameColorMap.get(ircColor).toString());
-            }            
+            }
             // We return the message with the remaining IRC color codes stripped out
             return Colors.removeFormattingAndColors(message);
         }

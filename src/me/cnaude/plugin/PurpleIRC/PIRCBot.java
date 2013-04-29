@@ -147,32 +147,32 @@ public final class PIRCBot extends PircBot {
             this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + getName());
         }
     }
-    
-    public void saveConfig(CommandSender sender) {        
+
+    public void saveConfig(CommandSender sender) {
         try {
-            config.save(file);     
+            config.save(file);
             sender.sendMessage("Saving bot \"" + botNick + "\" to " + file.getName());
         } catch (Exception ex) {
             plugin.logError(ex.getMessage());
             sender.sendMessage(ex.getMessage());
         }
     }
-    
+
     public void saveConfig() {
         try {
-            config.save(file);            
+            config.save(file);
         } catch (Exception ex) {
             plugin.logError(ex.getMessage());
         }
     }
-    
+
     public void changeNick(CommandSender sender, String nick) {
         setName(nick);
         changeNick(nick);
         sender.sendMessage("Setting nickname to " + nick);
         config.set("nick", nick);
     }
-    
+
     public void changeLogin(CommandSender sender, String name) {
         setLogin(name);
         sender.sendMessage("Setting login to " + name);
@@ -185,7 +185,7 @@ public final class PIRCBot extends PircBot {
             autoConnect = config.getBoolean("autoconnect", true);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
-            setName(botNick);            
+            setName(botNick);
             setLogin(botLogin);
             plugin.ircBots.put(botNick, this);
             plugin.botConnected.put(botNick, this.isConnected());
@@ -203,64 +203,64 @@ public final class PIRCBot extends PircBot {
             plugin.logDebug("Command Prefix => " + commandPrefix);
             plugin.logDebug("Server Password => " + botServerPass);
             plugin.logDebug("Quit Message => " + quitMessage);
-            for (String channel : config.getConfigurationSection("channels").getKeys(false)) {
-                plugin.logDebug("Channel  => " + channelPrefix + channel);
-                botChannels.put(channel, channelPrefix + channel);
-                channelKeys.put(channelPrefix + channel, channel);
+            for (String myChannel : config.getConfigurationSection("channels").getKeys(false)) {
+                plugin.logDebug("Channel  => " + channelPrefix + myChannel);
+                botChannels.put(myChannel, channelPrefix + myChannel);
+                channelKeys.put(channelPrefix + myChannel, myChannel);
 
-                channelAutoJoin.put(channel, config.getBoolean("channels." + channel + ".autojoin", true));
-                plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channel));
+                channelAutoJoin.put(myChannel, config.getBoolean("channels." + myChannel + ".autojoin", true));
+                plugin.logDebug("  Autojoin => " + channelAutoJoin.get(myChannel));
 
-                channelPassword.put(channel, config.getString("channels." + channel + ".password", ""));
-                plugin.logDebug("  Password => " + channelTopic.get(channel));
+                channelPassword.put(myChannel, config.getString("channels." + myChannel + ".password", ""));
+                plugin.logDebug("  Password => " + channelTopic.get(myChannel));
 
-                channelTopic.put(channel, config.getString("channels." + channel + ".topic", ""));
-                plugin.logDebug("  Topic => " + channelTopic.get(channel));
+                channelTopic.put(myChannel, config.getString("channels." + myChannel + ".topic", ""));
+                plugin.logDebug("  Topic => " + channelTopic.get(myChannel));
 
-                channelModes.put(channel, config.getString("channels." + channel + ".modes", ""));
-                plugin.logDebug("  Channel Modes => " + channelModes.get(channel));
+                channelModes.put(myChannel, config.getString("channels." + myChannel + ".modes", ""));
+                plugin.logDebug("  Channel Modes => " + channelModes.get(myChannel));
 
-                channelTopicProtected.put(channel, config.getBoolean("channels." + channel + ".topic-protect", false));
-                plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channel).toString());
+                channelTopicProtected.put(myChannel, config.getBoolean("channels." + myChannel + ".topic-protect", false));
+                plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(myChannel).toString());
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
-                for (String channelOper : config.getStringList("channels." + channel + ".ops")) {
+                for (String channelOper : config.getStringList("channels." + myChannel + ".ops")) {
                     cOps.add(channelOper);
                     plugin.logDebug("  Channel Op => " + channelOper);
                 }
-                opsList.put(channel, cOps);
+                opsList.put(myChannel, cOps);
 
                 // build mute list
                 Collection<String> m = new ArrayList<String>();
-                for (String mutedUser : config.getStringList("channels." + channel + ".muted")) {
+                for (String mutedUser : config.getStringList("channels." + myChannel + ".muted")) {
                     m.add(mutedUser);
                     plugin.logDebug("  Channel Mute => " + mutedUser);
                 }
-                muteList.put(channel, m);
+                muteList.put(myChannel, m);
 
                 // build valid chat list
                 Collection<String> c = new ArrayList<String>();
-                for (String validChat : config.getStringList("channels." + channel + ".enabled-messages")) {
+                for (String validChat : config.getStringList("channels." + myChannel + ".enabled-messages")) {
                     c.add(validChat);
                     plugin.logDebug("  Enabled Message => " + validChat);
                 }
-                enabledMessages.put(channel, c);
+                enabledMessages.put(myChannel, c);
 
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
-                for (String command : config.getConfigurationSection("channels." + channel + ".commands").getKeys(false)) {
+                for (String command : config.getConfigurationSection("channels." + myChannel + ".commands").getKeys(false)) {
                     plugin.logDebug("  Command => " + command);
                     Map<String, String> optionPair = new HashMap<String, String>();
-                    for (String commandOption : config.getConfigurationSection("channels." + channel + ".commands." + command).getKeys(false)) {
-                        String commandOptionValue = config.getString("channels." + channel + ".commands." + command + "." + commandOption);
+                    for (String commandOption : config.getConfigurationSection("channels." + myChannel + ".commands." + command).getKeys(false)) {
+                        String commandOptionValue = config.getString("channels." + myChannel + ".commands." + command + "." + commandOption);
                         optionPair.put(commandOption, commandOptionValue);
                         plugin.logDebug("    " + commandOption + " => " + commandOptionValue);
                     }
                     map.put(command, optionPair);
 
                 }
-                commandMap.put(channel, map);
+                commandMap.put(myChannel, map);
             }
         } catch (Exception ex) {
             plugin.logError(ex.getMessage());
@@ -298,7 +298,7 @@ public final class PIRCBot extends PircBot {
         if (muteList.get(myChannel).contains(sender)) {
             return;
         }
-        if (message.startsWith(commandPrefix)) {
+        if (message.startsWith(commandPrefix) && (!message.startsWith(commandPrefix + commandPrefix))) {
             String command = message.split(" ")[0].substring(1);
             plugin.logDebug("IRC command detected: " + command);
             if (commandMap.get(myChannel).containsKey(command)) {
@@ -351,7 +351,7 @@ public final class PIRCBot extends PircBot {
             return;
         }
         for (String channel : botChannels.values()) {
-            if (enabledMessages.get(channelKeys.get(channel)).contains("game-chat")) {                
+            if (enabledMessages.get(channelKeys.get(channel)).contains("game-chat")) {
                 this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
@@ -415,25 +415,25 @@ public final class PIRCBot extends PircBot {
             }
         }
     }
-    
+
     public void changeTopic(String channel, String topic, CommandSender sender) {
-        setTopic(channel,topic);        
+        setTopic(channel, topic);
         config.set("channels." + channelKeys.get(channel) + ".topic", topic);
         sender.sendMessage("IRC topic for " + channel + " changed to \"" + topic + "\"");
     }
-    
-    public void setServer(CommandSender sender, String botServer) {              
-        setServer(sender,botServer,autoConnect);
+
+    public void setServer(CommandSender sender, String botServer) {
+        setServer(sender, botServer, autoConnect);
     }
-    
-    public void setServer(CommandSender sender, String botServer, Boolean autoConnect) {  
+
+    public void setServer(CommandSender sender, String botServer, Boolean autoConnect) {
         this.botServer = botServer;
         config.set("server", botServer);
         this.autoConnect = autoConnect;
         config.set("autoconnect", autoConnect);
         sender.sendMessage("IRC server changed to \"" + botServer + "\". (AutoConnect: " + autoConnect.toString() + ")");
     }
-    
+
     public void addOp(String channel, String userMask, CommandSender sender) {
         String myChannel = channelKeys.get(channel);
         if (opsList.get(myChannel).contains(userMask)) {
@@ -444,35 +444,16 @@ public final class PIRCBot extends PircBot {
         }
         config.set("channels." + myChannel + ".ops", opsList.get(myChannel));
     }
-    
+
     public void removeOp(String channel, String userMask, CommandSender sender) {
         String myChannel = channelKeys.get(channel);
         if (opsList.get(myChannel).contains(userMask)) {
             sender.sendMessage("User mask'" + userMask + "' has been removed to the ops list.");
-            opsList.get(myChannel).remove(userMask);            
+            opsList.get(myChannel).remove(userMask);
         } else {
             sender.sendMessage("User mask'" + userMask + "' is not in the ops list.");
         }
         config.set("channels." + myChannel + ".ops", opsList.get(myChannel));
-    }    
-
-    public void fixTopic(String channel, String topic, String setBy) {
-        String myChannel = channelKeys.get(channel);
-        if (setBy.equals(botNick)) {            
-            config.set("channels." + myChannel + ".topic", topic);
-            return;
-        }
-        
-        if (channelTopic.containsKey(myChannel)) {
-            if (channelTopicProtected.containsKey(myChannel)) {
-                if (channelTopicProtected.containsKey(myChannel)) {
-                    String myTopic = channelTopic.get(myChannel);
-                    if (!topic.equals(myTopic)) {
-                        setTopic(channel, myTopic);
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -563,7 +544,29 @@ public final class PIRCBot extends PircBot {
                         .replaceAll("%CHANNEL%", channel)), "irc.message.topic");
             }
         }
+        if (topic == null) {
+            topic = "";
+        }
         activeTopic.put(channelKeys.get(channel), topic);
+    }
+
+    public void fixTopic(String channel, String topic, String setBy) {
+        String myChannel = channelKeys.get(channel);
+        if (setBy.equals(botNick)) {
+            config.set("channels." + myChannel + ".topic", topic);
+            return;
+        }
+
+        if (channelTopic.containsKey(myChannel)) {
+            if (channelTopicProtected.containsKey(myChannel)) {
+                if (channelTopicProtected.containsKey(myChannel)) {
+                    String myTopic = channelTopic.get(myChannel);
+                    if (!topic.equals(myTopic)) {
+                        setTopic(channel, myTopic);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -628,13 +631,13 @@ public final class PIRCBot extends PircBot {
     public void sendCommands(String channel) {
         String myChannel = channelKeys.get(channel);
         if (commandMap.containsKey(myChannel)) {
-            
+
             List<String> sortedCommands = new ArrayList<String>();
             for (String command : commandMap.get(myChannel).keySet()) {
                 sortedCommands.add(command);
             }
-            Collections.sort(sortedCommands, Collator.getInstance());      
-            
+            Collections.sort(sortedCommands, Collator.getInstance());
+
             String commands = "";
             for (String command : sortedCommands) {
                 commands = commands + ", " + command;
@@ -646,7 +649,11 @@ public final class PIRCBot extends PircBot {
     public void sendTopic(CommandSender sender) {
         for (String channel : this.botChannels.keySet()) {
             if (commandMap.containsKey(channel)) {
-                sender.sendMessage(botChannels.get(channel) + " topic: " + activeTopic.get(channel));
+                sender.sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_PURPLE
+                        + this.botNick + ChatColor.WHITE + "]" + ChatColor.RESET
+                        + " IRC topic for " + ChatColor.WHITE + botChannels.get(channel)
+                        + ChatColor.RESET + ": \""
+                        + ChatColor.WHITE + activeTopic.get(channel) + ChatColor.RESET + "\"");
             }
         }
     }
@@ -677,7 +684,7 @@ public final class PIRCBot extends PircBot {
             sendUserList(sender, channel);
         }
     }
-    
+
     //http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
     private static String createRegexFromGlob(String glob) {
         String out = "^";
@@ -702,5 +709,5 @@ public final class PIRCBot extends PircBot {
         }
         out += '$';
         return out;
-    }    
+    }
 }
