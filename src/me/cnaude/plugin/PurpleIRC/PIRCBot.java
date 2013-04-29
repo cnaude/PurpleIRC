@@ -25,6 +25,7 @@ public final class PIRCBot extends PircBot {
     public boolean autoConnect;
     private String botServer;
     private String botNick;
+    private String botLogin;
     private String botServerPass;
     private int botServerPort;
     private String channelPrefix;
@@ -164,13 +165,27 @@ public final class PIRCBot extends PircBot {
             plugin.logError(ex.getMessage());
         }
     }
+    
+    public void changeNick(CommandSender sender, String nick) {
+        setName(nick);
+        sender.sendMessage("Setting nickname to " + nick);
+        config.set("nick", nick);
+    }
+    
+    public void changeLogin(CommandSender sender, String name) {
+        setLogin(name);
+        sender.sendMessage("Setting login to " + name);
+        config.set("nick", name);
+    }
 
     private void loadConfig() {
         try {
             config.load(file);
             autoConnect = config.getBoolean("autoconnect", true);
             botNick = config.getString("nick", "");
-            setName(botNick);
+            botLogin = config.getString("login", "PircBot");
+            setName(botNick);            
+            setLogin(botLogin);
             plugin.ircBots.put(botNick, this);
             plugin.botConnected.put(botNick, this.isConnected());
             botServer = config.getString("server", "");
@@ -180,12 +195,13 @@ public final class PIRCBot extends PircBot {
             commandPrefix = config.getString("command-prefix", ".");
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
+            plugin.logDebug("Login => " + botLogin);
             plugin.logDebug("Server => " + botServer);
             plugin.logDebug("Port => " + botServerPort);
             plugin.logDebug("Channel Prefix => " + channelPrefix);
             plugin.logDebug("Command Prefix => " + commandPrefix);
             plugin.logDebug("Server Password => " + botServerPass);
-            plugin.logInfo("Quit Message => " + quitMessage);
+            plugin.logDebug("Quit Message => " + quitMessage);
             for (String channel : config.getConfigurationSection("channels").getKeys(false)) {
                 plugin.logDebug("Channel  => " + channelPrefix + channel);
                 botChannels.put(channel, channelPrefix + channel);
@@ -632,8 +648,8 @@ public final class PIRCBot extends PircBot {
             sender.sendMessage(ChatColor.RED + "Invalid channel name.");
             return;
         }
-        sender.sendMessage(ChatColor.RED + "-----[  " + ChatColor.WHITE + channel
-                + ChatColor.RED + " - " + ChatColor.WHITE + getName() + ChatColor.RED + " ]-----");
+        sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channel
+                + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + getName() + ChatColor.DARK_PURPLE + " ]-----");
         if (!this.isConnected()) {
             sender.sendMessage(ChatColor.RED + " Not connected!");
             return;
@@ -644,7 +660,7 @@ public final class PIRCBot extends PircBot {
         }
         Collections.sort(channelUsers, Collator.getInstance());
         for (String userName : channelUsers) {
-            sender.sendMessage(ChatColor.RED + "  " + ChatColor.WHITE + userName);
+            sender.sendMessage("  " + ChatColor.WHITE + userName);
         }
     }
 

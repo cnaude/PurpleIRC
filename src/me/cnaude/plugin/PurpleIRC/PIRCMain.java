@@ -38,7 +38,7 @@ public class PIRCMain extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        LOG_HEADER = "[" + ChatColor.DARK_PURPLE + this.getName() + ChatColor.RESET + "]";
+        LOG_HEADER = "[" + this.getName() + "]";
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");

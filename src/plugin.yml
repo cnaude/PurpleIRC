@@ -15,6 +15,13 @@ commands:
          /<command> list ([bot]) ([channel]) - List users in a channel
          /<command> op [bot] [channel] [user(s)] - Op user(s) in a channel
          /<command> deop [bot] [channel] [user(s)] - DeOp user(s) in a channel
+         /<command> addop [bot] [channel] [user mask] - Add user mask to op list.
+         /<command> removeop [bot] [channel] [user mask] - Remove user mask from op list.
+         /<command> server [bot] [server] ([true|false]) - Set IRC server for bot. Optionally set autoconnect.
+         /<command> mute [bot] [channel] [user(s)] - Mute user(s) in a channel.
+         /<command> unmute [bot] [channel] [user(s)] - Unmute user(s) in a channel.
+         /<command> nick [bot] [nick] - Change the bot's IRC nickname.
+         /<command> login [bot] [login] - Change the bot's IRC login.
 permissions:
   'irc.reload':
     description: Gives player access to the /irc reload.

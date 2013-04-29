@@ -18,7 +18,7 @@ public class PIRCCommands implements CommandExecutor {
     private PIRCMain plugin;
     
     private String invalidBotName = ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + "%BOT%"
-                                + ChatColor.RED + "'. Type '/irc listbots' to see valid bots.";
+                                + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots" + ChatColor.RED + "' to see valid bots.";
 
     public PIRCCommands(PIRCMain plugin) {
         this.plugin = plugin;
@@ -31,17 +31,19 @@ public class PIRCCommands implements CommandExecutor {
             String subCmd = args[0].toLowerCase();
             if (!sender.hasPermission("irc." + subCmd)) {
                 sender.sendMessage(noPermission);
+                return true;
             }
             if (subCmd.equalsIgnoreCase("listbots")) {
-                sender.sendMessage(ChatColor.RED + "-----[  " + ChatColor.WHITE + "IRC Bots"
-                        + ChatColor.RED + "   ]-----");
+                sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
+                        + ChatColor.DARK_PURPLE + "   ]-----");
                 for (PIRCBot ircBot : plugin.ircBots.values()) {
-                    sender.sendMessage(ChatColor.RED + "* " + ChatColor.WHITE + ircBot.getName());
+                    sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.getName());
                     for (String channel : ircBot.getChannels()) {
-                        sender.sendMessage(ChatColor.RED + "  - " + ChatColor.WHITE + channel);
+                        sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel);
                     }
                 }
-            }
+                return true;
+            }            
             if (subCmd.equalsIgnoreCase("connect")) {
                 if (args.length == 1) {
                     for (PIRCBot ircBot : plugin.ircBots.values()) {
@@ -57,6 +59,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc connect ([bot])");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbot")) {
                 if (args.length == 1) {
@@ -73,6 +76,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot ([bot])");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbotconfig")) {
                 if (args.length == 1) {
@@ -89,6 +93,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfig ([bot])");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("disconnect")) {
                 if (args.length == 1) {
@@ -105,6 +110,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc disconnect ([bot])");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("topic")) {
                 if (args.length == 1) {
@@ -126,6 +132,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("op")) {
                 if (args.length >= 4) {
@@ -142,6 +149,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("addop")) {
                 if (args.length == 4) {
@@ -156,6 +164,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc addop [bot] [channel] [user mask]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("remove")) {
                 if (args.length == 4) {
@@ -170,6 +179,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc removeop [bot] [channel] [user mask]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("mute")) {
                 if (args.length >= 4) {
@@ -186,6 +196,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc mute [bot] [channel] [user(s)]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("savebot")) {
                 if (args.length >= 2) {
@@ -198,6 +209,7 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc save [bot]");
                 }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("server")) {
                 if (args.length >= 3) {
@@ -215,6 +227,35 @@ public class PIRCCommands implements CommandExecutor {
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc server [bot] [server] ([true|false])");
                 }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("nick")) {
+                if (args.length == 3) {
+                    String bot = args[1];
+                    String nick = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {         
+                        plugin.ircBots.get(bot).changeNick(sender, nick);                                               
+                    } else {
+                        sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc nick [bot] [nick]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("login")) {
+                if (args.length == 3) {
+                    String bot = args[1];
+                    String login = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {         
+                        plugin.ircBots.get(bot).changeLogin(sender, login);                                               
+                    } else {
+                        sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc login [bot] [login]");
+                }
+                return true;
             }
             if (subCmd.equalsIgnoreCase("list")) {
                 if (args.length == 1) {
@@ -234,20 +275,10 @@ public class PIRCCommands implements CommandExecutor {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
                 }
-            }
-            if (subCmd.equalsIgnoreCase("help") || subCmd.equals("?")) {
-                sender.sendMessage(ChatColor.WHITE + "-----[  " + ChatColor.DARK_PURPLE + "PurpleIRC"
-                        + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Commands" + ChatColor.WHITE + " ]-----");
-                sender.sendMessage("/irc reloadbot ([bot])- Reload the bot config and reconnect"
-                        + "/irc reloadbotconfig ([bot]) - Reload bot config without reconnecting"
-                        + "/irc connect ([bot]) - Connect to configured IRC server"
-                        + "/irc disconnect ([bot]) - Disconnect from configured IRC server"
-                        + "/irc listbots - List loaded bots"
-                        + "/irc list ([bot]) ([channel]) - List users in a channel"
-                        + "/irc op [bot] [channel] [user(s)] - Op user(s) in a channel"
-                        + "/irc deop [bot] [channel] [user(s)] - DeOp user(s) in a channel");
-            }
+                return true;
+            }            
         }
-        return true;
-    }
+        return false;
+    } 
 }
+
