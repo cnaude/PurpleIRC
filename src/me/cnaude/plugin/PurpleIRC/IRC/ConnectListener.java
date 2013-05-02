@@ -4,7 +4,7 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import me.cnaude.plugin.PurpleIRC.PIRCBot;
+import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -17,9 +17,9 @@ import org.pircbotx.hooks.events.ConnectEvent;
 public class ConnectListener extends ListenerAdapter {
     
     PIRCMain plugin;
-    PIRCBot ircBot;
+    PurpleBot ircBot;
 
-    public ConnectListener(PIRCMain plugin, PIRCBot ircBot) {
+    public ConnectListener(PIRCMain plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }

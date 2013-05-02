@@ -31,7 +31,7 @@ import org.pircbotx.User;
  *
  * @author Chris Naude
  */
-public final class PIRCBot {
+public final class PurpleBot {
 
     public PircBotX bot;
     public boolean autoConnect;
@@ -65,7 +65,7 @@ public final class PIRCBot {
     //          channel     command option     value
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
 
-    public PIRCBot(File file, PIRCMain plugin) {
+    public PurpleBot(File file, PIRCMain plugin) {
         bot = new PircBotX();
         bot.getListenerManager().addListener(new ActionListener(plugin, this));
         bot.getListenerManager().addListener(new ConnectListener(plugin, this));

@@ -10,14 +10,14 @@ import org.pircbotx.Channel;
  *
  * @author cnaude
  */
-public class PIRCCommands implements CommandExecutor {
+public class CommandHandlers implements CommandExecutor {
 
     private PIRCMain plugin;
     
     private String invalidBotName = ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + "%BOT%"
                                 + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots" + ChatColor.RED + "' to see valid bots.";
 
-    public PIRCCommands(PIRCMain plugin) {
+    public CommandHandlers(PIRCMain plugin) {
         this.plugin = plugin;
     }
 
@@ -33,7 +33,7 @@ public class PIRCCommands implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("listbots")) {
                 sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                         + ChatColor.DARK_PURPLE + "   ]-----");
-                for (PIRCBot ircBot : plugin.ircBots.values()) {
+                for (PurpleBot ircBot : plugin.ircBots.values()) {
                     sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.bot.getName());
                     for (Channel channel : ircBot.bot.getChannels()) {
                         sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
@@ -43,7 +43,7 @@ public class PIRCCommands implements CommandExecutor {
             }            
             if (subCmd.equalsIgnoreCase("connect")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.asyncConnect(sender, true);
                     }
                 } else if (args.length == 2) {
@@ -60,7 +60,7 @@ public class PIRCCommands implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("reloadbot")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.reload(sender);
                     }
                 } else if (args.length == 2) {
@@ -77,7 +77,7 @@ public class PIRCCommands implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("reloadbotconfig")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.reloadConfig(sender);
                     }
                 } else if (args.length == 2) {
@@ -94,7 +94,7 @@ public class PIRCCommands implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("disconnect")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.quit(sender);
                     }
                 } else if (args.length == 2) {
@@ -111,7 +111,7 @@ public class PIRCCommands implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("topic")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.sendTopic(sender);
                         sender.sendMessage(ChatColor.WHITE + "To change the topic: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
                     }
@@ -237,7 +237,7 @@ public class PIRCCommands implements CommandExecutor {
                             return true;
                         } else {
                             plugin.ircBots.get(bot).changeNick(sender, nick);
-                            PIRCBot ircBot = plugin.ircBots.remove(bot);
+                            PurpleBot ircBot = plugin.ircBots.remove(bot);
                             plugin.ircBots.put(nick, ircBot);                            
                             boolean isConnected = plugin.botConnected.remove(bot);
                             plugin.botConnected.put(nick,isConnected);
@@ -266,13 +266,13 @@ public class PIRCCommands implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("list")) {
                 if (args.length == 1) {
-                    for (PIRCBot ircBot : plugin.ircBots.values()) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.sendUserList(sender);
                     }
                 } else if (args.length > 1) {
                     String bot = args[1];
                     if (plugin.ircBots.containsKey(bot)) {
-                        PIRCBot ircBot = plugin.ircBots.get(bot);
+                        PurpleBot ircBot = plugin.ircBots.get(bot);
                         if (args.length > 2) {
                             ircBot.sendUserList(sender, args[2]);
                         } else {

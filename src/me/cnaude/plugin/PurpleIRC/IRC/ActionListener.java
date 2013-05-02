@@ -5,7 +5,7 @@
 package me.cnaude.plugin.PurpleIRC.IRC;
 
 import java.util.regex.Matcher;
-import me.cnaude.plugin.PurpleIRC.PIRCBot;
+import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -20,9 +20,9 @@ import org.pircbotx.hooks.events.ActionEvent;
 public class ActionListener extends ListenerAdapter {
     
     PIRCMain plugin;
-    PIRCBot ircBot;
+    PurpleBot ircBot;
 
-    public ActionListener(PIRCMain plugin, PIRCBot ircBot) {
+    public ActionListener(PIRCMain plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }

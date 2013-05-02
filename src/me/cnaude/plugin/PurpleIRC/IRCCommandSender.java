@@ -16,7 +16,7 @@ import org.pircbotx.PircBotX;
  * We have to implement our own CommandSender so that we can
  * receive output from the command dispatcher.
  */
-public class PIRCCommandSender implements CommandSender {
+public class IRCCommandSender implements CommandSender {
     private final PircBotX bot;
     private String target;
     private final PIRCMain plugin;
@@ -33,7 +33,7 @@ public class PIRCCommandSender implements CommandSender {
         }
     }
     
-    public PIRCCommandSender(PircBotX bot, String target, PIRCMain plugin) {        
+    public IRCCommandSender(PircBotX bot, String target, PIRCMain plugin) {        
         this.target = target;
         this.bot = bot;
         this.plugin = plugin;

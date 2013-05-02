@@ -19,11 +19,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
  *
  * @author cnaude
  */
-public class PIRCListener implements Listener {
+public class GameListeners implements Listener {
 
     private final PIRCMain plugin;
 
-    public PIRCListener(PIRCMain plugin) {
+    public GameListeners(PIRCMain plugin) {
         this.plugin = plugin;
     }
 

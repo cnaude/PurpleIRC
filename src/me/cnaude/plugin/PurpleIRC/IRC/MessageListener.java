@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import me.cnaude.plugin.PurpleIRC.PIRCBot;
-import me.cnaude.plugin.PurpleIRC.PIRCCommandSender;
+import me.cnaude.plugin.PurpleIRC.PurpleBot;
+import me.cnaude.plugin.PurpleIRC.IRCCommandSender;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -26,9 +26,9 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class MessageListener extends ListenerAdapter {
 
     PIRCMain plugin;
-    PIRCBot ircBot;
+    PurpleBot ircBot;
 
-    public MessageListener(PIRCMain plugin, PIRCBot ircBot) {
+    public MessageListener(PIRCMain plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
@@ -76,7 +76,7 @@ public class MessageListener extends ListenerAdapter {
                     } else if (gameCommand.equals("@help")) {
                         bot.sendMessage(user, getCommands(ircBot.commandMap,myChannel));                     
                     } else {
-                        plugin.getServer().dispatchCommand(new PIRCCommandSender(event.getBot(), target, plugin), gameCommand);
+                        plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");

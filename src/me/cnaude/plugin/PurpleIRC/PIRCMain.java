@@ -32,10 +32,10 @@ public class PIRCMain extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     Long ircConnCheckInterval;
-    PIRCBotWatcher botWatcher;
+    BotWatcher botWatcher;
     public ColorConverter colorConverter;
     
-    public HashMap<String, PIRCBot> ircBots = new HashMap<String, PIRCBot>();
+    public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
 
     @Override
@@ -47,12 +47,12 @@ public class PIRCMain extends JavaPlugin {
         createConfig();
         getConfig();
         loadConfig();
-        getServer().getPluginManager().registerEvents(new PIRCListener(this), this);
-        getCommand("irc").setExecutor(new PIRCCommands(this));
+        getServer().getPluginManager().registerEvents(new GameListeners(this), this);
+        getCommand("irc").setExecutor(new CommandHandlers(this));
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         loadBots();
         createSampleBot();
-        botWatcher = new PIRCBotWatcher(this);
+        botWatcher = new BotWatcher(this);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PIRCMain extends JavaPlugin {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
-            for (PIRCBot ircBot : ircBots.values()) {
+            for (PurpleBot ircBot : ircBots.values()) {
                 ircBot.quit();
             }
         }
@@ -95,7 +95,7 @@ public class PIRCMain extends JavaPlugin {
             for (final File file : botsFolder.listFiles()) {
                 if (file.getName().endsWith(".yml")) {
                     logInfo("Loading bot: " + file.getName());
-                    PIRCBot pircBot = new PIRCBot(file, this);
+                    PurpleBot pircBot = new PurpleBot(file, this);
                 }
             }
         }

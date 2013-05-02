@@ -5,7 +5,7 @@
 package me.cnaude.plugin.PurpleIRC.IRC;
 
 import java.util.regex.Matcher;
-import me.cnaude.plugin.PurpleIRC.PIRCBot;
+import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -21,9 +21,9 @@ import org.pircbotx.hooks.events.PartEvent;
 public class DisconnectListener extends ListenerAdapter {
     
     PIRCMain plugin;
-    PIRCBot ircBot;
+    PurpleBot ircBot;
 
-    public DisconnectListener(PIRCMain plugin, PIRCBot ircBot) {
+    public DisconnectListener(PIRCMain plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
