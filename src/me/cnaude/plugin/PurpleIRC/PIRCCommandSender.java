@@ -8,6 +8,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.pircbotx.PircBotX;
 
 /**
  *
@@ -16,25 +17,25 @@ import org.bukkit.plugin.Plugin;
  * receive output from the command dispatcher.
  */
 public class PIRCCommandSender implements CommandSender {
-    private final PIRCBot ircBot;
+    private final PircBotX bot;
     private String target;
     private final PIRCMain plugin;
     
     @Override
     public void sendMessage(String message) {             
-        ircBot.sendMessage(target, plugin.gameColorsToIrc(message));                
+        bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
     }
     
     @Override 
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
-            ircBot.sendMessage(target, plugin.gameColorsToIrc(message));  
+            bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
         }
     }
     
-    public PIRCCommandSender(PIRCBot ircBot, String target, PIRCMain plugin) {
-        this.ircBot = ircBot;
+    public PIRCCommandSender(PircBotX bot, String target, PIRCMain plugin) {        
         this.target = target;
+        this.bot = bot;
         this.plugin = plugin;
     }
     
@@ -45,7 +46,7 @@ public class PIRCCommandSender implements CommandSender {
     
     @Override 
     public String getName() {
-        return ircBot.getName();                
+        return bot.getName();                
     }
     
     @Override

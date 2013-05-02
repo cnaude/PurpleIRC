@@ -18,13 +18,13 @@ public class PIRCBotWatcher {
             public void run() {
                 plugin.logDebug("Checking connection status of IRC bots.");
                 for (PIRCBot ircBot : plugin.ircBots.values()) {
-                    if (!ircBot.isConnected()) {
+                    if (!ircBot.bot.isConnected()) {
                         if (ircBot.autoConnect) {
-                            plugin.logInfo("IRC bot '" + ircBot.getName() + "' is not connected! Attempting reconnect...");
+                            plugin.logInfo("IRC bot '" + ircBot.bot.getName() + "' is not connected! Attempting reconnect...");
                             ircBot.asyncReConnect();
                         }
                     } else {
-                        plugin.logDebug("IRC bot '" + ircBot.getName() + "' is connected!");
+                        plugin.logDebug("IRC bot '" + ircBot.bot.getName() + "' is connected!");
                     }
                 }
             }

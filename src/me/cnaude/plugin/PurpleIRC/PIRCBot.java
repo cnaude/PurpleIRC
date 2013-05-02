@@ -9,51 +9,73 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import me.cnaude.plugin.PurpleIRC.IRC.ActionListener;
+import me.cnaude.plugin.PurpleIRC.IRC.ConnectListener;
+import me.cnaude.plugin.PurpleIRC.IRC.DisconnectListener;
+import me.cnaude.plugin.PurpleIRC.IRC.JoinListener;
+import me.cnaude.plugin.PurpleIRC.IRC.KickListener;
+import me.cnaude.plugin.PurpleIRC.IRC.MessageListener;
+import me.cnaude.plugin.PurpleIRC.IRC.PartListener;
+import me.cnaude.plugin.PurpleIRC.IRC.TopicListener;
+import me.cnaude.plugin.PurpleIRC.IRC.VersionListener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.jibble.pircbot.PircBot;
-import org.jibble.pircbot.User;
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+
 
 /**
  *
  * @author Chris Naude
  */
-public final class PIRCBot extends PircBot {
+public final class PIRCBot {
 
+    public PircBotX bot;
     public boolean autoConnect;
-    private String botServer;
-    private String botNick;
-    private String botLogin;
-    private String botServerPass;
-    private int botServerPort;
-    private String channelPrefix;
-    private String commandPrefix;
-    private String quitMessage;
-    private final PIRCMain plugin;
+    public String botServer;
+    public String botNick;
+    public String botLogin;
+    public String botServerPass;
+    public int botServerPort;
+    public String channelPrefix;
+    public String commandPrefix;
+    public String quitMessage;
+    public final PIRCMain plugin;
     private File file;
     private YamlConfiguration config;
     // channel, #channel
-    private HashMap<String, String> botChannels = new HashMap<String, String>();
+    public HashMap<String, String> botChannels = new HashMap<String, String>();
     // #channel, channel
-    private HashMap<String, String> channelKeys = new HashMap<String, String>();
-    private HashMap<String, String> channelPassword = new HashMap<String, String>();
+    public HashMap<String, String> channelKeys = new HashMap<String, String>();
+    public HashMap<String, String> channelPassword = new HashMap<String, String>();
     // channel, topic
-    private HashMap<String, String> channelTopic = new HashMap<String, String>();
+    public HashMap<String, String> channelTopic = new HashMap<String, String>();
     // channel, topic
-    private HashMap<String, String> activeTopic = new HashMap<String, String>();
+    public HashMap<String, String> activeTopic = new HashMap<String, String>();
     // channel, modes
-    private HashMap<String, String> channelModes = new HashMap<String, String>();
-    private HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
-    private HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
-    private Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
-    private Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
-    private Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
+    public HashMap<String, String> channelModes = new HashMap<String, String>();
+    public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
+    public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
+    public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
+    public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     //          channel     command option     value
-    private Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+    public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
 
     public PIRCBot(File file, PIRCMain plugin) {
+        bot = new PircBotX();
+        bot.getListenerManager().addListener(new ActionListener(plugin, this));
+        bot.getListenerManager().addListener(new ConnectListener(plugin, this));
+        bot.getListenerManager().addListener(new DisconnectListener(plugin, this));
+        bot.getListenerManager().addListener(new JoinListener(plugin, this));
+        bot.getListenerManager().addListener(new KickListener(plugin, this));
+        bot.getListenerManager().addListener(new MessageListener(plugin, this));
+        bot.getListenerManager().addListener(new PartListener(plugin, this));
+        bot.getListenerManager().addListener(new TopicListener(plugin, this));
+        bot.getListenerManager().addListener(new VersionListener(plugin));        
         this.plugin = plugin;
         this.file = file;
         config = new YamlConfiguration();
@@ -78,11 +100,11 @@ public final class PIRCBot extends PircBot {
             @Override
             public void run() {
                 try {
-                    plugin.logInfo("Reconnecting to " + botServer + " as " + getName());
-                    reconnect();
+                    plugin.logInfo("Reconnecting to " + botServer + " as " + bot.getName());
+                    bot.reconnect();
                 } catch (Exception ex) {
                     plugin.logError("Problem reconnecting to " + botServer + " => "
-                            + " as " + getName() + " [Error: " + ex.getMessage() + "]");
+                            + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
                 }
             }
         });
@@ -115,16 +137,16 @@ public final class PIRCBot extends PircBot {
                 @Override
                 public void run() {
                     try {
-                        plugin.logInfo("Connecting to " + botServer + " as " + getName());
-                        connect(botServer, botServerPort, botServerPass);
+                        plugin.logInfo("Connecting to " + botServer + " as " + bot.getName());
+                        bot.connect(botServer, botServerPort, botServerPass);
                     } catch (Exception ex) {
                         plugin.logError("Problem connecting to " + botServer + " => "
-                                + " as " + getName() + " [Error: " + ex.getMessage() + "]");
+                                + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
                     }
                 }
             });
         } else {
-            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + getName());
+            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + bot.getName());
         }
     }
 
@@ -135,16 +157,16 @@ public final class PIRCBot extends PircBot {
                 @Override
                 public void run() {
                     try {
-                        plugin.logInfo("Connecting to " + botServer + " as " + getName());
-                        connect(botServer, botServerPort, botServerPass);
+                        plugin.logInfo("Connecting to " + botServer + " as " + bot.getName());
+                        bot.connect(botServer, botServerPort, botServerPass);
                     } catch (Exception ex) {
                         plugin.logError("Problem connecting to " + botServer + " => "
-                                + " as " + getName() + " [Error: " + ex.getMessage() + "]");
+                                + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
                     }
                 }
             });
         } else {
-            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + getName());
+            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + bot.getName());
         }
     }
 
@@ -167,14 +189,14 @@ public final class PIRCBot extends PircBot {
     }
 
     public void changeNick(CommandSender sender, String nick) {
-        setName(nick);
-        changeNick(nick);
+        bot.setName(nick);
+        bot.changeNick(nick);
         sender.sendMessage("Setting nickname to " + nick);
         config.set("nick", nick);
     }
 
     public void changeLogin(CommandSender sender, String name) {
-        setLogin(name);
+        bot.setLogin(name);
         sender.sendMessage("Setting login to " + name);
         config.set("nick", name);
     }
@@ -185,10 +207,10 @@ public final class PIRCBot extends PircBot {
             autoConnect = config.getBoolean("autoconnect", true);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
-            setName(botNick);
-            setLogin(botLogin);
+            bot.setName(botNick);
+            bot.setLogin(botLogin);
             plugin.ircBots.put(botNick, this);
-            plugin.botConnected.put(botNick, this.isConnected());
+            plugin.botConnected.put(botNick, bot.isConnected());
             botServer = config.getString("server", "");
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
@@ -267,92 +289,13 @@ public final class PIRCBot extends PircBot {
         }
     }
 
-    private boolean isOp(String user, String channel) {
-        User users[] = getUsers(channel);
-        for (User u : users) {
-            if (u.isOp()) {
-                plugin.logDebug("User '" + user + "' prefix: " + u.getPrefix());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasVoice(String user, String channel) {
-        User users[] = getUsers(channel);
-        for (User u : users) {
-            if (u.hasVoice()) {
-                plugin.logDebug("User '" + user + "' prefix: " + u.getPrefix());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        String myChannel = channelKeys.get(channel);
-        if (muteList.get(myChannel).contains(sender)) {
-            return;
-        }
-        if (message.startsWith(commandPrefix) && (!message.startsWith(commandPrefix + commandPrefix))) {
-            String command = message.split(" ")[0].substring(1);
-            plugin.logDebug("IRC command detected: " + command);
-            if (commandMap.get(myChannel).containsKey(command)) {
-                String gameCommand = (String) commandMap.get(myChannel).get(command).get("game_command");
-                String modes = (String) commandMap.get(myChannel).get(command).get("modes");
-                boolean privateCommand = Boolean.parseBoolean(commandMap.get(myChannel).get(command).get("private"));
-                String target = channel;
-                if (privateCommand) {
-                    target = sender;
-                }
-                plugin.logDebug(target + ":" + gameCommand + ":" + modes + ":" + privateCommand);
-
-                boolean modeOkay = false;
-                if (modes.equals("*")) {
-                    modeOkay = true;
-                } else if (modes.contains("o")) {
-                    modeOkay = isOp(sender, channel);
-                } else if (modes.contains("v")) {
-                    modeOkay = hasVoice(sender, channel);
-                }
-
-                if (modeOkay) {
-                    if (gameCommand.equals("@list")) {
-                        sendMessage(target, plugin.getMCPlayers());
-                    } else if (gameCommand.equals("@uptime")) {
-                        sendMessage(target, plugin.getMCUptime());
-                    } else if (gameCommand.equals("@help")) {
-                        sendCommands(target);
-                    } else {
-                        plugin.getServer().dispatchCommand(new PIRCCommandSender(this, target, plugin), gameCommand);
-                    }
-                } else {
-                    plugin.logDebug("User '" + sender + "' mode not okay");
-                }
-            } else {
-                sendMessage(channel, "I'm sorry, I don't understand that command. For a list of commands type \"" + commandPrefix + "help\".");
-            }
-        } else {
-            if (enabledMessages.get(myChannel).contains("irc-chat")) {
-                plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircChat)
-                        .replaceAll("%NAME%", sender)
-                        .replaceAll("%MESSAGE%", Matcher.quoteReplacement(message))
-                        .replaceAll("%CHANNEL%", channel)), "irc.message.chat");
-            }
-        }
-    }
-
     public void gameChat(Player player, String message) {
-        if (!this.isConnected()) {
+        if (!bot.isConnected()) {
             return;
         }
         for (String channel : botChannels.values()) {
             if (enabledMessages.get(channelKeys.get(channel)).contains("game-chat")) {
-                this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
+                bot.sendMessage(channel, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -361,12 +304,12 @@ public final class PIRCBot extends PircBot {
     }
 
     public void gameJoin(Player player, String message) {
-        if (!this.isConnected()) {
+        if (!bot.isConnected()) {
             return;
         }
         for (String channel : botChannels.values()) {
             if (enabledMessages.get(channelKeys.get(channel)).contains("game-join")) {
-                this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameJoin)
+                bot.sendMessage(channel, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameJoin)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -375,12 +318,12 @@ public final class PIRCBot extends PircBot {
     }
 
     public void gameQuit(Player player, String message) {
-        if (!this.isConnected()) {
+        if (!bot.isConnected()) {
             return;
         }
         for (String channel : botChannels.values()) {
             if (enabledMessages.get(channelKeys.get(channel)).contains("game-quit")) {
-                this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameQuit)
+                bot.sendMessage(channel, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameQuit)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -389,12 +332,12 @@ public final class PIRCBot extends PircBot {
     }
 
     public void gameAction(Player player, String message) {
-        if (!this.isConnected()) {
+        if (!bot.isConnected()) {
             return;
         }
         for (String channel : botChannels.values()) {
             if (enabledMessages.get(channelKeys.get(channel)).contains("game-action")) {
-                this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameAction)
+                bot.sendMessage(channel, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameAction)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -403,12 +346,12 @@ public final class PIRCBot extends PircBot {
     }
 
     public void gameDeath(Player player, String message) {
-        if (!this.isConnected()) {
+        if (!bot.isConnected()) {
             return;
         }
         for (String channel : botChannels.values()) {
             if (enabledMessages.get(channelKeys.get(channel)).contains("game-death")) {
-                this.sendMessage(channel, plugin.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameDeath)
+                bot.sendMessage(channel, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameDeath)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
@@ -417,9 +360,13 @@ public final class PIRCBot extends PircBot {
     }
 
     public void changeTopic(String channel, String topic, CommandSender sender) {
-        setTopic(channel, topic);
-        config.set("channels." + channelKeys.get(channel) + ".topic", topic);
-        sender.sendMessage("IRC topic for " + channel + " changed to \"" + topic + "\"");
+        changeTopic(bot.getChannel(channel),topic,sender);
+    }
+    
+    public void changeTopic(Channel channel, String topic, CommandSender sender) {
+        bot.setTopic(channel, topic);
+        config.set("channels." + channelKeys.get(channel.getName()) + ".topic", topic);
+        sender.sendMessage("IRC topic for " + channel.getName() + " changed to \"" + topic + "\"");
     }
 
     public void setServer(CommandSender sender, String botServer) {
@@ -456,102 +403,12 @@ public final class PIRCBot extends PircBot {
         config.set("channels." + myChannel + ".ops", opsList.get(myChannel));
     }
 
-    @Override
-    public void onJoin(String channel, String sender, String login, String hostname) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        if (enabledMessages.get(channelKeys.get(channel)).contains("irc-join")) {
-            plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircJoin)
-                    .replaceAll("%NAME%", sender)
-                    .replaceAll("%CHANNEL%", channel)), "irc.message.join");
-        }
-        opFriends(channel, sender, login, hostname);
-        if (sender.equals(botNick)) {
-            plugin.logDebug("Setting channel modes: " + channel + " => " + channelModes.get(channelKeys.get(channel)));
-            setMode(channel, channelModes.get(channelKeys.get(channel)));
-        }
+    public void op(String channel, String nick) {
+        bot.op(bot.getChannel(channel), bot.getUser(nick));
     }
-
-    private void opFriends(String channel, String sender, String login, String hostname) {
-        if (sender.equals(botNick)) {
-            return;
-        }
-        String myChannel = channelKeys.get(channel);
-        for (String user : opsList.get(myChannel)) {
-            plugin.logDebug("OP => " + user);
-            //sender!*login@hostname
-            String mask[] = user.split("[\\!\\@]", 3);
-            if (mask.length == 3) {
-                String gUser = createRegexFromGlob(mask[0]);
-                String gLogin = createRegexFromGlob(mask[1]);
-                String gHost = createRegexFromGlob(mask[2]);
-                plugin.logDebug("Nick: " + sender + " =~ " + gUser + " = " + sender.matches(gUser));
-                plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
-                plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
-                if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
-                    plugin.logInfo("Auto-opping " + sender + " on " + channel);
-                    this.op(channel, sender);
-                    // leave after our first match
-                    return;
-                } else {
-                    plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
-                }
-            } else {
-                plugin.logInfo("Invalid op mask: " + user);
-            }
-        }
-    }
-
-    @Override
-    public void onAction(String sender, String login, String hostname, String channel, String action) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        if (enabledMessages.get(channelKeys.get(channel)).contains("irc-action")) {
-            plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircAction)
-                    .replaceAll("%NAME%", sender)
-                    .replaceAll("%MESSAGE%", action)
-                    .replaceAll("%CHANNEL%", channel)), "irc.message.action");
-        }
-    }
-
-    @Override
-    public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        if (enabledMessages.get(channelKeys.get(channel)).contains("irc-kick")) {
-            plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircKick)
-                    .replaceAll("%NAME%", recipientNick)
-                    .replaceAll("%REASON%", reason)
-                    .replaceAll("%KICKER%", kickerNick)
-                    .replaceAll("%CHANNEL%", channel)), "irc.message.kick");
-        }
-    }
-
-    @Override
-    public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        fixTopic(channel, topic, setBy);
-        if (changed) {
-            if (enabledMessages.get(channelKeys.get(channel)).contains("irc-topic")) {
-                plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircTopic)
-                        .replaceAll("%NAME%", setBy)
-                        .replaceAll("%TOPIC%", topic)
-                        .replaceAll("%CHANNEL%", channel)), "irc.message.topic");
-            }
-        }
-        if (topic == null) {
-            topic = "";
-        }
-        activeTopic.put(channelKeys.get(channel), topic);
-    }
-
-    public void fixTopic(String channel, String topic, String setBy) {
-        String myChannel = channelKeys.get(channel);
+    
+    public void fixTopic(Channel channel, String topic, String setBy) {
+        String myChannel = channelKeys.get(channel.getName());
         if (setBy.equals(botNick)) {
             config.set("channels." + myChannel + ".topic", topic);
             return;
@@ -562,87 +419,23 @@ public final class PIRCBot extends PircBot {
                 if (channelTopicProtected.containsKey(myChannel)) {
                     String myTopic = channelTopic.get(myChannel);
                     if (!topic.equals(myTopic)) {
-                        setTopic(channel, myTopic);
+                        bot.setTopic(channel, myTopic);
                     }
                 }
             }
         }
     }
 
-    @Override
-    public void onVersion(String sourceNick, String sourceLogin, String sourceHostname, String target) {
-        this.sendMessage(sourceNick,
-                "[Name: " + plugin.getDescription().getFullName() + "]"
-                + "[Desc: " + plugin.getDescription().getDescription() + "]"
-                + "[Version: " + plugin.getDescription().getVersion() + "]"
-                + "[URL: " + plugin.getDescription().getWebsite() + "]");
-    }
-
-    @Override
-    public void onDisconnect() {
-        plugin.botConnected.put(botNick, false);
-        plugin.getServer().broadcast("[" + botNick + "] Disconnected from IRC server.", "irc.message.disconnect");
-    }
-
     public void quit(CommandSender sender) {
-        sender.sendMessage("Disconnecting " + getName() + " from IRC server " + botServer);
+        sender.sendMessage("Disconnecting " + bot.getNick() + " from IRC server " + botServer);
         quit();
     }
 
     public void quit() {
         if (quitMessage.isEmpty()) {
-            quitServer();
+            bot.quitServer();
         } else {
-            quitServer(plugin.gameColorsToIrc(quitMessage));
-        }
-    }
-
-    @Override
-    public void onPart(String channel, String sender, String login, String hostname) {
-        if (!botChannels.containsValue(channel)) {
-            return;
-        }
-        if (enabledMessages.get(channelKeys.get(channel)).contains("irc-part")) {
-            plugin.getServer().broadcast(plugin.ircColorsToGame(Matcher.quoteReplacement(plugin.ircPart)
-                    .replaceAll("%NAME%", sender)
-                    .replaceAll("%CHANNEL%", channel)), "irc.message.part");
-        }
-    }
-
-    //@Override
-    //public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-    //    plugin.getServer().broadcast("[IRC] " + sourceNick + " has quit (Reason: " + reason + ")", "irc.message.quit");        
-    //}
-    @Override
-    public void onConnect() {
-        plugin.botConnected.put(botNick, true);
-        for (String channel : this.botChannels.keySet()) {
-            if (channelAutoJoin.containsKey(channel)) {
-                if (channelAutoJoin.get(channel)) {
-                    this.plugin.logInfo("Auto joining channel " + botChannels.get(channel));
-                    this.joinChannel(botChannels.get(channel));
-                } else {
-                    this.plugin.logInfo("Not auto joining channel " + botChannels.get(channel));
-                }
-            }
-        }
-    }
-
-    public void sendCommands(String channel) {
-        String myChannel = channelKeys.get(channel);
-        if (commandMap.containsKey(myChannel)) {
-
-            List<String> sortedCommands = new ArrayList<String>();
-            for (String command : commandMap.get(myChannel).keySet()) {
-                sortedCommands.add(command);
-            }
-            Collections.sort(sortedCommands, Collator.getInstance());
-
-            String commands = "";
-            for (String command : sortedCommands) {
-                commands = commands + ", " + command;
-            }
-            sendMessage(channel, "Valid commands:" + commands.substring(1));
+            bot.quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
         }
     }
 
@@ -659,19 +452,27 @@ public final class PIRCBot extends PircBot {
     }
 
     public void sendUserList(CommandSender sender, String channel) {
-        if (!botChannels.containsValue(channel)) {
+        sendUserList(sender, bot.getChannel(channel));
+    }
+    
+    public void sendUserList(CommandSender sender, Channel channel) {
+        if (!botChannels.containsValue(channel.getName())) {
             sender.sendMessage(ChatColor.RED + "Invalid channel name.");
             return;
         }
-        sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channel
-                + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + getName() + ChatColor.DARK_PURPLE + " ]-----");
-        if (!this.isConnected()) {
+        sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channel.getName()
+                + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + bot.getName() + ChatColor.DARK_PURPLE + " ]-----");
+        if (!bot.isConnected()) {
             sender.sendMessage(ChatColor.RED + " Not connected!");
             return;
         }
         List<String> channelUsers = new ArrayList<String>();
-        for (User user : this.getUsers(channel)) {
-            channelUsers.add(user.toString());
+        for (User user : bot.getUsers(channel)) {
+            String nick = user.getNick();
+            if (user.getChannelsOpIn().contains(channel)) {
+                nick = "@" + nick;
+            }
+            channelUsers.add(nick);
         }
         Collections.sort(channelUsers, Collator.getInstance());
         for (String userName : channelUsers) {
@@ -681,33 +482,7 @@ public final class PIRCBot extends PircBot {
 
     public void sendUserList(CommandSender sender) {
         for (String channel : botChannels.values()) {
-            sendUserList(sender, channel);
+            sendUserList(sender, bot.getChannel(channel));
         }
-    }
-
-    //http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
-    private static String createRegexFromGlob(String glob) {
-        String out = "^";
-        for (int i = 0; i < glob.length(); ++i) {
-            final char c = glob.charAt(i);
-            switch (c) {
-                case '*':
-                    out += ".*";
-                    break;
-                case '?':
-                    out += '.';
-                    break;
-                case '.':
-                    out += "\\.";
-                    break;
-                case '\\':
-                    out += "\\\\";
-                    break;
-                default:
-                    out += c;
-            }
-        }
-        out += '$';
-        return out;
     }
 }

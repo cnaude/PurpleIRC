@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.pircbotx.Channel;
 
 /**
  *
@@ -33,9 +34,9 @@ public class PIRCCommands implements CommandExecutor {
                 sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                         + ChatColor.DARK_PURPLE + "   ]-----");
                 for (PIRCBot ircBot : plugin.ircBots.values()) {
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.getName());
-                    for (String channel : ircBot.getChannels()) {
-                        sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel);
+                    sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.bot.getName());
+                    for (Channel channel : ircBot.bot.getChannels()) {
+                        sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
                     }
                 }
                 return true;
