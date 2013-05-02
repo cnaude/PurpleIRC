@@ -1,0 +1,31 @@
+# Global configuration for PurpleIRC
+# How often we check to see if a bot is connected to the IRC server. This is in server ticks (There 20 ticks in one sec).
+conn-check-interval: 1000
+# Chat messages support standard Bukkit color codes using '&#'. 
+# The following macro tokens are also supported.
+#  %WORLD% 
+#  %NAME% 
+#  %CHANNEL% 
+#  %MESSAGE%
+#  %KICKER%
+#  %TOPIC%
+#  %REASON%
+message-format:
+  game-action: '&f[%WORLD%&f] ***%NAME%&f %MESSAGE%'
+  game-chat: '&f[%WORLD%&f]<%NAME%&f> %MESSAGE%'  
+  game-death: '&f[%WORLD%&f] %MESSAGE%'  
+  game-kick: '&f[%WORLD%&f] %MESSAGE%'
+  game-join: '&f[%WORLD%&f] %MESSAGE%'
+  game-quit: '&f[%WORLD%&f] %MESSAGE%'
+  irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
+  irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
+  irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
+  irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  
+  irc-topic: '&f[&4IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
+# Prevent game colors from appearing in IRC
+strip-game-colors: false
+# Prevent IRC colors from appearing in game
+strip-irc-colors: false
+# Nothing to see here
+Debug: false
