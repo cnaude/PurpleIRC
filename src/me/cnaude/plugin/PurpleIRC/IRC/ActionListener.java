@@ -33,10 +33,10 @@ public class ActionListener extends ListenerAdapter {
         Channel channel = event.getChannel();
         User user = event.getUser();
         PircBotX bot = event.getBot();
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(ircBot.channelKeys.get(channel.getName())).contains("irc-action")) {
+        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-action")) {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircAction)
                     .replaceAll("%NAME%", user.getNick())
                     .replaceAll("%MESSAGE%", event.getAction())

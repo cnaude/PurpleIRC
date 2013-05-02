@@ -14,16 +14,14 @@ port: 6667
 autoconnect: 'false'
 # password - Server password if needed
 password: ''
-# channel-prefix - Channel name prefix
-channel-prefix: '#'
 # command-prefix - The bot will listen for commands that start with this
 command-prefix: .
 # quit-message - Message the bot will send when it quits the server
 quit-message: '&f[&5PurpleIRC&f] Good bye!'
 # channels - List the channels your bot will join here
 channels:
-  # channel name minus the prefix
-  minecraft-test:
+  # channel name must be surrounded by sing quotes to be YAML compliant
+  '#minecraft-test':
     # autojoin - Join the channel automatically on connect
     autojoin: true
     # modes - Channel modes to set

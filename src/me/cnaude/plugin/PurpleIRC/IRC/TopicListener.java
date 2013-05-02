@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.TopicEvent;
@@ -26,26 +25,24 @@ public class TopicListener extends ListenerAdapter {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-    
-
-    
+        
     @Override
     public void onTopic(TopicEvent event) {
         Channel channel = event.getChannel();
         User user = event.getUser();        
         
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
         ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
         if (event.isChanged()) {
-            if (ircBot.enabledMessages.get(ircBot.channelKeys.get(channel.getName())).contains("irc-topic")) {
+            if (ircBot.enabledMessages.get(channel.getName()).contains("irc-topic")) {
                 plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircTopic)
                         .replaceAll("%NAME%", user.getNick())
                         .replaceAll("%TOPIC%", event.getTopic())
                         .replaceAll("%CHANNEL%", channel.getName())), "irc.message.topic");
             }
         }
-        ircBot.activeTopic.put(ircBot.channelKeys.get(channel.getName()), event.getTopic());
+        ircBot.activeTopic.put(channel.getName(), event.getTopic());
     }
 }

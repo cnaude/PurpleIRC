@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.KickEvent;
@@ -33,10 +32,10 @@ public class KickListener extends ListenerAdapter {
         User recipient = event.getRecipient();
         User kicker = event.getSource();        
         
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(ircBot.channelKeys.get(channel.getName())).contains("irc-kick")) {
+        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-kick")) {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircKick)
                     .replaceAll("%NAME%", recipient.getNick())
                     .replaceAll("%REASON%", event.getReason())

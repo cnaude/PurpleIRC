@@ -33,10 +33,10 @@ public class JoinListener extends ListenerAdapter {
         User user = event.getUser();
         PircBotX bot = event.getBot();
         
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(ircBot.channelKeys.get(channel.getName())).contains("irc-join")) {
+        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-join")) {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircJoin)
                     .replaceAll("%NAME%", user.getNick())
                     .replaceAll("%CHANNEL%", channel.getName())), "irc.message.join");
@@ -44,8 +44,8 @@ public class JoinListener extends ListenerAdapter {
         opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
             plugin.logDebug("Setting channel modes: " + channel.getName() + " => " 
-                    + ircBot.channelModes.get(ircBot.channelKeys.get(channel.getName())));
-            bot.setMode(channel, ircBot.channelModes.get(ircBot.channelKeys.get(channel.getName())));
+                    + ircBot.channelModes.get(channel.getName()));
+            bot.setMode(channel, ircBot.channelModes.get(channel.getName()));
         }
     }
     
@@ -53,7 +53,7 @@ public class JoinListener extends ListenerAdapter {
         if (user.getNick().equals(ircBot.botNick)) {
             return;
         }
-        String myChannel = ircBot.channelKeys.get(channel.getName());
+        String myChannel = channel.getName();
         for (String opsUser : ircBot.opsList.get(myChannel)) {
             plugin.logDebug("OP => " + user);
             //sender!*login@hostname            

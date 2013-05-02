@@ -40,10 +40,10 @@ public class MessageListener extends ListenerAdapter {
         User user = event.getUser();
         PircBotX bot = event.getBot();
 
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        String myChannel = ircBot.channelKeys.get(channel.getName());
+        String myChannel = channel.getName();
         if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
             return;
         }

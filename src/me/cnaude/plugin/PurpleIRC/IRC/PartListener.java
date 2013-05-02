@@ -32,10 +32,10 @@ public class PartListener extends ListenerAdapter {
         Channel channel = event.getChannel();
         User user = event.getUser();        
         
-        if (!ircBot.botChannels.containsValue(channel.getName())) {
+        if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(ircBot.channelKeys.get(channel.getName())).contains("irc-part")) {
+        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-part")) {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircPart)
                     .replaceAll("%NAME%", user.getNick())
                     .replaceAll("%CHANNEL%", channel.getName())), "irc.message.part");

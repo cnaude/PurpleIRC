@@ -29,13 +29,13 @@ public class ConnectListener extends ListenerAdapter {
         PircBotX bot = event.getBot();
         
         plugin.botConnected.put(ircBot.botNick, true);
-        for (String channel : ircBot.botChannels.keySet()) {
-            if (ircBot.channelAutoJoin.containsKey(channel)) {
-                if (ircBot.channelAutoJoin.get(channel)) {
-                    plugin.logInfo("Auto joining channel " + ircBot.botChannels.get(channel));
-                    bot.joinChannel(ircBot.botChannels.get(channel));
+        for (String channelName : ircBot.botChannels) {
+            if (ircBot.channelAutoJoin.containsKey(channelName)) {
+                if (ircBot.channelAutoJoin.get(channelName)) {
+                    plugin.logInfo("Auto joining channel " + channelName);
+                    bot.joinChannel(channelName);
                 } else {
-                    plugin.logInfo("Not auto joining channel " + ircBot.botChannels.get(channel));
+                    plugin.logInfo("Not auto joining channel " + channelName);
                 }
             }
         }
