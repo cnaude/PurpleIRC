@@ -82,9 +82,8 @@ public class MessageListener extends ListenerAdapter {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
                 }
             } else {
-                event.respond("I'm sorry " + user.getNick() + " I can't do that. Type \""
-                        + ircBot.commandPrefix + "help\" for a list of commands I might respond to");
-
+                bot.sendMessage(channel, "I'm sorry " + user.getNick() + " I can't do that. Type \""
+                        + ircBot.commandPrefix + "help\" for a list of commands I might respond to.");
             }
         } else {
             if (ircBot.enabledMessages.get(myChannel).contains("irc-chat")) {

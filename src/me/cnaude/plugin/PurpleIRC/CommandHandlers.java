@@ -14,8 +14,9 @@ public class CommandHandlers implements CommandExecutor {
 
     private PIRCMain plugin;
     
-    private String invalidBotName = ChatColor.RED + "Invalid bot name: '" + ChatColor.WHITE + "%BOT%"
+    private String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
                                 + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots" + ChatColor.RED + "' to see valid bots.";
+    private String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";                                
 
     public CommandHandlers(PIRCMain plugin) {
         this.plugin = plugin;
@@ -59,11 +60,7 @@ public class CommandHandlers implements CommandExecutor {
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbot")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.reload(sender);
-                    }
-                } else if (args.length == 2) {
+                if (args.length == 2) {
                     String bot = args[1];
                     if (plugin.ircBots.containsKey(bot)) {
                         plugin.ircBots.get(bot).reload(sender);
@@ -71,16 +68,22 @@ public class CommandHandlers implements CommandExecutor {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot ([bot])");
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot [bot]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("reloadbots")) {
+                if (args.length == 1) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
+                        ircBot.reload(sender);
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbots");
                 }
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbotconfig")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.reloadConfig(sender);
-                    }
-                } else if (args.length == 2) {
+                if (args.length == 2) {
                     String bot = args[1];
                     if (plugin.ircBots.containsKey(bot)) {
                         plugin.ircBots.get(bot).reloadConfig(sender);
@@ -88,7 +91,17 @@ public class CommandHandlers implements CommandExecutor {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfig ([bot])");
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfig [bot]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("reloadbotconfigs")) {
+                if (args.length == 1) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
+                        ircBot.reloadConfig(sender);
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfigs");
                 }
                 return true;
             }
@@ -164,6 +177,28 @@ public class CommandHandlers implements CommandExecutor {
                 }
                 return true;
             }
+            if (subCmd.equalsIgnoreCase("listops")) {
+                if (args.length == 3) {
+                    String bot = args[1];
+                    String channelName = args[2];                    
+                    if (plugin.ircBots.containsKey(bot)) { 
+                        if (plugin.ircBots.get(bot).opsList.containsKey(channelName)) {
+                            sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName
+                                + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + "Auto Op Masks" + ChatColor.DARK_PURPLE + " ]-----");
+                            for (String userMask : plugin.ircBots.get(bot).opsList.get(channelName)) { 
+                                sender.sendMessage(" - " + userMask);
+                            }
+                        } else {
+                            sender.sendMessage(invalidChannel.replaceAll("%CHANNEL%", channelName));
+                        }
+                    } else {
+                        sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc listops [bot] [channel]");
+                }
+                return true;
+            }
             if (subCmd.equalsIgnoreCase("remove")) {
                 if (args.length == 4) {
                     String bot = args[1];
@@ -196,8 +231,12 @@ public class CommandHandlers implements CommandExecutor {
                 }
                 return true;
             }
-            if (subCmd.equalsIgnoreCase("savebot")) {
-                if (args.length >= 2) {
+            if (subCmd.equalsIgnoreCase("save")) {
+                if (args.length == 1) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
+                        ircBot.saveConfig(sender);                        
+                    }
+                } else if (args.length >= 2) {
                     String bot = args[1];                    
                     if (plugin.ircBots.containsKey(bot)) {                        
                         plugin.ircBots.get(bot).saveConfig(sender);                        
@@ -205,7 +244,7 @@ public class CommandHandlers implements CommandExecutor {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc save [bot]");
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc save ([bot])");
                 }
                 return true;
             }

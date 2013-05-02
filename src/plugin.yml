@@ -7,13 +7,17 @@ commands:
     irc:
         description: Various irc commands
         usage: |
-         /<command> reloadbot ([bot])- Reload the bot config and reconnect
-         /<command> reloadbotconfig ([bot]) - Reload bot config without reconnecting
+         /<command> save ([bot])- Save bot configuration(s) to disk
+         /<command> reloadbot [bot]- Reload the bot config and reconnect
+         /<command> reloadbots - Reload all bot configs and reconnect
+         /<command> reloadbotconfig [bot] - Reload bot config without reconnecting
+         /<command> reloadbotconfigs - Reload all bot configs without reconnecting
          /<command> connect ([bot]) - Connect to configured IRC server
          /<command> disconnect ([bot]) - Disconnect from configured IRC server
          /<command> listbots - List loaded bots
          /<command> list ([bot]) ([channel]) - List users in a channel
          /<command> op [bot] [channel] [user(s)] - Op user(s) in a channel
+         /<command> listops [bot] [channel] - List auto ops for a channel
          /<command> deop [bot] [channel] [user(s)] - DeOp user(s) in a channel
          /<command> addop [bot] [channel] [user mask] - Add user mask to op list.
          /<command> removeop [bot] [channel] [user mask] - Remove user mask from op list.
@@ -22,6 +26,8 @@ commands:
          /<command> unmute [bot] [channel] [user(s)] - Unmute user(s) in a channel.
          /<command> nick [bot] [nick] - Change the bot's IRC nickname.
          /<command> login [bot] [login] - Change the bot's IRC login.
+         /<command> join [bot] [channel] - Join a channel.
+         /<command> leave [bot] [channel] ([reason)]- Leave a channel.
 permissions:
   'irc.reload':
     description: Gives player access to the /irc reload.
