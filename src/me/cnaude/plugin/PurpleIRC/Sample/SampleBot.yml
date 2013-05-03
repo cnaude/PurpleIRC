@@ -22,6 +22,9 @@ quit-message: '&f[&5PurpleIRC&f] Good bye!'
 channels:
   # channel name must be surrounded by sing quotes to be YAML compliant
   '#minecraft-test':
+    # worlds we listen to for this channel
+    worlds:
+    - '*'
     # autojoin - Join the channel automatically on connect
     autojoin: true
     # modes - Channel modes to set

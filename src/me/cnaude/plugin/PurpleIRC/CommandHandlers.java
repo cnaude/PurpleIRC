@@ -130,13 +130,13 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 } else if (args.length >= 4) {
                     String bot = args[1];
-                    String channel = args[2];
+                    String channelName = args[2];
                     if (plugin.ircBots.containsKey(bot)) {
                         String topic = "";
                         for (int i = 3; i < args.length; i++) {
                             topic = topic + " " + args[i];
                         }
-                        plugin.ircBots.get(bot).changeTopic(channel, topic.substring(1), sender);
+                        plugin.ircBots.get(bot).changeTopic(channelName, topic.substring(1), sender);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
@@ -148,11 +148,11 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("op")) {
                 if (args.length >= 4) {
                     String bot = args[1];
-                    String channel = args[2];
+                    String channelName = args[2];
                     if (plugin.ircBots.containsKey(bot)) {
                         for (int i = 2; i < args.length; i++) {
                             // #channel, user
-                            plugin.ircBots.get(bot).op(channel, args[i]);
+                            plugin.ircBots.get(bot).op(channelName, args[i]);
                         }
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
@@ -165,10 +165,11 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("addop")) {
                 if (args.length == 4) {
                     String bot = args[1];
-                    String channel = args[2];                    
+                    String channelName = args[2];                    
                     if (plugin.ircBots.containsKey(bot)) {                        
                         // #channel, user
-                        plugin.ircBots.get(bot).addOp(channel, args[3], sender);                        
+                        plugin.ircBots.get(bot).addOp(channelName, args[3], sender);
+                        plugin.ircBots.get(bot).opFriends(channelName);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
