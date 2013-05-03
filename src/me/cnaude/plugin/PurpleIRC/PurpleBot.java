@@ -229,7 +229,7 @@ public final class PurpleBot {
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
 
                 channelPassword.put(channelName, config.getString("channels." + channelName + ".password", ""));
-                plugin.logDebug("  Password => " + channelTopic.get(channelName));
+                plugin.logDebug("  Password => " + channelPassword.get(channelName));
 
                 channelTopic.put(channelName, config.getString("channels." + channelName + ".topic", ""));
                 plugin.logDebug("  Topic => " + channelTopic.get(channelName));
@@ -544,15 +544,15 @@ public final class PurpleBot {
         if (user.getNick().equals(botNick)) {
             return;
         }
-        String myChannel = channel.getName();
-        for (String opsUser : opsList.get(myChannel)) {
+        String channelName = channel.getName();
+        for (String opsUser : opsList.get(channelName)) {
             plugin.logDebug("OP => " + user);
             //sender!*login@hostname            
             String mask[] = opsUser.split("[\\!\\@]", 3);
             if (mask.length == 3) {
-                String gUser = createRegexFromGlob(mask[0]);
-                String gLogin = createRegexFromGlob(mask[1]);
-                String gHost = createRegexFromGlob(mask[2]);
+                String gUser = plugin.regexGlobber.createRegexFromGlob(mask[0]);
+                String gLogin = plugin.regexGlobber.createRegexFromGlob(mask[1]);
+                String gHost = plugin.regexGlobber.createRegexFromGlob(mask[2]);
                 String sender = user.getNick();
                 String login = user.getLogin();
                 String hostname = user.getHostmask();
@@ -560,7 +560,7 @@ public final class PurpleBot {
                 plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
                 plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
                 if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
-                    plugin.logInfo("Auto-opping " + sender + " on " + channel);
+                    plugin.logInfo("Auto-opping " + sender + " on " + channelName);
                     user.getBot().op(channel, user);
                     // leave after our first match
                     return;
@@ -573,29 +573,5 @@ public final class PurpleBot {
         }
     }
     
-        //http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
-    private static String createRegexFromGlob(String glob) {
-        String out = "^";
-        for (int i = 0; i < glob.length(); ++i) {
-            final char c = glob.charAt(i);
-            switch (c) {
-                case '*':
-                    out += ".*";
-                    break;
-                case '?':
-                    out += '.';
-                    break;
-                case '.':
-                    out += "\\.";
-                    break;
-                case '\\':
-                    out += "\\\\";
-                    break;
-                default:
-                    out += c;
-            }
-        }
-        out += '$';
-        return out;
-    }
+    
 }

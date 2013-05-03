@@ -1,6 +1,7 @@
 package me.cnaude.plugin.PurpleIRC;
 
 import Utilities.ColorConverter;
+import Utilities.RegexGlobber;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -34,13 +35,16 @@ public class PIRCMain extends JavaPlugin {
     Long ircConnCheckInterval;
     BotWatcher botWatcher;
     public ColorConverter colorConverter;
+    public RegexGlobber regexGlobber;
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_RESET = "\u001B[0m";
     
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
 
     @Override
     public void onEnable() {
-        LOG_HEADER = "[" + this.getName() + "]";
+        LOG_HEADER = "[" + ANSI_PURPLE + this.getName() + ANSI_RESET + "]";
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
@@ -50,6 +54,7 @@ public class PIRCMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GameListeners(this), this);
         getCommand("irc").setExecutor(new CommandHandlers(this));
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
+        regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
         botWatcher = new BotWatcher(this);
