@@ -145,6 +145,24 @@ public class CommandHandlers implements CommandExecutor {
                 }
                 return true;
             }
+            if (subCmd.equalsIgnoreCase("say")) {
+                if (args.length >= 4) {
+                    String bot = args[1];
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        String msg = "";
+                        for (int i = 3; i < args.length; i++) {
+                            msg = msg + " " + args[i];
+                        }
+                        plugin.ircBots.get(bot).bot.sendMessage(channelName, msg.substring(1));
+                    } else {
+                        sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc say [bot] [channel] [message]");
+                }
+                return true;
+            }
             if (subCmd.equalsIgnoreCase("op")) {
                 if (args.length >= 4) {
                     String bot = args[1];

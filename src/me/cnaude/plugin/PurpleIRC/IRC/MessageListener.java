@@ -74,7 +74,7 @@ public class MessageListener extends ListenerAdapter {
                     } else if (gameCommand.equals("@uptime")) {
                         bot.sendMessage(target, plugin.getMCPlayers());
                     } else if (gameCommand.equals("@help")) {
-                        bot.sendMessage(user, getCommands(ircBot.commandMap,myChannel));                     
+                        bot.sendMessage(target, getCommands(ircBot.commandMap,myChannel));                     
                     } else {
                         plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }

@@ -34,6 +34,9 @@ import org.pircbotx.User;
 public final class PurpleBot {
 
     public PircBotX bot;
+    public final PIRCMain plugin;
+    private File file;
+    private YamlConfiguration config;
     public boolean autoConnect;
     public String botServer;
     public String botNick;
@@ -41,11 +44,7 @@ public final class PurpleBot {
     public String botServerPass;
     public int botServerPort;    
     public String commandPrefix;
-    public String quitMessage;
-    public final PIRCMain plugin;
-    private File file;
-    private YamlConfiguration config;
-
+    public String quitMessage;    
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();    
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
@@ -302,7 +301,7 @@ public final class PurpleBot {
             }                
         } return false;
     }
-
+    
     public void gameChat(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -312,10 +311,11 @@ public final class PurpleBot {
                 return;
             }
             if (enabledMessages.get(channelName).contains("game-chat")) {
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
+                String msg = plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
+                        .replaceAll("%WORLD%", player.getWorld().getName()));
+                bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,msg));
             }
         }
     }

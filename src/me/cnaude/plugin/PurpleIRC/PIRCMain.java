@@ -36,15 +36,13 @@ public class PIRCMain extends JavaPlugin {
     BotWatcher botWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_RESET = "\u001B[0m";
     
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
 
     @Override
     public void onEnable() {
-        LOG_HEADER = "[" + ANSI_PURPLE + this.getName() + ANSI_RESET + "]";
+        LOG_HEADER = "[" + this.getName() + "]";
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
@@ -62,6 +60,7 @@ public class PIRCMain extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        botWatcher.cancel();
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
         } else {
@@ -71,7 +70,7 @@ public class PIRCMain extends JavaPlugin {
                 ircBot.quit();
             }
         }
-        botWatcher.cancel();
+        
     }
 
     private void loadConfig() {
