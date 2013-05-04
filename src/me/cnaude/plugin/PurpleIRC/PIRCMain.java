@@ -107,20 +107,18 @@ public class PIRCMain extends JavaPlugin {
     }
 
     private void createSampleBot() {
-        File file = new File(pluginFolder + "/" + sampleFileName);
-        if (!file.exists()) {
-            try {
-                InputStream in = PIRCMain.class.getResourceAsStream("/me/cnaude/plugin/PurpleIRC/Sample/" + sampleFileName);
-                byte[] buf = new byte[1024];
-                int len;
-                OutputStream out = new FileOutputStream(file);
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-            } catch (Exception ex) {
-                logError(ex.getMessage());
+        File file = new File(pluginFolder + "/" + sampleFileName);       
+        try {
+            InputStream in = PIRCMain.class.getResourceAsStream("/me/cnaude/plugin/PurpleIRC/Sample/" + sampleFileName);
+            byte[] buf = new byte[1024];
+            int len;
+            OutputStream out = new FileOutputStream(file);
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
             }
+            out.close();
+        } catch (Exception ex) {
+            logError(ex.getMessage());
         }
     }
 

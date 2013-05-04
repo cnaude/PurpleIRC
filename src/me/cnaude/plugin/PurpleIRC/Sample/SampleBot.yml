@@ -62,12 +62,13 @@ channels:
     #  @help - print out of all of the commands
     #  @uptime - print the uptime of the game server
     # The modes can be '*', or 'o', or 'ov'.
+    # If game_command can optionally accept arguments via %ARGS%
     # If a command is private then the result is sent to the player privately.
     commands:
       list:
         modes: '*'
         private: false
-        game_command: '@list'
+        game_command: '@list'        
       help:
         modes: '*'
         private: false
@@ -75,17 +76,20 @@ channels:
       uptime:
         modes: '*'
         private: false
-        game_command: '@uptime'
+        game_command: '@uptime'        
       version:
         modes: '*'
         private: false
-        game_command: version
+        game_command: version        
       lag:
         modes: '*'
         private: false
-        game_command: lag
+        game_command: lag        
       lagmem:
         modes: '*'
         private: true
-        game_command: lagmem
-
+        game_command: lagmem        
+      gamemode:
+        modes: 'o'
+        private: false
+        game_command: 'gamemode %ARGS%'

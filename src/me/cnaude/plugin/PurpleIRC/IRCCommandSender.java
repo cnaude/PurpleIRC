@@ -46,7 +46,7 @@ public class IRCCommandSender implements CommandSender {
     
     @Override 
     public String getName() {
-        return bot.getName();                
+        return "";                
     }
     
     @Override

@@ -49,10 +49,14 @@ public class MessageListener extends ListenerAdapter {
         }
         if (message.startsWith(ircBot.commandPrefix) && (!message.startsWith(ircBot.commandPrefix + ircBot.commandPrefix))) {
             String command = message.split(" ")[0].substring(1);
+            String commandArgs = null;
+            if (message.contains(" ")) {
+                commandArgs = message.split(" ",2)[1];
+            }
             plugin.logDebug("IRC command detected: " + command);
             if (ircBot.commandMap.get(myChannel).containsKey(command)) {
                 String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
-                String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
+                String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");                
                 boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
                 plugin.logDebug(gameCommand + ":" + modes + ":" + privateCommand);
                 String target = channel.getName();
@@ -72,10 +76,14 @@ public class MessageListener extends ListenerAdapter {
                     if (gameCommand.equals("@list")) {
                         bot.sendMessage(target, plugin.getMCPlayers());                        
                     } else if (gameCommand.equals("@uptime")) {
-                        bot.sendMessage(target, plugin.getMCPlayers());
+                        bot.sendMessage(target, plugin.getMCUptime());
                     } else if (gameCommand.equals("@help")) {
                         bot.sendMessage(target, getCommands(ircBot.commandMap,myChannel));                     
                     } else {
+                        if (gameCommand.contains("%ARGS%") && commandArgs != null) {
+                            gameCommand = gameCommand.replaceAll("%ARGS%", commandArgs);
+                        }
+                        plugin.logDebug("GC " + gameCommand);
                         plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
                 } else {
