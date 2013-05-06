@@ -38,6 +38,7 @@ channels:
     # enabled-messages - These are the message names as defined in main 
     # config.yml. Remove or comment the messages you don't want.    
     enabled-messages:
+    - console-chat
     - game-action
     - game-chat
     - game-death
