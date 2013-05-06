@@ -1,5 +1,8 @@
 package me.cnaude.plugin.PurpleIRC;
 
+import com.gmail.nossr50.api.ChatAPI;
+import com.gmail.nossr50.api.PartyAPI;
+import com.massivecraft.factions.FPlayer;
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -242,7 +245,9 @@ public final class PurpleBot {
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
                 for (String channelOper : config.getStringList("channels." + channelName + ".ops")) {
-                    cOps.add(channelOper);
+                    if (!cOps.contains(channelOper)) {
+                        cOps.add(channelOper);
+                    }
                     plugin.logDebug("  Channel Op => " + channelOper);
                 }
                 opsList.put(channelName, cOps);
@@ -250,7 +255,9 @@ public final class PurpleBot {
                 // build mute list
                 Collection<String> m = new ArrayList<String>();
                 for (String mutedUser : config.getStringList("channels." + channelName + ".muted")) {
-                    m.add(mutedUser);
+                    if (!m.contains(mutedUser)) {
+                        m.add(mutedUser);
+                    }
                     plugin.logDebug("  Channel Mute => " + mutedUser);
                 }
                 muteList.put(channelName, m);
@@ -258,7 +265,9 @@ public final class PurpleBot {
                 // build valid chat list
                 Collection<String> c = new ArrayList<String>();
                 for (String validChat : config.getStringList("channels." + channelName + ".enabled-messages")) {
-                    c.add(validChat);
+                    if (!c.contains(validChat)) {
+                        c.add(validChat);
+                    }
                     plugin.logDebug("  Enabled Message => " + validChat);
                 }
                 enabledMessages.put(channelName, c);
@@ -266,7 +275,9 @@ public final class PurpleBot {
                 // build valid world list
                 Collection<String> w = new ArrayList<String>();
                 for (String validWorld : config.getStringList("channels." + channelName + ".worlds")) {
-                    w.add(validWorld);
+                    if (!w.contains(validWorld)) {
+                        w.add(validWorld);
+                    }
                     plugin.logDebug("  Enabled World => " + validWorld);
                 }
                 worldList.put(channelName, w);
@@ -310,14 +321,49 @@ public final class PurpleBot {
             if (!isPlayerInValidWorld(player, channelName)) {
                 return;
             }
-            if (enabledMessages.get(channelName).contains("game-chat")) {
-                String msg = plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameChat)
+            if (plugin.isMcMMOEnabled()) {
+                if (ChatAPI.isUsingAdminChat(player)) {
+                    if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
+                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.mcMMOAdminChat, message)));
+                        return;
+                    } else {
+                        plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
+                        return;
+                    }
+                } else if (ChatAPI.isUsingPartyChat(player)) {
+                    if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
+                        String partyName = PartyAPI.getPartyName(player);
+                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.mcMMOPartyChat, message, partyName))); 
+                        return;
+                    } else {
+                        plugin.logDebug("Player " + player.getName() + " is in mcMMO PartyChat but mcmmo-party-chat is disabled."); 
+                        return;
+                    }                    
+                }   
+            }
+            /*
+            if (plugin.isFactionsEnabled()) {
+                FPlayer fPlayer = com.massivecraft.factions.FPlayers.i.get(player);                
+            }*/
+            if (enabledMessages.get(channelName).contains("game-chat")) {                   
+                bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.gameChat, message)));
+            }
+        }
+    }
+    
+    private String chatTokenizer(Player player, String template, String message) {
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
                         .replaceAll("%NAME%", player.getName())
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getWorld().getName()));
-                bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,msg));
-            }
-        }
+    }
+    
+    private String chatTokenizer(Player player, String template, String message, String partyName) {
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
+                        .replaceAll("%NAME%", player.getName())
+                        .replaceAll("%MESSAGE%", message)
+                        .replaceAll("%PARTY%", partyName)
+                        .replaceAll("%WORLD%", player.getWorld().getName()));
     }
 
     public void gameJoin(Player player, String message) {

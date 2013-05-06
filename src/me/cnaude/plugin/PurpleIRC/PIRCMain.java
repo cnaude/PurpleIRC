@@ -1,7 +1,7 @@
 package me.cnaude.plugin.PurpleIRC;
 
-import Utilities.ColorConverter;
-import Utilities.RegexGlobber;
+import me.cnaude.plugin.PurpleIRC.Utilities.ColorConverter;
+import me.cnaude.plugin.PurpleIRC.Utilities.RegexGlobber;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -28,6 +28,7 @@ public class PIRCMain extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
+    public String mcMMOAdminChat, mcMMOPartyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     private boolean debugEnabled;
     private boolean stripGameColors;
@@ -39,7 +40,7 @@ public class PIRCMain extends JavaPlugin {
     
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
-
+    
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
@@ -47,7 +48,9 @@ public class PIRCMain extends JavaPlugin {
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
         createConfig();
-        getConfig();
+        //getConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
         loadConfig();
         getServer().getPluginManager().registerEvents(new GameListeners(this), this);
         getCommand("irc").setExecutor(new CommandHandlers(this));
@@ -55,7 +58,7 @@ public class PIRCMain extends JavaPlugin {
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
-        botWatcher = new BotWatcher(this);
+        botWatcher = new BotWatcher(this);        
     }
 
     @Override
@@ -79,6 +82,8 @@ public class PIRCMain extends JavaPlugin {
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
+        mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
+        mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
         gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
@@ -104,6 +109,14 @@ public class PIRCMain extends JavaPlugin {
                 }
             }
         }
+    }
+    
+    public boolean isMcMMOEnabled() {
+        return(getServer().getPluginManager().getPlugin("mcMMO") != null);        
+    }
+    
+    public boolean isFactionsEnabled() {
+        return(getServer().getPluginManager().getPlugin("Factions") != null);        
     }
 
     private void createSampleBot() {

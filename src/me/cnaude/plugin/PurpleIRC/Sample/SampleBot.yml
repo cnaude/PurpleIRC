@@ -36,7 +36,7 @@ channels:
     # topic-protect - Prevent others from changing the topic
     topic-protect: true
     # enabled-messages - These are the message names as defined in main 
-    # config.yml. Remove or comment the messages you don't want.
+    # config.yml. Remove or comment the messages you don't want.    
     enabled-messages:
     - game-action
     - game-chat
@@ -50,6 +50,8 @@ channels:
     - irc-kick
     - irc-part
     - irc-topic
+    - mcmmo-admin-chat
+    - mcmmo-party-chat
     # ops - IRC hostname mask styled ops list
     ops:    
     - '*!*sarah@example.com'

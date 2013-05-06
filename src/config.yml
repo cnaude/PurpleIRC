@@ -13,6 +13,8 @@ conn-check-interval: 1000
 message-format:
   game-action: '&f[%WORLD%&f] ***%NAME%&f %MESSAGE%'
   game-chat: '&f[%WORLD%&f]<%NAME%&f> %MESSAGE%'  
+  mcmmo-admin-chat: '&f[admin:%WORLD%&f]<%NAME%&f> %MESSAGE%'    
+  mcmmo-party-chat: '&f[party:%PARTY%&f]<%NAME%&f> %MESSAGE%'  
   game-death: '&f[%WORLD%&f] %MESSAGE%'  
   game-kick: '&f[%WORLD%&f] %MESSAGE%'
   game-join: '&f[%WORLD%&f] %MESSAGE%'

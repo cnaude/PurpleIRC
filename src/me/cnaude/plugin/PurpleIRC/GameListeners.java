@@ -22,9 +22,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class GameListeners implements Listener {
 
     private final PIRCMain plugin;
+    
+    private String lastMessage;
+    private String lastChatter;
+    private int messageCounter;
+    private int chatterCounter;
 
     public GameListeners(PIRCMain plugin) {
         this.plugin = plugin;
+        lastMessage = "";
+        messageCounter = 0;
+        chatterCounter = 0;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -34,7 +42,35 @@ public class GameListeners implements Listener {
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {                                       
+                if (plugin.botConnected.get(botName)) { 
+                    String pName = event.getPlayer().getName();
+                    String message = pName + ":" + event.getMessage();                    
+                    if (message.equals(lastMessage)) {
+                        messageCounter++;
+                    } else {
+                        messageCounter = 0;
+                    }
+                    lastMessage = message;
+                    plugin.logDebug(String.format("[%d] Caught Message: %s", messageCounter,message));
+                    if (messageCounter >= 5) {                        
+                        plugin.logInfo("Cancelling chat message from " + event.getPlayer().getName() + " due to spamming.");
+                        event.setCancelled(true);
+                        return;
+                    } 
+                    
+                    if (pName.equals(lastChatter)) {
+                        chatterCounter++;
+                    } else {
+                        chatterCounter = 0;
+                    }
+                    lastChatter = pName;
+                    plugin.logDebug(String.format("[%d] Chat Counter: %s", chatterCounter,pName));
+                    if (chatterCounter >= 8) {                        
+                        plugin.logInfo("Cancelling chat message from " + event.getPlayer().getName() + " due to spamming.");
+                        event.setCancelled(true);
+                        return;
+                    } 
+                    
                     plugin.ircBots.get(botName).gameChat(event.getPlayer(), Matcher.quoteReplacement(event.getMessage()));
                 } 
             }

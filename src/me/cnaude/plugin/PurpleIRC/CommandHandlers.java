@@ -13,10 +13,11 @@ import org.pircbotx.Channel;
 public class CommandHandlers implements CommandExecutor {
 
     private PIRCMain plugin;
-    
-    private String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
-                                + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots" + ChatColor.RED + "' to see valid bots.";
-    private String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";                                
+    private final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
+            + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
+            + ChatColor.RED + "' to see valid bots.";
+    private final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
+    private final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
     public CommandHandlers(PIRCMain plugin) {
         this.plugin = plugin;
@@ -24,7 +25,7 @@ public class CommandHandlers implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        String noPermission = ChatColor.RED + "You do not have permission to use this command.";
+        
         if (args.length >= 1) {
             String subCmd = args[0].toLowerCase();
             if (!sender.hasPermission("irc." + subCmd)) {
@@ -41,7 +42,7 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 }
                 return true;
-            }            
+            }
             if (subCmd.equalsIgnoreCase("connect")) {
                 if (args.length == 1) {
                     for (PurpleBot ircBot : plugin.ircBots.values()) {
@@ -183,8 +184,8 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("addop")) {
                 if (args.length == 4) {
                     String bot = args[1];
-                    String channelName = args[2];                    
-                    if (plugin.ircBots.containsKey(bot)) {                        
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
                         // #channel, user
                         plugin.ircBots.get(bot).addOp(channelName, args[3], sender);
                         plugin.ircBots.get(bot).opFriends(channelName);
@@ -199,12 +200,12 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("listops")) {
                 if (args.length == 3) {
                     String bot = args[1];
-                    String channelName = args[2];                    
-                    if (plugin.ircBots.containsKey(bot)) { 
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
                         if (plugin.ircBots.get(bot).opsList.containsKey(channelName)) {
                             sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName
-                                + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + "Auto Op Masks" + ChatColor.DARK_PURPLE + " ]-----");
-                            for (String userMask : plugin.ircBots.get(bot).opsList.get(channelName)) { 
+                                    + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + "Auto Op Masks" + ChatColor.DARK_PURPLE + " ]-----");
+                            for (String userMask : plugin.ircBots.get(bot).opsList.get(channelName)) {
                                 sender.sendMessage(" - " + userMask);
                             }
                         } else {
@@ -221,10 +222,10 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("remove")) {
                 if (args.length == 4) {
                     String bot = args[1];
-                    String channel = args[2];                    
-                    if (plugin.ircBots.containsKey(bot)) {                        
+                    String channel = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
                         // #channel, user
-                        plugin.ircBots.get(bot).removeOp(channel, args[3], sender);                        
+                        plugin.ircBots.get(bot).removeOp(channel, args[3], sender);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
@@ -253,12 +254,12 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("save")) {
                 if (args.length == 1) {
                     for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.saveConfig(sender);                        
+                        ircBot.saveConfig(sender);
                     }
                 } else if (args.length >= 2) {
-                    String bot = args[1];                    
-                    if (plugin.ircBots.containsKey(bot)) {                        
-                        plugin.ircBots.get(bot).saveConfig(sender);                        
+                    String bot = args[1];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        plugin.ircBots.get(bot).saveConfig(sender);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
@@ -271,11 +272,11 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length >= 3) {
                     String bot = args[1];
                     String server = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {         
+                    if (plugin.ircBots.containsKey(bot)) {
                         if (args.length == 3) {
-                            plugin.ircBots.get(bot).setServer(sender, server);                        
-                        } else if (args.length == 4) {                            
-                            plugin.ircBots.get(bot).setServer(sender, server, Boolean.parseBoolean(args[3]));                        
+                            plugin.ircBots.get(bot).setServer(sender, server);
+                        } else if (args.length == 4) {
+                            plugin.ircBots.get(bot).setServer(sender, server, Boolean.parseBoolean(args[3]));
                         }
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
@@ -289,16 +290,16 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length == 3) {
                     String bot = args[1];
                     String nick = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {         
+                    if (plugin.ircBots.containsKey(bot)) {
                         if (plugin.ircBots.containsKey(nick)) {
                             sender.sendMessage(ChatColor.RED + "There is already a bot with that nick!");
                             return true;
                         } else {
                             plugin.ircBots.get(bot).changeNick(sender, nick);
                             PurpleBot ircBot = plugin.ircBots.remove(bot);
-                            plugin.ircBots.put(nick, ircBot);                            
+                            plugin.ircBots.put(nick, ircBot);
                             boolean isConnected = plugin.botConnected.remove(bot);
-                            plugin.botConnected.put(nick,isConnected);
+                            plugin.botConnected.put(nick, isConnected);
                         }
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
@@ -312,8 +313,8 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length == 3) {
                     String bot = args[1];
                     String login = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {         
-                        plugin.ircBots.get(bot).changeLogin(sender, login);                                               
+                    if (plugin.ircBots.containsKey(bot)) {
+                        plugin.ircBots.get(bot).changeLogin(sender, login);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
@@ -341,9 +342,8 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 }
                 return true;
-            }            
+            }
         }
         return false;
-    } 
+    }
 }
-
