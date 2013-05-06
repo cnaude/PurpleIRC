@@ -32,7 +32,7 @@ public class ColorConverter {
             return ChatColor.stripColor(message);
         } else {
             String newMessage = message;
-            for (ChatColor gameColor : ircColorMap.keySet()) {
+            for (ChatColor gameColor : ircColorMap.keySet()) {                
                 newMessage = Matcher.quoteReplacement(newMessage).replaceAll(gameColor.toString(), ircColorMap.get(gameColor));
             }
             // We return the message with the remaining MC color codes stripped out

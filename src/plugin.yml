@@ -1,8 +1,9 @@
 name: PurpleIRC
-version: 0.0.7
+version: 0.0.8
 description: Bukkit IRC Bot
 author: cnaude
 main: me.cnaude.plugin.PurpleIRC.PIRCMain
+softdepend: [Vault]
 commands:
     irc:
         description: Various irc commands

@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -39,7 +41,7 @@ public class PIRCMain extends JavaPlugin {
     public RegexGlobber regexGlobber;    
     
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
-    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();        
     
     @Override
     public void onEnable() {
@@ -53,14 +55,14 @@ public class PIRCMain extends JavaPlugin {
         saveConfig();
         loadConfig();
         getServer().getPluginManager().registerEvents(new GameListeners(this), this);
-        getCommand("irc").setExecutor(new CommandHandlers(this));
+        getCommand("irc").setExecutor(new CommandHandlers(this));        
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
-        botWatcher = new BotWatcher(this);        
+        botWatcher = new BotWatcher(this);     
     }
-
+    
     @Override
     public void onDisable() {
         botWatcher.cancel();
@@ -80,6 +82,8 @@ public class PIRCMain extends JavaPlugin {
         debugEnabled = getConfig().getBoolean("Debug");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
+        logDebug("strip-game-colors: " + stripGameColors);
+        logDebug("strip-irc-colors: " + stripIRCColors);
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
@@ -196,4 +200,14 @@ public class PIRCMain extends JavaPlugin {
         return msg;
     }
 
+    public String getPlayerGroup(Player player) {
+        String groupName = "";
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+            if (permissionProvider != null) {
+                groupName = permissionProvider.getProvider().getPrimaryGroup(player);
+            }            
+        }
+        return groupName;
+    }
 }

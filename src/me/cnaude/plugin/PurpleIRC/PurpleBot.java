@@ -29,7 +29,6 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
-
 /**
  *
  * @author Chris Naude
@@ -45,18 +44,18 @@ public final class PurpleBot {
     public String botNick;
     public String botLogin;
     public String botServerPass;
-    public int botServerPort;    
+    public int botServerPort;
     public String commandPrefix;
-    public String quitMessage;    
+    public String quitMessage;
     public ArrayList<String> botChannels = new ArrayList<String>();
-    public HashMap<String, String> channelPassword = new HashMap<String, String>();    
+    public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
     public HashMap<String, String> activeTopic = new HashMap<String, String>();
     public HashMap<String, String> channelModes = new HashMap<String, String>();
     public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
-    public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();    
+    public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     //          channel     command option     value
@@ -72,7 +71,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new MessageListener(plugin, this));
         bot.getListenerManager().addListener(new PartListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
-        bot.getListenerManager().addListener(new VersionListener(plugin));        
+        bot.getListenerManager().addListener(new VersionListener(plugin));
         this.plugin = plugin;
         this.file = file;
         config = new YamlConfiguration();
@@ -107,7 +106,7 @@ public final class PurpleBot {
         });
     }
 
-    public void mute(String channelName, CommandSender sender, String user) {        
+    public void mute(String channelName, CommandSender sender, String user) {
         if (muteList.get(channelName).contains(user)) {
             sender.sendMessage("User '" + user + "' is already muted.");
         } else {
@@ -115,10 +114,10 @@ public final class PurpleBot {
             muteList.get(channelName).add(user);
             saveConfig();
         }
-        
+
     }
 
-    public void unMute(String channelName, CommandSender sender, String user) {        
+    public void unMute(String channelName, CommandSender sender, String user) {
         if (muteList.get(channelName).contains(user)) {
             sender.sendMessage("User '" + user + "' is no longer muted.");
             muteList.get(channelName).remove(user);
@@ -213,7 +212,7 @@ public final class PurpleBot {
             plugin.botConnected.put(botNick, bot.isConnected());
             botServer = config.getString("server", "");
             botServerPort = config.getInt("port");
-            botServerPass = config.getString("password", "");            
+            botServerPass = config.getString("password", "");
             commandPrefix = config.getString("command-prefix", ".");
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
@@ -225,7 +224,7 @@ public final class PurpleBot {
             plugin.logDebug("Quit Message => " + quitMessage);
             for (String channelName : config.getConfigurationSection("channels").getKeys(false)) {
                 plugin.logDebug("Channel  => " + channelName);
-                botChannels.add(channelName);                
+                botChannels.add(channelName);
 
                 channelAutoJoin.put(channelName, config.getBoolean("channels." + channelName + ".autojoin", true));
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
@@ -281,7 +280,7 @@ public final class PurpleBot {
                     plugin.logDebug("  Enabled World => " + validWorld);
                 }
                 worldList.put(channelName, w);
-                
+
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
                 for (String command : config.getConfigurationSection("channels." + channelName + ".commands").getKeys(false)) {
@@ -301,22 +300,23 @@ public final class PurpleBot {
             plugin.logError(ex.getMessage());
         }
     }
-    
-    private boolean isPlayerInValidWorld(Player player, String channelName) {        
+
+    private boolean isPlayerInValidWorld(Player player, String channelName) {
         if (worldList.containsKey(channelName)) {
             if (worldList.get(channelName).contains("*")) {
                 return true;
             }
             if (worldList.get(channelName).contains(player.getWorld().getName())) {
                 return true;
-            }                
-        } return false;
+            }
+        }
+        return false;
     }
-    
+
     public void gameChat(Player player, String message) {
         if (!bot.isConnected()) {
             return;
-        }        
+        }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 return;
@@ -324,7 +324,7 @@ public final class PurpleBot {
             if (plugin.isMcMMOEnabled()) {
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
-                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.mcMMOAdminChat, message)));
+                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.mcMMOAdminChat, message)));
                         return;
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
@@ -333,53 +333,55 @@ public final class PurpleBot {
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
-                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.mcMMOPartyChat, message, partyName))); 
+                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.mcMMOPartyChat, message, partyName)));
                         return;
                     } else {
-                        plugin.logDebug("Player " + player.getName() + " is in mcMMO PartyChat but mcmmo-party-chat is disabled."); 
+                        plugin.logDebug("Player " + player.getName() + " is in mcMMO PartyChat but mcmmo-party-chat is disabled.");
                         return;
-                    }                    
-                }   
+                    }
+                }
             }
             /*
-            if (plugin.isFactionsEnabled()) {
-                FPlayer fPlayer = com.massivecraft.factions.FPlayers.i.get(player);                
-            }*/
-            if (enabledMessages.get(channelName).contains("game-chat")) {                   
-                bot.sendRawLineNow(String.format("PRIVMSG %s :%s",channelName,chatTokenizer(player, plugin.gameChat, message)));
+             if (plugin.isFactionsEnabled()) {
+             FPlayer fPlayer = com.massivecraft.factions.FPlayers.i.get(player);                
+             }*/
+            if (enabledMessages.get(channelName).contains("game-chat")) {
+                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.gameChat, message)));
             }
         }
     }
-    
+
     public void consoleChat(String message) {
         if (!bot.isConnected()) {
             return;
-        }        
-        for (String channelName : botChannels) {            
-            if (enabledMessages.get(channelName).contains("console-chat")) {            
-                bot.sendMessage(channelName,chatTokenizer(plugin.consoleChat, message));
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains("console-chat")) {
+                bot.sendMessage(channelName, chatTokenizer(plugin.consoleChat, message));
             }
         }
     }
-    
+
     private String chatTokenizer(Player player, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getWorld().getName()));
+                .replaceAll("%NAME%", player.getName())
+                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
+                .replaceAll("%MESSAGE%", message)
+                .replaceAll("%WORLD%", player.getWorld().getName()));
     }
-    
+
     private String chatTokenizer(Player player, String template, String message, String partyName) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%PARTY%", partyName)
-                        .replaceAll("%WORLD%", player.getWorld().getName()));
+                .replaceAll("%NAME%", player.getName())
+                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
+                .replaceAll("%MESSAGE%", message)
+                .replaceAll("%PARTY%", partyName)
+                .replaceAll("%WORLD%", player.getWorld().getName()));
     }
-    
+
     private String chatTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                        .replaceAll("%MESSAGE%", message));
+                .replaceAll("%MESSAGE%", message));
     }
 
     public void gameJoin(Player player, String message) {
@@ -393,6 +395,7 @@ public final class PurpleBot {
                 }
                 bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameJoin)
                         .replaceAll("%NAME%", player.getName())
+                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
             }
@@ -406,10 +409,11 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("game-quit")) {
                 if (!isPlayerInValidWorld(player, channelName)) {
-                return;
-            }
+                    return;
+                }
                 bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameQuit)
                         .replaceAll("%NAME%", player.getName())
+                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
             }
@@ -423,10 +427,11 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("game-action")) {
                 if (!isPlayerInValidWorld(player, channelName)) {
-                return;
-            }
+                    return;
+                }
                 bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameAction)
                         .replaceAll("%NAME%", player.getName())
+                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
             }
@@ -440,10 +445,11 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("game-death")) {
                 if (!isPlayerInValidWorld(player, channelName)) {
-                return;
-            }
+                    return;
+                }
                 bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameDeath)
                         .replaceAll("%NAME%", player.getName())
+                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
             }
@@ -451,9 +457,9 @@ public final class PurpleBot {
     }
 
     public void changeTopic(String channelName, String topic, CommandSender sender) {
-        changeTopic(bot.getChannel(channelName),topic,sender);
+        changeTopic(bot.getChannel(channelName), topic, sender);
     }
-    
+
     public void changeTopic(Channel channel, String topic, CommandSender sender) {
         String channelName = channel.getName();
         bot.setTopic(channel, topic);
@@ -486,7 +492,7 @@ public final class PurpleBot {
         saveConfig();
     }
 
-    public void removeOp(String channelName, String userMask, CommandSender sender) {        
+    public void removeOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
             sender.sendMessage("User mask'" + userMask + "' has been removed to the ops list.");
             opsList.get(channelName).remove(userMask);
@@ -500,8 +506,8 @@ public final class PurpleBot {
     public void op(String channelName, String nick) {
         bot.op(bot.getChannel(channelName), bot.getUser(nick));
     }
-    
-    public void fixTopic(Channel channel, String topic, String setBy) { 
+
+    public void fixTopic(Channel channel, String topic, String setBy) {
         String channelName = channel.getName();
         if (setBy.equals(botNick)) {
             config.set("channels." + channelName + ".topic", topic);
@@ -549,7 +555,7 @@ public final class PurpleBot {
     public void sendUserList(CommandSender sender, String channel) {
         sendUserList(sender, bot.getChannel(channel));
     }
-    
+
     public void sendUserList(CommandSender sender, Channel channel) {
         String channelName = channel.getName();
         if (!botChannels.contains(channelName)) {
@@ -575,7 +581,7 @@ public final class PurpleBot {
                 nick = "%" + nick;
             } else if (user.getChannelsVoiceIn().contains(channel)) {
                 nick = "+" + nick;
-            } 
+            }
             channelUsers.add(nick);
         }
         Collections.sort(channelUsers, Collator.getInstance());
@@ -589,19 +595,20 @@ public final class PurpleBot {
             sendUserList(sender, bot.getChannel(channelName));
         }
     }
-    
+
     public void opFriends(Channel channel) {
         for (User user : bot.getUsers(channel)) {
             opFriends(channel, user);
         }
-    }    
+    }
+
     public void opFriends(String channelName) {
         Channel channel = bot.getChannel(channelName);
         for (User user : bot.getUsers(channel)) {
             opFriends(channel, user);
         }
     }
-        
+
     public void opFriends(Channel channel, User user) {
         if (user.getNick().equals(botNick)) {
             return;
@@ -634,6 +641,4 @@ public final class PurpleBot {
             }
         }
     }
-    
-    
 }
