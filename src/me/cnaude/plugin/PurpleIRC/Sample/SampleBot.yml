@@ -52,6 +52,9 @@ channels:
     - irc-topic
     - mcmmo-admin-chat
     - mcmmo-party-chat
+    - faction-public-chat
+    - faction-ally-chat
+    - faction-enemy-chat
     # ops - IRC hostname mask styled ops list
     ops:    
     - '*!*sarah@example.com'

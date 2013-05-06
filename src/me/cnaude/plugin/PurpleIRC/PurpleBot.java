@@ -2,7 +2,9 @@ package me.cnaude.plugin.PurpleIRC;
 
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;
+import com.james137137.FactionChat.ChatMode;
 import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -333,18 +335,33 @@ public final class PurpleBot {
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
-                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.mcMMOPartyChat, message, partyName)));
+                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatMcMMOTokenizer(player, plugin.mcMMOPartyChat, message, partyName)));
                         return;
                     } else {
-                        plugin.logDebug("Player " + player.getName() + " is in mcMMO PartyChat but mcmmo-party-chat is disabled.");
+                        plugin.logDebug("Player " + player.getName() 
+                                + " is in mcMMO PartyChat but \"mcmmo-party-chat\" is disabled.");
                         return;
                     }
                 }
             }
-            /*
-             if (plugin.isFactionsEnabled()) {
-             FPlayer fPlayer = com.massivecraft.factions.FPlayers.i.get(player);                
-             }*/
+
+            if (plugin.isFactionChatEnabled()) {                
+                String chatMode = ChatMode.getChatMode(player).toLowerCase();
+                String chatTag = FPlayers.i.get(player).getChatTag();
+                String chatName = "faction-" + chatMode + "-chat";
+                plugin.logDebug("Faction [Player: " + player.getName() 
+                        + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
+                if (enabledMessages.get(channelName).contains(chatName)) {
+                    bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatFactionTokenizer(player, message, chatTag, chatMode)));
+                    return;                
+                } else {
+                    plugin.logDebug("Player " + player.getName() + " is in chat mode \""
+                            + chatMode + "\" but \"" + chatName + "\" is disabled.");
+                        return;
+                }
+            } else {
+                plugin.logDebug("No Factions");
+            }
             if (enabledMessages.get(channelName).contains("game-chat")) {
                 bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.gameChat, message)));
             }
@@ -370,7 +387,7 @@ public final class PurpleBot {
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
 
-    private String chatTokenizer(Player player, String template, String message, String partyName) {
+    private String chatMcMMOTokenizer(Player player, String template, String message, String partyName) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
                 .replaceAll("%NAME%", player.getName())
                 .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
@@ -379,6 +396,26 @@ public final class PurpleBot {
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
 
+    private String chatFactionTokenizer(Player player, String message, String chatTag, String chatMode) {
+        String template;
+        if (chatMode.equals("public")) {
+            template = plugin.factionPublicChat;
+        } else if (chatMode.equals("ally")) {
+            template = plugin.factionAllyChat;
+        } else if (chatMode.equals("enemy")) {
+            template = plugin.factionEnemyChat;
+        } else {
+            return "";
+        }
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
+                .replaceAll("%NAME%", player.getName())
+                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
+                .replaceAll("%MESSAGE%", message)
+                .replaceAll("%FACTIONTAG%", chatTag)
+                .replaceAll("%FACTIONMODE%", chatMode)
+                .replaceAll("%WORLD%", player.getWorld().getName()));
+    }
+    
     private String chatTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
                 .replaceAll("%MESSAGE%", message));

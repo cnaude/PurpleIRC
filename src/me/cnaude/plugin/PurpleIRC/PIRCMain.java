@@ -31,6 +31,7 @@ public class PIRCMain extends JavaPlugin {
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat;
+    public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     private boolean debugEnabled;
     private boolean stripGameColors;
@@ -88,6 +89,9 @@ public class PIRCMain extends JavaPlugin {
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
+        factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
+        factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
+        factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));
         consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
@@ -120,8 +124,8 @@ public class PIRCMain extends JavaPlugin {
         return(getServer().getPluginManager().getPlugin("mcMMO") != null);        
     }
     
-    public boolean isFactionsEnabled() {
-        return(getServer().getPluginManager().getPlugin("Factions") != null);        
+    public boolean isFactionChatEnabled() {
+        return(getServer().getPluginManager().getPlugin("FactionChat") != null);        
     }
 
     private void createSampleBot() {
