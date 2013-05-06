@@ -4,15 +4,11 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.PartEvent;
 
 /**
  *
