@@ -28,7 +28,7 @@ public class PIRCMain extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String mcMMOAdminChat, mcMMOPartyChat;
+    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     private boolean debugEnabled;
     private boolean stripGameColors;
@@ -36,7 +36,7 @@ public class PIRCMain extends JavaPlugin {
     Long ircConnCheckInterval;
     BotWatcher botWatcher;
     public ColorConverter colorConverter;
-    public RegexGlobber regexGlobber;
+    public RegexGlobber regexGlobber;    
     
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
@@ -84,6 +84,7 @@ public class PIRCMain extends JavaPlugin {
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
+        consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
         gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));

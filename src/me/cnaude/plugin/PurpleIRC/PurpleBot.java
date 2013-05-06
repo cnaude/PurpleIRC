@@ -351,6 +351,17 @@ public final class PurpleBot {
         }
     }
     
+    public void consoleChat(String message) {
+        if (!bot.isConnected()) {
+            return;
+        }        
+        for (String channelName : botChannels) {            
+            if (enabledMessages.get(channelName).contains("console-chat")) {            
+                bot.sendMessage(channelName,chatTokenizer(plugin.consoleChat, message));
+            }
+        }
+    }
+    
     private String chatTokenizer(Player player, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
                         .replaceAll("%NAME%", player.getName())
@@ -364,6 +375,11 @@ public final class PurpleBot {
                         .replaceAll("%MESSAGE%", message)
                         .replaceAll("%PARTY%", partyName)
                         .replaceAll("%WORLD%", player.getWorld().getName()));
+    }
+    
+    private String chatTokenizer(String template, String message) {
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
+                        .replaceAll("%MESSAGE%", message));
     }
 
     public void gameJoin(Player player, String message) {

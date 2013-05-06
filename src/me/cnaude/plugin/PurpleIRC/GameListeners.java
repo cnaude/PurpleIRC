@@ -14,6 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 /**
  *
@@ -43,8 +44,10 @@ public class GameListeners implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) { 
+                    /*
                     String pName = event.getPlayer().getName();
-                    String message = pName + ":" + event.getMessage();                    
+                    String message = pName + ":" + event.getMessage();   
+                    
                     if (message.equals(lastMessage)) {
                         messageCounter++;
                     } else {
@@ -70,7 +73,7 @@ public class GameListeners implements Listener {
                         event.setCancelled(true);
                         return;
                     } 
-                    
+                    */
                     plugin.ircBots.get(botName).gameChat(event.getPlayer(), Matcher.quoteReplacement(event.getMessage()));
                 } 
             }
@@ -110,6 +113,22 @@ public class GameListeners implements Listener {
                 }
             }
         }
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onServerCommandEvent(ServerCommandEvent event) {        
+        String cmd = event.getCommand();                    
+        plugin.logDebug("CE: " + cmd);
+        if (cmd.startsWith("say ")) {            
+            String msg = cmd.split(" ",2)[1];            
+            for (String botName : plugin.ircBots.keySet()) {
+                if (plugin.botConnected.get(botName)) {                        
+                    plugin.ircBots.get(botName).consoleChat(msg);
+                }
+            }
+        } else {
+            plugin.logDebug("Invalid CE: " + cmd);
+        }   
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -15,6 +15,7 @@ message-format:
   game-chat: '&f[%WORLD%&f]<%NAME%&f> %MESSAGE%'  
   mcmmo-admin-chat: '&f[admin:%WORLD%&f]<%NAME%&f> %MESSAGE%'    
   mcmmo-party-chat: '&f[party:%PARTY%&f]<%NAME%&f> %MESSAGE%'  
+  console-chat: '&f[Server] %MESSAGE%' 
   game-death: '&f[%WORLD%&f] %MESSAGE%'  
   game-kick: '&f[%WORLD%&f] %MESSAGE%'
   game-join: '&f[%WORLD%&f] %MESSAGE%'
