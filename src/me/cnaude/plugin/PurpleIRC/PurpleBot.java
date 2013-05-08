@@ -3,7 +3,6 @@ package me.cnaude.plugin.PurpleIRC;
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;
 import com.james137137.FactionChat.ChatMode;
-import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import java.io.File;
 import java.text.Collator;
@@ -20,9 +19,11 @@ import me.cnaude.plugin.PurpleIRC.IRC.DisconnectListener;
 import me.cnaude.plugin.PurpleIRC.IRC.JoinListener;
 import me.cnaude.plugin.PurpleIRC.IRC.KickListener;
 import me.cnaude.plugin.PurpleIRC.IRC.MessageListener;
+import me.cnaude.plugin.PurpleIRC.IRC.MotdListener;
 import me.cnaude.plugin.PurpleIRC.IRC.PartListener;
 import me.cnaude.plugin.PurpleIRC.IRC.TopicListener;
 import me.cnaude.plugin.PurpleIRC.IRC.VersionListener;
+import me.cnaude.plugin.PurpleIRC.IRC.WhoisListener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -49,6 +50,7 @@ public final class PurpleBot {
     public int botServerPort;
     public String commandPrefix;
     public String quitMessage;
+    public boolean showMOTD;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
@@ -74,6 +76,8 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new PartListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
         bot.getListenerManager().addListener(new VersionListener(plugin));
+        bot.getListenerManager().addListener(new WhoisListener(plugin));
+        bot.getListenerManager().addListener(new MotdListener(plugin, this));
         this.plugin = plugin;
         this.file = file;
         config = new YamlConfiguration();
@@ -213,6 +217,7 @@ public final class PurpleBot {
             plugin.ircBots.put(botNick, this);
             plugin.botConnected.put(botNick, bot.isConnected());
             botServer = config.getString("server", "");
+            showMOTD = config.getBoolean("show-motd", false);
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
             commandPrefix = config.getString("command-prefix", ".");
@@ -588,6 +593,22 @@ public final class PurpleBot {
             }
         }
     }
+    
+    public void sendUserWhois(CommandSender sender, String nick) {
+        User user = bot.getUser(nick);
+        if (user != null) {
+            sender.sendMessage(ChatColor.DARK_PURPLE + "Nick: " + ChatColor.WHITE + nick);
+            sender.sendMessage(ChatColor.DARK_PURPLE + "Username: " + ChatColor.WHITE + user.getLogin() + "@" + user.getHostmask());
+            sender.sendMessage(ChatColor.DARK_PURPLE + "Real name: " + ChatColor.WHITE + user.getRealName());
+            sender.sendMessage(ChatColor.DARK_PURPLE + "Server: " + ChatColor.WHITE + user.getServer());
+            StringBuilder sb = new StringBuilder();
+            for (Channel channel : user.getChannels()) {
+                sb.append(" ");
+                sb.append(channel.getName());
+            }
+            sender.sendMessage(ChatColor.DARK_PURPLE + "Currently on:" + ChatColor.WHITE + sb.toString());            
+        }
+    }
 
     public void sendUserList(CommandSender sender, String channel) {
         sendUserList(sender, bot.getChannel(channel));
@@ -618,6 +639,9 @@ public final class PurpleBot {
                 nick = "%" + nick;
             } else if (user.getChannelsVoiceIn().contains(channel)) {
                 nick = "+" + nick;
+            }
+            if (nick.equals(bot.getNick())) {
+                nick = ChatColor.DARK_PURPLE + nick;
             }
             channelUsers.add(nick);
         }

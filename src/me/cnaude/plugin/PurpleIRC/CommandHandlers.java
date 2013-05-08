@@ -25,7 +25,7 @@ public class CommandHandlers implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        
+
         if (args.length >= 1) {
             String subCmd = args[0].toLowerCase();
             if (!sender.hasPermission("irc." + subCmd)) {
@@ -103,6 +103,14 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfigs");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("reloadconfig")) {
+                if (args.length == 1) {
+                    plugin.reloadMainConfig(sender);
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadconfig");
                 }
                 return true;
             }
@@ -340,6 +348,28 @@ public class CommandHandlers implements CommandExecutor {
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("whois")) {
+                if (args.length == 2) {
+                    String nick = args[1];
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
+                        ircBot.sendUserWhois(sender, nick);
+                        ircBot.bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+                    }
+                } else if (args.length == 3) {
+                    String bot = args[1];
+                    String nick = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        PurpleBot ircBot = plugin.ircBots.get(bot);
+                        ircBot.sendUserWhois(sender, nick);
+                        ircBot.bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+                    } else {
+                        sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc whois [bot] [nick]");
                 }
                 return true;
             }

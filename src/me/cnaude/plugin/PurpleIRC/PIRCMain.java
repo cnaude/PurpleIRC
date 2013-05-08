@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,8 +50,7 @@ public class PIRCMain extends JavaPlugin {
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
-        createConfig();
-        //getConfig();
+        createConfig();        
         getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
@@ -75,8 +74,8 @@ public class PIRCMain extends JavaPlugin {
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }
+            ircBots.clear();
         }
-        
     }
 
     private void loadConfig() {
@@ -143,6 +142,14 @@ public class PIRCMain extends JavaPlugin {
             logError(ex.getMessage());
         }
     }
+    
+    public void reloadMainConfig(CommandSender sender) {
+        sender.sendMessage("Reloading config.yml...");
+        reloadConfig();
+        getConfig().options().copyDefaults(false);
+        loadConfig();
+        sender.sendMessage("Done.");
+    }
 
     private void createConfig() {
         if (!pluginFolder.exists()) {
@@ -203,7 +210,7 @@ public class PIRCMain extends JavaPlugin {
         msg = msg.substring(0, msg.length() - 1);
         return msg;
     }
-
+    
     public String getPlayerGroup(Player player) {
         String groupName = "";
         if (getServer().getPluginManager().getPlugin("Vault") != null) {

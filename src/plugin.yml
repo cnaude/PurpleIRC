@@ -1,5 +1,5 @@
 name: PurpleIRC
-version: 0.0.9
+version: 1.0.0
 description: Bukkit IRC Bot
 author: cnaude
 main: me.cnaude.plugin.PurpleIRC.PIRCMain
@@ -11,7 +11,8 @@ commands:
     irc:
         description: Various irc commands
         usage: |
-         /<command> save ([bot])- Save bot configuration(s) to disk
+         /<command> reloadconfig - Reload config.yml
+         /<command> save ([bot])- Save bot configuration(s) to disk         
          /<command> reloadbot [bot]- Reload the bot config and reconnect
          /<command> reloadbots - Reload all bot configs and reconnect
          /<command> reloadbotconfig [bot] - Reload bot config without reconnecting
@@ -32,9 +33,10 @@ commands:
          /<command> login [bot] [login] - Change the bot's IRC login.
          /<command> join [bot] [channel] - Join a channel.
          /<command> leave [bot] [channel] ([reason)]- Leave a channel.
+         /<command> whois [bot] [user] - Get IRC user's info
 permissions:
-  'irc.reload':
-    description: Gives player access to the /irc reload.
+  'irc.reloadconfig':
+    description: Gives player access to the /irc reloadconfig.
     default: op
   'irc.reloadbot':
     description: Gives player access to the /irc reloadbot.

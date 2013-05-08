@@ -10,6 +10,8 @@ login: AwesomeName
 server: irc.excample.com
 # port - IRC server port
 port: 6667
+# show irc server motd on connect
+show-motd: false
 # autoconnect - Connect automatically on startup
 autoconnect: 'false'
 # password - Server password if needed
