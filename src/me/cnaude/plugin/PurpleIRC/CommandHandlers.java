@@ -355,16 +355,14 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length == 2) {
                     String nick = args[1];
                     for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.sendUserWhois(sender, nick);
-                        ircBot.bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+                        ircBot.sendUserWhois(sender, nick);                        
                     }
                 } else if (args.length == 3) {
                     String bot = args[1];
                     String nick = args[2];
                     if (plugin.ircBots.containsKey(bot)) {
                         PurpleBot ircBot = plugin.ircBots.get(bot);
-                        ircBot.sendUserWhois(sender, nick);
-                        ircBot.bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+                        ircBot.sendUserWhois(sender, nick);                        
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }

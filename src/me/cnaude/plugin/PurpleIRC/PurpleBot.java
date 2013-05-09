@@ -64,6 +64,8 @@ public final class PurpleBot {
     public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     //          channel     command option     value
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+    
+    public ArrayList<CommandSender> whoisSenders;
 
     public PurpleBot(File file, PIRCMain plugin) {
         bot = new PircBotX();
@@ -76,10 +78,11 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new PartListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
         bot.getListenerManager().addListener(new VersionListener(plugin));
-        bot.getListenerManager().addListener(new WhoisListener(plugin));
+        bot.getListenerManager().addListener(new WhoisListener(plugin, this));
         bot.getListenerManager().addListener(new MotdListener(plugin, this));
         this.plugin = plugin;
         this.file = file;
+        whoisSenders = new ArrayList<CommandSender>();
         config = new YamlConfiguration();
         loadConfig();
         asyncConnect(false);
@@ -595,19 +598,8 @@ public final class PurpleBot {
     }
     
     public void sendUserWhois(CommandSender sender, String nick) {
-        User user = bot.getUser(nick);
-        if (user != null) {
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Nick: " + ChatColor.WHITE + nick);
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Username: " + ChatColor.WHITE + user.getLogin() + "@" + user.getHostmask());
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Real name: " + ChatColor.WHITE + user.getRealName());
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Server: " + ChatColor.WHITE + user.getServer());
-            StringBuilder sb = new StringBuilder();
-            for (Channel channel : user.getChannels()) {
-                sb.append(" ");
-                sb.append(channel.getName());
-            }
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Currently on:" + ChatColor.WHITE + sb.toString());            
-        }
+        bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+        whoisSenders.add(sender);
     }
 
     public void sendUserList(CommandSender sender, String channel) {
