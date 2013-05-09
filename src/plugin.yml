@@ -1,5 +1,5 @@
 name: PurpleIRC
-version: 1.0.0
+version: 0.0.12
 description: Bukkit IRC Bot
 author: cnaude
 main: me.cnaude.plugin.PurpleIRC.PIRCMain
@@ -33,7 +33,7 @@ commands:
          /<command> login [bot] [login] - Change the bot's IRC login.
          /<command> join [bot] [channel] - Join a channel.
          /<command> leave [bot] [channel] ([reason)]- Leave a channel.
-         /<command> whois [bot] [user] - Get IRC user's info
+         /<command> whois ([bot]) [user] - Get IRC user's info
 permissions:
   'irc.reloadconfig':
     description: Gives player access to the /irc reloadconfig.

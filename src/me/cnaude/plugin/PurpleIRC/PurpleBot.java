@@ -598,8 +598,13 @@ public final class PurpleBot {
     }
     
     public void sendUserWhois(CommandSender sender, String nick) {
-        bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
-        whoisSenders.add(sender);
+        User user = bot.getUser(nick);
+        if (user.getServer().isEmpty()) {
+            sender.sendMessage(ChatColor.RED + "Inavlid user: " + ChatColor.WHITE + nick);
+        } else {
+            bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
+            whoisSenders.add(sender);
+        }
     }
 
     public void sendUserList(CommandSender sender, String channel) {
@@ -609,7 +614,7 @@ public final class PurpleBot {
     public void sendUserList(CommandSender sender, Channel channel) {
         String channelName = channel.getName();
         if (!botChannels.contains(channelName)) {
-            sender.sendMessage(ChatColor.RED + "Invalid channel name.");
+            sender.sendMessage(ChatColor.RED + "Invalid channel: " + channelName);
             return;
         }
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName
