@@ -64,7 +64,6 @@ public final class PurpleBot {
     public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     //          channel     command option     value
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
-    
     public ArrayList<CommandSender> whoisSenders;
 
     public PurpleBot(File file, PIRCMain plugin) {
@@ -209,6 +208,13 @@ public final class PurpleBot {
         saveConfig();
     }
 
+    private void sanitizeServerName() {
+        botServer = botServer.replaceAll("^.*\\/\\/", "");
+        botServer = botServer.replaceAll(":\\d+$", "");
+        config.set("server", botServer);
+        saveConfig();
+    }
+
     private void loadConfig() {
         try {
             config.load(file);
@@ -220,8 +226,7 @@ public final class PurpleBot {
             plugin.ircBots.put(botNick, this);
             plugin.botConnected.put(botNick, bot.isConnected());
             botServer = config.getString("server", "");
-            botServer = botServer.replaceAll("^.*\\/\\/", "");
-            botServer = botServer.replaceAll(":\\d+$", "");
+            sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
@@ -348,26 +353,26 @@ public final class PurpleBot {
                         bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatMcMMOTokenizer(player, plugin.mcMMOPartyChat, message, partyName)));
                         return;
                     } else {
-                        plugin.logDebug("Player " + player.getName() 
+                        plugin.logDebug("Player " + player.getName()
                                 + " is in mcMMO PartyChat but \"mcmmo-party-chat\" is disabled.");
                         return;
                     }
                 }
             }
 
-            if (plugin.isFactionChatEnabled()) {                
+            if (plugin.isFactionChatEnabled()) {
                 String chatMode = ChatMode.getChatMode(player).toLowerCase();
                 String chatTag = FPlayers.i.get(player).getChatTag();
                 String chatName = "faction-" + chatMode + "-chat";
-                plugin.logDebug("Faction [Player: " + player.getName() 
+                plugin.logDebug("Faction [Player: " + player.getName()
                         + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
                     bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatFactionTokenizer(player, message, chatTag, chatMode)));
-                    return;                
+                    return;
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + chatMode + "\" but \"" + chatName + "\" is disabled.");
-                        return;
+                    return;
                 }
             } else {
                 plugin.logDebug("No Factions");
@@ -425,7 +430,7 @@ public final class PurpleBot {
                 .replaceAll("%FACTIONMODE%", chatMode)
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
-    
+
     private String chatTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
                 .replaceAll("%MESSAGE%", message));
@@ -524,7 +529,7 @@ public final class PurpleBot {
         config.set("server", botServer);
         this.autoConnect = autoConnect;
         config.set("autoconnect", autoConnect);
-        saveConfig();
+        sanitizeServerName();
         sender.sendMessage("IRC server changed to \"" + botServer + "\". (AutoConnect: " + autoConnect.toString() + ")");
     }
 
@@ -598,7 +603,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     public void sendUserWhois(CommandSender sender, String nick) {
         User user = bot.getUser(nick);
         if (user.getServer().isEmpty()) {
