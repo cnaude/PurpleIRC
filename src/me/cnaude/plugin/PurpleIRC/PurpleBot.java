@@ -220,6 +220,8 @@ public final class PurpleBot {
             plugin.ircBots.put(botNick, this);
             plugin.botConnected.put(botNick, bot.isConnected());
             botServer = config.getString("server", "");
+            botServer = botServer.replaceAll("^.*\\/\\/", "");
+            botServer = botServer.replaceAll(":\\d+$", "");
             showMOTD = config.getBoolean("show-motd", false);
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
