@@ -33,7 +33,11 @@ public class ConnectListener extends ListenerAdapter {
             if (ircBot.channelAutoJoin.containsKey(channelName)) {
                 if (ircBot.channelAutoJoin.get(channelName)) {
                     plugin.logInfo("Auto joining channel " + channelName);
-                    bot.joinChannel(channelName);
+                    if (ircBot.channelPassword.get(channelName).isEmpty()) {
+                        bot.joinChannel(channelName);
+                    } else {
+                        bot.joinChannel(channelName,ircBot.channelPassword.get(channelName));
+                    }
                 } else {
                     plugin.logInfo("Not auto joining channel " + channelName);
                 }

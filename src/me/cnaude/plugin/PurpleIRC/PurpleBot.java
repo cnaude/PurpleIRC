@@ -22,6 +22,7 @@ import me.cnaude.plugin.PurpleIRC.IRC.KickListener;
 import me.cnaude.plugin.PurpleIRC.IRC.MessageListener;
 import me.cnaude.plugin.PurpleIRC.IRC.MotdListener;
 import me.cnaude.plugin.PurpleIRC.IRC.PartListener;
+import me.cnaude.plugin.PurpleIRC.IRC.ServerResponseListener;
 import me.cnaude.plugin.PurpleIRC.IRC.TopicListener;
 import me.cnaude.plugin.PurpleIRC.IRC.VersionListener;
 import me.cnaude.plugin.PurpleIRC.IRC.WhoisListener;
@@ -80,6 +81,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new VersionListener(plugin));
         bot.getListenerManager().addListener(new WhoisListener(plugin, this));
         bot.getListenerManager().addListener(new MotdListener(plugin, this));
+        bot.getListenerManager().addListener(new ServerResponseListener(plugin, this));
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<CommandSender>();
@@ -240,6 +242,12 @@ public final class PurpleBot {
             plugin.logDebug("Command Prefix => " + commandPrefix);
             plugin.logDebug("Server Password => " + botServerPass);
             plugin.logDebug("Quit Message => " + quitMessage);
+            botChannels.clear();
+            opsList.clear();
+            muteList.clear();
+            enabledMessages.clear();
+            worldList.clear();
+            commandMap.clear();
             for (String channelName : config.getConfigurationSection("channels").getKeys(false)) {
                 plugin.logDebug("Channel  => " + channelName);
                 botChannels.add(channelName);

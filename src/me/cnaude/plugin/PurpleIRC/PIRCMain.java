@@ -8,11 +8,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,10 +43,11 @@ public class PIRCMain extends JavaPlugin {
     Long ircConnCheckInterval;
     BotWatcher botWatcher;
     public ColorConverter colorConverter;
-    public RegexGlobber regexGlobber;    
-    
+    public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
-    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();        
+    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
+    Listener gameListeners;
+    Listener heroListeners;
     
     @Override
     public void onEnable() {
@@ -50,25 +55,27 @@ public class PIRCMain extends JavaPlugin {
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
-        createConfig();        
+        createConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
-        getServer().getPluginManager().registerEvents(new GameListeners(this), this);
+        gameListeners = new GameListeners(this);
+        getServer().getPluginManager().registerEvents(gameListeners, this);
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
-            getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
+            heroListeners = new HeroChatListener(this);
+            getServer().getPluginManager().registerEvents(heroListeners, this);
         } else {
             logInfo("HeroChat not detected.");
         }
-        getCommand("irc").setExecutor(new CommandHandlers(this));        
+        getCommand("irc").setExecutor(new CommandHandlers(this));
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
-        botWatcher = new BotWatcher(this);     
+        botWatcher = new BotWatcher(this);
     }
-    
+
     @Override
     public void onDisable() {
         botWatcher.cancel();
@@ -76,11 +83,20 @@ public class PIRCMain extends JavaPlugin {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
-            for (PurpleBot ircBot : ircBots.values()) {
+
+            Iterator it = ircBots.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry entry = (Entry)it.next();
+                PurpleBot ircBot = (PurpleBot)entry.getValue();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
+                it.remove();
             }
-            ircBots.clear();
+        }
+        // Remove listeners if Bukkit isn't doing it.
+        HandlerList.unregisterAll(gameListeners); 
+        if (isHeroChatEnabled()) {
+            HandlerList.unregisterAll(heroListeners); 
         }
     }
 
@@ -126,21 +142,21 @@ public class PIRCMain extends JavaPlugin {
             }
         }
     }
-    
+
     public boolean isMcMMOEnabled() {
-        return(getServer().getPluginManager().getPlugin("mcMMO") != null);        
+        return (getServer().getPluginManager().getPlugin("mcMMO") != null);
     }
-    
+
     public boolean isFactionChatEnabled() {
-        return(getServer().getPluginManager().getPlugin("FactionChat") != null);        
+        return (getServer().getPluginManager().getPlugin("FactionChat") != null);
     }
-    
+
     public boolean isHeroChatEnabled() {
-        return(getServer().getPluginManager().getPlugin("Herochat") != null);        
+        return (getServer().getPluginManager().getPlugin("Herochat") != null);
     }
 
     private void createSampleBot() {
-        File file = new File(pluginFolder + "/" + sampleFileName);       
+        File file = new File(pluginFolder + "/" + sampleFileName);
         try {
             InputStream in = PIRCMain.class.getResourceAsStream("/me/cnaude/plugin/PurpleIRC/Sample/" + sampleFileName);
             byte[] buf = new byte[1024];
@@ -154,7 +170,7 @@ public class PIRCMain extends JavaPlugin {
             logError(ex.getMessage());
         }
     }
-    
+
     public void reloadMainConfig(CommandSender sender) {
         sender.sendMessage("Reloading config.yml...");
         reloadConfig();
@@ -222,14 +238,14 @@ public class PIRCMain extends JavaPlugin {
         msg = msg.substring(0, msg.length() - 1);
         return msg;
     }
-    
+
     public String getPlayerGroup(Player player) {
         String groupName = "";
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
             if (permissionProvider != null) {
                 groupName = permissionProvider.getProvider().getPrimaryGroup(player);
-            }            
+            }
         }
         return groupName;
     }
