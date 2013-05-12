@@ -1,9 +1,12 @@
 package me.cnaude.plugin.PurpleIRC;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 
 /**
@@ -169,6 +172,49 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc say [bot] [channel] [message]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("send")) {
+                if (args.length >= 2) {
+                    int msgIdx = 1;
+                    String channelName = null;
+                    List<PurpleBot> myBots = new ArrayList<PurpleBot>();                    
+                    if (plugin.ircBots.containsKey(args[1])) {
+                        myBots.add(plugin.ircBots.get(args[1]));
+                        msgIdx = 2;
+                        if (args.length >= 3) {
+                            if (plugin.ircBots.get(args[1]).botChannels.contains(args[2])) {
+                                channelName = args[2];
+                            }
+                        }
+                    } else {
+                        myBots.addAll(plugin.ircBots.values());
+                    }
+                    for (PurpleBot ircBot : myBots) {
+                        String msg = "";
+                        for (int i = msgIdx; i < args.length; i++) {
+                            msg = msg + " " + args[i];
+                        }                        
+                        if (channelName == null) {
+                            for (String c : ircBot.botChannels) {
+                                if (sender instanceof Player) {
+                                    ircBot.gameChat((Player) sender, c, msg.substring(1));
+                                } else {
+                                    ircBot.consoleChat(c, msg.substring(1));
+                                }
+                            }
+                        } else {
+                            if (sender instanceof Player) {
+                                ircBot.gameChat((Player) sender, channelName, msg.substring(1));
+                            } else {
+                                ircBot.consoleChat(channelName, msg.substring(1));
+                            }
+                        }
+                        
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc send ([bot]) ([channel]) [message]");
                 }
                 return true;
             }
@@ -355,14 +401,14 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length == 2) {
                     String nick = args[1];
                     for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.sendUserWhois(sender, nick);                        
+                        ircBot.sendUserWhois(sender, nick);
                     }
                 } else if (args.length == 3) {
                     String bot = args[1];
                     String nick = args[2];
                     if (plugin.ircBots.containsKey(bot)) {
                         PurpleBot ircBot = plugin.ircBots.get(bot);
-                        ircBot.sendUserWhois(sender, nick);                        
+                        ircBot.sendUserWhois(sender, nick);
                     } else {
                         sender.sendMessage(invalidBotName.replaceAll("%BOT%", bot));
                     }

@@ -16,7 +16,7 @@ show-motd: false
 autoconnect: 'false'
 # password - Server password if needed
 password: ''
-# command-prefix - The bot will listen for commands that start with this
+# command-prefix - The bot will listen for commands that start with this. 
 command-prefix: '.'
 # quit-message - Message the bot will send when it quits the server
 quit-message: '&f[&5PurpleIRC&f] Good bye!'
@@ -79,7 +79,7 @@ channels:
     #  @help - print out of all of the commands
     #  @uptime - print the uptime of the game server
     # The modes can be '*', or 'o', or 'ov'.
-    # If game_command can optionally accept arguments via %ARGS%
+    # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
     commands:
       list:

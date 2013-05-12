@@ -29,7 +29,7 @@ public class PIRCMain extends JavaPlugin {
     private File botsFolder;
     private File configFile;
     public static long startTime;
-    public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
+    public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick, gameSend;
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
@@ -92,6 +92,7 @@ public class PIRCMain extends JavaPlugin {
         logDebug("strip-irc-colors: " + stripIRCColors);
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
+        gameSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-send", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
         heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));

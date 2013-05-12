@@ -331,6 +331,7 @@ public final class PurpleBot {
         return false;
     }
 
+    // Called from normal chat listener
     public void gameChat(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -384,6 +385,7 @@ public final class PurpleBot {
         }
     }
 
+    // Called from HeroChat listener
     public void gameChat(Chatter chatter, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
@@ -406,6 +408,25 @@ public final class PurpleBot {
             }
         }
     }
+    
+    // Called from /irc send
+    public void gameChat(Player player, String channelName, String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        if (botChannels.contains(channelName)) {
+            bot.sendMessage(channelName, chatTokenizer(player, plugin.gameSend, message));                        
+        }
+    }
+    
+    public void consoleChat(String channelName, String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        if (botChannels.contains(channelName)) {
+            bot.sendMessage(channelName, chatTokenizer("CONSOLE", message, plugin.gameSend));                        
+        }
+    }
 
     public void consoleChat(String message) {
         if (!bot.isConnected()) {
@@ -416,6 +437,12 @@ public final class PurpleBot {
                 bot.sendMessage(channelName, chatTokenizer(plugin.consoleChat, message));
             }
         }
+    }
+    
+    private String chatTokenizer(String pName, String template, String message) {
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
+                .replaceAll("%NAME%", pName)                
+                .replaceAll("%MESSAGE%", message));
     }
 
     private String chatTokenizer(Player player, String template, String message) {
@@ -461,6 +488,7 @@ public final class PurpleBot {
                 .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
                 .replaceAll("%MESSAGE%", message)
                 .replaceAll("%HEROCHANNEL%", heroChannel)
+                .replaceAll("%CHANNEL%", heroChannel)
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
 

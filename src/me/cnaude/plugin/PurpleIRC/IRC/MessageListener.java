@@ -82,7 +82,10 @@ public class MessageListener extends ListenerAdapter {
                     } else {
                         if (gameCommand.contains("%ARGS%") && commandArgs != null) {
                             gameCommand = gameCommand.replaceAll("%ARGS%", commandArgs);
-                        }                        
+                        }   
+                        if (gameCommand.contains("%NAME%") && commandArgs != null) {
+                            gameCommand = gameCommand.replaceAll("%NAME%", user.getNick());
+                        } 
                         plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
                 } else {
