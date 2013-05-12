@@ -17,7 +17,7 @@ autoconnect: 'false'
 # password - Server password if needed
 password: ''
 # command-prefix - The bot will listen for commands that start with this
-command-prefix: .
+command-prefix: '.'
 # quit-message - Message the bot will send when it quits the server
 quit-message: '&f[&5PurpleIRC&f] Good bye!'
 # channels - List the channels your bot will join here
