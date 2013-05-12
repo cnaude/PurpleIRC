@@ -1,5 +1,5 @@
 name: PurpleIRC
-version: 0.0.12
+version: 0.0.13
 description: Bukkit IRC Bot
 author: cnaude
 main: me.cnaude.plugin.PurpleIRC.PIRCMain
@@ -7,6 +7,7 @@ softdepend:
 - Vault
 - Factions
 - FactionChat
+- HeroChat
 commands:
     irc:
         description: Various irc commands

@@ -1,5 +1,6 @@
 package me.cnaude.plugin.PurpleIRC;
 
+import com.dthielke.herochat.Chatter;
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;
 import com.james137137.FactionChat.ChatMode;
@@ -383,6 +384,29 @@ public final class PurpleBot {
         }
     }
 
+    public void gameChat(Chatter chatter, String message) {
+        Player player = chatter.getPlayer();
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                return;
+            }
+            String heroChannel = chatter.getActiveChannel().getName();
+            plugin.logDebug("HC Channel: " + heroChannel);
+            if (enabledMessages.get(channelName).contains("hero-" + heroChannel + "-chat")
+                    || enabledMessages.get(channelName).contains("hero-chat")) {
+                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatHeroTokenizer(player, message, heroChannel)));                
+                return;
+            } else {
+                plugin.logDebug("Player " + player.getName() + " is in \"" 
+                        + heroChannel + "\" but hero-" + heroChannel + "-chat is disabled.");
+                return;
+            }
+        }
+    }
+
     public void consoleChat(String message) {
         if (!bot.isConnected()) {
             return;
@@ -428,6 +452,15 @@ public final class PurpleBot {
                 .replaceAll("%MESSAGE%", message)
                 .replaceAll("%FACTIONTAG%", chatTag)
                 .replaceAll("%FACTIONMODE%", chatMode)
+                .replaceAll("%WORLD%", player.getWorld().getName()));
+    }
+    
+    private String chatHeroTokenizer(Player player, String message, String heroChannel) {        
+        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.heroChat)
+                .replaceAll("%NAME%", player.getName())
+                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
+                .replaceAll("%MESSAGE%", message)
+                .replaceAll("%HEROCHANNEL%", heroChannel)
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
 

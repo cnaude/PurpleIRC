@@ -30,7 +30,7 @@ public class PIRCMain extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat;
+    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     private boolean debugEnabled;
@@ -55,6 +55,12 @@ public class PIRCMain extends JavaPlugin {
         saveConfig();
         loadConfig();
         getServer().getPluginManager().registerEvents(new GameListeners(this), this);
+        if (isHeroChatEnabled()) {
+            logInfo("Enabling HeroChat support.");
+            getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
+        } else {
+            logInfo("HeroChat not detected.");
+        }
         getCommand("irc").setExecutor(new CommandHandlers(this));        
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         regexGlobber = new RegexGlobber();
@@ -88,6 +94,7 @@ public class PIRCMain extends JavaPlugin {
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
+        heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
         factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));
@@ -125,6 +132,10 @@ public class PIRCMain extends JavaPlugin {
     
     public boolean isFactionChatEnabled() {
         return(getServer().getPluginManager().getPlugin("FactionChat") != null);        
+    }
+    
+    public boolean isHeroChatEnabled() {
+        return(getServer().getPluginManager().getPlugin("Herochat") != null);        
     }
 
     private void createSampleBot() {

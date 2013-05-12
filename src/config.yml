@@ -14,11 +14,13 @@ conn-check-interval: 1000
 #  %PARTY% - mcMMO party channel name
 #  %FACTIONMODE% - Faction chat mode (all, ally, enemy)
 #  %FACTIONTAG%  - Faction tag name
+#  %HEROCHANNEL% - HeoChat channel name
 message-format:
   game-action: '&f[%WORLD%&f] ***%NAME%&f %MESSAGE%'
   game-chat: '&f[%WORLD%&f]<%NAME%&f> %MESSAGE%'  
   mcmmo-admin-chat: '&f[admin:%WORLD%&f]<%NAME%&f> %MESSAGE%'    
   mcmmo-party-chat: '&f[party:%PARTY%&f]<%NAME%&f> %MESSAGE%'
+  hero-chat: '&f[%CHANNEL%&f]<%NAME%&f> %MESSAGE%'
   faction-public-chat: '&f[%FACTIONMODE%] &f[%FACTIONTAG%&f]<%NAME%&f> %MESSAGE%'  
   faction-ally-chat: '&f[%FACTIONMODE%] &f[%FACTIONTAG%&f]<%NAME%&f> %MESSAGE%'  
   faction-enemy-chat: '&f[%FACTIONMODE%] &f[%FACTIONTAG%&f]<%NAME%&f> %MESSAGE%'  

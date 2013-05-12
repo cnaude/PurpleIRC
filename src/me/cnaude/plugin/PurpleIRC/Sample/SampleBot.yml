@@ -53,11 +53,20 @@ channels:
     - irc-kick
     - irc-part
     - irc-topic
+    # mcMMO messages
     - mcmmo-admin-chat
     - mcmmo-party-chat
+    # FactionChat messages
     - faction-public-chat
     - faction-ally-chat
     - faction-enemy-chat
+    # Hero chat message types
+    # Global HC channel
+    - hero-Global-chat
+    # Any HC channel
+    - hero-chat
+    # Specific HC channel
+    #- hero-[CHANNEL]-chat    
     # ops - IRC hostname mask styled ops list
     ops:    
     - '*!*sarah@example.com'
