@@ -41,6 +41,7 @@ public class GameListeners implements Listener {
         if (event.isCancelled()) {
             return;
         }
+
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) { 
@@ -79,7 +80,7 @@ public class GameListeners implements Listener {
             }
         }
     }
-
+   
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
