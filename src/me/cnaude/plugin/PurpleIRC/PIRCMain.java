@@ -46,8 +46,6 @@ public class PIRCMain extends JavaPlugin {
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
-    Listener gameListeners;
-    Listener heroListeners;
     
     @Override
     public void onEnable() {
@@ -59,12 +57,10 @@ public class PIRCMain extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
-        gameListeners = new GameListeners(this);
-        getServer().getPluginManager().registerEvents(gameListeners, this);
+        getServer().getPluginManager().registerEvents(new GameListeners(this), this);
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
-            heroListeners = new HeroChatListener(this);
-            getServer().getPluginManager().registerEvents(heroListeners, this);
+            getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
         } else {
             logInfo("HeroChat not detected.");
         }
@@ -83,7 +79,6 @@ public class PIRCMain extends JavaPlugin {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
-
             Iterator it = ircBots.entrySet().iterator();
             while (it.hasNext()) {
                 Entry entry = (Entry)it.next();
@@ -92,11 +87,6 @@ public class PIRCMain extends JavaPlugin {
                 ircBot.quit();
                 it.remove();
             }
-        }
-        // Remove listeners if Bukkit isn't doing it.
-        HandlerList.unregisterAll(gameListeners); 
-        if (isHeroChatEnabled()) {
-            HandlerList.unregisterAll(heroListeners); 
         }
     }
 
