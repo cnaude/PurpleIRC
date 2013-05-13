@@ -40,7 +40,7 @@ import org.pircbotx.User;
  */
 public final class PurpleBot {
 
-    public PircBotX bot;
+    public final PircBotX bot;
     public final PIRCMain plugin;
     private File file;
     private YamlConfiguration config;
@@ -107,14 +107,27 @@ public final class PurpleBot {
             @Override
             public void run() {
                 try {
-                    plugin.logInfo("Reconnecting to " + botServer + " as " + bot.getName());
-                    bot.reconnect();
+                    plugin.logInfo("Disconnecting from " + botServer);
+                    bot.disconnect();
                 } catch (Exception ex) {
-                    plugin.logError("Problem reconnecting to " + botServer + " => "
-                            + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
+                    plugin.logError("Problem disconnecting from " + botServer + " => "
+                            + " [Error: " + ex.getMessage() + "]");
                 }
             }
         });
+        // We don't want to reconnect too fast. IRC servers don't like that.
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    plugin.logInfo("Connecting to " + botServer + " as " + bot.getName());
+                    bot.connect(botServer, botServerPort, botServerPass);
+                } catch (Exception ex) {
+                    plugin.logError("Problem connecting to " + botServer + " => "
+                            + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
+                }
+            }
+        }, 100L);
     }
 
     public void mute(String channelName, CommandSender sender, String user) {
@@ -407,32 +420,32 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + heroChannel);
             if (enabledMessages.get(channelName).contains("hero-" + heroChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatHeroTokenizer(player, message, heroChannel)));                
+                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatHeroTokenizer(player, message, heroChannel)));
                 return;
             } else {
-                plugin.logDebug("Player " + player.getName() + " is in \"" 
+                plugin.logDebug("Player " + player.getName() + " is in \""
                         + heroChannel + "\" but hero-" + heroChannel + "-chat is disabled.");
                 return;
             }
         }
     }
-    
+
     // Called from /irc send
     public void gameChat(Player player, String channelName, String message) {
         if (!bot.isConnected()) {
             return;
         }
         if (botChannels.contains(channelName)) {
-            bot.sendMessage(channelName, chatTokenizer(player, plugin.gameSend, message));                        
+            bot.sendMessage(channelName, chatTokenizer(player, plugin.gameSend, message));
         }
     }
-    
+
     public void consoleChat(String channelName, String message) {
         if (!bot.isConnected()) {
             return;
         }
         if (botChannels.contains(channelName)) {
-            bot.sendMessage(channelName, chatTokenizer("CONSOLE", message, plugin.gameSend));                        
+            bot.sendMessage(channelName, chatTokenizer("CONSOLE", message, plugin.gameSend));
         }
     }
 
@@ -446,10 +459,10 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     private String chatTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%NAME%", pName)                
+                .replaceAll("%NAME%", pName)
                 .replaceAll("%MESSAGE%", message));
     }
 
@@ -489,8 +502,8 @@ public final class PurpleBot {
                 .replaceAll("%FACTIONMODE%", chatMode)
                 .replaceAll("%WORLD%", player.getWorld().getName()));
     }
-    
-    private String chatHeroTokenizer(Player player, String message, String heroChannel) {        
+
+    private String chatHeroTokenizer(Player player, String message, String heroChannel) {
         return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.heroChat)
                 .replaceAll("%NAME%", player.getName())
                 .replaceAll("%GROUP%", plugin.getPlayerGroup(player))

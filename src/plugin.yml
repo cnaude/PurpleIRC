@@ -1,5 +1,5 @@
 name: PurpleIRC
-version: 0.0.16
+version: 0.0.17
 description: Bukkit IRC Bot
 author: cnaude
 main: me.cnaude.plugin.PurpleIRC.PIRCMain
