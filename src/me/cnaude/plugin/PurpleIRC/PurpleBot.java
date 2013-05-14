@@ -364,7 +364,7 @@ public final class PurpleBot {
             if (plugin.isMcMMOEnabled()) {
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
-                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.mcMMOAdminChat, message)));
+                        asyncSendMessage(channelName, chatTokenizer(player, plugin.mcMMOAdminChat, message));
                         return;
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
@@ -373,7 +373,7 @@ public final class PurpleBot {
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
-                        bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatMcMMOTokenizer(player, plugin.mcMMOPartyChat, message, partyName)));
+                        asyncSendMessage(channelName, chatMcMMOTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
                         return;
                     } else {
                         plugin.logDebug("Player " + player.getName()
@@ -390,7 +390,7 @@ public final class PurpleBot {
                 plugin.logDebug("Faction [Player: " + player.getName()
                         + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
-                    bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatFactionTokenizer(player, message, chatTag, chatMode)));
+                    asyncSendMessage(channelName, chatFactionTokenizer(player, message, chatTag, chatMode));
                     return;
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
@@ -400,10 +400,19 @@ public final class PurpleBot {
             } else {
                 plugin.logDebug("No Factions");
             }
-            if (enabledMessages.get(channelName).contains("game-chat")) {
-                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatTokenizer(player, plugin.gameChat, message)));
+            if (enabledMessages.get(channelName).contains("game-chat")) {                
+                asyncSendMessage(channelName, chatTokenizer(player, plugin.gameChat, message));
             }
         }
+    }
+
+    private void asyncSendMessage(final String channelName, final String message) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendMessage(channelName, message);
+            }
+        });
     }
 
     // Called from HeroChat listener
@@ -420,7 +429,7 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + heroChannel);
             if (enabledMessages.get(channelName).contains("hero-" + heroChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                bot.sendRawLineNow(String.format("PRIVMSG %s :%s", channelName, chatHeroTokenizer(player, message, heroChannel)));
+                asyncSendMessage(channelName, chatHeroTokenizer(player, message, heroChannel));
                 return;
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
