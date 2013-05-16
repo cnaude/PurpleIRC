@@ -31,7 +31,7 @@ public class HeroChatListener implements Listener {
         if (player.hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) { 
-                    plugin.ircBots.get(botName).gameChat(chatter, Matcher.quoteReplacement(event.getMessage()));
+                    plugin.ircBots.get(botName).gameChat(chatter, event.getMessage());
                 } 
             }
         }

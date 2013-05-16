@@ -4,7 +4,6 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
@@ -35,9 +34,9 @@ public class PartListener extends ListenerAdapter {
             return;
         }
         if (ircBot.enabledMessages.get(channel.getName()).contains("irc-part")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircPart)
-                    .replaceAll("%NAME%", user.getNick())
-                    .replaceAll("%CHANNEL%", channel.getName())), "irc.message.part");
+            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircPart)
+                    .replace("%NAME%", user.getNick()
+                    .replace("%CHANNEL%", channel.getName())), "irc.message.part");
         }
     }
 }

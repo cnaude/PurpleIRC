@@ -37,10 +37,10 @@ public class ActionListener extends ListenerAdapter {
             return;
         }
         if (ircBot.enabledMessages.get(channel.getName()).contains("irc-action")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircAction)
-                    .replaceAll("%NAME%", user.getNick())
-                    .replaceAll("%MESSAGE%", event.getAction())
-                    .replaceAll("%CHANNEL%", channel.getName())), "irc.message.action");
+            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircAction)
+                    .replace("%NAME%", user.getNick())
+                    .replace("%MESSAGE%", event.getAction())
+                    .replace("%CHANNEL%", channel.getName()), "irc.message.action");
         }
     }
 }

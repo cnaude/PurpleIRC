@@ -225,8 +225,8 @@ public final class PurpleBot {
     }
 
     private void sanitizeServerName() {
-        botServer = botServer.replaceAll("^.*\\/\\/", "");
-        botServer = botServer.replaceAll(":\\d+$", "");
+        botServer = botServer.replace("^.*\\/\\/", "");
+        botServer = botServer.replace(":\\d+$", "");
         config.set("server", botServer);
         saveConfig();
     }
@@ -253,7 +253,7 @@ public final class PurpleBot {
             plugin.logDebug("Server => " + botServer);
             plugin.logDebug("Port => " + botServerPort);
             plugin.logDebug("Command Prefix => " + commandPrefix);
-            plugin.logDebug("Server Password => " + botServerPass);
+            //plugin.logDebug("Server Password => " + botServerPass);
             plugin.logDebug("Quit Message => " + quitMessage);
             botChannels.clear();
             opsList.clear();
@@ -269,7 +269,7 @@ public final class PurpleBot {
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
 
                 channelPassword.put(channelName, config.getString("channels." + channelName + ".password", ""));
-                plugin.logDebug("  Password => " + channelPassword.get(channelName));
+                //plugin.logDebug("  Password => " + channelPassword.get(channelName));
 
                 channelTopic.put(channelName, config.getString("channels." + channelName + ".topic", ""));
                 plugin.logDebug("  Topic => " + channelTopic.get(channelName));
@@ -289,6 +289,9 @@ public final class PurpleBot {
                     plugin.logDebug("  Channel Op => " + channelOper);
                 }
                 opsList.put(channelName, cOps);
+                if (opsList.isEmpty()) {
+                    plugin.logInfo("No channel ops defined.");
+                }
 
                 // build mute list
                 Collection<String> m = new ArrayList<String>();
@@ -299,6 +302,9 @@ public final class PurpleBot {
                     plugin.logDebug("  Channel Mute => " + mutedUser);
                 }
                 muteList.put(channelName, m);
+                if (muteList.isEmpty()) {
+                    plugin.logInfo("IRC mute list is empty.");
+                }
 
                 // build valid chat list
                 Collection<String> c = new ArrayList<String>();
@@ -309,6 +315,9 @@ public final class PurpleBot {
                     plugin.logDebug("  Enabled Message => " + validChat);
                 }
                 enabledMessages.put(channelName, c);
+                if (enabledMessages.isEmpty()) {
+                    plugin.logInfo("There are no enabled messages!");
+                }
 
                 // build valid world list
                 Collection<String> w = new ArrayList<String>();
@@ -319,6 +328,9 @@ public final class PurpleBot {
                     plugin.logDebug("  Enabled World => " + validWorld);
                 }
                 worldList.put(channelName, w);
+                if (worldList.isEmpty()) {
+                    plugin.logInfo("World list is empty!");
+                }
 
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
@@ -334,6 +346,9 @@ public final class PurpleBot {
 
                 }
                 commandMap.put(channelName, map);
+                if (commandMap.isEmpty()) {
+                    plugin.logInfo("No commands specified!");
+                }
             }
         } catch (Exception ex) {
             plugin.logError(ex.getMessage());
@@ -400,16 +415,21 @@ public final class PurpleBot {
             } else {
                 plugin.logDebug("No Factions");
             }
-            if (enabledMessages.get(channelName).contains("game-chat")) {                
+            if (enabledMessages.get(channelName).contains("game-chat")) { 
+                plugin.logDebug("[game-chat] => " + channelName + " => "+ message);
                 asyncSendMessage(channelName, chatTokenizer(player, plugin.gameChat, message));
+            } else {
+                plugin.logDebug("Ignoring message due to game-chat not being listed.");
             }
         }
     }
 
     private void asyncSendMessage(final String channelName, final String message) {
+        plugin.logDebug("Entering asyncSendMessage");
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
+                plugin.logDebug("Sending message to " + channelName);
                 bot.sendMessage(channelName, message);
             }
         });
@@ -470,26 +490,26 @@ public final class PurpleBot {
     }
 
     private String chatTokenizer(String pName, String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%NAME%", pName)
-                .replaceAll("%MESSAGE%", message));
+        return plugin.colorConverter.gameColorsToIrc(template)
+                .replace("%NAME%", pName)
+                .replace("%MESSAGE%", message);
     }
 
     private String chatTokenizer(Player player, String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%NAME%", player.getName())
-                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                .replaceAll("%MESSAGE%", message)
-                .replaceAll("%WORLD%", player.getWorld().getName()));
+        return plugin.colorConverter.gameColorsToIrc(template)
+                .replace("%NAME%", player.getName())
+                .replace("%GROUP%", plugin.getPlayerGroup(player))
+                .replace("%MESSAGE%", message)
+                .replace("%WORLD%", player.getWorld().getName());
     }
 
     private String chatMcMMOTokenizer(Player player, String template, String message, String partyName) {
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%NAME%", player.getName())
-                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                .replaceAll("%MESSAGE%", message)
-                .replaceAll("%PARTY%", partyName)
-                .replaceAll("%WORLD%", player.getWorld().getName()));
+        return plugin.colorConverter.gameColorsToIrc(template)
+                .replace("%NAME%", player.getName())
+                .replace("%GROUP%", plugin.getPlayerGroup(player))
+                .replace("%MESSAGE%", message)
+                .replace("%PARTY%", partyName)
+                .replace("%WORLD%", player.getWorld().getName());
     }
 
     private String chatFactionTokenizer(Player player, String message, String chatTag, String chatMode) {
@@ -503,28 +523,28 @@ public final class PurpleBot {
         } else {
             return "";
         }
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%NAME%", player.getName())
-                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                .replaceAll("%MESSAGE%", message)
-                .replaceAll("%FACTIONTAG%", chatTag)
-                .replaceAll("%FACTIONMODE%", chatMode)
-                .replaceAll("%WORLD%", player.getWorld().getName()));
+        return plugin.colorConverter.gameColorsToIrc(template)
+                .replace("%NAME%", player.getName())
+                .replace("%GROUP%", plugin.getPlayerGroup(player))
+                .replace("%MESSAGE%", message)
+                .replace("%FACTIONTAG%", chatTag)
+                .replace("%FACTIONMODE%", chatMode)
+                .replace("%WORLD%", player.getWorld().getName());
     }
 
     private String chatHeroTokenizer(Player player, String message, String heroChannel) {
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.heroChat)
-                .replaceAll("%NAME%", player.getName())
-                .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                .replaceAll("%MESSAGE%", message)
-                .replaceAll("%HEROCHANNEL%", heroChannel)
-                .replaceAll("%CHANNEL%", heroChannel)
-                .replaceAll("%WORLD%", player.getWorld().getName()));
+        return plugin.colorConverter.gameColorsToIrc(plugin.heroChat)
+                .replace("%NAME%", player.getName())
+                .replace("%GROUP%", plugin.getPlayerGroup(player))
+                .replace("%MESSAGE%", message)
+                .replace("%HEROCHANNEL%", heroChannel)
+                .replace("%CHANNEL%", heroChannel)
+                .replace("%WORLD%", player.getWorld().getName());
     }
 
     private String chatTokenizer(String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(template)
-                .replaceAll("%MESSAGE%", message));
+        return plugin.colorConverter.gameColorsToIrc(template)
+                .replace("%MESSAGE%", message);
     }
 
     public void gameJoin(Player player, String message) {
@@ -536,11 +556,11 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameJoin)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
+                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameJoin)
+                        .replace("%NAME%", player.getName())
+                        .replace("%GROUP%", plugin.getPlayerGroup(player))
+                        .replace("%MESSAGE%", message)
+                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
             }
         }
     }
@@ -554,11 +574,11 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameQuit)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
+                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameQuit)
+                        .replace("%NAME%", player.getName())
+                        .replace("%GROUP%", plugin.getPlayerGroup(player))
+                        .replace("%MESSAGE%", message)
+                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
             }
         }
     }
@@ -572,11 +592,11 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameAction)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
+                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameAction)
+                        .replace("%NAME%", player.getName())
+                        .replace("%GROUP%", plugin.getPlayerGroup(player))
+                        .replace("%MESSAGE%", message)
+                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
             }
         }
     }
@@ -590,11 +610,11 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(Matcher.quoteReplacement(plugin.gameDeath)
-                        .replaceAll("%NAME%", player.getName())
-                        .replaceAll("%GROUP%", plugin.getPlayerGroup(player))
-                        .replaceAll("%MESSAGE%", message)
-                        .replaceAll("%WORLD%", player.getLocation().getWorld().getName())));
+                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameDeath)
+                        .replace("%NAME%", player.getName())
+                        .replace("%GROUP%", plugin.getPlayerGroup(player))
+                        .replace("%MESSAGE%", message)
+                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
             }
         }
     }

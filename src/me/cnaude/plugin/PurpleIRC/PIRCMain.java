@@ -87,6 +87,20 @@ public class PIRCMain extends JavaPlugin {
             }
         }
     }
+    
+    public void debugMode(boolean debug) {
+        debugEnabled = debug;
+        getConfig().set("Debug", debug);
+        try {
+            getConfig().save(configFile);
+        } catch (Exception ex) {
+            logError("Problem saving to " + configFile.getName() + ": " + ex.getMessage());
+        }
+    }
+    
+    public boolean debugMode() {
+        return debugEnabled;
+    }
 
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");

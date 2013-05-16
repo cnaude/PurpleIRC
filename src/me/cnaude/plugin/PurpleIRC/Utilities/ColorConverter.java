@@ -6,7 +6,6 @@ package me.cnaude.plugin.PurpleIRC.Utilities;
 
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.regex.Matcher;
 import org.bukkit.ChatColor;
 import org.pircbotx.Colors;
 
@@ -33,7 +32,7 @@ public class ColorConverter {
         } else {
             String newMessage = message;
             for (ChatColor gameColor : ircColorMap.keySet()) {                
-                newMessage = Matcher.quoteReplacement(newMessage).replaceAll(gameColor.toString(), ircColorMap.get(gameColor));
+                newMessage = newMessage.replace(gameColor.toString(), ircColorMap.get(gameColor));
             }
             // We return the message with the remaining MC color codes stripped out
             return ChatColor.stripColor(newMessage);
@@ -46,7 +45,7 @@ public class ColorConverter {
         } else {
             String newMessage = message;
             for (String ircColor : gameColorMap.keySet()) {
-                newMessage = Matcher.quoteReplacement(newMessage).replaceAll(ircColor.toString(), gameColorMap.get(ircColor).toString());
+                newMessage = newMessage.replace(ircColor.toString(), gameColorMap.get(ircColor).toString());
             }
             // We return the message with the remaining IRC color codes stripped out
             return Colors.removeFormattingAndColors(message);

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.IRCCommandSender;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
@@ -81,10 +80,10 @@ public class MessageListener extends ListenerAdapter {
                         bot.sendMessage(target, getCommands(ircBot.commandMap,myChannel));                     
                     } else {
                         if (gameCommand.contains("%ARGS%") && commandArgs != null) {
-                            gameCommand = gameCommand.replaceAll("%ARGS%", commandArgs);
+                            gameCommand = gameCommand.replace("%ARGS%", commandArgs);
                         }   
                         if (gameCommand.contains("%NAME%") && commandArgs != null) {
-                            gameCommand = gameCommand.replaceAll("%NAME%", user.getNick());
+                            gameCommand = gameCommand.replace("%NAME%", user.getNick());
                         } 
                         plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
@@ -97,10 +96,10 @@ public class MessageListener extends ListenerAdapter {
             }
         } else {
             if (ircBot.enabledMessages.get(myChannel).contains("irc-chat")) {
-                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircChat)
-                        .replaceAll("%NAME%", user.getNick())
-                        .replaceAll("%MESSAGE%", Matcher.quoteReplacement(message))
-                        .replaceAll("%CHANNEL%", channel.getName())), "irc.message.chat");
+                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircChat)
+                        .replace("%NAME%", user.getNick()
+                        .replace("%MESSAGE%", message))
+                        .replace("%CHANNEL%", channel.getName()), "irc.message.chat");
             }
         }
     }

@@ -43,6 +43,7 @@ public class GameListeners implements Listener {
         }
 
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
+            plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) { 
                     /*
@@ -75,9 +76,11 @@ public class GameListeners implements Listener {
                         return;
                     } 
                     */
-                    plugin.ircBots.get(botName).gameChat(event.getPlayer(), Matcher.quoteReplacement(event.getMessage()));
+                    plugin.ircBots.get(botName).gameChat(event.getPlayer(), event.getMessage());
                 } 
             }
+        } else {
+            plugin.logDebug("Player " + event.getPlayer().getName() + " does not have irc.message.gamechat permission.");
         }
     }
    
@@ -85,7 +88,7 @@ public class GameListeners implements Listener {
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
             if (plugin.botConnected.get(botName)) {                
-                plugin.ircBots.get(botName).gameQuit(event.getPlayer(), Matcher.quoteReplacement(event.getQuitMessage()));
+                plugin.ircBots.get(botName).gameQuit(event.getPlayer(), event.getQuitMessage());
             }
         }
     }
@@ -94,7 +97,7 @@ public class GameListeners implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
             if (plugin.botConnected.get(botName)) {                
-                plugin.ircBots.get(botName).gameJoin(event.getPlayer(), Matcher.quoteReplacement(event.getJoinMessage()));
+                plugin.ircBots.get(botName).gameJoin(event.getPlayer(), event.getJoinMessage());
             }
         }
     }
@@ -105,11 +108,11 @@ public class GameListeners implements Listener {
             return;
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
-            String msg = Matcher.quoteReplacement(event.getMessage());
+            String msg = event.getMessage();
             if (msg.startsWith("/me ")) {
                 for (String botName : plugin.ircBots.keySet()) {
                     if (plugin.botConnected.get(botName)) {                        
-                        plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replaceAll("/me", ""));
+                        plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replace("/me", ""));
                     }
                 }
             }
@@ -136,7 +139,7 @@ public class GameListeners implements Listener {
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
             if (plugin.botConnected.get(botName)) {                
-                plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), Matcher.quoteReplacement(event.getDeathMessage()));
+                plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), event.getDeathMessage());
             }
         }
     }

@@ -37,9 +37,9 @@ public class JoinListener extends ListenerAdapter {
             return;
         }
         if (ircBot.enabledMessages.get(channel.getName()).contains("irc-join")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircJoin)
-                    .replaceAll("%NAME%", user.getNick())
-                    .replaceAll("%CHANNEL%", channel.getName())), "irc.message.join");
+            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircJoin)
+                    .replace("%NAME%", user.getNick())
+                    .replace("%CHANNEL%", channel.getName()), "irc.message.join");
         }
         ircBot.opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {

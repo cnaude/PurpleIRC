@@ -4,7 +4,6 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
@@ -36,11 +35,11 @@ public class KickListener extends ListenerAdapter {
             return;
         }
         if (ircBot.enabledMessages.get(channel.getName()).contains("irc-kick")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircKick)
-                    .replaceAll("%NAME%", recipient.getNick())
-                    .replaceAll("%REASON%", event.getReason())
-                    .replaceAll("%KICKER%", kicker.getNick())
-                    .replaceAll("%CHANNEL%", channel.getName())), "irc.message.kick");
+            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircKick)
+                    .replace("%NAME%", recipient.getNick())
+                    .replace("%REASON%", event.getReason())
+                    .replace("%KICKER%", kicker.getNick())
+                    .replace("%CHANNEL%", channel.getName()), "irc.message.kick");
         }
     }
 }

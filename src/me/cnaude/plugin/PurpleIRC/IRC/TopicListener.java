@@ -4,7 +4,6 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;
@@ -37,10 +36,10 @@ public class TopicListener extends ListenerAdapter {
         ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
         if (event.isChanged()) {
             if (ircBot.enabledMessages.get(channel.getName()).contains("irc-topic")) {
-                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(Matcher.quoteReplacement(plugin.ircTopic)
-                        .replaceAll("%NAME%", user.getNick())
-                        .replaceAll("%TOPIC%", event.getTopic())
-                        .replaceAll("%CHANNEL%", channel.getName())), "irc.message.topic");
+                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircTopic)
+                        .replace("%NAME%", user.getNick()
+                        .replace("%TOPIC%", event.getTopic())
+                        .replace("%CHANNEL%", channel.getName())), "irc.message.topic");
             }
         }
         ircBot.activeTopic.put(channel.getName(), event.getTopic());
