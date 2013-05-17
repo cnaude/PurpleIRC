@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cnaude</groupId>
+    <artifactId>PurpleIRC</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <name>PurpleIRC</name>
+    <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
+    <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Bukkit API Version, change if out dated -->
+        <bukkit.version>1.5.1-R0.2</bukkit.version>
+    </properties>
+
+    <repositories>
+        <!-- Bukkit -->
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+
+        <!-- Vault -->
+        <repository>
+            <id>vault-repo</id>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+        </repository>
+    
+        <!-- For anything else without its own repo -->
+        <repository>
+            <id>cnaude-repo</id>
+            <url>http://cnaude.freeshell.org/maven/repo/releases/</url>
+        </repository>
+        <!-- For JUnitBenchmarks -->
+        <repository>
+            <id>sonatype-nexus-public</id>
+            <name>SonaType public snapshots and releases repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <releases> 
+                <!-- set to true if you wish to fetch releases from this repo too. -->
+                <enabled>false</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${bukkit.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Following dependency is provided by CraftBukkit -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>10.0.1</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Use Vault Economy API interface -->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <version>1.2.25</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- PircBotX -->
+        
+        <!-- Herochat -->
+        <dependency>
+            <groupId>org.pircbotx</groupId>
+            <artifactId>Herochat</artifactId>
+            <version>5.6.6</version>
+        </dependency>
+        
+        <!-- Factions -->
+        <dependency>
+            <groupId>com.massivecraft</groupId>
+            <artifactId>Factions</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+        
+        <!-- FactionChat -->
+        <dependency>
+            <groupId>com.james137137</groupId>
+            <artifactId>FactionChat</artifactId>
+            <version>1.523</version>
+        </dependency>
+
+        <!-- Herochat -->
+        <dependency>
+            <groupId>com.gmail.nossr50</groupId>
+            <artifactId>mcMMO</artifactId>
+            <version>1.4.06-beta2</version>
+        </dependency>
+        
+        <!-- PircBotx -->
+        <dependency>
+            <groupId>com.cnaude.pircbotx</groupId>
+            <artifactId>pircbotx</artifactId>
+            <version>1.9</version>
+        </dependency>
+           
+        <!-- Testing only -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>junit-benchmarks</artifactId>
+            <version>0.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dotGaming.Endain.CleverNotch</groupId>
+            <artifactId>CleverNotch</artifactId>
+            <version>1.0-RELEASE</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Filter only plugin.yml -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>plugin.yml</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <!-- Minimum Minecraft requirement -->
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.pircbotx</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.pircbotx</pattern>
+                                    <shadedPattern>com.cnaude.pircbotx</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <tasks>
+
+                                <exec dir="target" executable="c:\Users\cnaude\Apps\pscp.exe">
+                                    <arg line="${project.name}-${project.version}.jar cnaude.mdns.org:minetest/plugins/${project.name}.jar"/>
+                                </exec>
+                                <copy file="target/${project.name}-${project.version}.jar" tofile="C:/Users/cnaude/Dropbox/Public/${project.name}.jar"/>      
+
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+ 
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>stage-repo</id>
+            <url>file://${basedir}/../repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>stage-repo-stapshots</id>
+            <url>file://${basedir}/../repo/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

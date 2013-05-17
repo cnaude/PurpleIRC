@@ -1,0 +1,69 @@
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
+author: cnaude
+main: com.cnaude.purpleirc
+softdepend:
+- Vault
+- Factions
+- FactionChat
+- HeroChat
+- mcMMO
+- CleverBot
+commands:
+    irc:
+        description: Various irc commands
+        usage: |
+         /<command> reloadconfig - Reload config.yml
+         /<command> save ([bot])- Save bot configuration(s) to disk         
+         /<command> reloadbot [bot]- Reload the bot config and reconnect
+         /<command> reloadbots - Reload all bot configs and reconnect
+         /<command> reloadbotconfig [bot] - Reload bot config without reconnecting
+         /<command> reloadbotconfigs - Reload all bot configs without reconnecting
+         /<command> connect ([bot]) - Connect to configured IRC server
+         /<command> disconnect ([bot]) - Disconnect from configured IRC server
+         /<command> listbots - List loaded bots
+         /<command> list ([bot]) ([channel]) - List users in a channel
+         /<command> op [bot] [channel] [user(s)] - Op user(s) in a channel
+         /<command> listops [bot] [channel] - List auto ops for a channel
+         /<command> deop [bot] [channel] [user(s)] - DeOp user(s) in a channel
+         /<command> addop [bot] [channel] [user mask] - Add user mask to op list.
+         /<command> removeop [bot] [channel] [user mask] - Remove user mask from op list.
+         /<command> server [bot] [server] ([true|false]) - Set IRC server for bot. Optionally set autoconnect.
+         /<command> mute [bot] [channel] [user(s)] - Mute user(s) in a channel.
+         /<command> unmute [bot] [channel] [user(s)] - Unmute user(s) in a channel.
+         /<command> nick [bot] [nick] - Change the bot's IRC nickname.
+         /<command> login [bot] [login] - Change the bot's IRC login.
+         /<command> join [bot] [channel] - Join a channel.
+         /<command> leave [bot] [channel] ([reason)]- Leave a channel.
+         /<command> whois ([bot]) [user] - Get IRC user's info
+         /<command> send ([bot]) ([channel]) - Bypass valid-messages and send a message to the channel(s).
+         /<command> say [bot] [channel] - Make the bot speak.
+permissions:
+  'irc.reloadconfig':
+    description: Gives player access to the /irc reloadconfig.
+    default: op
+  'irc.reloadbot':
+    description: Gives player access to the /irc reloadbot.
+    default: op
+  'irc.reloadbotconfig':
+    description: Gives player access to the /irc reloadconfig.
+    default: op  
+  'irc.reconnect':
+    description: Gives player access to the /irc reconnect.
+    default: op
+  'irc.message.chat':
+    description: Receive IRC chat messages.
+    default: true
+  'irc.message.gamechat':
+    description: Send game chat to IRC
+    default: true
+  'irc.message.action':
+    description: Receive IRC chat actions (/me).
+    default: true
+  'irc.listbots':
+    description: Gives player access to the /irc listbots command.
+    default: op
+  'irc.list':
+    description: Gives player access to the /irc list command.
+    default: op  
