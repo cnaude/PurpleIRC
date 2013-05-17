@@ -4,7 +4,6 @@
  */
 package me.cnaude.plugin.PurpleIRC.IRC;
 
-import java.util.regex.Matcher;
 import me.cnaude.plugin.PurpleIRC.PurpleBot;
 import me.cnaude.plugin.PurpleIRC.PIRCMain;
 import org.pircbotx.Channel;

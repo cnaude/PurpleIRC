@@ -35,6 +35,7 @@ public class PIRCMain extends JavaPlugin {
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
+    public String cleverSend;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
@@ -62,8 +63,13 @@ public class PIRCMain extends JavaPlugin {
         } else {
             logInfo("HeroChat not detected.");
         }
-        getCommand("irc").setExecutor(new CommandHandlers(this));
-        colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
+        if (isHeroChatEnabled()) {
+            logInfo("Enabling CleverNotch support.");
+            getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
+        } else {
+            logInfo("CleverNotch not detected.");
+        }
+        getCommand("irc").setExecutor(new CommandHandlers(this));        
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
@@ -106,11 +112,13 @@ public class PIRCMain extends JavaPlugin {
         debugEnabled = getConfig().getBoolean("Debug");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
+        colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         gameSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-send", ""));
+        cleverSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.clever-send", ""));
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
         heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
@@ -155,6 +163,10 @@ public class PIRCMain extends JavaPlugin {
 
     public boolean isHeroChatEnabled() {
         return (getServer().getPluginManager().getPlugin("Herochat") != null);
+    }
+    
+    public boolean isCleverNotchEnabled() {
+        return (getServer().getPluginManager().getPlugin("CleverNotch") != null);
     }
 
     private void createSampleBot() {

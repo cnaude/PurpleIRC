@@ -4,7 +4,6 @@
  */
 package me.cnaude.plugin.PurpleIRC;
 
-import java.util.regex.Matcher;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -143,5 +142,5 @@ public class GameListeners implements Listener {
             }
         }
     }
-    
+       
 }
