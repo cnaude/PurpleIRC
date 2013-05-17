@@ -7,6 +7,7 @@ import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
@@ -149,7 +150,7 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Checking for bot files in " + botsFolder);
             for (final File file : botsFolder.listFiles()) {
                 if (file.getName().endsWith(".yml")) {
-                    logInfo("Loading bot: " + file.getName());
+                    logInfo("Loading bot file: " + file.getName());
                     PurpleBot pircBot = new PurpleBot(file, this);
                 }
             }
@@ -175,7 +176,7 @@ public class PurpleIRC extends JavaPlugin {
     private void createSampleBot() {
         File file = new File(pluginFolder + "/" + sampleFileName);
         try {
-            InputStream in = PurpleIRC.class.getResourceAsStream("/me/cnaude/plugin/PurpleIRC/Sample/" + sampleFileName);
+            InputStream in = PurpleIRC.class.getResourceAsStream("/SampleBot.yml");
             byte[] buf = new byte[1024];
             int len;
             OutputStream out = new FileOutputStream(file);
@@ -184,7 +185,7 @@ public class PurpleIRC extends JavaPlugin {
             }
             out.close();
         } catch (Exception ex) {
-            logError(ex.getMessage());
+            logError("Problem creating sample bot: " + ex.getMessage());
         }
     }
 
