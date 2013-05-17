@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -29,11 +29,11 @@
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
     
-        <!-- For anything else without its own repo -->
+        <!-- For anything else without its own repo
         <repository>
             <id>cnaude-repo</id>
             <url>http://cnaude.freeshell.org/maven/repo/releases/</url>
-        </repository>
+        </repository> -->
         <!-- For JUnitBenchmarks -->
         <repository>
             <id>sonatype-nexus-public</id>
@@ -79,7 +79,7 @@
         
         <!-- Herochat -->
         <dependency>
-            <groupId>org.pircbotx</groupId>
+            <groupId>com.dthielke</groupId>
             <artifactId>Herochat</artifactId>
             <version>5.6.6</version>
         </dependency>
@@ -178,7 +178,7 @@
                             <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
-                                    <include>org.pircbotx</include>
+                                    <include>com.cnaude.pircbotx</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -186,7 +186,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.pircbotx</pattern>
-                                    <shadedPattern>com.cnaude.pircbotx</shadedPattern>
+                                    <shadedPattern>org.pircbotx</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -198,15 +198,13 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>deploy</phase>
+                        <phase>package</phase>
                         <configuration>
                             <tasks>
-
                                 <exec dir="target" executable="c:\Users\cnaude\Apps\pscp.exe">
                                     <arg line="${project.name}-${project.version}.jar cnaude.mdns.org:minetest/plugins/${project.name}.jar"/>
                                 </exec>
                                 <copy file="target/${project.name}-${project.version}.jar" tofile="C:/Users/cnaude/Dropbox/Public/${project.name}.jar"/>      
-
                             </tasks>
                         </configuration>
                         <goals>
@@ -215,10 +213,9 @@
                     </execution>
                 </executions>
             </plugin>
- 
         </plugins>
     </build>
-
+            
     <distributionManagement>
         <repository>
             <id>stage-repo</id>
