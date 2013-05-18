@@ -158,7 +158,7 @@
                 </excludes>
             </resource>
         </resources>
-
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -199,27 +199,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>                                
-                                <exec dir="target" executable="scp">
-                                    <arg line="${project.name}-${project.version}.jar cnaude@cnaude.mdns.org:minetest/plugins/${project.name}.jar"/>
-                                </exec>
-                                <copy file="target/${project.name}-${project.version}.jar" tofile="../../../../Dropbox/Public/${project.name}.jar"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            </plugin>          
         </plugins>
     </build>
             
