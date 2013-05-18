@@ -68,6 +68,8 @@ channels:
     # Specific HC channel
     #- hero-[CHANNEL]-chat    
     # ops - IRC hostname mask styled ops list
+    # CleverNotch messages
+    - clever-chat
     ops:    
     - '*!*sarah@example.com'
     # muted - IRC users that should not be heard in game
