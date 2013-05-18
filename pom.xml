@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Bukkit API Version, change if out dated -->
-        <bukkit.version>1.5.1-R0.2</bukkit.version>
+        <bukkit.version>1.5.2-R0.1</bukkit.version>
     </properties>
 
     <repositories>
@@ -105,12 +105,19 @@
             <version>1.4.06-beta2</version>
         </dependency>
         
-        <!-- PircBotx -->
+        <!-- PircBotx
         <dependency>
             <groupId>com.cnaude.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
             <version>1.9</version>
+        </dependency>-->
+        
+        <dependency>
+            <groupId>org.pircbotx</groupId>
+            <artifactId>pircbotx</artifactId>
+            <version>1.9</version>
         </dependency>
+            
            
         <!-- Testing only -->
         <dependency>

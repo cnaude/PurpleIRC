@@ -1,8 +1,8 @@
 package com.cnaude.purpleirc;
 
-import com.cnaude.purpleirc.Listeners.CleverNotchListener;
-import com.cnaude.purpleirc.Listeners.GameListeners;
-import com.cnaude.purpleirc.Listeners.HeroChatListener;
+import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
+import com.cnaude.purpleirc.GameListeners.GameListeners;
+import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
 import java.io.File;
