@@ -18,7 +18,7 @@ import org.bukkit.event.Listener;
  */
 public class HeroChatListener implements Listener {
     
-    PurpleIRC plugin;
+    final PurpleIRC plugin;
 
     public HeroChatListener(PurpleIRC plugin) {
         this.plugin = plugin;

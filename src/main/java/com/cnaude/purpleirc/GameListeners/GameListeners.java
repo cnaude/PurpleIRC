@@ -23,20 +23,12 @@ import org.bukkit.event.server.ServerCommandEvent;
 public class GameListeners implements Listener {
 
     private final PurpleIRC plugin;
-    
-    private String lastMessage;
-    private String lastChatter;
-    private int messageCounter;
-    private int chatterCounter;
 
     public GameListeners(PurpleIRC plugin) {
         this.plugin = plugin;
-        lastMessage = "";
-        messageCounter = 0;
-        chatterCounter = 0;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
@@ -45,49 +37,19 @@ public class GameListeners implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) { 
-                    /*
-                    String pName = event.getPlayer().getName();
-                    String message = pName + ":" + event.getMessage();   
-                    
-                    if (message.equals(lastMessage)) {
-                        messageCounter++;
-                    } else {
-                        messageCounter = 0;
-                    }
-                    lastMessage = message;
-                    plugin.logDebug(String.format("[%d] Caught Message: %s", messageCounter,message));
-                    if (messageCounter >= 5) {                        
-                        plugin.logInfo("Cancelling chat message from " + event.getPlayer().getName() + " due to spamming.");
-                        event.setCancelled(true);
-                        return;
-                    } 
-                    
-                    if (pName.equals(lastChatter)) {
-                        chatterCounter++;
-                    } else {
-                        chatterCounter = 0;
-                    }
-                    lastChatter = pName;
-                    plugin.logDebug(String.format("[%d] Chat Counter: %s", chatterCounter,pName));
-                    if (chatterCounter >= 8) {                        
-                        plugin.logInfo("Cancelling chat message from " + event.getPlayer().getName() + " due to spamming.");
-                        event.setCancelled(true);
-                        return;
-                    } 
-                    */
+                if (plugin.botConnected.get(botName)) {                                        
                     plugin.ircBots.get(botName).gameChat(event.getPlayer(), event.getMessage());
-                } 
+                }
             }
         } else {
             plugin.logDebug("Player " + event.getPlayer().getName() + " does not have irc.message.gamechat permission.");
         }
     }
-   
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {                
+            if (plugin.botConnected.get(botName)) {
                 plugin.ircBots.get(botName).gameQuit(event.getPlayer(), event.getQuitMessage());
             }
         }
@@ -96,7 +58,7 @@ public class GameListeners implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {                
+            if (plugin.botConnected.get(botName)) {
                 plugin.ircBots.get(botName).gameJoin(event.getPlayer(), event.getJoinMessage());
             }
         }
@@ -111,37 +73,36 @@ public class GameListeners implements Listener {
             String msg = event.getMessage();
             if (msg.startsWith("/me ")) {
                 for (String botName : plugin.ircBots.keySet()) {
-                    if (plugin.botConnected.get(botName)) {                        
+                    if (plugin.botConnected.get(botName)) {
                         plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replace("/me", ""));
                     }
                 }
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onServerCommandEvent(ServerCommandEvent event) {        
-        String cmd = event.getCommand();                    
+    public void onServerCommandEvent(ServerCommandEvent event) {
+        String cmd = event.getCommand();
         plugin.logDebug("CE: " + cmd);
-        if (cmd.startsWith("say ")) {            
-            String msg = cmd.split(" ",2)[1];            
+        if (cmd.startsWith("say ")) {
+            String msg = cmd.split(" ", 2)[1];
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {                        
+                if (plugin.botConnected.get(botName)) {
                     plugin.ircBots.get(botName).consoleChat(msg);
                 }
             }
         } else {
             plugin.logDebug("Invalid CE: " + cmd);
-        }   
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {                
+            if (plugin.botConnected.get(botName)) {
                 plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), event.getDeathMessage());
             }
         }
     }
-       
 }

@@ -502,7 +502,7 @@ public final class PurpleBot {
 
     private String chatTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template)
-                .replace("%NAME%", pName)
+                .replace("%NAME%", pName)                
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message));
     }
 
@@ -511,6 +511,8 @@ public final class PurpleBot {
                 .replace("%NAME%", player.getName())
                 .replace("%GROUP%", plugin.getPlayerGroup(player))
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
+                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
                 .replace("%WORLD%", player.getWorld().getName());
     }
 
@@ -520,6 +522,8 @@ public final class PurpleBot {
                 .replace("%GROUP%", plugin.getPlayerGroup(player))
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
                 .replace("%PARTY%", partyName)
+                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
+                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
                 .replace("%WORLD%", player.getWorld().getName());
     }
 
@@ -540,6 +544,8 @@ public final class PurpleBot {
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
                 .replace("%FACTIONTAG%", chatTag)
                 .replace("%FACTIONMODE%", chatMode)
+                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
+                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
                 .replace("%WORLD%", player.getWorld().getName());
     }
 
@@ -550,6 +556,8 @@ public final class PurpleBot {
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
                 .replace("%HEROCHANNEL%", heroChannel)
                 .replace("%CHANNEL%", heroChannel)
+                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
+                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
                 .replace("%WORLD%", player.getWorld().getName());
     }
 

@@ -3,11 +3,11 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.GameListeners;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
+import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -49,7 +48,8 @@ public class PurpleIRC extends JavaPlugin {
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
-    
+    VaultHook vaultHelpers;
+
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
@@ -73,31 +73,34 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("CleverNotch not detected.");
         }
-        getCommand("irc").setExecutor(new CommandHandlers(this));        
+        getCommand("irc").setExecutor(new CommandHandlers(this));
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
         botWatcher = new BotWatcher(this);
+        setupVault();
     }
 
     @Override
     public void onDisable() {
-        botWatcher.cancel();
+        if (botWatcher != null) {
+            botWatcher.cancel();
+        }
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
             Iterator it = ircBots.entrySet().iterator();
             while (it.hasNext()) {
-                Entry entry = (Entry)it.next();
-                PurpleBot ircBot = (PurpleBot)entry.getValue();
+                Entry entry = (Entry) it.next();
+                PurpleBot ircBot = (PurpleBot) entry.getValue();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
                 it.remove();
             }
         }
     }
-    
+
     public void debugMode(boolean debug) {
         debugEnabled = debug;
         getConfig().set("Debug", debug);
@@ -107,7 +110,7 @@ public class PurpleIRC extends JavaPlugin {
             logError("Problem saving to " + configFile.getName() + ": " + ex.getMessage());
         }
     }
-    
+
     public boolean debugMode() {
         return debugEnabled;
     }
@@ -168,7 +171,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isHeroChatEnabled() {
         return (getServer().getPluginManager().getPlugin("Herochat") != null);
     }
-    
+
     public boolean isCleverNotchEnabled() {
         return (getServer().getPluginManager().getPlugin("CleverNotch") != null);
     }
@@ -176,7 +179,7 @@ public class PurpleIRC extends JavaPlugin {
     private void createSampleBot() {
         File file = new File(pluginFolder + "/" + sampleFileName);
         try {
-            InputStream in = PurpleIRC.class.getResourceAsStream("/SampleBot.yml");
+            InputStream in = PurpleIRC.class.getResourceAsStream("/" + sampleFileName);
             byte[] buf = new byte[1024];
             int len;
             OutputStream out = new FileOutputStream(file);
@@ -257,14 +260,42 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
+    public void setupVault() {
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            vaultHelpers = new VaultHook(this);
+            logInfo("Hooked into Vault!");
+        } else {
+            logInfo("Not hooked into Vault!");
+        }
+    }
+
     public String getPlayerGroup(Player player) {
         String groupName = "";
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-            if (permissionProvider != null) {
-                groupName = permissionProvider.getProvider().getPrimaryGroup(player);
+        if (vaultHelpers != null) {
+            if (vaultHelpers.permission != null) {
+                groupName = vaultHelpers.permission.getPrimaryGroup(player);
             }
         }
         return groupName;
+    }
+
+    public String getPlayerPrefix(Player player) {
+        String prefix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                prefix = vaultHelpers.chat.getPlayerPrefix(player.getLocation().getWorld(), player.getName());
+            }
+        }
+        return prefix;
+    }
+
+    public String getGroupPrefix(Player player) {
+        String prefix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                prefix = vaultHelpers.chat.getGroupPrefix(player.getLocation().getWorld(), player.getName());
+            }
+        }
+        return prefix;
     }
 }
