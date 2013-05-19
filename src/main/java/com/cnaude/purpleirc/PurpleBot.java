@@ -376,6 +376,7 @@ public final class PurpleBot {
                 return;
             }
             if (plugin.isMcMMOEnabled()) {
+                plugin.logDebug("mcMMO is enabled");
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
                         asyncSendMessage(channelName, chatTokenizer(player, plugin.mcMMOAdminChat, message));
@@ -395,6 +396,8 @@ public final class PurpleBot {
                         return;
                     }
                 }
+            } else {
+                plugin.logDebug("mcMMO is not enabled");
             }
 
             if (plugin.isFactionChatEnabled()) {
@@ -517,14 +520,8 @@ public final class PurpleBot {
     }
 
     private String chatMcMMOTokenizer(Player player, String template, String message, String partyName) {
-        return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%NAME%", player.getName())
-                .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", message)
-                .replace("%PARTY%", partyName)
-                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
-                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName()));
+        return chatTokenizer(player, template, message)
+                .replace("%PARTY%", partyName);
     }
 
     private String chatFactionTokenizer(Player player, String message, String chatTag, String chatMode) {
@@ -538,32 +535,20 @@ public final class PurpleBot {
         } else {
             return "";
         }
-        return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%NAME%", player.getName())
-                .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", message)
+        return chatTokenizer(player, template, message)
                 .replace("%FACTIONTAG%", chatTag)
-                .replace("%FACTIONMODE%", chatMode)
-                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
-                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName()));
+                .replace("%FACTIONMODE%", chatMode);
     }
 
     private String chatHeroTokenizer(Player player, String message, String heroChannel) {
-        return plugin.colorConverter.gameColorsToIrc(plugin.heroChat
-                .replace("%NAME%", player.getName())
-                .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", message)
+        return chatTokenizer(player, plugin.heroChat, message)
                 .replace("%HEROCHANNEL%", heroChannel)
-                .replace("%CHANNEL%", heroChannel)
-                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
-                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName()));
+                .replace("%CHANNEL%", heroChannel);
     }
 
     private String chatTokenizer(String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(template)
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message));
+        return plugin.colorConverter.gameColorsToIrc(template
+                .replace("%MESSAGE%", message));
     }
 
     public void gameJoin(Player player, String message) {
