@@ -501,30 +501,30 @@ public final class PurpleBot {
     }
 
     private String chatTokenizer(String pName, String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(template)
-                .replace("%NAME%", pName)                
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message));
+        return plugin.colorConverter.gameColorsToIrc(template
+                .replace("%NAME%", pName)
+                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
     }
 
-    private String chatTokenizer(Player player, String template, String message) {
-        return plugin.colorConverter.gameColorsToIrc(template)
+    private String chatTokenizer(Player player, String template, String message) {        
+        return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
-                .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%GROUP%", plugin.getPlayerGroup(player))                
+                .replace("%MESSAGE%", message)
                 .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
                 .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName());
+                .replace("%WORLD%", player.getWorld().getName()));
     }
 
     private String chatMcMMOTokenizer(Player player, String template, String message, String partyName) {
-        return plugin.colorConverter.gameColorsToIrc(template)
+        return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
                 .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%MESSAGE%", message)
                 .replace("%PARTY%", partyName)
                 .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
                 .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName());
+                .replace("%WORLD%", player.getWorld().getName()));
     }
 
     private String chatFactionTokenizer(Player player, String message, String chatTag, String chatMode) {
@@ -538,27 +538,27 @@ public final class PurpleBot {
         } else {
             return "";
         }
-        return plugin.colorConverter.gameColorsToIrc(template)
+        return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
                 .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%MESSAGE%", message)
                 .replace("%FACTIONTAG%", chatTag)
                 .replace("%FACTIONMODE%", chatMode)
                 .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
                 .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName());
+                .replace("%WORLD%", player.getWorld().getName()));
     }
 
     private String chatHeroTokenizer(Player player, String message, String heroChannel) {
-        return plugin.colorConverter.gameColorsToIrc(plugin.heroChat)
+        return plugin.colorConverter.gameColorsToIrc(plugin.heroChat
                 .replace("%NAME%", player.getName())
                 .replace("%GROUP%", plugin.getPlayerGroup(player))
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%MESSAGE%", message)
                 .replace("%HEROCHANNEL%", heroChannel)
                 .replace("%CHANNEL%", heroChannel)
                 .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
                 .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
-                .replace("%WORLD%", player.getWorld().getName());
+                .replace("%WORLD%", player.getWorld().getName()));
     }
 
     private String chatTokenizer(String template, String message) {
@@ -575,11 +575,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameJoin)
-                        .replace("%NAME%", player.getName())
-                        .replace("%GROUP%", plugin.getPlayerGroup(player))
-                        .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
-                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
+                bot.sendMessage(channelName, chatTokenizer(player, plugin.gameJoin, message));
             }
         }
     }
@@ -593,11 +589,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameQuit)
-                        .replace("%NAME%", player.getName())
-                        .replace("%GROUP%", plugin.getPlayerGroup(player))
-                        .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
-                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
+                bot.sendMessage(channelName, chatTokenizer(player, plugin.gameQuit, message));                
             }
         }
     }
@@ -611,11 +603,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameAction)
-                        .replace("%NAME%", player.getName())
-                        .replace("%GROUP%", plugin.getPlayerGroup(player))
-                        .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
-                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
+                bot.sendMessage(channelName, chatTokenizer(player, plugin.gameAction, message));                
             }
         }
     }
@@ -629,11 +617,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, plugin.colorConverter.gameColorsToIrc(plugin.gameDeath)
-                        .replace("%NAME%", player.getName())
-                        .replace("%GROUP%", plugin.getPlayerGroup(player))
-                        .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
-                        .replace("%WORLD%", player.getLocation().getWorld().getName()));
+                bot.sendMessage(channelName, chatTokenizer(player, plugin.gameDeath, message));                                
             }
         }
     }

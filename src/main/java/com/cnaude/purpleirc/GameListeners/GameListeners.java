@@ -33,7 +33,6 @@ public class GameListeners implements Listener {
         if (event.isCancelled()) {
             return;
         }
-
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (String botName : plugin.ircBots.keySet()) {

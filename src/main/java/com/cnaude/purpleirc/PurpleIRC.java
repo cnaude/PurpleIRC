@@ -283,7 +283,7 @@ public class PurpleIRC extends JavaPlugin {
         String prefix = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
-                prefix = vaultHelpers.chat.getPlayerPrefix(player.getLocation().getWorld(), player.getName());
+                prefix = vaultHelpers.chat.getPlayerPrefix(player);
             }
         }
         return prefix;
