@@ -96,10 +96,10 @@ public class MessageListener extends ListenerAdapter {
             }
         } else {
             if (ircBot.enabledMessages.get(myChannel).contains("irc-chat")) {
-                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircChat)
+                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircChat
                         .replace("%NAME%", user.getNick())
                         .replace("%MESSAGE%", message)
-                        .replace("%CHANNEL%", channel.getName()), "irc.message.chat");
+                        .replace("%CHANNEL%", channel.getName())), "irc.message.chat");
             }
         }
     }

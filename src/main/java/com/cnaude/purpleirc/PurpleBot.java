@@ -509,13 +509,25 @@ public final class PurpleBot {
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
     }
 
-    private String chatTokenizer(Player player, String template, String message) {        
+    private String chatTokenizer(Player player, String template, String message) {  
+        String pPrefix = plugin.getPlayerPrefix(player);
+        if (pPrefix == null) {
+            pPrefix = "";
+        }
+        String gPrefix = plugin.getGroupPrefix(player);
+        if (gPrefix == null) {
+            gPrefix = "";
+        }
+        String group = plugin.getPlayerGroup(player);
+        if (group == null) {
+            group = "";
+        }
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
-                .replace("%GROUP%", plugin.getPlayerGroup(player))                
+                .replace("%GROUP%", group)                
                 .replace("%MESSAGE%", message)
-                .replace("%PLAYERPREFIX%", plugin.getPlayerPrefix(player))
-                .replace("%GROUPPREFIX%", plugin.getGroupPrefix(player))
+                .replace("%PLAYERPREFIX%", pPrefix)
+                .replace("%GROUPPREFIX%", gPrefix)
                 .replace("%WORLD%", player.getWorld().getName()));
     }
 

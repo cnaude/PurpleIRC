@@ -6,13 +6,18 @@ import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
+import com.google.common.base.Joiner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -249,14 +254,16 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
-    public String getMCPlayers() {
+    public String getMCPlayers() {             
+        ArrayList<String> playerList = new ArrayList<String>();
+        for (Player player : getServer().getOnlinePlayers()) {
+            playerList.add(player.getName());
+        }
+        Collections.sort(playerList, Collator.getInstance());
         String msg = "Players currently online("
                 + getServer().getOnlinePlayers().length
-                + "/" + getServer().getMaxPlayers() + "): ";
-        for (Player p : getServer().getOnlinePlayers()) {
-            msg = msg + p.getName() + ", ";
-        }
-        msg = msg.substring(0, msg.length() - 1);
+                + "/" + getServer().getMaxPlayers() + "): "
+                + Joiner.on(", ").join(playerList);        
         return msg;
     }
 
