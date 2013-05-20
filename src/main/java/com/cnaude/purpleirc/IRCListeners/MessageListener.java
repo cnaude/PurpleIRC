@@ -12,6 +12,7 @@ import java.util.Map;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.IRCCommandSender;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.google.common.base.Joiner;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -111,12 +112,8 @@ public class MessageListener extends ListenerAdapter {
                 sortedCommands.add(command);
             }
             Collections.sort(sortedCommands, Collator.getInstance());
-
-            String commands = "";
-            for (String command : sortedCommands) {
-                commands = commands + ", " + command;
-            }
-            return "Valid commands:" + commands.substring(1);
+            
+            return "Valid commands: " + Joiner.on(", ").join(sortedCommands);
         }
         return "";
     }

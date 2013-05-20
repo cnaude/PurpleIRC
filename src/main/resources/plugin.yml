@@ -9,7 +9,7 @@ softdepend:
 - FactionChat
 - HeroChat
 - mcMMO
-- CleverBot
+- CleverNotch
 commands:
     irc:
         description: Various irc commands

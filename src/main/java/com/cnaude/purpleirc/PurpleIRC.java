@@ -72,7 +72,7 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("HeroChat not detected.");
         }
-        if (isHeroChatEnabled()) {
+        if (isCleverNotchEnabled()) {
             logInfo("Enabling CleverNotch support.");
             getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
         } else {
