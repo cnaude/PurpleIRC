@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,7 +39,7 @@ public class PurpleIRC extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick, gameSend;
-    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
+    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat, ircHeroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     public String cleverSend;
@@ -134,6 +133,7 @@ public class PurpleIRC extends JavaPlugin {
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
         heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
+        ircHeroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-chat", ""));
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
         factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));

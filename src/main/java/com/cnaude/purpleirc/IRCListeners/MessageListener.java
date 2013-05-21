@@ -12,6 +12,7 @@ import java.util.Map;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.IRCCommandSender;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.dthielke.herochat.Herochat;
 import com.google.common.base.Joiner;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -95,12 +96,20 @@ public class MessageListener extends ListenerAdapter {
                 bot.sendMessage(channel, "I'm sorry " + user.getNick() + " I can't do that. Type \""
                         + ircBot.commandPrefix + "help\" for a list of commands I might respond to.");
             }
-        } else {
-            if (ircBot.enabledMessages.get(myChannel).contains("irc-chat")) {
+        } else {           
+            if (ircBot.enabledMessages.get(myChannel).contains("irc-chat")) {                
                 plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircChat
                         .replace("%NAME%", user.getNick())
                         .replace("%MESSAGE%", message)
                         .replace("%CHANNEL%", channel.getName())), "irc.message.chat");
+            }
+            
+            if (ircBot.enabledMessages.get(myChannel).contains("irc-hero-chat")) {                
+                Herochat.getChannelManager().getChannel(ircBot.heroChannel.get(myChannel))
+                        .sendRawMessage(plugin.colorConverter.ircColorsToGame(plugin.ircHeroChat
+                        .replace("%NAME%", user.getNick())
+                        .replace("%MESSAGE%", message)
+                        .replace("%CHANNEL%", channel.getName())));
             }
         }
     }

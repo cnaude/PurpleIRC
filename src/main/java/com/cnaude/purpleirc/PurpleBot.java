@@ -49,7 +49,7 @@ public final class PurpleBot {
     public String botLogin;
     public String botServerPass;
     public int botServerPort;
-    public String commandPrefix;
+    public String commandPrefix;    
     public String quitMessage;
     public boolean showMOTD;
     public ArrayList<String> botChannels = new ArrayList<String>();
@@ -59,6 +59,7 @@ public final class PurpleBot {
     public HashMap<String, String> channelModes = new HashMap<String, String>();
     public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
+    public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
@@ -278,6 +279,9 @@ public final class PurpleBot {
 
                 channelTopicProtected.put(channelName, config.getBoolean("channels." + channelName + ".topic-protect", false));
                 plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channelName).toString());
+                
+                heroChannel.put(channelName, config.getString("channels." + channelName + ".hero-channel", ""));
+                plugin.logDebug("  Topic => " + heroChannel.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
@@ -447,15 +451,16 @@ public final class PurpleBot {
             if (!isPlayerInValidWorld(player, channelName)) {
                 return;
             }
-            String heroChannel = chatter.getActiveChannel().getName();
-            plugin.logDebug("HC Channel: " + heroChannel);
-            if (enabledMessages.get(channelName).contains("hero-" + heroChannel + "-chat")
+            String hChannel = chatter.getActiveChannel().getName();
+            String hNick = chatter.getActiveChannel().getNick();
+            plugin.logDebug("HC Channel: " + hChannel);
+            if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                asyncSendMessage(channelName, chatHeroTokenizer(player, message, heroChannel));
+                asyncSendMessage(channelName, chatHeroTokenizer(player, message, hChannel, hNick));
                 return;
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
-                        + heroChannel + "\" but hero-" + heroChannel + "-chat is disabled.");
+                        + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
                 return;
             }
         }
@@ -552,10 +557,11 @@ public final class PurpleBot {
                 .replace("%FACTIONMODE%", chatMode);
     }
 
-    private String chatHeroTokenizer(Player player, String message, String heroChannel) {
+    private String chatHeroTokenizer(Player player, String message, String hChannel, String hNick) {
         return chatTokenizer(player, plugin.heroChat, message)
-                .replace("%HEROCHANNEL%", heroChannel)
-                .replace("%CHANNEL%", heroChannel);
+                .replace("%HEROCHANNEL%", hChannel)
+                .replace("%HERONICK%", hNick)
+                .replace("%CHANNEL%", hChannel);
     }
 
     private String chatTokenizer(String template, String message) {

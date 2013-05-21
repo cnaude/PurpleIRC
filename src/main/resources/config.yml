@@ -17,6 +17,7 @@ conn-check-interval: 1000
 #  %FACTIONMODE% - Faction chat mode (all, ally, enemy)
 #  %FACTIONTAG%  - Faction tag name
 #  %HEROCHANNEL% - HeroChat channel name
+#  %HERONICK% - HeroChat channel nick
 message-format:
   game-action: '&0[%WORLD%&0] ***%NAME%&0 %MESSAGE%'
   game-chat: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%'  

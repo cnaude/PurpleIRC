@@ -31,7 +31,7 @@ public class ColorConverter {
             return ChatColor.stripColor(message);
         } else {
             String newMessage = message;
-            for (ChatColor gameColor : ircColorMap.keySet()) {                
+            for (ChatColor gameColor : ircColorMap.keySet()) {
                 newMessage = newMessage.replace(gameColor.toString(), ircColorMap.get(gameColor));
             }
             // We return the message with the remaining MC color codes stripped out
@@ -45,8 +45,7 @@ public class ColorConverter {
         } else {
             String newMessage = message;
             for (String ircColor : gameColorMap.keySet()) {
-                //System.out.println(ircColor + " => " + gameColorMap.get(ircColor).toString());
-                newMessage = newMessage.replace(ircColor, gameColorMap.get(ircColor).toString());
+                newMessage = newMessage.replace(ircColor.toString(), gameColorMap.get(ircColor).toString());
             }
             // We return the message with the remaining IRC color codes stripped out
             return Colors.removeFormattingAndColors(newMessage);

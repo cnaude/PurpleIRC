@@ -66,10 +66,14 @@ channels:
     # Any HC channel
     - hero-chat
     # Specific HC channel
-    #- hero-[CHANNEL]-chat    
+    #- hero-[CHANNEL]-chat
+    # Enable to irc-hero-chat to allow IRC messages to be sent to a specific HC channel configured below
+    #- irc-hero-chat
     # ops - IRC hostname mask styled ops list
     # CleverNotch messages
     - clever-chat
+    # If you have irc-hero-chat enabled then only the HC channel listed will receive messages from IRC
+    hero-channel: admin
     ops:    
     - '*!*sarah@example.com'
     # muted - IRC users that should not be heard in game
