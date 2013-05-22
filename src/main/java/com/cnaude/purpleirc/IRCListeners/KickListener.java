@@ -16,7 +16,7 @@ import org.pircbotx.hooks.events.KickEvent;
  * @author cnaude
  */
 public class KickListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
@@ -29,17 +29,11 @@ public class KickListener extends ListenerAdapter {
     public void onKick(KickEvent event) {
         Channel channel = event.getChannel();
         User recipient = event.getRecipient();
-        User kicker = event.getSource();        
-        
+        User kicker = event.getSource();
+
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-kick")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircKick)
-                    .replace("%NAME%", recipient.getNick())
-                    .replace("%REASON%", event.getReason())
-                    .replace("%KICKER%", kicker.getNick())
-                    .replace("%CHANNEL%", channel.getName()), "irc.message.kick");
-        }
+        ircBot.broadcastIRCKick(recipient.getNick(), kicker.getNick(), event.getReason(), channel.getName());
     }
 }

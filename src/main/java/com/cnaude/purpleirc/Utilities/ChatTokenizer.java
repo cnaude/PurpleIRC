@@ -31,8 +31,16 @@ public class ChatTokenizer {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", nick).replace("%MESSAGE%", message).replace("%CHANNEL%", channelName));
     }
-    
-        public String chatTokenizer(String pName, String template, String message) {
+
+    public String chatIRCTokenizer(String recipient, String kicker, String reason, String channelName, String template) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%NAME%", recipient)
+                .replace("%REASON%", reason)
+                .replace("%KICKER%", kicker)
+                .replace("%CHANNEL%", channelName));
+    }
+
+    public String chatTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", pName)
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
@@ -92,6 +100,4 @@ public class ChatTokenizer {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%MESSAGE%", message));
     }
-    
-    
 }

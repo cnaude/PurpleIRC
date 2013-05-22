@@ -86,8 +86,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new MotdListener(plugin, this));
         bot.getListenerManager().addListener(new ServerResponseListener(plugin, this));
         this.plugin = plugin;
-        this.file = file;
-        tokenizer = new ChatTokenizer(this.plugin, this);
+        this.file = file;        
         whoisSenders = new ArrayList<CommandSender>();
         config = new YamlConfiguration();
         loadConfig();
@@ -237,6 +236,7 @@ public final class PurpleBot {
 
     private void loadConfig() {
         try {
+            tokenizer = new ChatTokenizer(this.plugin, this);
             config.load(file);
             autoConnect = config.getBoolean("autoconnect", true);
             botNick = config.getString("nick", "");
@@ -772,7 +772,7 @@ public final class PurpleBot {
     // Broadcast chat messages from IRC
     public void broadcastChat(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-chat")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircChat), "irc.message.chat");
+            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircChat, message), "irc.message.chat");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-chat")) {
@@ -784,7 +784,7 @@ public final class PurpleBot {
     // Broadcast action messages from IRC
     public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircAction), "irc.message.action");
+            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-action")) {
@@ -792,16 +792,16 @@ public final class PurpleBot {
                     .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroAction, message));
         }
     }
-    
+    //ircBot.broadcastIRCKick(recipient.getNick(), kicker.getNick(), event.getReason(), channel.getName());
     // Broadcast kick messages from IRC
-    public void broadcastIRCKick(String nick, String myChannel, String message) {
+    public void broadcastIRCKick(String recipient, String kicker, String reason, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-kick")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircKick), "irc.message.kick");
+            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(recipient, kicker, reason, myChannel, plugin.ircKick), "irc.message.kick");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-kick")) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroKick, message));
+                    .sendRawMessage(tokenizer.chatIRCTokenizer(recipient, kicker, reason, myChannel, plugin.ircHeroKick));
         }
     }
     
@@ -836,6 +836,6 @@ public final class PurpleBot {
     
     // Broadcast connect messages from IRC
     public void broadcastIRCConnect(String message) {
-        plugin.getServer().broadcast("[" + bot.getNick() + "] Connected IRC server.", "irc.message.connect");
+        plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
     }
 }

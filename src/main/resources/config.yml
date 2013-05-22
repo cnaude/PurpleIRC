@@ -20,22 +20,22 @@ conn-check-interval: 1000
 #  %HERONICK% - HeroChat channel nick
 message-format:
   # Message templates for game to IRC messages
-  console-chat: '&0[Server] %MESSAGE%' 
-  game-action: '&0[%WORLD%&0] ***%NAME%&0 %MESSAGE%'
-  game-chat: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%'
-  game-death: '&0[%WORLD%&0] %MESSAGE%'  
-  game-kick: '&0[%WORLD%&0] %MESSAGE%'
-  game-join: '&0[%WORLD%&0] %MESSAGE%'
-  game-quit: '&0[%WORLD%&0] %MESSAGE%'
+  console-chat: '&0[&5Server&0] %MESSAGE%' 
+  game-action: '&0[&2%WORLD%&0] ***%NAME%&0 %MESSAGE%'
+  game-chat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
+  game-death: '&0[&2%WORLD%&0] %MESSAGE%'  
+  game-kick: '&0[&2%WORLD%&0] %MESSAGE%'
+  game-join: '&0[&2%WORLD%&0] %MESSAGE%'
+  game-quit: '&0[&2%WORLD%&0] %MESSAGE%'
   # Message template for "/irc send" to IRC message
-  game-send: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%' 
+  game-send: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%' 
   # Message templates for IRC to game messages
-  irc-action: '&0[&4IRC&0] ***%NAME%&0 %MESSAGE%'
-  irc-chat: '&0[&4IRC&0]<%NAME%&0> %MESSAGE%'  
-  irc-join: '&0[&4IRC&0] %NAME%&0 has joined %CHANNEL%.'
-  irc-kick: '&0[&4IRC&0] %NAME%&0 was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
-  irc-part: '&0[&4IRC&0] %NAME%&0 has left %CHANNEL%.'  
-  irc-topic: '&0[&4IRC&0] Topic changed by %NAME%&0: %TOPIC%.'  
+  irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
+  irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
+  irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
+  irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  
+  irc-topic: '&f[&4IRC&f] Topic changed by %NAME%&0: %TOPIC%.'  
   # Message template for Clevernotch bot to IRC messages
   clever-send: '&0[&4BOT&0]<%NAME%&0> %MESSAGE%' 
   # Message templates for mcMMO to IRC messages
@@ -48,12 +48,12 @@ message-format:
   # Message template for Herochat to IRC messages
   hero-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
   # Message templates for IRC to Herochat messages
-  irc-hero-action: '&0[&4IRC&0] ***%NAME%&0 %MESSAGE%'
-  irc-hero-chat: '&0[&4IRC&0]<%NAME%&0> %MESSAGE%'  
-  irc-hero-join: '&0[&4IRC&0] %NAME%&0 has joined %CHANNEL%.'
-  irc-hero-kick: '&0[&4IRC&0] %NAME%&0 was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
-  irc-hero-part: '&0[&4IRC&0] %NAME%&0 has left %CHANNEL%.'  
-  irc-hero-topic: '&0[&4IRC&0] Topic changed by %NAME%&0: %TOPIC%.'  
+  irc-hero-action: '&f[&3IRC&f] ***%NAME%&f %MESSAGE%'
+  irc-hero-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'  
+  irc-hero-join: '&f[&3IRC&f] %NAME%&f has joined %CHANNEL%.'
+  irc-hero-kick: '&f[&3IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-hero-part: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
+  irc-hero-topic: '&f[&3IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game
