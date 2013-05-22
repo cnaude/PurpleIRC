@@ -61,6 +61,12 @@ permissions:
   'irc.message.action':
     description: Receive IRC chat actions (/me).
     default: true
+  'irc.message.disconnect':
+    description: Receive IRC disconnect messages.
+    default: op
+  'irc.message.connect':
+    description: Receive IRC connect messages.
+    default: op
   'irc.listbots':
     description: Gives player access to the /irc listbots command.
     default: op

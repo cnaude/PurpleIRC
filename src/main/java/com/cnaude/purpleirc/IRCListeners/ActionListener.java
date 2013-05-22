@@ -17,7 +17,7 @@ import org.pircbotx.hooks.events.ActionEvent;
  * @author cnaude
  */
 public class ActionListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
@@ -25,21 +25,14 @@ public class ActionListener extends ListenerAdapter {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-        
-    
+
     @Override
-    public void onAction(ActionEvent event) {        
+    public void onAction(ActionEvent event) {
         Channel channel = event.getChannel();
         User user = event.getUser();
-        PircBotX bot = event.getBot();
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-action")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircAction)
-                    .replace("%NAME%", user.getNick())
-                    .replace("%MESSAGE%", event.getAction())
-                    .replace("%CHANNEL%", channel.getName()), "irc.message.action");
-        }
+        ircBot.broadcastAction(user.getNick(), channel.getName(), event.getAction());
     }
 }

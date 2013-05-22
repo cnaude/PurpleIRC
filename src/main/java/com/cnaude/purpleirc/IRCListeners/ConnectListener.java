@@ -15,7 +15,7 @@ import org.pircbotx.hooks.events.ConnectEvent;
  * @author cnaude
  */
 public class ConnectListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
@@ -23,23 +23,25 @@ public class ConnectListener extends ListenerAdapter {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-    
+
     @Override
     public void onConnect(ConnectEvent event) {
         PircBotX bot = event.getBot();
-        
+
         plugin.botConnected.put(ircBot.botNick, true);
         for (String channelName : ircBot.botChannels) {
             if (ircBot.channelAutoJoin.containsKey(channelName)) {
                 if (ircBot.channelAutoJoin.get(channelName)) {
-                    plugin.logInfo("Auto joining channel " + channelName);
+                    String connectMessage = "Automatically joining IRC channel " + channelName;
+                    plugin.logInfo(connectMessage);
+                    ircBot.broadcastIRCConnect(connectMessage);
                     if (ircBot.channelPassword.get(channelName).isEmpty()) {
                         bot.joinChannel(channelName);
                     } else {
-                        bot.joinChannel(channelName,ircBot.channelPassword.get(channelName));
+                        bot.joinChannel(channelName, ircBot.channelPassword.get(channelName));
                     }
                 } else {
-                    plugin.logInfo("Not auto joining channel " + channelName);
+                    plugin.logInfo("Not automatically joining IRC channel " + channelName);
                 }
             }
         }

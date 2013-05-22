@@ -28,6 +28,6 @@ public class DisconnectListener extends ListenerAdapter {
     public void onDisconnect(DisconnectEvent event) {                
         PircBotX bot = event.getBot();
         plugin.botConnected.put(bot.getNick(), false);
-        plugin.getServer().broadcast("[" + bot.getNick() + "] Disconnected from IRC server.", "irc.message.disconnect");
+        ircBot.broadcastIRCDisconnect("[" + bot.getNick() + "] Disconnected from IRC server.");
     }
 }

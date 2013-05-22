@@ -19,27 +19,41 @@ conn-check-interval: 1000
 #  %HEROCHANNEL% - HeroChat channel name
 #  %HERONICK% - HeroChat channel nick
 message-format:
-  game-action: '&0[%WORLD%&0] ***%NAME%&0 %MESSAGE%'
-  game-chat: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%'  
-  game-send: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%' 
-  clever-send: '&0[&4BOT&0]<%NAME%&0> %MESSAGE%' 
-  mcmmo-admin-chat: '&0[admin:%WORLD%&0]<%NAME%&0> %MESSAGE%'    
-  mcmmo-party-chat: '&0[party:%PARTY%&0]<%NAME%&0> %MESSAGE%'
-  hero-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
-  faction-public-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
-  faction-ally-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
-  faction-enemy-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
+  # Message templates for game to IRC messages
   console-chat: '&0[Server] %MESSAGE%' 
+  game-action: '&0[%WORLD%&0] ***%NAME%&0 %MESSAGE%'
+  game-chat: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%'
   game-death: '&0[%WORLD%&0] %MESSAGE%'  
   game-kick: '&0[%WORLD%&0] %MESSAGE%'
   game-join: '&0[%WORLD%&0] %MESSAGE%'
   game-quit: '&0[%WORLD%&0] %MESSAGE%'
+  # Message template for "/irc send" to IRC message
+  game-send: '&0[%WORLD%&0]<%NAME%&0> %MESSAGE%' 
+  # Message templates for IRC to game messages
   irc-action: '&0[&4IRC&0] ***%NAME%&0 %MESSAGE%'
   irc-chat: '&0[&4IRC&0]<%NAME%&0> %MESSAGE%'  
   irc-join: '&0[&4IRC&0] %NAME%&0 has joined %CHANNEL%.'
   irc-kick: '&0[&4IRC&0] %NAME%&0 was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-part: '&0[&4IRC&0] %NAME%&0 has left %CHANNEL%.'  
   irc-topic: '&0[&4IRC&0] Topic changed by %NAME%&0: %TOPIC%.'  
+  # Message template for Clevernotch bot to IRC messages
+  clever-send: '&0[&4BOT&0]<%NAME%&0> %MESSAGE%' 
+  # Message templates for mcMMO to IRC messages
+  mcmmo-admin-chat: '&0[admin:%WORLD%&0]<%NAME%&0> %MESSAGE%'    
+  mcmmo-party-chat: '&0[party:%PARTY%&0]<%NAME%&0> %MESSAGE%'
+  # Message templates for FactionChat to IRC messages
+  faction-public-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
+  faction-ally-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
+  faction-enemy-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
+  # Message template for Herochat to IRC messages
+  hero-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
+  # Message templates for IRC to Herochat messages
+  irc-hero-action: '&0[&4IRC&0] ***%NAME%&0 %MESSAGE%'
+  irc-hero-chat: '&0[&4IRC&0]<%NAME%&0> %MESSAGE%'  
+  irc-hero-join: '&0[&4IRC&0] %NAME%&0 has joined %CHANNEL%.'
+  irc-hero-kick: '&0[&4IRC&0] %NAME%&0 was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-hero-part: '&0[&4IRC&0] %NAME%&0 has left %CHANNEL%.'  
+  irc-hero-topic: '&0[&4IRC&0] Topic changed by %NAME%&0: %TOPIC%.'  
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game

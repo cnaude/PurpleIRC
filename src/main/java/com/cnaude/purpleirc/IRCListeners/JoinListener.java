@@ -35,11 +35,7 @@ public class JoinListener extends ListenerAdapter {
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-join")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircJoin)
-                    .replace("%NAME%", user.getNick())
-                    .replace("%CHANNEL%", channel.getName()), "irc.message.join");
-        }
+        ircBot.broadcastIRCJoin(user.getNick(), channel.getName());
         ircBot.opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
             plugin.logDebug("Setting channel modes: " + channel.getName() + " => " 

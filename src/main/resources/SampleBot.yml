@@ -37,9 +37,10 @@ channels:
     topic: New topic
     # topic-protect - Prevent others from changing the topic
     topic-protect: true
-    # enabled-messages - These are the message names as defined in main 
+    # enabled-messages - These are the message types that are either sent to the game or IRC
     # config.yml. Remove or comment the messages you don't want.    
     enabled-messages:
+    # These messages are sent from game to IRC (see permissions)
     - console-chat
     - game-action
     - game-chat
@@ -47,33 +48,39 @@ channels:
     - game-kick
     - game-join
     - game-quit
+    # These messages are sent from IRC to game (see permissions)
     - irc-action
     - irc-chat
     - irc-join
     - irc-kick
     - irc-part
     - irc-topic
-    # mcMMO messages
+    # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat
-    # FactionChat messages
+    # FactionChat messages sent to IRC
     - faction-public-chat
     - faction-ally-chat
     - faction-enemy-chat
-    # Hero chat message types
+    # Hero chat message types that are sent from game to IRC
     # Global HC channel
     - hero-Global-chat
     # Any HC channel
     - hero-chat
     # Specific HC channel
     #- hero-[CHANNEL]-chat
-    # Enable to irc-hero-chat to allow IRC messages to be sent to a specific HC channel configured below
+    # Various IRC messages that are sent to Herochat channel. Receiving HC
+    # channel name is configured per hero-channel: 'CHANNEL NAME'
+    #- irc-hero-action
     #- irc-hero-chat
-    # ops - IRC hostname mask styled ops list
-    # CleverNotch messages
+    #- irc-hero-kick
+    #- irc-hero-join
+    #- irc-hero-part
+    #- irc-hero-topic
+    # CleverNotch bot messages will be sent to the IRC channel
     - clever-chat
-    # If you have irc-hero-chat enabled then only the HC channel listed will receive messages from IRC
     hero-channel: admin
+    # ops - IRC hostname mask styled ops list
     ops:    
     - '*!*sarah@example.com'
     # muted - IRC users that should not be heard in game
