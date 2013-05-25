@@ -26,7 +26,9 @@ import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
+import com.dthielke.herochat.ChannelManager;
 import com.dthielke.herochat.Herochat;
+import com.gmail.nossr50.chat.ChatManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -387,7 +389,7 @@ public final class PurpleBot {
                 plugin.logDebug("mcMMO is enabled");
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
-                        asyncSendMessage(channelName, tokenizer.chatTokenizer(player, plugin.mcMMOAdminChat, message));
+                        asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
                         return;
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
@@ -396,7 +398,7 @@ public final class PurpleBot {
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
-                        asyncSendMessage(channelName, tokenizer.chatMcMMOTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
+                        asyncSendMessage(channelName, tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
                         return;
                     } else {
                         plugin.logDebug("Player " + player.getName()
@@ -427,7 +429,7 @@ public final class PurpleBot {
             }
             if (enabledMessages.get(channelName).contains("game-chat")) {
                 plugin.logDebug("[game-chat] => " + channelName + " => " + message);
-                asyncSendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameChat, message));
+                asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameChat, message));
             } else {
                 plugin.logDebug("Ignoring message due to game-chat not being listed.");
             }
@@ -446,7 +448,7 @@ public final class PurpleBot {
     }
 
     // Called from HeroChat listener
-    public void gameChat(Chatter chatter, String message) {
+    public void gameChat(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
             return;
@@ -457,10 +459,11 @@ public final class PurpleBot {
             }
             String hChannel = chatter.getActiveChannel().getName();
             String hNick = chatter.getActiveChannel().getNick();
+            String hColor = chatColor.toString();
             plugin.logDebug("HC Channel: " + hChannel);
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                asyncSendMessage(channelName, tokenizer.chatHeroTokenizer(player, message, hChannel, hNick));
+                asyncSendMessage(channelName, tokenizer.chatHeroTokenizer(player, message, hColor, hChannel, hNick));
                 return;
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
@@ -476,7 +479,7 @@ public final class PurpleBot {
             return;
         }
         if (botChannels.contains(channelName)) {
-            bot.sendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameSend, message));
+            bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameSend, message));
         }
     }
 
@@ -487,7 +490,7 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("clever-chat")) {
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(cleverBotName, plugin.cleverSend, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(cleverBotName, plugin.cleverSend, message));
             }
         }
     }
@@ -497,7 +500,7 @@ public final class PurpleBot {
             return;
         }
         if (botChannels.contains(channelName)) {
-            bot.sendMessage(channelName, tokenizer.chatTokenizer("CONSOLE", message, plugin.gameSend));
+            bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer("CONSOLE", message, plugin.gameSend));
         }
     }
 
@@ -507,7 +510,7 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("console-chat")) {
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(plugin.consoleChat, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.consoleChat, message));
             }
         }
     }
@@ -523,7 +526,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameJoin, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
             }
         }
     }
@@ -537,7 +540,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameQuit, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameQuit, message));
             }
         }
     }
@@ -551,7 +554,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameAction, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameAction, message));
             }
         }
     }
@@ -565,7 +568,7 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
-                bot.sendMessage(channelName, tokenizer.chatTokenizer(player, plugin.gameDeath, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameDeath, message));
             }
         }
     }
@@ -772,36 +775,42 @@ public final class PurpleBot {
     // Broadcast chat messages from IRC
     public void broadcastChat(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-chat")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircChat, message), "irc.message.chat");
+            plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircChat, message), "irc.message.chat");
         }
 
-        if (enabledMessages.get(myChannel).contains("irc-hero-chat")) {
+        if (enabledMessages.get(myChannel).contains("irc-hero-chat")) {    
+            plugin.logInfo("Sending to hero channel");            
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroChat, message));
+                    .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel, 
+                    plugin.ircHeroChat, message, Herochat.getChannelManager(), heroChannel.get(myChannel)));
+        } else {
+            plugin.logInfo("NOT sending to hero channel");
         }
     }
 
     // Broadcast action messages from IRC
     public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
+            plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
         }
 
-        if (enabledMessages.get(myChannel).contains("irc-hero-action")) {
+        if (enabledMessages.get(myChannel).contains("irc-hero-action")) {            
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroAction, message));
+                    .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel, 
+                    plugin.ircHeroAction, message, Herochat.getChannelManager(), heroChannel.get(myChannel)));
         }
     }
     //ircBot.broadcastIRCKick(recipient.getNick(), kicker.getNick(), event.getReason(), channel.getName());
     // Broadcast kick messages from IRC
     public void broadcastIRCKick(String recipient, String kicker, String reason, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-kick")) {
-            plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(recipient, kicker, reason, myChannel, plugin.ircKick), "irc.message.kick");
+            plugin.getServer().broadcast(tokenizer.ircKickToHeroChatTokenizer(recipient, kicker, reason, myChannel, plugin.ircKick), "irc.message.kick");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-kick")) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(recipient, kicker, reason, myChannel, plugin.ircHeroKick));
+                    .sendRawMessage(tokenizer.chatIRCTokenizer(recipient, kicker, 
+                    reason, myChannel, plugin.ircHeroKick, Herochat.getChannelManager(), heroChannel.get(myChannel)));
         }
     }
     
@@ -813,7 +822,8 @@ public final class PurpleBot {
 
         if (enabledMessages.get(myChannel).contains("irc-hero-join")) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroJoin));
+                    .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel, 
+                    plugin.ircHeroJoin, Herochat.getChannelManager(), heroChannel.get(myChannel)));
         }
     }
     
@@ -825,7 +835,8 @@ public final class PurpleBot {
 
         if (enabledMessages.get(myChannel).contains("irc-hero-topic")) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircHeroTopic, message));
+                    .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel, 
+                    plugin.ircHeroTopic, message, Herochat.getChannelManager(), heroChannel.get(myChannel)));
         }
     }
     

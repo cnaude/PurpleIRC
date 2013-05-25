@@ -7,6 +7,7 @@ package com.cnaude.purpleirc.GameListeners;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,11 +28,12 @@ public class HeroChatListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onChannelChatEvent(ChannelChatEvent event) {
         Chatter chatter = event.getSender();
+        ChatColor chatColor = event.getChannel().getColor();
         Player player = chatter.getPlayer();
         if (player.hasPermission("irc.message.gamechat")) {
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) { 
-                    plugin.ircBots.get(botName).gameChat(chatter, event.getMessage());
+                    plugin.ircBots.get(botName).gameChat(chatter, chatColor, event.getMessage());
                 } 
             }
         }

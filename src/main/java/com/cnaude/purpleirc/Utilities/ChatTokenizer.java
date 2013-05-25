@@ -6,6 +6,7 @@ package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.dthielke.herochat.ChannelManager;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,17 +23,44 @@ public class ChatTokenizer {
         this.ircBot = ircBot;
     }
 
+    // IRC to game chat tokenizer without a message
     public String chatIRCTokenizer(String nick, String channelName, String template) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
-                .replace("%NAME%", nick).replace("%CHANNEL%", channelName));
+                .replace("%NAME%", nick)
+                .replace("%CHANNEL%", channelName));
     }
 
-    public String chatIRCTokenizer(String nick, String channelName, String template, String message) {
+    // IRC to Hero chat tokenizer without a message
+    public String ircChatToHeroChatTokenizer(String nick, String channelName, String template, ChannelManager channelManager, String hChannel) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
-                .replace("%NAME%", nick).replace("%MESSAGE%", message).replace("%CHANNEL%", channelName));
+                .replace("%HEROCHANNEL%", hChannel)
+                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
+                .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
+                .replace("%NAME%", nick)
+                .replace("%CHANNEL%", channelName));
     }
 
-    public String chatIRCTokenizer(String recipient, String kicker, String reason, String channelName, String template) {
+    // Normal IRC to game chat tokenizer
+    public String ircChatToGameTokenizer(String nick, String channelName, String template, String message) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%NAME%", nick)
+                .replace("%MESSAGE%", message)
+                .replace("%CHANNEL%", channelName));
+    }
+
+    // IRC to Hero chat channel tokenizer
+    public String ircChatToHeroChatTokenizer(String ircNick, String ircChannelName, String template, String message, ChannelManager channelManager, String hChannel) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%HEROCHANNEL%", hChannel)
+                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
+                .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
+                .replace("%NAME%", ircNick)
+                .replace("%MESSAGE%", message)
+                .replace("%CHANNEL%", ircChannelName));
+    }
+
+    // Kick message
+    public String ircKickToHeroChatTokenizer(String recipient, String kicker, String reason, String channelName, String template) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", recipient)
                 .replace("%REASON%", reason)
@@ -40,13 +68,25 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", channelName));
     }
 
-    public String chatTokenizer(String pName, String template, String message) {
+    // IRC to hero kick message
+    public String chatIRCTokenizer(String recipient, String kicker, String reason, String channelName, String template, ChannelManager channelManager, String hChannel) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%HEROCHANNEL%", hChannel)
+                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())                
+                .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
+                .replace("%NAME%", recipient)
+                .replace("%REASON%", reason)
+                .replace("%KICKER%", kicker)
+                .replace("%CHANNEL%", channelName));
+    }
+
+    public String gameChatToIRCTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", pName)
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
     }
 
-    public String chatTokenizer(Player player, String template, String message) {
+    public String gameChatToIRCTokenizer(Player player, String template, String message) {
         String pPrefix = plugin.getPlayerPrefix(player);
         if (pPrefix == null) {
             pPrefix = "";
@@ -68,8 +108,8 @@ public class ChatTokenizer {
                 .replace("%WORLD%", player.getWorld().getName()));
     }
 
-    public String chatMcMMOTokenizer(Player player, String template, String message, String partyName) {
-        return chatTokenizer(player, template, message)
+    public String mcMMOChatToIRCTokenizer(Player player, String template, String message, String partyName) {
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%PARTY%", partyName);
     }
 
@@ -84,19 +124,20 @@ public class ChatTokenizer {
         } else {
             return "";
         }
-        return chatTokenizer(player, template, message)
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%FACTIONTAG%", chatTag)
                 .replace("%FACTIONMODE%", chatMode);
     }
 
-    public String chatHeroTokenizer(Player player, String message, String hChannel, String hNick) {
-        return chatTokenizer(player, plugin.heroChat, message)
+    public String chatHeroTokenizer(Player player, String message, String hColor, String hChannel, String hNick) {
+        return gameChatToIRCTokenizer(player, plugin.heroChat, message)
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", hNick)
+                .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))
                 .replace("%CHANNEL%", hChannel);
     }
 
-    public String chatTokenizer(String template, String message) {
+    public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%MESSAGE%", message));
     }

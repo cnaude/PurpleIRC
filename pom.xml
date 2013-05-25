@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.3.0-RC1</version>
+    <version>1.3.0-RC2</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -23,11 +23,11 @@
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
 
-        <!-- Vault -->
+        <!-- Vault
         <repository>
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-        </repository>
+        </repository>-->
     
         <!-- For anything else without its own repo
         <repository>
@@ -199,7 +199,23 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>          
+            </plugin>   
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>                                                                
+                                <copy file="../PurpleIRC/target/PurpleIRC-${project.version}.jar" tofile="../PurpleIRC/target/PurpleIRC.jar"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>        
         </plugins>
     </build>
             

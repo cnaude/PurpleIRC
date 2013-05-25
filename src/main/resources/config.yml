@@ -18,6 +18,7 @@ conn-check-interval: 1000
 #  %FACTIONTAG%  - Faction tag name
 #  %HEROCHANNEL% - HeroChat channel name
 #  %HERONICK% - HeroChat channel nick
+#  %HEROCOLOR% - HeroChat channel color
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 

@@ -12,7 +12,6 @@ import java.util.Map;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.IRCCommandSender;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.dthielke.herochat.Herochat;
 import com.google.common.base.Joiner;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
