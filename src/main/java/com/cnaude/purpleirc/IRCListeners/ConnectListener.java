@@ -40,6 +40,10 @@ public class ConnectListener extends ListenerAdapter {
                     } else {
                         bot.joinChannel(channelName, ircBot.channelPassword.get(channelName));
                     }
+                    if (!ircBot.botIdentPassword.isEmpty()) {
+                        plugin.logInfo("Sending ident password to NickServ...");
+                        bot.identify(ircBot.botIdentPassword);
+                    }
                 } else {
                     plugin.logInfo("Not automatically joining IRC channel " + channelName);
                 }

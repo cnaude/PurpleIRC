@@ -56,6 +56,7 @@ public final class PurpleBot {
     public String commandPrefix;
     public String quitMessage;
     public boolean showMOTD;
+    public String botIdentPassword;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
@@ -252,6 +253,7 @@ public final class PurpleBot {
             showMOTD = config.getBoolean("show-motd", false);
             botServerPort = config.getInt("port");
             botServerPass = config.getString("password", "");
+            botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
