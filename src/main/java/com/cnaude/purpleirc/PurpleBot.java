@@ -385,27 +385,23 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
-                return;
+                continue;
             }
             if (plugin.isMcMMOEnabled()) {
                 plugin.logDebug("mcMMO is enabled");
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
                         asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
-                        return;
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
-                        return;
                     }
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
                         asyncSendMessage(channelName, tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
-                        return;
                     } else {
                         plugin.logDebug("Player " + player.getName()
                                 + " is in mcMMO PartyChat but \"mcmmo-party-chat\" is disabled.");
-                        return;
                     }
                 }
             } else {
@@ -420,11 +416,9 @@ public final class PurpleBot {
                         + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
                     asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, chatTag, chatMode));
-                    return;
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + chatMode + "\" but \"" + chatName + "\" is disabled.");
-                    return;
                 }
             } else {
                 plugin.logDebug("No Factions");
