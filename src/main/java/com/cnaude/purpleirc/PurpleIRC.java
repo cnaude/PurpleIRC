@@ -122,6 +122,7 @@ public class PurpleIRC extends JavaPlugin {
 
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
+        logDebug("Debug enabled");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
@@ -160,8 +161,7 @@ public class PurpleIRC extends JavaPlugin {
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
 
-        ircConnCheckInterval = getConfig().getLong("conn-check-interval");
-        logDebug("Debug enabled");
+        ircConnCheckInterval = getConfig().getLong("conn-check-interval");        
     }
 
     private void loadBots() {
