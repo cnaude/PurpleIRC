@@ -451,7 +451,7 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
-                return;
+                continue;
             }
             String hChannel = chatter.getActiveChannel().getName();
             String hNick = chatter.getActiveChannel().getNick();
