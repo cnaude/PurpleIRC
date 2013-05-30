@@ -294,7 +294,7 @@ public class PurpleIRC extends JavaPlugin {
                 groupName = vaultHelpers.permission.getPrimaryGroup(player);
             }
         }
-        return groupName;
+        return ChatColor.translateAlternateColorCodes('&', groupName);
     }
 
     public String getPlayerPrefix(Player player) {
@@ -304,7 +304,7 @@ public class PurpleIRC extends JavaPlugin {
                 prefix = vaultHelpers.chat.getPlayerPrefix(player);
             }
         }
-        return prefix;
+        return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
     public String getGroupPrefix(Player player) {
@@ -314,6 +314,6 @@ public class PurpleIRC extends JavaPlugin {
                 prefix = vaultHelpers.chat.getGroupPrefix(player.getLocation().getWorld(), player.getName());
             }
         }
-        return prefix;
+        return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 }

@@ -26,9 +26,7 @@ import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
-import com.dthielke.herochat.ChannelManager;
 import com.dthielke.herochat.Herochat;
-import com.gmail.nossr50.chat.ChatManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -772,14 +770,11 @@ public final class PurpleBot {
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircChat, message), "irc.message.chat");
         }
 
-        if (enabledMessages.get(myChannel).contains("irc-hero-chat")) {    
-            plugin.logInfo("Sending to hero channel");            
+        if (enabledMessages.get(myChannel).contains("irc-hero-chat")) {                           
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
                     .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel, 
                     plugin.ircHeroChat, message, Herochat.getChannelManager(), heroChannel.get(myChannel)));
-        } else {
-            plugin.logInfo("NOT sending to hero channel");
-        }
+        } 
     }
 
     // Broadcast action messages from IRC
