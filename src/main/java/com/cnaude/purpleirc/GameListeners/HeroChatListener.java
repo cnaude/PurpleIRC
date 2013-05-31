@@ -18,25 +18,25 @@ import org.bukkit.event.Listener;
  * @author cnaude
  */
 public class HeroChatListener implements Listener {
-    
+
     final PurpleIRC plugin;
 
     public HeroChatListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
-    
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onChannelChatEvent(ChannelChatEvent event) {
         Chatter chatter = event.getSender();
         ChatColor chatColor = event.getChannel().getColor();
         Player player = chatter.getPlayer();
-        if (player.hasPermission("irc.message.gamechat")) {
+        if (player.hasPermission("irc.message.gamechat")
+                && chatter.getChannels().contains(event.getChannel())) {
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) { 
+                if (plugin.botConnected.get(botName)) {
                     plugin.ircBots.get(botName).gameChat(chatter, chatColor, event.getMessage());
-                } 
+                }
             }
         }
     }
-    
 }
