@@ -103,6 +103,7 @@ public final class PurpleBot {
     public void reloadConfig(CommandSender sender) {
         config = new YamlConfiguration();
         loadConfig();
+        sender.sendMessage("[PurpleIRC] [" + botNick + "] IRC bot configuration reloaded.");
     }
 
     public void asyncReConnect() {
@@ -626,7 +627,7 @@ public final class PurpleBot {
 
         if (channelTopic.containsKey(channelName)) {
             if (channelTopicProtected.containsKey(channelName)) {
-                if (channelTopicProtected.containsKey(channelName)) {
+                if (channelTopicProtected.get(channelName)) {
                     String myTopic = channelTopic.get(channelName);
                     if (!topic.equals(myTopic)) {
                         bot.setTopic(channel, myTopic);
@@ -759,7 +760,7 @@ public final class PurpleBot {
                     plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
                 }
             } else {
-                plugin.logInfo("Invalid op mask: " + user);
+                plugin.logInfo("Invalid op mask: " + opsUser);
             }
         }
     }

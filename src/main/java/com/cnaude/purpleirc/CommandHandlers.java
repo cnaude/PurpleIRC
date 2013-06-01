@@ -293,7 +293,7 @@ public class CommandHandlers implements CommandExecutor {
                 }
                 return true;
             }
-            if (subCmd.equalsIgnoreCase("remove")) {
+            if (subCmd.equalsIgnoreCase("removeop")) {
                 if (args.length == 4) {
                     String bot = args[1];
                     String channel = args[2];
