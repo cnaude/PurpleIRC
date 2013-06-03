@@ -291,8 +291,15 @@ public class PurpleIRC extends JavaPlugin {
         String groupName = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.permission != null) {
-                groupName = vaultHelpers.permission.getPrimaryGroup(player);
+                try {
+                    groupName = vaultHelpers.permission.getPrimaryGroup(player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player.getName() + "): " + ex.getMessage());
+                }
             }
+        }
+        if (groupName == null) {
+            groupName = "";
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
@@ -304,15 +311,30 @@ public class PurpleIRC extends JavaPlugin {
                 prefix = vaultHelpers.chat.getPlayerPrefix(player);
             }
         }
+        if (prefix == null) {
+            prefix = "";
+        }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
     public String getGroupPrefix(Player player) {
         String prefix = "";
         if (vaultHelpers != null) {
-            if (vaultHelpers.chat != null) {
-                prefix = vaultHelpers.chat.getGroupPrefix(player.getLocation().getWorld(), player.getName());
+            if (vaultHelpers.chat != null) {             
+                String group = "";
+                try {
+                    group = vaultHelpers.permission.getPrimaryGroup(player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player.getName() + "): " + ex.getMessage());
+                }
+                if (group == null) {
+                    group = "";
+                }
+                prefix = vaultHelpers.chat.getGroupPrefix(player.getLocation().getWorld(), group);
             }
+        }
+        if (prefix == null) {
+            prefix = "";
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
