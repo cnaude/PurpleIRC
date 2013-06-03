@@ -3,6 +3,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.GameListeners;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
+import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
@@ -41,6 +42,8 @@ public class PurpleIRC extends JavaPlugin {
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick, gameSend;
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
+    public String titanChat;
+    public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     public String cleverSend;
@@ -71,6 +74,12 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
         } else {
             logInfo("HeroChat not detected.");
+        }
+        if (isTitanChatEnabled()) {
+            logInfo("Enabling TitanChat support.");
+            getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
+        } else {
+            logInfo("TitanChat not detected.");
         }
         if (isCleverNotchEnabled()) {
             logInfo("Enabling CleverNotch support.");
@@ -148,6 +157,9 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
         ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
         
+        titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));         
+        ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));        
+        
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
         factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));
@@ -186,6 +198,10 @@ public class PurpleIRC extends JavaPlugin {
 
     public boolean isHeroChatEnabled() {
         return (getServer().getPluginManager().getPlugin("Herochat") != null);
+    }
+    
+    public boolean isTitanChatEnabled() {
+        return (getServer().getPluginManager().getPlugin("TitanChat") != null);
     }
 
     public boolean isCleverNotchEnabled() {

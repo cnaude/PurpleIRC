@@ -19,6 +19,8 @@ conn-check-interval: 1000
 #  %HEROCHANNEL% - HeroChat channel name
 #  %HERONICK% - HeroChat channel nick
 #  %HEROCOLOR% - HeroChat channel color
+#  %TITANCHANNEL% - TitanChat channel name
+#  %TITANCOLOR% - TitanChat channel color
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 
@@ -55,6 +57,10 @@ message-format:
   irc-hero-kick: '&f[&3IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-hero-part: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
   irc-hero-topic: '&f[&3IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
+  # Message template for TitanChat to IRC messages
+  titan-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
+  # Message templates for IRC to TitanChat messages
+  irc-titan-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'  
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game

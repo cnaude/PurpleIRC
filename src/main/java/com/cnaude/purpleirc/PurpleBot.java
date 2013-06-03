@@ -27,6 +27,7 @@ import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
+import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -443,7 +444,7 @@ public final class PurpleBot {
     }
 
     // Called from HeroChat listener
-    public void gameChat(Chatter chatter, ChatColor chatColor, String message) {
+    public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
             return;
@@ -462,6 +463,28 @@ public final class PurpleBot {
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
+            }
+        }
+    }
+    
+    // Called from TitanChat listener
+    public void titanChat(Participant participant, String tChannel, String tColor, String message) {
+        Player player = plugin.getServer().getPlayer(participant.getName());
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            plugin.logDebug("TC Channel: " + tChannel);
+            if (enabledMessages.get(channelName).contains("titan-" + tChannel + "-chat")
+                    || enabledMessages.get(channelName).contains("titan-chat")) {
+                //asyncSendMessage(channelName, tokenizer.titanChatTokenizer(player, tChannel, tColor, message));
+                bot.sendMessage(channelName, tokenizer.titanChatTokenizer(player, tChannel, tColor, message));
+            } else {
+                plugin.logDebug("Player " + player.getName() + " is in \""
+                        + tChannel + "\" but titan-" + tChannel + "-chat is disabled.");
             }
         }
     }
@@ -507,8 +530,6 @@ public final class PurpleBot {
             }
         }
     }
-
-
 
     public void gameJoin(Player player, String message) {
         if (!bot.isConnected()) {

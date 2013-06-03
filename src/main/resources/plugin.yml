@@ -10,6 +10,7 @@ softdepend:
 - HeroChat
 - mcMMO
 - CleverNotch
+- TitanChat
 commands:
     irc:
         description: Various irc commands

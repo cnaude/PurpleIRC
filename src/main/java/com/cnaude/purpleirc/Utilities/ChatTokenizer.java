@@ -136,6 +136,13 @@ public class ChatTokenizer {
                 .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))
                 .replace("%CHANNEL%", hChannel);
     }
+    
+    public String titanChatTokenizer(Player player, String tChannel, String tColor, String message) {
+        return gameChatToIRCTokenizer(player, plugin.titanChat, message)
+                .replace("%TITANCHANNEL%", tChannel)
+                .replace("%TITANCOLOR%", plugin.colorConverter.gameColorsToIrc(tColor))
+                .replace("%CHANNEL%", tChannel);
+    }
 
     public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
