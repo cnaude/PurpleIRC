@@ -56,6 +56,7 @@ public final class PurpleBot {
     public String quitMessage;
     public boolean showMOTD;
     public String botIdentPassword;
+    public long chatDelay;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
@@ -255,6 +256,9 @@ public final class PurpleBot {
             botServerPass = config.getString("password", "");
             botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
+            chatDelay = config.getLong("message-delay",1000);
+            bot.setMessageDelay(chatDelay);
+            plugin.logDebug("Message Delay => " + chatDelay);
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Login => " + botLogin);
@@ -364,6 +368,13 @@ public final class PurpleBot {
         } catch (Exception ex) {
             plugin.logError(ex.getMessage());
         }
+    }
+    
+    public void setIRCDelay(CommandSender sender, long delay) {
+        bot.setMessageDelay(delay);
+        config.set("message-delay", delay);
+        saveConfig();        
+        sender.sendMessage(ChatColor.WHITE + "IRC message delay changed to "+ delay + " ms.");
     }
 
     private boolean isPlayerInValidWorld(Player player, String channelName) {

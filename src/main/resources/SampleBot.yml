@@ -22,6 +22,8 @@ ident-password: ''
 command-prefix: '.'
 # quit-message - Message the bot will send when it quits the server
 quit-message: '&f[&5PurpleIRC&f] Good bye!'
+# Message delay in milliseconds (be careful when changing this)
+message-delay: 1000
 # channels - List the channels your bot will join here
 channels:
   # channel name must be surrounded by sing quotes to be YAML compliant

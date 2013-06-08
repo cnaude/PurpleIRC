@@ -49,17 +49,17 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("debug")) {
                 String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc debug ([t|f])";
                 if (args.length == 1) {
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is currently " 
+                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is currently "
                             + ChatColor.WHITE + plugin.debugMode());
                 } else if (args.length == 2) {
-                    if (args[1].startsWith("t")) {                        
+                    if (args[1].startsWith("t")) {
                         plugin.debugMode(true);
                     } else if (args[1].startsWith("f")) {
                         plugin.debugMode(false);
                     } else {
                         sender.sendMessage(usage);
                     }
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is now " 
+                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is now "
                             + ChatColor.WHITE + plugin.debugMode());
                 } else {
                     sender.sendMessage(usage);
@@ -199,7 +199,7 @@ public class CommandHandlers implements CommandExecutor {
                 if (args.length >= 2) {
                     int msgIdx = 1;
                     String channelName = null;
-                    List<PurpleBot> myBots = new ArrayList<PurpleBot>();                    
+                    List<PurpleBot> myBots = new ArrayList<PurpleBot>();
                     if (plugin.ircBots.containsKey(args[1])) {
                         myBots.add(plugin.ircBots.get(args[1]));
                         msgIdx = 2;
@@ -215,7 +215,7 @@ public class CommandHandlers implements CommandExecutor {
                         String msg = "";
                         for (int i = msgIdx; i < args.length; i++) {
                             msg = msg + " " + args[i];
-                        }                        
+                        }
                         if (channelName == null) {
                             for (String c : ircBot.botChannels) {
                                 if (sender instanceof Player) {
@@ -231,7 +231,7 @@ public class CommandHandlers implements CommandExecutor {
                                 ircBot.consoleChat(channelName, msg.substring(1));
                             }
                         }
-                        
+
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc send ([bot]) ([channel]) [message]");
@@ -380,6 +380,32 @@ public class CommandHandlers implements CommandExecutor {
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc nick [bot] [nick]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("messagedelay")) {
+                if (args.length == 3) {
+                    if (args[2].matches("\\d+")) {
+                        String bot = args[1];
+                        if (plugin.ircBots.containsKey(bot)) {
+                            long delay = Long.parseLong(args[2]);
+                            plugin.ircBots.get(bot).setIRCDelay(sender, delay);
+                        } else {
+                            sender.sendMessage(invalidBotName.replace("%BOT%", bot));
+                        }
+                    } else {
+                        sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
+                    }
+                } else if (args.length == 2) {
+                        String bot = args[1];
+                        if (plugin.ircBots.containsKey(bot)) {
+                            sender.sendMessage(ChatColor.WHITE + "IRC message delay is currently " 
+                                    + plugin.ircBots.get(bot).bot.getMessageDelay() + " ms.");
+                        } else {
+                            sender.sendMessage(invalidBotName.replace("%BOT%", bot));
+                        }                                
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
                 }
                 return true;
             }

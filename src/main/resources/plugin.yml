@@ -40,6 +40,7 @@ commands:
          /<command> whois ([bot]) [user] - Get IRC user's info
          /<command> send ([bot]) ([channel]) - Bypass valid-messages and send a message to the channel(s).
          /<command> say [bot] [channel] - Make the bot speak.
+         /<command> messagedelay [bot] [milliseconds] - Change IRC message delay.
 permissions:
   'irc.reloadconfig':
     description: Gives player access to the /irc reloadconfig.
