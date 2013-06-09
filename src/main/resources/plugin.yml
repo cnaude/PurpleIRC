@@ -26,6 +26,7 @@ commands:
          /<command> listbots - List loaded bots
          /<command> list ([bot]) ([channel]) - List users in a channel
          /<command> op [bot] [channel] [user(s)] - Op user(s) in a channel
+         /<command> kick [bot] [channel] [user(s)] - Kick user(s) from a channel
          /<command> listops [bot] [channel] - List auto ops for a channel
          /<command> deop [bot] [channel] [user(s)] - DeOp user(s) in a channel
          /<command> addop [bot] [channel] [user mask] - Add user mask to op list.

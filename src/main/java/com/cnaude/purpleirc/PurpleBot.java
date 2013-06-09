@@ -3,7 +3,6 @@ package com.cnaude.purpleirc;
 import com.dthielke.herochat.Chatter;
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;
-import com.james137137.FactionChat.ChatMode;
 import com.massivecraft.factions.FPlayers;
 import java.io.File;
 import java.text.Collator;
@@ -27,6 +26,8 @@ import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
+import com.james137137.FactionChat.ChatMode;
+import com.james137137.FactionChat.FactionChat;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -420,13 +421,20 @@ public final class PurpleBot {
             }
 
             if (plugin.isFactionChatEnabled()) {
-                String chatMode = ChatMode.getChatMode(player).toLowerCase();
+                String chatMode;
+                try {
+                    chatMode = ChatMode.getChatMode(player).toLowerCase();
+                } catch (IllegalAccessError ex) {
+                    chatMode = "public";
+                }
                 String chatTag = FPlayers.i.get(player).getChatTag();
+                
                 String chatName = "faction-" + chatMode + "-chat";
                 plugin.logDebug("Faction [Player: " + player.getName()
                         + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
                     asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, chatTag, chatMode));
+                    //bot.sendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, chatTag, chatMode));
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + chatMode + "\" but \"" + chatName + "\" is disabled.");
@@ -436,7 +444,7 @@ public final class PurpleBot {
             }
             if (enabledMessages.get(channelName).contains("game-chat")) {
                 plugin.logDebug("[game-chat] => " + channelName + " => " + message);
-                asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameChat, message));
+                asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameChat, message));                
             } else {
                 plugin.logDebug("Ignoring message due to game-chat not being listed.");
             }
@@ -647,6 +655,14 @@ public final class PurpleBot {
 
     public void op(String channelName, String nick) {
         bot.op(bot.getChannel(channelName), bot.getUser(nick));
+    }
+    
+    public void deOp(String channelName, String nick) {
+        bot.deOp(bot.getChannel(channelName), bot.getUser(nick));
+    }
+    
+    public void kick(String channelName, String nick) {
+        bot.kick(bot.getChannel(channelName), bot.getUser(nick));
     }
 
     public void fixTopic(Channel channel, String topic, String setBy) {

@@ -87,6 +87,11 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("CleverNotch not detected.");
         }
+        if (isFactionChatEnabled()) {
+            logInfo("Enabling FactionChat support.");            
+        } else {
+            logInfo("FactionChat not detected.");
+        }
         getCommand("irc").setExecutor(new CommandHandlers(this));
         regexGlobber = new RegexGlobber();
         loadBots();

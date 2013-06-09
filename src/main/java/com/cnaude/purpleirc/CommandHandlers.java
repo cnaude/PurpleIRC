@@ -243,15 +243,70 @@ public class CommandHandlers implements CommandExecutor {
                     String bot = args[1];
                     String channelName = args[2];
                     if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 2; i < args.length; i++) {
+                        for (int i = 3; i < args.length; i++) {
                             // #channel, user
                             plugin.ircBots.get(bot).op(channelName, args[i]);
+                            sender.sendMessage(ChatColor.WHITE + "Opping " + args[i] + " in " + channelName + "...");
                         }
                     } else {
                         sender.sendMessage(invalidBotName.replace("%BOT%", bot));
                     }
                 } else {
                     sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("deop")) {
+                if (args.length >= 4) {
+                    String bot = args[1];
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        for (int i = 3; i < args.length; i++) {
+                            // #channel, user
+                            plugin.ircBots.get(bot).deOp(channelName, args[i]);
+                            sender.sendMessage(ChatColor.WHITE + "De-opping " + args[i] + " in " + channelName + "...");
+                        }
+                    } else {
+                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc deop [bot] [channel] [user(s)]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("op")) {
+                if (args.length >= 4) {
+                    String bot = args[1];
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        for (int i = 3; i < args.length; i++) {
+                            // #channel, user
+                            plugin.ircBots.get(bot).op(channelName, args[i]);
+                            sender.sendMessage(ChatColor.WHITE + "Opping " + args[i] + " in " + channelName + "...");
+                        }
+                    } else {
+                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
+                }
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("kick")) {
+                if (args.length == 4) {
+                    String bot = args[1];
+                    String channelName = args[2];
+                    if (plugin.ircBots.containsKey(bot)) {
+                        for (int i = 3; i < args.length; i++) {
+                            // #channel, user
+                            plugin.ircBots.get(bot).kick(channelName, args[3]);  
+                            sender.sendMessage(ChatColor.WHITE + "Kicking " + args[i] + " from " + channelName + "...");
+                        }                        
+                    } else {
+                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc kick [bot] [channel] [user(s)]");
                 }
                 return true;
             }
