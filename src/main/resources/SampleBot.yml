@@ -100,10 +100,15 @@ channels:
     #  @list - list the players in the game
     #  @help - print out of all of the commands
     #  @uptime - print the uptime of the game server
+    #  @chat - send message to game
     # The modes can be '*', or 'o', or 'ov'.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
     commands:
+      chat:
+        modes: '*'
+        private: false
+        game_command: '@chat'       
       list:
         modes: '*'
         private: false
