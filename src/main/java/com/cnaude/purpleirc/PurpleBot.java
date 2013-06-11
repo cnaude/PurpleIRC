@@ -27,7 +27,6 @@ import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
 import com.james137137.FactionChat.ChatMode;
-import com.james137137.FactionChat.FactionChat;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -36,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+
 
 /**
  *
@@ -273,32 +273,32 @@ public final class PurpleBot {
             muteList.clear();
             enabledMessages.clear();
             worldList.clear();
-            commandMap.clear();
-            for (String channelName : config.getConfigurationSection("channels").getKeys(false)) {
+            commandMap.clear();            
+            for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
+                String channelName = decodeChannel(enChannelName);                
                 plugin.logDebug("Channel  => " + channelName);
                 botChannels.add(channelName);
 
-                channelAutoJoin.put(channelName, config.getBoolean("channels." + channelName + ".autojoin", true));
+                channelAutoJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".autojoin", true));
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
 
-                channelPassword.put(channelName, config.getString("channels." + channelName + ".password", ""));
-                //plugin.logDebug("  Password => " + channelPassword.get(channelName));
+                channelPassword.put(channelName, config.getString("channels." + enChannelName + ".password", ""));                
 
-                channelTopic.put(channelName, config.getString("channels." + channelName + ".topic", ""));
+                channelTopic.put(channelName, config.getString("channels." + enChannelName + ".topic", ""));
                 plugin.logDebug("  Topic => " + channelTopic.get(channelName));
 
-                channelModes.put(channelName, config.getString("channels." + channelName + ".modes", ""));
+                channelModes.put(channelName, config.getString("channels." + enChannelName + ".modes", ""));
                 plugin.logDebug("  Channel Modes => " + channelModes.get(channelName));
 
-                channelTopicProtected.put(channelName, config.getBoolean("channels." + channelName + ".topic-protect", false));
+                channelTopicProtected.put(channelName, config.getBoolean("channels." + enChannelName + ".topic-protect", false));
                 plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channelName).toString());
 
-                heroChannel.put(channelName, config.getString("channels." + channelName + ".hero-channel", ""));
+                heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
                 plugin.logDebug("  Topic => " + heroChannel.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
-                for (String channelOper : config.getStringList("channels." + channelName + ".ops")) {
+                for (String channelOper : config.getStringList("channels." + enChannelName + ".ops")) {
                     if (!cOps.contains(channelOper)) {
                         cOps.add(channelOper);
                     }
@@ -311,7 +311,7 @@ public final class PurpleBot {
 
                 // build mute list
                 Collection<String> m = new ArrayList<String>();
-                for (String mutedUser : config.getStringList("channels." + channelName + ".muted")) {
+                for (String mutedUser : config.getStringList("channels." + enChannelName + ".muted")) {
                     if (!m.contains(mutedUser)) {
                         m.add(mutedUser);
                     }
@@ -324,7 +324,7 @@ public final class PurpleBot {
 
                 // build valid chat list
                 Collection<String> c = new ArrayList<String>();
-                for (String validChat : config.getStringList("channels." + channelName + ".enabled-messages")) {
+                for (String validChat : config.getStringList("channels." + enChannelName + ".enabled-messages")) {
                     if (!c.contains(validChat)) {
                         c.add(validChat);
                     }
@@ -337,7 +337,7 @@ public final class PurpleBot {
 
                 // build valid world list
                 Collection<String> w = new ArrayList<String>();
-                for (String validWorld : config.getStringList("channels." + channelName + ".worlds")) {
+                for (String validWorld : config.getStringList("channels." + enChannelName + ".worlds")) {
                     if (!w.contains(validWorld)) {
                         w.add(validWorld);
                     }
@@ -350,11 +350,11 @@ public final class PurpleBot {
 
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
-                for (String command : config.getConfigurationSection("channels." + channelName + ".commands").getKeys(false)) {
+                for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
                     plugin.logDebug("  Command => " + command);
                     Map<String, String> optionPair = new HashMap<String, String>();
-                    for (String commandOption : config.getConfigurationSection("channels." + channelName + ".commands." + command).getKeys(false)) {
-                        String commandOptionValue = config.getString("channels." + channelName + ".commands." + command + "." + commandOption);
+                    for (String commandOption : config.getConfigurationSection("channels." + enChannelName + ".commands." + command).getKeys(false)) {
+                        String commandOptionValue = config.getString("channels." + enChannelName + ".commands." + command + "." + commandOption);
                         optionPair.put(commandOption, commandOptionValue);
                         plugin.logDebug("    " + commandOption + " => " + commandOptionValue);
                     }
@@ -613,7 +613,7 @@ public final class PurpleBot {
     public void changeTopic(Channel channel, String topic, CommandSender sender) {
         String channelName = channel.getName();
         bot.setTopic(channel, topic);
-        config.set("channels." + channelName + ".topic", topic);
+        config.set("channels." + encodeChannel(channelName) + ".topic", topic);
         saveConfig();
         sender.sendMessage("IRC topic for " + channelName + " changed to \"" + topic + "\"");
     }
@@ -638,7 +638,7 @@ public final class PurpleBot {
             sender.sendMessage("User mask'" + userMask + "' has been added to the ops list.");
             opsList.get(channelName).add(userMask);
         }
-        config.set("channels." + channelName + ".ops", opsList.get(channelName));
+        config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
         saveConfig();
     }
 
@@ -649,7 +649,7 @@ public final class PurpleBot {
         } else {
             sender.sendMessage("User mask'" + userMask + "' is not in the ops list.");
         }
-        config.set("channels." + channelName + ".ops", opsList.get(channelName));
+        config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
         saveConfig();
     }
 
@@ -664,11 +664,19 @@ public final class PurpleBot {
     public void kick(String channelName, String nick) {
         bot.kick(bot.getChannel(channelName), bot.getUser(nick));
     }
+    
+    private String encodeChannel(String s) {
+        return s.replace(".", "%2E");
+    }
+    
+    private String decodeChannel(String s) {
+        return s.replace("%2E", ".");
+    }
 
     public void fixTopic(Channel channel, String topic, String setBy) {
         String channelName = channel.getName();
         if (setBy.equals(botNick)) {
-            config.set("channels." + channelName + ".topic", topic);
+            config.set("channels." + encodeChannel(channelName) + ".topic", topic);
             saveConfig();
             return;
         }

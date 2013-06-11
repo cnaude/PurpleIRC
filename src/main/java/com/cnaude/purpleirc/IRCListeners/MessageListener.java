@@ -78,7 +78,9 @@ public class MessageListener extends ListenerAdapter {
                     } else if (gameCommand.equals("@uptime")) {
                         bot.sendMessage(target, plugin.getMCUptime());
                     } else if (gameCommand.equals("@help")) {
-                        bot.sendMessage(target, getCommands(ircBot.commandMap,myChannel));                     
+                        bot.sendMessage(target, getCommands(ircBot.commandMap,myChannel));
+                    } else if (gameCommand.equals("@chat")) {
+                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs);
                     } else {
                         if (gameCommand.contains("%ARGS%") && commandArgs != null) {
                             gameCommand = gameCommand.replace("%ARGS%", commandArgs);
