@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.IRCListeners;
 
+import com.cnaude.purpleirc.IRCCommand;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +89,8 @@ public class MessageListener extends ListenerAdapter {
                         if (gameCommand.contains("%NAME%") && commandArgs != null) {
                             gameCommand = gameCommand.replace("%NAME%", user.getNick());
                         } 
-                        plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
+                        ircBot.commandQueue.add(new IRCCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand));
+                        //plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");

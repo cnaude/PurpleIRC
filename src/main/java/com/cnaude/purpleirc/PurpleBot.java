@@ -74,6 +74,7 @@ public final class PurpleBot {
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
     public ArrayList<CommandSender> whoisSenders;
     private ChatTokenizer tokenizer;
+    public CommandQueueWatcher commandQueue;
 
     public PurpleBot(File file, PurpleIRC plugin) {
         bot = new PircBotX();
@@ -90,7 +91,8 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new MotdListener(plugin, this));
         bot.getListenerManager().addListener(new ServerResponseListener(plugin, this));
         this.plugin = plugin;
-        this.file = file;        
+        this.file = file;      
+        commandQueue = new CommandQueueWatcher(this.plugin);
         whoisSenders = new ArrayList<CommandSender>();
         config = new YamlConfiguration();
         loadConfig();
