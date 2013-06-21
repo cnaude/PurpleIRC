@@ -15,6 +15,7 @@ commands:
     irc:
         description: Various irc commands
         usage: |
+         /<command> reload - Reload the plugin (disable then enable)
          /<command> reloadconfig - Reload config.yml
          /<command> save ([bot])- Save bot configuration(s) to disk         
          /<command> reloadbot [bot]- Reload the bot config and reconnect

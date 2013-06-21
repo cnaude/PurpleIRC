@@ -36,16 +36,21 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessage(MessageEvent event) {
+        
         String message = event.getMessage();
         Channel channel = event.getChannel();
         User user = event.getUser();
         PircBotX bot = event.getBot();
+        
+        plugin.logDebug("Message caught <"+user.getNick()+">: " + message);
 
         if (!ircBot.botChannels.contains(channel.getName())) {
+            plugin.logDebug("Invalid IRC channel ("+channel.getName()+"). Ignoring message from "+user.getNick()+": " + message);
             return;
         }
         String myChannel = channel.getName();
         if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
+            plugin.logDebug("User is muted. Ignoring message from "+user.getNick()+": " + message);
             return;
         }
         if (message.startsWith(ircBot.commandPrefix) && (!message.startsWith(ircBot.commandPrefix + ircBot.commandPrefix))) {
@@ -100,6 +105,7 @@ public class MessageListener extends ListenerAdapter {
                         + ircBot.commandPrefix + "help\" for a list of commands I might respond to.");
             }
         } else {
+            plugin.logDebug("Message dispatched for broadcast...");
             ircBot.broadcastChat(user.getNick(), myChannel, message);
         }
     }

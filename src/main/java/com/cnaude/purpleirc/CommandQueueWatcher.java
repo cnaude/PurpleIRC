@@ -20,13 +20,13 @@ public class CommandQueueWatcher {
         taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.logDebug("Checking IRC command queue.");
+                //plugin.logDebug("Checking IRC command queue.");
                 IRCCommand ircCommand = queue.poll();
                 if (ircCommand == null) {
-                    plugin.logDebug("Command queue is empty.");
+                    //plugin.logDebug("Command queue is empty.");
                 } else {
                     plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
-                    plugin.logDebug("Dispatching command from queue: " + ircCommand.getGameCommand());
+                    //plugin.logDebug("Dispatching command from queue: " + ircCommand.getGameCommand());
                 }
                 
             }

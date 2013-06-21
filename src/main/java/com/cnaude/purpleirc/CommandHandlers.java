@@ -83,6 +83,13 @@ public class CommandHandlers implements CommandExecutor {
                 }
                 return true;
             }
+            if (subCmd.equalsIgnoreCase("reload")) {
+                sender.sendMessage("Disabling PurpleIRC...");
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
+                sender.sendMessage("Enabling PurpleIRC...");
+                plugin.getServer().getPluginManager().enablePlugin(plugin);
+                return true;
+            }
             if (subCmd.equalsIgnoreCase("reloadbot")) {
                 if (args.length == 2) {
                     String bot = args[1];
