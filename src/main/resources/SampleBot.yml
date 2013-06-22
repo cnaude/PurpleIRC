@@ -10,6 +10,10 @@ login: AwesomeName
 server: irc.excample.com
 # port - IRC server port
 port: 6667
+# Attempt ssl connection to IRC server
+ssl: false
+# Trust all SSL certs
+trust-all-certs: false
 # show irc server motd on connect
 show-motd: false
 # autoconnect - Connect automatically on startup
@@ -104,6 +108,8 @@ channels:
     # The modes can be '*', or 'o', or 'ov'.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
+    # Set ignore-irc-chat to true if you are using @chat and don't want regular IRC chat in your game
+    ignore-irc-chat: false
     commands:
       chat:
         modes: '*'

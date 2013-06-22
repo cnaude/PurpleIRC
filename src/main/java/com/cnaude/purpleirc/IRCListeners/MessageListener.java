@@ -105,8 +105,13 @@ public class MessageListener extends ListenerAdapter {
                         + ircBot.commandPrefix + "help\" for a list of commands I might respond to.");
             }
         } else {
-            plugin.logDebug("Message dispatched for broadcast...");
-            ircBot.broadcastChat(user.getNick(), myChannel, message);
+            if (ircBot.ignoreIRCChat.get(myChannel)) {
+                plugin.logDebug("Message NOT dispatched for broadcast due to \"ignore-irc-chat\" being true ...");
+            } else {
+                plugin.logDebug("Message dispatched for broadcast...");
+                ircBot.broadcastChat(user.getNick(), myChannel, message);
+            }
+            
         }
     }
     

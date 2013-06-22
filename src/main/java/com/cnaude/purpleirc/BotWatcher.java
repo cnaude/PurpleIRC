@@ -18,7 +18,7 @@ public class BotWatcher {
             public void run() {
                 plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (!ircBot.bot.isConnected()) {
+                    if (!plugin.botConnected.get(ircBot.botNick)) {
                         if (ircBot.autoConnect) {
                             plugin.logInfo("IRC bot '" + ircBot.bot.getName() + "' is not connected! Attempting reconnect...");
                             ircBot.asyncReConnect();
