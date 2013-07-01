@@ -88,13 +88,17 @@ public class MessageListener extends ListenerAdapter {
                     } else if (gameCommand.equals("@chat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs);
                     } else {
-                        if (gameCommand.contains("%ARGS%") && commandArgs != null) {
+                        if (commandArgs == null) {
+                            commandArgs = "";
+                        }
+                        if (gameCommand.contains("%ARGS%")) {
                             gameCommand = gameCommand.replace("%ARGS%", commandArgs);
                         }   
-                        if (gameCommand.contains("%NAME%") && commandArgs != null) {
+                        if (gameCommand.contains("%NAME%")) {
                             gameCommand = gameCommand.replace("%NAME%", user.getNick());
                         } 
-                        ircBot.commandQueue.add(new IRCCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand));
+                        plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
+                        ircBot.commandQueue.add(new IRCCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand.trim()));
                         //plugin.getServer().dispatchCommand(new IRCCommandSender(event.getBot(), target, plugin), gameCommand);
                     }
                 } else {

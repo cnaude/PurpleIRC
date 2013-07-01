@@ -109,14 +109,11 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
-            Iterator it = ircBots.entrySet().iterator();
-            while (it.hasNext()) {
-                Entry entry = (Entry) it.next();
+            for (Entry entry : ircBots.entrySet()) {
                 PurpleBot ircBot = (PurpleBot) entry.getValue();
                 ircBot.commandQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
-                it.remove();
             }
         }
     }

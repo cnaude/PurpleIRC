@@ -28,7 +28,6 @@ import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
 import com.james137137.FactionChat.ChatMode;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
-import javax.net.ssl.SSLSocketFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -189,22 +188,22 @@ public final class PurpleBot {
 
     private void connect() {
         try {
-            plugin.logInfo("Connecting to \"" + botServer + ":" + botServerPort + "\" as \"" + bot.getName() 
+            plugin.logInfo("Connecting to \"" + botServer + ":" + botServerPort + "\" as \"" + bot.getName()
                     + "\" [SSL: " + ssl + "]" + " [TrustAllCerts: " + trustAllCerts + "]");
             if (ssl) {
                 UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
                 socketFactory.disableDiffieHellman();
                 if (trustAllCerts) {
                     socketFactory.trustAllCertificates();
-                }                
-                bot.connect(botServer, botServerPort, botServerPass, socketFactory);            
-            } else {               
+                }
+                bot.connect(botServer, botServerPort, botServerPass, socketFactory);
+            } else {
                 plugin.logInfo("NO SSL");
                 bot.connect(botServer, botServerPort, botServerPass);
             }
         } catch (Exception ex) {
             plugin.logError("Problem connecting to " + botServer + " => "
-                    + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");            
+                    + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
         }
     }
 
@@ -308,7 +307,7 @@ public final class PurpleBot {
 
                 heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
                 plugin.logDebug("  Topic => " + heroChannel.get(channelName));
-                
+
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
 
@@ -711,7 +710,7 @@ public final class PurpleBot {
 
     public void quit(CommandSender sender) {
         sender.sendMessage("Disconnecting " + bot.getNick() + " from IRC server " + botServer);
-        quit();
+        asyncQuit();
     }
 
     public void quit() {
@@ -720,6 +719,20 @@ public final class PurpleBot {
         } else {
             bot.quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
         }
+    }
+   
+    public void asyncQuit() {
+        // We want to void blocking the main Bukkit thread
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (quitMessage.isEmpty()) {
+                    bot.quitServer();
+                } else {
+                    bot.quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
+                }
+            }
+        });
     }
 
     public void sendTopic(CommandSender sender) {
@@ -908,12 +921,12 @@ public final class PurpleBot {
     }
 
     // Broadcast disconnect messages from IRC
-    public void broadcastIRCDisconnect(String message) {
+    public void broadcastIRCDisconnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Disconnected from IRC server.", "irc.message.disconnect");
     }
 
     // Broadcast connect messages from IRC
-    public void broadcastIRCConnect(String message) {
+    public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
     }
 }

@@ -38,7 +38,7 @@ public class ConnectListener extends ListenerAdapter {
                 if (ircBot.channelAutoJoin.get(channelName)) {
                     String connectMessage = "Automatically joining IRC channel " + channelName;
                     plugin.logInfo(connectMessage);
-                    ircBot.broadcastIRCConnect(connectMessage);
+                    ircBot.broadcastIRCConnect();
                     if (ircBot.channelPassword.get(channelName).isEmpty()) {
                         bot.joinChannel(channelName);
                     } else {
