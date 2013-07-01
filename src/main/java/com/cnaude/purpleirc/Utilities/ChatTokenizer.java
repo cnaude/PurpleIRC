@@ -87,6 +87,10 @@ public class ChatTokenizer {
     }
 
     public String gameChatToIRCTokenizer(Player player, String template, String message) {
+        String pSuffix = plugin.getPlayerSuffix(player);
+        if (pSuffix == null) {
+            pSuffix = "";
+        }
         String pPrefix = plugin.getPlayerPrefix(player);
         if (pPrefix == null) {
             pPrefix = "";
@@ -104,6 +108,7 @@ public class ChatTokenizer {
                 .replace("%GROUP%", group)
                 .replace("%MESSAGE%", message)
                 .replace("%PLAYERPREFIX%", pPrefix)
+                .replace("%PLAYERSUFFIX%", pSuffix)
                 .replace("%GROUPPREFIX%", gPrefix)
                 .replace("%WORLDALIAS%", plugin.getWorldAlias(player.getWorld().getName()))
                 .replace("%WORLD%", player.getWorld().getName()));

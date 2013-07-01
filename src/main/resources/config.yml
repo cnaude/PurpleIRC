@@ -12,6 +12,7 @@ conn-check-interval: 1000
 #  %REASON%
 #  %GROUP% - Requires Vault if you want to use this.
 #  %PLAYERPREFIX% - Requires Vault if you want to use this.
+#  %PLAYERSUFFIX% - Requires Vault if you want to use this.
 #  %GROUPPREFIX% - Requires Vault if you want to use this.
 #  %PARTY% - mcMMO party channel name
 #  %FACTIONMODE% - Faction chat mode (all, ally, enemy)

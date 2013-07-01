@@ -346,6 +346,19 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
+    
+    public String getPlayerSuffix(Player player) {
+        String suffix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                suffix = vaultHelpers.chat.getPlayerSuffix(player);
+            }
+        }
+        if (suffix == null) {
+            suffix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', suffix);
+    }
 
     public String getGroupPrefix(Player player) {
         String prefix = "";
