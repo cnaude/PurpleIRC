@@ -8,6 +8,7 @@ import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
 import com.google.common.base.Joiner;
+import com.onarandombox.MultiverseCore.api.MVPlugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -17,13 +18,13 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -225,6 +226,16 @@ public class PurpleIRC extends JavaPlugin {
         } catch (Exception ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
         }
+    }
+    
+    public String getWorldAlias(String worldName) {
+        String alias = worldName;
+        Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");        
+        if (plugin != null) {
+            MVPlugin mvPlugin = (MVPlugin) plugin;
+            alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
+        }
+        return alias;
     }
 
     public void reloadMainConfig(CommandSender sender) {

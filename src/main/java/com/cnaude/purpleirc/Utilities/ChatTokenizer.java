@@ -80,7 +80,7 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", channelName));
     }
 
-    public String gameChatToIRCTokenizer(String pName, String template, String message) {
+    public String gameChatToIRCTokenizer(String pName, String template, String message) {        
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", pName)
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
@@ -105,6 +105,7 @@ public class ChatTokenizer {
                 .replace("%MESSAGE%", message)
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%GROUPPREFIX%", gPrefix)
+                .replace("%WORLDALIAS%", plugin.getWorldAlias(player.getWorld().getName()))
                 .replace("%WORLD%", player.getWorld().getName()));
     }
 

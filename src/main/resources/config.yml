@@ -21,6 +21,7 @@ conn-check-interval: 1000
 #  %HEROCOLOR% - HeroChat channel color
 #  %TITANCHANNEL% - TitanChat channel name
 #  %TITANCOLOR% - TitanChat channel color
+#  %WORLDALIAS% - World alias name
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 
