@@ -67,6 +67,7 @@ message-format:
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   rts-notify: '[RTS] <%NAME%> %MESSAGE%'
+  broadcast-message: '[Broadcast] %MESSAGE%'
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game

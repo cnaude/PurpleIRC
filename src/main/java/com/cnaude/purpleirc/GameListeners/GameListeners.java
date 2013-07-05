@@ -76,7 +76,14 @@ public class GameListeners implements Listener {
                         plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replace("/me", ""));
                     }
                 }
+            } else if (msg.startsWith("/broadcast ")) {
+                for (String botName : plugin.ircBots.keySet()) {
+                    if (plugin.botConnected.get(botName)) {
+                        plugin.ircBots.get(botName).gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
+                    }
+                }
             }
+            
         }
     }
 
@@ -103,5 +110,6 @@ public class GameListeners implements Listener {
                 plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), event.getDeathMessage());
             }
         }
-    }
+    }        
+    
 }
