@@ -588,6 +588,17 @@ public final class PurpleBot {
             }
         }
     }
+    
+    public void gameBroadcast(String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains("broadcast-message")) {
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.broadcastMessage, message));
+            }
+        }
+    }
 
     public void gameJoin(Player player, String message) {
         if (!bot.isConnected()) {

@@ -36,7 +36,7 @@ public class GameListeners implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {                                        
+                if (plugin.botConnected.get(botName)) {
                     plugin.ircBots.get(botName).gameChat(event.getPlayer(), event.getMessage());
                 }
             }
@@ -83,7 +83,7 @@ public class GameListeners implements Listener {
                     }
                 }
             }
-            
+
         }
     }
 
@@ -98,6 +98,13 @@ public class GameListeners implements Listener {
                     plugin.ircBots.get(botName).consoleChat(msg);
                 }
             }
+        } else if (cmd.startsWith("broadcast ")) {
+            String msg = cmd.split(" ", 2)[1];
+            for (String botName : plugin.ircBots.keySet()) {
+                if (plugin.botConnected.get(botName)) {
+                    plugin.ircBots.get(botName).gameBroadcast(msg);
+                }
+            }
         } else {
             plugin.logDebug("Invalid CE: " + cmd);
         }
@@ -110,6 +117,5 @@ public class GameListeners implements Listener {
                 plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), event.getDeathMessage());
             }
         }
-    }        
-    
+    }
 }
