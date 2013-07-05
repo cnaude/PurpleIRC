@@ -94,6 +94,9 @@ channels:
     #- titan-[CHANNEL]-chat
     # ReportRTS ticket notifications to irc
     - rts-notify
+    # Catch /broadcast messages
+    #- broadcast-console-message
+    #- broadcast-message
     hero-channel: admin
     # ops - IRC hostname mask styled ops list
     ops:    

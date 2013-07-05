@@ -51,7 +51,7 @@ public class PurpleIRC extends JavaPlugin {
     public String invalidIRCCommand;
     public String reportRTSSend;
     public String cleverSend;
-    public String broadcastMessage;
+    public String broadcastMessage, broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
@@ -190,6 +190,7 @@ public class PurpleIRC extends JavaPlugin {
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
         
         broadcastMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-message", ""));
+        broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
                 
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
 

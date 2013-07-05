@@ -102,7 +102,7 @@ public class GameListeners implements Listener {
             String msg = cmd.split(" ", 2)[1];
             for (String botName : plugin.ircBots.keySet()) {
                 if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).gameBroadcast(msg);
+                    plugin.ircBots.get(botName).consoleBroadcast(msg);
                 }
             }
         } else {
