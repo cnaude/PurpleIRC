@@ -7,6 +7,7 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
+import com.nyancraft.reportrts.data.HelpRequest;
 import org.bukkit.entity.Player;
 
 /**
@@ -152,6 +153,20 @@ public class ChatTokenizer {
 
     public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%MESSAGE%", message));
+                .replace("%MESSAGE%", message)
+                );
+    }
+    
+    public String reportRTSTokenizer(String template, HelpRequest request) {
+        String message = request.getMessage();
+        String modName = request.getModName();
+        String name = request.getName();
+        String world = request.getWorld();
+        return plugin.colorConverter.gameColorsToIrc(template
+                .replace("%MESSAGE%", message)
+                .replace("%MODNAME%", modName)
+                .replace("%NAME%", name)
+                .replace("%WORLD%", world)                
+                );
     }
 }

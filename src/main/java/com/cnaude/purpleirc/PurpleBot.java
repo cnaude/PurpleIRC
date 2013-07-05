@@ -27,6 +27,7 @@ import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
 import com.james137137.FactionChat.ChatMode;
+import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -545,6 +546,18 @@ public final class PurpleBot {
         }
     }
 
+    // Called from ReportRTS event    
+    public void reportRTSNotify(HelpRequest request) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains("rts-notify")) {
+                bot.sendMessage(channelName, tokenizer.reportRTSTokenizer(plugin.reportRTSSend, request));
+            }
+        }
+    }
+
     public void consoleChat(String channelName, String message) {
         if (!bot.isConnected()) {
             return;
@@ -720,7 +733,7 @@ public final class PurpleBot {
             bot.quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
         }
     }
-   
+
     public void asyncQuit() {
         // We want to void blocking the main Bukkit thread
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {

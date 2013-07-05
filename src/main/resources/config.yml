@@ -23,6 +23,7 @@ conn-check-interval: 1000
 #  %TITANCHANNEL% - TitanChat channel name
 #  %TITANCOLOR% - TitanChat channel color
 #  %WORLDALIAS% - World alias name
+#  ReportRTS ticket: %MESSAGE%, %MODNAME% %NAME% %WORLD%
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 
@@ -62,7 +63,10 @@ message-format:
   # Message template for TitanChat to IRC messages
   titan-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
-  irc-titan-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'  
+  irc-titan-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'
+  # Invalid IRC command message
+  invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
+  rts-notify: '[RTS] <%NAME%> %MESSAGE%'
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game

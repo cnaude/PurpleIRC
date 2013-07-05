@@ -92,6 +92,8 @@ channels:
     - titan-chat
     # Specific TitanChat channel
     #- titan-[CHANNEL]-chat
+    # ReportRTS ticket notifications to irc
+    - rts-notify
     hero-channel: admin
     # ops - IRC hostname mask styled ops list
     ops:    

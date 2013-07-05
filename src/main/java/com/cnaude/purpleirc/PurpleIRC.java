@@ -3,6 +3,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.GameListeners;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
+import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
@@ -47,6 +48,8 @@ public class PurpleIRC extends JavaPlugin {
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
+    public String invalidIRCCommand;
+    public String reportRTSSend;
     public String cleverSend;
     private boolean debugEnabled;
     private boolean stripGameColors;
@@ -92,6 +95,12 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Enabling FactionChat support.");            
         } else {
             logInfo("FactionChat not detected.");
+        }
+        if (isReportRTSEnabled()) {
+            logInfo("Enabling ReportRTS support.");            
+            getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
+        } else {
+            logInfo("ReportRTS not detected.");
         }
         getCommand("irc").setExecutor(new CommandHandlers(this));
         regexGlobber = new RegexGlobber();
@@ -176,6 +185,10 @@ public class PurpleIRC extends JavaPlugin {
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
+        
+        invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
+        
+        reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");        
     }
@@ -198,6 +211,10 @@ public class PurpleIRC extends JavaPlugin {
 
     public boolean isFactionChatEnabled() {
         return (getServer().getPluginManager().getPlugin("FactionChat") != null);
+    }
+    
+    public boolean isReportRTSEnabled() {
+        return (getServer().getPluginManager().getPlugin("ReportRTS") != null);
     }
 
     public boolean isHeroChatEnabled() {

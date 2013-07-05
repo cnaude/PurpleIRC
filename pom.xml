@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.3a</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -75,7 +75,13 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- PircBotX -->
+        <!-- ReportRTS -->
+        <dependency>
+            <groupId>com.nyancraft</groupId>
+            <artifactId>ReportRTS</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         
         <!-- Herochat -->
         <dependency>
