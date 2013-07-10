@@ -436,7 +436,7 @@ public final class PurpleBot {
                 plugin.logDebug("mcMMO is not enabled");
             }
 
-            if (plugin.isFactionChatEnabled()) {
+            if (plugin.fcHook != null) {
                 String chatMode;
                 try {
                     chatMode = plugin.fcHook.getChatMode(player);

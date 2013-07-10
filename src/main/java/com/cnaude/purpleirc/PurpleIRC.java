@@ -94,14 +94,16 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("CleverNotch not detected.");
         }
-        if (isFactionChatEnabled()) {
-            logInfo("Enabling FactionChat support.");    
-            fcHook = new FactionChatHook(this);
-        } else {
-            logInfo("FactionChat not detected.");
+        if (isFactionsEnabled()) {
+            if (isFactionChatEnabled()) {
+                logInfo("Enabling FactionChat support.");
+                fcHook = new FactionChatHook(this);
+            } else {
+                logInfo("FactionChat not detected.");
+            }
         }
         if (isReportRTSEnabled()) {
-            logInfo("Enabling ReportRTS support.");            
+            logInfo("Enabling ReportRTS support.");
             getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
         } else {
             logInfo("ReportRTS not detected.");
@@ -160,28 +162,28 @@ public class PurpleIRC extends JavaPlugin {
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
         gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
-        
+
         cleverSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.clever-send", ""));
-        
+
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
-        
-        heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", "")); 
+
+        heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
         ircHeroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-action", ""));
-        ircHeroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-chat", ""));        
+        ircHeroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-chat", ""));
         ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
         ircHeroJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-join", ""));
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
         ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
-        
-        titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));         
-        ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));        
-        
+
+        titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
+        ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
+
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
         factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));
-        
-        consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));        
+
+        consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
 
         ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
         ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
@@ -189,15 +191,15 @@ public class PurpleIRC extends JavaPlugin {
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
-        
+
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
-        
+
         broadcastMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-message", ""));
         broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
-                
+
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
 
-        ircConnCheckInterval = getConfig().getLong("conn-check-interval");        
+        ircConnCheckInterval = getConfig().getLong("conn-check-interval");
     }
 
     private void loadBots() {
@@ -220,6 +222,19 @@ public class PurpleIRC extends JavaPlugin {
         return (getServer().getPluginManager().getPlugin("FactionChat") != null);
     }
     
+    public boolean isFactionsEnabled() {
+        if (getServer().getPluginManager().getPlugin("Factions") != null) {
+            String v = getServer().getPluginManager().getPlugin("Factions").getDescription().getVersion();
+            logDebug("Factions version => " + v);
+            if (v.startsWith("2.")) {
+                return true;
+            } else {
+                logInfo("Invalid Factions version! Only version 2.0.0 and higher is supported.");
+            }
+        }
+        return false;
+    }
+
     public boolean isReportRTSEnabled() {
         return (getServer().getPluginManager().getPlugin("ReportRTS") != null);
     }
@@ -227,7 +242,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isHeroChatEnabled() {
         return (getServer().getPluginManager().getPlugin("Herochat") != null);
     }
-    
+
     public boolean isTitanChatEnabled() {
         return (getServer().getPluginManager().getPlugin("TitanChat") != null);
     }
@@ -251,10 +266,10 @@ public class PurpleIRC extends JavaPlugin {
             logError("Problem creating sample bot: " + ex.getMessage());
         }
     }
-    
+
     public String getWorldAlias(String worldName) {
         String alias = worldName;
-        Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");        
+        Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
             alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
@@ -319,7 +334,7 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
-    public String getMCPlayers() {             
+    public String getMCPlayers() {
         ArrayList<String> playerList = new ArrayList<String>();
         for (Player player : getServer().getOnlinePlayers()) {
             playerList.add(player.getName());
@@ -328,7 +343,7 @@ public class PurpleIRC extends JavaPlugin {
         String msg = "Players currently online("
                 + getServer().getOnlinePlayers().length
                 + "/" + getServer().getMaxPlayers() + "): "
-                + Joiner.on(", ").join(playerList);        
+                + Joiner.on(", ").join(playerList);
         return msg;
     }
 
@@ -370,7 +385,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
-    
+
     public String getPlayerSuffix(Player player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -387,7 +402,7 @@ public class PurpleIRC extends JavaPlugin {
     public String getGroupPrefix(Player player) {
         String prefix = "";
         if (vaultHelpers != null) {
-            if (vaultHelpers.chat != null) {             
+            if (vaultHelpers.chat != null) {
                 String group = "";
                 try {
                     group = vaultHelpers.permission.getPrimaryGroup(player);
