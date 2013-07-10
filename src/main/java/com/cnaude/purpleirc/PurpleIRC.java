@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,6 +63,7 @@ public class PurpleIRC extends JavaPlugin {
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
     VaultHook vaultHelpers;
+    public FactionChatHook fcHook;
 
     @Override
     public void onEnable() {
@@ -93,7 +95,8 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("CleverNotch not detected.");
         }
         if (isFactionChatEnabled()) {
-            logInfo("Enabling FactionChat support.");            
+            logInfo("Enabling FactionChat support.");    
+            fcHook = new FactionChatHook(this);
         } else {
             logInfo("FactionChat not detected.");
         }

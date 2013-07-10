@@ -29,8 +29,6 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
-import java.lang.reflect.Method;
-import nz.co.lolnet.james137137.FactionChat.ChatMode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -441,8 +439,9 @@ public final class PurpleBot {
             if (plugin.isFactionChatEnabled()) {
                 String chatMode;
                 try {
-                    chatMode = getChatMode(player);
+                    chatMode = plugin.fcHook.getChatMode(player);
                 } catch (IllegalAccessError ex) {
+                    plugin.logDebug("FC Error: " + ex.getMessage());
                     chatMode = "public";
                 }
                 String chatTag = getFactionName(player);
@@ -971,17 +970,5 @@ public final class PurpleBot {
         UPlayer uPlayer = UPlayer.get(player);
         Faction faction = uPlayer.getFaction();
         return faction.getName();
-    }
-
-    private String getChatMode(Player player) {
-        String cm = "";
-        try {
-            Method m = ChatMode.class.getDeclaredMethod("getChatMode", (Class<?>) null);
-            m.setAccessible(true);
-            cm = (String) m.invoke(player);
-        } catch (Exception e) {
-            
-        }
-        return cm;
     }
 }

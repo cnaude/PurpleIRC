@@ -30,7 +30,8 @@ public class GameListeners implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
+            plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
