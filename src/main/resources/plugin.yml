@@ -78,6 +78,12 @@ permissions:
   'irc.message.connect':
     description: Receive IRC connect messages.
     default: op
+  'irc.message.topic':
+    description: Receive IRC topic messages.
+    default: false
+  'irc.message.kick':
+    description: Receive IRC kick messages.
+    default: false    
   'irc.listbots':
     description: Gives player access to the /irc listbots command.
     default: op
