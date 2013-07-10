@@ -11,7 +11,6 @@ import com.cnaude.purpleirc.PurpleBot;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 /**

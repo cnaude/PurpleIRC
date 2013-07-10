@@ -84,6 +84,9 @@ permissions:
   'irc.message.kick':
     description: Receive IRC kick messages.
     default: false    
+  'irc.message.part':
+    description: Receive IRC part messages.
+    default: false        
   'irc.listbots':
     description: Gives player access to the /irc listbots command.
     default: op
