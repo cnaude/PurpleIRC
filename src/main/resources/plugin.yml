@@ -66,6 +66,12 @@ permissions:
   'irc.message.action':
     description: Receive IRC chat actions (/me).
     default: true
+  'irc.message.join':
+    description: Receive IRC join messages.
+    default: false
+  'irc.message.quit':
+    description: Receive IRC quit messages.
+    default: false    
   'irc.message.disconnect':
     description: Receive IRC disconnect messages.
     default: op

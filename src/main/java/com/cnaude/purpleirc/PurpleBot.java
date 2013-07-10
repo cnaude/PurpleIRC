@@ -569,24 +569,24 @@ public final class PurpleBot {
         }
     }
 
-    public void consoleChat(String message) {
+    public void consoleChat(String message) {        
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("console-chat")) {
-                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.consoleChat, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.consoleChat, ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
 
-    public void gameBroadcast(Player player, String message) {
+    public void gameBroadcast(Player player, String message) {        
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("broadcast-message")) {
-                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.broadcastMessage, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.broadcastMessage, ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
@@ -597,7 +597,7 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("broadcast-console-message")) {
-                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.broadcastConsoleMessage, message));
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(plugin.broadcastConsoleMessage, ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
