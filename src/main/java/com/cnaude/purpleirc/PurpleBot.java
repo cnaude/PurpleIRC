@@ -3,7 +3,6 @@ package com.cnaude.purpleirc;
 import com.dthielke.herochat.Chatter;
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;
-import com.massivecraft.factions.FPlayers;
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -26,9 +25,12 @@ import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
-import com.james137137.FactionChat.ChatMode;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
+import java.lang.reflect.Method;
+import nz.co.lolnet.james137137.FactionChat.ChatMode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -439,11 +441,11 @@ public final class PurpleBot {
             if (plugin.isFactionChatEnabled()) {
                 String chatMode;
                 try {
-                    chatMode = ChatMode.getChatMode(player).toLowerCase();
+                    chatMode = getChatMode(player);
                 } catch (IllegalAccessError ex) {
                     chatMode = "public";
                 }
-                String chatTag = FPlayers.i.get(player).getChatTag();
+                String chatTag = getFactionName(player);
 
                 String chatName = "faction-" + chatMode + "-chat";
                 plugin.logDebug("Faction [Player: " + player.getName()
@@ -547,13 +549,13 @@ public final class PurpleBot {
     }
 
     // Called from ReportRTS event    
-    public void reportRTSNotify(HelpRequest request) {
+    public void reportRTSNotify(Player player, HelpRequest request) {
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("rts-notify")) {
-                bot.sendMessage(channelName, tokenizer.reportRTSTokenizer(plugin.reportRTSSend, request));
+                bot.sendMessage(channelName, tokenizer.reportRTSTokenizer(player, plugin.reportRTSSend, request));
             }
         }
     }
@@ -577,7 +579,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     public void gameBroadcast(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -588,7 +590,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     public void consoleBroadcast(String message) {
         if (!bot.isConnected()) {
             return;
@@ -963,5 +965,23 @@ public final class PurpleBot {
     // Broadcast connect messages from IRC
     public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
+    }
+
+    protected String getFactionName(Player player) {
+        UPlayer uPlayer = UPlayer.get(player);
+        Faction faction = uPlayer.getFaction();
+        return faction.getName();
+    }
+
+    private String getChatMode(Player player) {
+        String cm = "";
+        try {
+            Method m = ChatMode.class.getDeclaredMethod("getChatMode", (Class<?>) null);
+            m.setAccessible(true);
+            cm = (String) m.invoke(player);
+        } catch (Exception e) {
+            
+        }
+        return cm;
     }
 }

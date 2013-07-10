@@ -5,7 +5,8 @@
 package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import com.nyancraft.reportrts.data.HelpRequest;
+import com.nyancraft.reportrts.ReportCreateEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -22,10 +23,11 @@ public class ReportRTSListener implements Listener {
     }
 
     @EventHandler
-    public void onReportCreateEvent(HelpRequest request) {
+    public void onReportCreateEvent(ReportCreateEvent event) {
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
         for (String botName : plugin.ircBots.keySet()) {
             if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).reportRTSNotify(request);
+                plugin.ircBots.get(botName).reportRTSNotify(player, event.getRequest());
             }
         }
     }

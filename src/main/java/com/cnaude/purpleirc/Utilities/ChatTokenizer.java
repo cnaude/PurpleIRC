@@ -157,16 +157,19 @@ public class ChatTokenizer {
                 );
     }
     
-    public String reportRTSTokenizer(String template, HelpRequest request) {
+    public String reportRTSTokenizer(Player player, String template, HelpRequest request) {
         String message = request.getMessage();
         String modName = request.getModName();
         String name = request.getName();
         String world = request.getWorld();
-        return plugin.colorConverter.gameColorsToIrc(template
+        if (message == null) { message = ""; }
+        if (modName == null) { modName = ""; }
+        if (name == null) { name = ""; }
+        if (world == null) { world = ""; }
+        return gameChatToIRCTokenizer(player, template, message)        
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
-                .replace("%NAME%", name)
-                .replace("%WORLD%", world)                
-                );
+                .replace("%RTSNAME%", name)
+                .replace("%RTSWORLD%", world);
     }
 }

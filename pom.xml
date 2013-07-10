@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.5.4</version>
+    <version>1.5.5-TEST3</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>com.nyancraft</groupId>
             <artifactId>ReportRTS</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.1</version>
             <scope>provided</scope>
         </dependency>
         
@@ -94,14 +94,21 @@
         <dependency>
             <groupId>com.massivecraft</groupId>
             <artifactId>Factions</artifactId>
-            <version>1.8.2</version>
+            <version>2.0.2</version>
+        </dependency>
+        
+        <!-- mcore -->
+        <dependency>
+            <groupId>com.massivecraft</groupId>
+            <artifactId>mcore</artifactId>
+            <version>6.4.3</version>
         </dependency>
         
         <!-- FactionChat -->
         <dependency>
             <groupId>com.james137137</groupId>
             <artifactId>FactionChat</artifactId>
-            <version>1.523</version>
+            <version>1.610</version>
         </dependency>
 
         <!-- TitanChat -->

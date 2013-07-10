@@ -11,6 +11,7 @@ softdepend:
 - mcMMO
 - CleverNotch
 - TitanChat
+- ReportRTS
 commands:
     irc:
         description: Various irc commands
