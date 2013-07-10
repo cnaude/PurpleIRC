@@ -549,7 +549,7 @@ public final class PurpleBot {
     }
 
     // Called from ReportRTS event    
-    public void reportRTSNotify(Player player, HelpRequest request) {
+    public void reportRTSNotify(Player player, HelpRequest request) {        
         if (!bot.isConnected()) {
             return;
         }

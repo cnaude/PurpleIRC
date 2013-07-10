@@ -162,13 +162,15 @@ public class ChatTokenizer {
         String modName = request.getModName();
         String name = request.getName();
         String world = request.getWorld();
+        int id = request.getId();
         if (message == null) { message = ""; }
         if (modName == null) { modName = ""; }
         if (name == null) { name = ""; }
-        if (world == null) { world = ""; }
+        if (world == null) { world = ""; }        
         return gameChatToIRCTokenizer(player, template, message)        
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
+                .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
                 .replace("%RTSWORLD%", world);
     }

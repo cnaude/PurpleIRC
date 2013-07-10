@@ -23,7 +23,7 @@ conn-check-interval: 1000
 #  %TITANCHANNEL% - TitanChat channel name
 #  %TITANCOLOR% - TitanChat channel color
 #  %WORLDALIAS% - World alias name
-#  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD%
+#  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER%
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 
