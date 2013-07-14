@@ -106,6 +106,7 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
+                .replace("%DISPLAYNAME%", player.getDisplayName())
                 .replace("%GROUP%", group)
                 .replace("%MESSAGE%", message)
                 .replace("%PLAYERPREFIX%", pPrefix)

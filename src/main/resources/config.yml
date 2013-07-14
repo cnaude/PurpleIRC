@@ -5,6 +5,7 @@ conn-check-interval: 1000
 # The following macro tokens are also supported.
 #  %WORLD% 
 #  %NAME% 
+#  %DISPLAYNAME% 
 #  %CHANNEL% 
 #  %MESSAGE%
 #  %KICKER%
