@@ -104,9 +104,13 @@ public class ChatTokenizer {
         if (group == null) {
             group = "";
         }
+        String displayName = player.getDisplayName();
+        if (displayName == null) {
+            displayName = "";
+        }
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
-                .replace("%DISPLAYNAME%", player.getDisplayName())
+                .replace("%DISPLAYNAME%", displayName)
                 .replace("%GROUP%", group)
                 .replace("%MESSAGE%", message)
                 .replace("%PLAYERPREFIX%", pPrefix)
