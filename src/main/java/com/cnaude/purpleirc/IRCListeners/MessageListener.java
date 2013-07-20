@@ -76,6 +76,12 @@ public class MessageListener extends ListenerAdapter {
                     modeOkay = user.getChannelsOpIn().contains(channel);
                 } else if (modes.contains("v")) {
                     modeOkay = user.getChannelsVoiceIn().contains(channel);
+                } else if (modes.contains("h")) {
+                    modeOkay = user.getChannelsHalfOpIn().contains(channel);
+                } else if (modes.contains("q")) {
+                    modeOkay = user.getChannelsOwnerIn().contains(channel);
+                } else if (modes.contains("s")) {
+                    modeOkay = user.getChannelsSuperOpIn().contains(channel);
                 }
 
                 if (modeOkay) {

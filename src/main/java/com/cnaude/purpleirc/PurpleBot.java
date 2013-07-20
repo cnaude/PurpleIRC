@@ -437,24 +437,29 @@ public final class PurpleBot {
             }
 
             if (plugin.fcHook != null) {
-                String chatMode;
+                String playerChatMode;
+                String playerFactionName; 
                 try {
-                    chatMode = plugin.fcHook.getChatMode(player);
+                    playerChatMode = plugin.fcHook.getChatMode(player);
                 } catch (IllegalAccessError ex) {
                     plugin.logDebug("FC Error: " + ex.getMessage());
-                    chatMode = "public";
+                    playerChatMode = "public";
                 }
-                String chatTag = getFactionName(player);
-
-                String chatName = "faction-" + chatMode + "-chat";
+                try {
+                    playerFactionName = plugin.fcHook.getFactionName(player);
+                } catch (IllegalAccessError ex) {
+                    plugin.logDebug("FC Error: " + ex.getMessage());
+                    playerFactionName = "unknown";
+                }
+                
+                String chatName = "faction-" + playerChatMode + "-chat";
                 plugin.logDebug("Faction [Player: " + player.getName()
-                        + "] [Tag: " + chatTag + "] [Mode: " + chatMode + "]");
+                        + "] [Tag: " + playerFactionName + "] [Mode: " + playerChatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
-                    asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, chatTag, chatMode));
-                    //bot.sendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, chatTag, chatMode));
+                    asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode));                    
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
-                            + chatMode + "\" but \"" + chatName + "\" is disabled.");
+                            + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
                 }
             } else {
                 plugin.logDebug("No Factions");

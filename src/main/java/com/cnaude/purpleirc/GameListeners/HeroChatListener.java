@@ -27,8 +27,8 @@ public class HeroChatListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onChannelChatEvent(ChannelChatEvent event) {
-        Chatter chatter = event.getSender();
-        ChatColor chatColor = event.getChannel().getColor();
+        Chatter chatter = event.getSender();        
+        ChatColor chatColor = event.getChannel().getColor();        
         Player player = chatter.getPlayer();
         if (player.hasPermission("irc.message.gamechat")
                 && chatter.getChannels().contains(event.getChannel())) {
@@ -39,4 +39,5 @@ public class HeroChatListener implements Listener {
             }
         }
     }
+    
 }

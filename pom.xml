@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.5.7-SNAPSHOT2</version>
+    <version>1.5.8</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -106,9 +106,9 @@
         
         <!-- FactionChat -->
         <dependency>
-            <groupId>com.james137137</groupId>
+            <groupId>nz.co.lolnet.james137137</groupId>
             <artifactId>FactionChat</artifactId>
-            <version>1.610</version>
+            <version>1.6122</version>
         </dependency>
 
         <!-- TitanChat -->

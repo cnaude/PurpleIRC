@@ -35,8 +35,8 @@ public class PartListener extends ListenerAdapter {
         }
         if (ircBot.enabledMessages.get(channel.getName()).contains("irc-part")) {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircPart)
-                    .replace("%NAME%", user.getNick()
-                    .replace("%CHANNEL%", channel.getName())), "irc.message.part");
+                    .replace("%NAME%", user.getNick())
+                    .replace("%CHANNEL%", channel.getName()), "irc.message.part");
         }
     }
 }
