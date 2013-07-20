@@ -49,7 +49,7 @@ public class PurpleIRC extends JavaPlugin {
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
-    public String invalidIRCCommand;
+    public String invalidIRCCommand, noPermForIRCCommand;
     public String reportRTSSend;
     public String cleverSend;
     public String broadcastMessage, broadcastConsoleMessage;
@@ -193,6 +193,7 @@ public class PurpleIRC extends JavaPlugin {
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
+        noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));        
 
         broadcastMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-message", ""));
         broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));

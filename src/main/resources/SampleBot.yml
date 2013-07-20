@@ -110,7 +110,7 @@ channels:
     #  @help - print out of all of the commands
     #  @uptime - print the uptime of the game server
     #  @chat - send message to game
-    # The modes can be '*', or 'o', or 'ov'.
+    # The modes can be *, o , v , h, q or s. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
     # Set ignore-irc-chat to true if you are using @chat and don't want regular IRC chat in your game

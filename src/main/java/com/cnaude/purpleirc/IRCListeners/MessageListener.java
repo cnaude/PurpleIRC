@@ -109,6 +109,8 @@ public class MessageListener extends ListenerAdapter {
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
+                    bot.sendMessage(channel, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
+                        .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             } else {
                 bot.sendMessage(channel, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
