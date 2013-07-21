@@ -45,7 +45,7 @@ public class JoinListener extends ListenerAdapter {
             ircBot.updateNickList(channel);
         }
         if (plugin.netPackets != null) {
-            plugin.netPackets.addToTabList(user.getNick());
+            plugin.netPackets.addToTabList(user.getNick(), ircBot, channel);
         }
     }
 }

@@ -115,6 +115,9 @@ channels:
     # If a command is private then the result is sent to the player privately.
     # Set ignore-irc-chat to true if you are using @chat and don't want regular IRC chat in your game
     ignore-irc-chat: false
+    # ignore list for custom tab list
+    custom-tab-ignore-list:
+      - AwesomeBot
     commands:
       chat:
         modes: '*'

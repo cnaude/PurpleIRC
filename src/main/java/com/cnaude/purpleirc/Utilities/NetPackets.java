@@ -4,13 +4,13 @@
  */
 package com.cnaude.purpleirc.Utilities;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.injector.PacketConstructor;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -31,7 +31,14 @@ public class NetPackets {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
-    public void addToTabList(String name) {
+    public void addToTabList(String name, PurpleBot ircBot, Channel channel) {   
+        String channelName = channel.getName();
+        if (ircBot.tabIgnoreNicks.containsKey(channelName)) {
+            if (ircBot.tabIgnoreNicks.get(channelName).contains(name)) {
+                plugin.logDebug("Not adding " + name + " to tab list.");
+                return;
+            }
+        }
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
         try {
             PacketContainer packet = playerListConstructor.createPacket(plugin.customTabPrefix + name, true, 0);
@@ -59,7 +66,8 @@ public class NetPackets {
         }
     }
 
-    public void updateTabList(Player player, final PircBotX bot, final String channelName) {
+    public void updateTabList(Player player, final PurpleBot ircBot, final String channelName) {
+        final PircBotX bot = ircBot.bot;
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
@@ -81,7 +89,7 @@ public class NetPackets {
                     if (nick.equals(bot.getNick())) {
                         nick = ChatColor.DARK_PURPLE + nick;
                     }*/
-                    addToTabList(nick);
+                    addToTabList(nick, ircBot, channel);
                 }
             }
         }, 5);

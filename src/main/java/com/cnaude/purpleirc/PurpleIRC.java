@@ -125,7 +125,11 @@ public class PurpleIRC extends JavaPlugin {
             if (checkForProtocolLib()) {
                 logInfo("Hooked into ProtocolLib!");
                 netPackets = new NetPackets(this);
+            } else {
+                netPackets = null;
             }
+        } else {
+            netPackets = null;
         }
     }
 

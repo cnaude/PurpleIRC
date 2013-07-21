@@ -63,6 +63,7 @@ public final class PurpleBot {
     public boolean trustAllCerts;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
+    public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
     public HashMap<String, String> activeTopic = new HashMap<String, String>();
@@ -364,6 +365,19 @@ public final class PurpleBot {
                 if (worldList.isEmpty()) {
                     plugin.logInfo("World list is empty!");
                 }
+                
+                // build valid world list
+                Collection<String> t = new ArrayList<String>();
+                for (String name : config.getStringList("channels." + enChannelName + ".custom-tab-ignore-list")) {
+                    if (!t.contains(name)) {
+                        t.add(name);
+                    }
+                    plugin.logDebug("  Tab Ignore => " + name);
+                }
+                tabIgnoreNicks.put(channelName, t);
+                if (tabIgnoreNicks.isEmpty()) {
+                    plugin.logInfo("World list is empty!");
+                }                
 
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
@@ -618,7 +632,7 @@ public final class PurpleBot {
                 }
                 bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
                 if (plugin.netPackets != null) {
-                    plugin.netPackets.updateTabList(player, bot, channelName);
+                    plugin.netPackets.updateTabList(player, this, channelName);
                 }
             }
         }
