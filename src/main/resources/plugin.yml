@@ -93,3 +93,6 @@ permissions:
   'irc.list':
     description: Gives player access to the /irc list command.
     default: op  
+  'irc.tablist':
+    description: Allow player to see IRC nick list in the tab list
+    default: op

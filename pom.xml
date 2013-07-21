@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.5.9</version>
+    <version>1.6.0</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -21,6 +21,12 @@
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+        
+        <repository>
+            <id>comphenix-rep</id>
+            <name>Comphenix Repository</name>
+            <url>http://repo.comphenix.net/content/groups/public</url>
         </repository>
 
         <!-- Vault
@@ -132,20 +138,17 @@
             <version>2.5-670</version>
         </dependency>
         
-        
-        <!-- PircBotx
         <dependency>
-            <groupId>com.cnaude.pircbotx</groupId>
-            <artifactId>pircbotx</artifactId>
-            <version>1.9</version>
-        </dependency>-->
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>2.4.7</version>
+        </dependency>
         
         <dependency>
             <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
             <version>1.9</version>
         </dependency>
-            
            
         <!-- Testing only -->
         <dependency>

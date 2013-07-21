@@ -37,6 +37,9 @@ public class PartListener extends ListenerAdapter {
             plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircPart)
                     .replace("%NAME%", user.getNick())
                     .replace("%CHANNEL%", channel.getName()), "irc.message.part");
+            if (plugin.netPackets != null) {
+                plugin.netPackets.remFromTabList(user.getNick());
+            }
         }
     }
 }

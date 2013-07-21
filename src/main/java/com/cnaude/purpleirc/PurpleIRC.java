@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
+import com.cnaude.purpleirc.Utilities.NetPackets;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,20 +51,25 @@ public class PurpleIRC extends JavaPlugin {
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
     public String invalidIRCCommand, noPermForIRCCommand;
+    public String customTabPrefix;
     public String reportRTSSend;
     public String cleverSend;
     public String broadcastMessage, broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
+    private boolean customTabList;
     Long ircConnCheckInterval;
+    Long ircChannelCheckInterval;
     BotWatcher botWatcher;
+    ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
     VaultHook vaultHelpers;
     public FactionChatHook fcHook;
+    public NetPackets netPackets = null;
 
     @Override
     public void onEnable() {
@@ -113,13 +119,23 @@ public class PurpleIRC extends JavaPlugin {
         loadBots();
         createSampleBot();
         botWatcher = new BotWatcher(this);
+        channelWatcher = new ChannelWatcher(this);
         setupVault();
+        if (customTabList) {
+            if (checkForProtocolLib()) {
+                logInfo("Hooked into ProtocolLib!");
+                netPackets = new NetPackets(this);
+            }
+        }
     }
 
     @Override
     public void onDisable() {
         if (botWatcher != null) {
             botWatcher.cancel();
+        }
+        if (channelWatcher != null) {
+            channelWatcher.cancel();
         }
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
@@ -201,6 +217,12 @@ public class PurpleIRC extends JavaPlugin {
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
+        ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
+        
+        customTabList = getConfig().getBoolean("custom-tab-list", false);
+        customTabPrefix = getConfig().getString("custom-tab-prefix", "[IRC} ");
+        logDebug("custom-tab-list: " + customTabList);
+        logDebug("custom-tab-prefix: " + customTabPrefix);
     }
 
     private void loadBots() {
@@ -420,5 +442,9 @@ public class PurpleIRC extends JavaPlugin {
             prefix = "";
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
+    }
+    
+    public boolean checkForProtocolLib() {
+        return (getServer().getPluginManager().getPlugin("ProtocolLib") != null);
     }
 }

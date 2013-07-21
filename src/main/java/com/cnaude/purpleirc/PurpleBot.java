@@ -62,6 +62,7 @@ public final class PurpleBot {
     public boolean ssl;
     public boolean trustAllCerts;
     public ArrayList<String> botChannels = new ArrayList<String>();
+    public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
     public HashMap<String, String> activeTopic = new HashMap<String, String>();
@@ -616,6 +617,9 @@ public final class PurpleBot {
                     return;
                 }
                 bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.updateTabList(player, bot, channelName);
+                }
             }
         }
     }
@@ -844,6 +848,30 @@ public final class PurpleBot {
             sendUserList(sender, bot.getChannel(channelName));
         }
     }
+    
+    public void updateNickList(Channel channel) {     
+        // Build current list of names in channel
+        ArrayList<String> users = new ArrayList<String>();
+        for (User user : bot.getUsers(channel)) {
+            plugin.logDebug("N: " + user.getNick());
+            users.add(user.getNick());            
+        }
+        // Iterate over previous list and remove from tab list
+        if (channelNicks.containsKey(channel.getName())) {
+            for (String name: channelNicks.get(channel.getName())) { 
+                plugin.logDebug("O: " + name);
+                if (!users.contains(name)) {
+                    plugin.logDebug("Removing " + name + " from list.");
+                    if (plugin.netPackets != null) {
+                        plugin.netPackets.remFromTabList(name);
+                    }
+                }
+            }
+            channelNicks.remove(channel.getName());
+        }
+        channelNicks.put(channel.getName(), users);
+    }
+
 
     public void opFriends(Channel channel) {
         for (User user : bot.getUsers(channel)) {
@@ -975,5 +1003,6 @@ public final class PurpleBot {
         UPlayer uPlayer = UPlayer.get(player);
         Faction faction = uPlayer.getFaction();
         return faction.getName();
-    }
+    }        
+    
 }

@@ -35,5 +35,8 @@ public class KickListener extends ListenerAdapter {
             return;
         }
         ircBot.broadcastIRCKick(recipient.getNick(), kicker.getNick(), event.getReason(), channel.getName());
+        if (plugin.netPackets != null) {
+            plugin.netPackets.remFromTabList(recipient.getNick());
+        }
     }
 }

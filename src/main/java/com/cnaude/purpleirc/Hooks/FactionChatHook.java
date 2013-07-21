@@ -5,8 +5,6 @@
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import java.lang.reflect.Method;
-import nz.co.lolnet.james137137.FactionChat.ChatMode;
 import nz.co.lolnet.james137137.FactionChat.FactionChatAPI;
 import org.bukkit.entity.Player;
 

@@ -17,7 +17,7 @@ import org.pircbotx.hooks.events.JoinEvent;
  * @author cnaude
  */
 public class JoinListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
@@ -25,23 +25,27 @@ public class JoinListener extends ListenerAdapter {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-    
+
     @Override
-    public void onJoin(JoinEvent event) {                
+    public void onJoin(JoinEvent event) {
         Channel channel = event.getChannel();
         User user = event.getUser();
         PircBotX bot = event.getBot();
-        
+
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
         ircBot.broadcastIRCJoin(user.getNick(), channel.getName());
         ircBot.opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
-            plugin.logDebug("Setting channel modes: " + channel.getName() + " => " 
+            plugin.logDebug("Setting channel modes: " + channel.getName() + " => "
                     + ircBot.channelModes.get(channel.getName()));
             bot.setMode(channel, ircBot.channelModes.get(channel.getName()));
             ircBot.fixTopic(channel, channel.getTopic(), channel.getTopicSetter());
+            ircBot.updateNickList(channel);
+        }
+        if (plugin.netPackets != null) {
+            plugin.netPackets.addToTabList(user.getNick());
         }
     }
 }

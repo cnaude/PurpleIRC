@@ -5,14 +5,14 @@ import org.pircbotx.Channel;
 /**
  *
  * @author Chris Naude
- * This thread checks each bot for connectivity and reconnects when appropriate.
+ * This thread checks each for users and updates the internal lists.
  */
-public class BotWatcher {
+public class ChannelWatcher {
     
     private final PurpleIRC plugin;
     private int taskID;
     
-    public BotWatcher(final PurpleIRC plugin) {
+    public ChannelWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
         taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
@@ -20,17 +20,14 @@ public class BotWatcher {
             public void run() {
                 plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (!plugin.botConnected.get(ircBot.botNick)) {
-                        if (ircBot.autoConnect) {
-                            plugin.logInfo("IRC bot '" + ircBot.bot.getName() + "' is not connected! Attempting reconnect...");
-                            ircBot.asyncReConnect();
+                    if (plugin.botConnected.get(ircBot.botNick)) {
+                        for (Channel channel : ircBot.bot.getChannels()) {
+                            ircBot.updateNickList(channel);
                         }
-                    } else {
-                        plugin.logDebug("IRC bot '" + ircBot.bot.getName() + "' is connected!");
-                    }
+                    } 
                 }
             }
-        }, plugin.ircConnCheckInterval, plugin.ircConnCheckInterval);
+        }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
     }
     
     public void cancel() {
