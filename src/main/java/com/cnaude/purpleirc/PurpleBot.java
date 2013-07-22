@@ -846,6 +846,9 @@ public final class PurpleBot {
             } else if (user.getChannelsVoiceIn().contains(channel)) {
                 nick = "+" + nick;
             }
+            if (user.isAway()) {
+                nick = nick + ChatColor.GRAY + " | Away";
+            }
             if (nick.equals(bot.getNick())) {
                 nick = ChatColor.DARK_PURPLE + nick;
             }
