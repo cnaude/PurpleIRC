@@ -29,7 +29,7 @@ public class QuitListener extends ListenerAdapter {
     public void onQuit(QuitEvent event) {
         User user = event.getUser();
         for (String channelName : ircBot.channelNicks.keySet()) {
-            if (ircBot.channelNicks.containsKey(user.getNick())) {
+            if (ircBot.channelNicks.get(channelName).contains(user.getNick())) {
                 if (ircBot.enabledMessages.get(channelName).contains("irc-quit")) {
                     plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircQuit)
                             .replace("%NAME%", user.getNick())

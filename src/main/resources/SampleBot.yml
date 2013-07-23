@@ -65,6 +65,7 @@ channels:
     - irc-kick
     - irc-part
     - irc-topic
+    - irc-quit
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat
