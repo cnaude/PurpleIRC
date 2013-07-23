@@ -19,6 +19,7 @@ import com.cnaude.purpleirc.IRCListeners.KickListener;
 import com.cnaude.purpleirc.IRCListeners.MessageListener;
 import com.cnaude.purpleirc.IRCListeners.MotdListener;
 import com.cnaude.purpleirc.IRCListeners.PartListener;
+import com.cnaude.purpleirc.IRCListeners.QuitListener;
 import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
@@ -91,6 +92,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new KickListener(plugin, this));
         bot.getListenerManager().addListener(new MessageListener(plugin, this));
         bot.getListenerManager().addListener(new PartListener(plugin, this));
+        bot.getListenerManager().addListener(new QuitListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
         bot.getListenerManager().addListener(new VersionListener(plugin));
         bot.getListenerManager().addListener(new WhoisListener(plugin, this));

@@ -49,7 +49,7 @@ public class PurpleIRC extends JavaPlugin {
     public String titanChat;
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
-    public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic;
+    public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit;
     public String invalidIRCCommand, noPermForIRCCommand;
     public String customTabPrefix;
     public String reportRTSSend;
@@ -210,6 +210,7 @@ public class PurpleIRC extends JavaPlugin {
         ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
+        ircQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-quit", ""));
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));

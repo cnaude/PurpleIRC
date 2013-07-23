@@ -44,6 +44,7 @@ message-format:
   irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
   irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  
+  irc-quit: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%. (Reason: %REASON%)'  
   irc-topic: '&f[&4IRC&f] Topic changed by %NAME%&0: %TOPIC%.'  
   # Message template for Clevernotch bot to IRC messages
   clever-send: '&0[&4BOT&0]<%NAME%&0> %MESSAGE%' 
