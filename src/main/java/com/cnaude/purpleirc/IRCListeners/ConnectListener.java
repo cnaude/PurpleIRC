@@ -33,6 +33,10 @@ public class ConnectListener extends ListenerAdapter {
             plugin.logInfo("Sending ident password to NickServ...");
             bot.identify(ircBot.botIdentPassword);
         }
+        if (ircBot.sendRawMessageOnConnect) {
+            plugin.logInfo("Sending raw message to server");
+            ircBot.bot.sendRawLine(ircBot.rawMessage);
+        }
         for (String channelName : ircBot.botChannels) {
             if (ircBot.channelAutoJoin.containsKey(channelName)) {
                 if (ircBot.channelAutoJoin.get(channelName)) {

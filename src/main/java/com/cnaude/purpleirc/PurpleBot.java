@@ -62,6 +62,8 @@ public final class PurpleBot {
     public long chatDelay;
     public boolean ssl;
     public boolean trustAllCerts;
+    public boolean sendRawMessageOnConnect;
+    public String rawMessage;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
     public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
@@ -259,6 +261,8 @@ public final class PurpleBot {
             autoConnect = config.getBoolean("autoconnect", true);
             ssl = config.getBoolean("ssl", false);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
+            sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
+            rawMessage = config.getString("raw-message", "");
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
             bot.setName(botNick);
