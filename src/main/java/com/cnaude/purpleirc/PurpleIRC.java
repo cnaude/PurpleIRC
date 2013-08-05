@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Utilities.NetPackets;
+import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,6 +52,11 @@ public class PurpleIRC extends JavaPlugin {
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit;
     public String invalidIRCCommand, noPermForIRCCommand;
+    public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
+            + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
+            + ChatColor.RED + "' to see valid bots.";
+    public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
+    public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
     public String customTabPrefix;
     public String reportRTSSend;
     public String cleverSend;
@@ -290,6 +296,8 @@ public class PurpleIRC extends JavaPlugin {
                 out.write(buf, 0, len);
             }
             out.close();
+        } catch (IOException ex) {
+            logError("Problem creating sample bot: " + ex.getMessage());
         } catch (Exception ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
         }

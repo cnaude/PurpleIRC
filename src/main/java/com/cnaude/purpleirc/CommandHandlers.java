@@ -1,13 +1,10 @@
 package com.cnaude.purpleirc;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.cnaude.purpleirc.Commands.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.pircbotx.Channel;
 
 /**
  *
@@ -15,514 +12,187 @@ import org.pircbotx.Channel;
  */
 public class CommandHandlers implements CommandExecutor {
 
-    private PurpleIRC plugin;
-    private final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
-            + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
-            + ChatColor.RED + "' to see valid bots.";
-    private final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
-    private final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
+    private PurpleIRC plugin;    
+    private final AddOp addOp;
+    private final Connect connect;
+    private final DeOp deOp;
+    private final Debug debug;
+    private final Disconnect disconnect;    
+    private final Kick kick;
+    private final List list;
+    private final ListBots listBots;
+    private final ListOps listOps;
+    private final Login login;
+    private final MessageDelay messageDelay;
+    private final Msg msg;
+    private final Mute mute;
+    private final Nick nick;
+    private final Op op;
+    private final Reload reload;
+    private final ReloadBot reloadBot;
+    private final ReloadBotConfig reloadBotConfig;
+    private final ReloadBotConfigs reloadBotConfigs;
+    private final ReloadBots reloadBots;
+    private final ReloadConfig reloadConfig;
+    private final RemoveOp removeOp;
+    private final Save save;
+    private final Say say;
+    private final Send send;
+    private final Server server;
+    private final Topic topic;
+    private final Whois whois;
 
     public CommandHandlers(PurpleIRC plugin) {
         this.plugin = plugin;
+        this.addOp = new AddOp(plugin);
+        this.connect = new Connect(plugin);
+        this.deOp = new DeOp(plugin);
+        this.debug = new Debug(plugin);
+        this.disconnect = new Disconnect(plugin);
+        this.kick = new Kick(plugin);
+        this.list = new List(plugin);
+        this.listBots = new ListBots(plugin);
+        this.listOps = new ListOps(plugin);
+        this.login = new Login(plugin);
+        this.messageDelay = new MessageDelay(plugin);
+        this.msg = new Msg(plugin);
+        this.mute = new Mute(plugin);
+        this.nick = new Nick(plugin);
+        this.op = new Op(plugin);
+        this.reload = new Reload(plugin);
+        this.reloadBot = new ReloadBot(plugin);
+        this.reloadBotConfig = new ReloadBotConfig(plugin);
+        this.reloadBotConfigs = new ReloadBotConfigs(plugin);
+        this.reloadBots = new ReloadBots(plugin);
+        this.reloadConfig = new ReloadConfig(plugin);
+        this.removeOp = new RemoveOp(plugin);
+        this.save = new Save(plugin);
+        this.say = new Say(plugin);
+        this.send = new Send(plugin);
+        this.server = new Server(plugin);
+        this.topic = new Topic(plugin);
+        this.whois = new Whois(plugin);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
         if (args.length >= 1) {
             String subCmd = args[0].toLowerCase();
             if (!sender.hasPermission("irc." + subCmd)) {
-                sender.sendMessage(noPermission);
+                sender.sendMessage(plugin.noPermission);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("listbots")) {
-                sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
-                        + ChatColor.DARK_PURPLE + "   ]-----");
-                for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.bot.getName());
-                    for (Channel channel : ircBot.bot.getChannels()) {
-                        sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
-                    }
-                }
+                listBots.dispatch(sender);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("debug")) {
-                String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc debug ([t|f])";
-                if (args.length == 1) {
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is currently "
-                            + ChatColor.WHITE + plugin.debugMode());
-                } else if (args.length == 2) {
-                    if (args[1].startsWith("t")) {
-                        plugin.debugMode(true);
-                    } else if (args[1].startsWith("f")) {
-                        plugin.debugMode(false);
-                    } else {
-                        sender.sendMessage(usage);
-                    }
-                    sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is now "
-                            + ChatColor.WHITE + plugin.debugMode());
-                } else {
-                    sender.sendMessage(usage);
-                }
+                debug.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("connect")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.asyncConnect(sender, true);
-                    }
-                } else if (args.length == 2) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).asyncConnect(sender, true);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc connect ([bot])");
-                }
+                connect.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reload")) {
-                sender.sendMessage("Disabling PurpleIRC...");
-                plugin.getServer().getPluginManager().disablePlugin(plugin);
-                sender.sendMessage("Enabling PurpleIRC...");
-                plugin.getServer().getPluginManager().enablePlugin(plugin);
+                reload.dispatch(sender);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbot")) {
-                if (args.length == 2) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).reload(sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot [bot]");
-                }
+                reloadBot.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbots")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.reload(sender);
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbots");
-                }
+                reloadBots.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbotconfig")) {
-                if (args.length == 2) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).reloadConfig(sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfig [bot]");
-                }
+                reloadBotConfig.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadbotconfigs")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.reloadConfig(sender);
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbotconfigs");
-                }
+                reloadBotConfigs.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("reloadconfig")) {
-                if (args.length == 1) {
-                    plugin.reloadMainConfig(sender);
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadconfig");
-                }
+                reloadConfig.dispatch(sender);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("disconnect")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.quit(sender);
-                    }
-                } else if (args.length == 2) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).quit(sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc disconnect ([bot])");
-                }
+                disconnect.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("topic")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.sendTopic(sender);
-                        sender.sendMessage(ChatColor.WHITE + "To change the topic: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
-                    }
-                } else if (args.length >= 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        String topic = "";
-                        for (int i = 3; i < args.length; i++) {
-                            topic = topic + " " + args[i];
-                        }
-                        plugin.ircBots.get(bot).changeTopic(channelName, topic.substring(1), sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
-                }
+                topic.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("msg")) {
+                msg.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("say")) {
-                if (args.length >= 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        String msg = "";
-                        for (int i = 3; i < args.length; i++) {
-                            msg = msg + " " + args[i];
-                        }
-                        plugin.ircBots.get(bot).bot.sendMessage(channelName, msg.substring(1));
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc say [bot] [channel] [message]");
-                }
+                say.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("send")) {
-                if (args.length >= 2) {
-                    int msgIdx = 1;
-                    String channelName = null;
-                    List<PurpleBot> myBots = new ArrayList<PurpleBot>();
-                    if (plugin.ircBots.containsKey(args[1])) {
-                        myBots.add(plugin.ircBots.get(args[1]));
-                        msgIdx = 2;
-                        if (args.length >= 3) {
-                            if (plugin.ircBots.get(args[1]).botChannels.contains(args[2])) {
-                                channelName = args[2];
-                            }
-                        }
-                    } else {
-                        myBots.addAll(plugin.ircBots.values());
-                    }
-                    for (PurpleBot ircBot : myBots) {
-                        String msg = "";
-                        for (int i = msgIdx; i < args.length; i++) {
-                            msg = msg + " " + args[i];
-                        }
-                        if (channelName == null) {
-                            for (String c : ircBot.botChannels) {
-                                if (sender instanceof Player) {
-                                    ircBot.gameChat((Player) sender, c, msg.substring(1));
-                                } else {
-                                    ircBot.consoleChat(c, msg.substring(1));
-                                }
-                            }
-                        } else {
-                            if (sender instanceof Player) {
-                                ircBot.gameChat((Player) sender, channelName, msg.substring(1));
-                            } else {
-                                ircBot.consoleChat(channelName, msg.substring(1));
-                            }
-                        }
-
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc send ([bot]) ([channel]) [message]");
-                }
+                send.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("op")) {
-                if (args.length >= 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 3; i < args.length; i++) {
-                            // #channel, user
-                            plugin.ircBots.get(bot).op(channelName, args[i]);
-                            sender.sendMessage(ChatColor.WHITE + "Opping " + args[i] + " in " + channelName + "...");
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
-                }
+                op.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("deop")) {
-                if (args.length >= 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 3; i < args.length; i++) {
-                            // #channel, user
-                            plugin.ircBots.get(bot).deOp(channelName, args[i]);
-                            sender.sendMessage(ChatColor.WHITE + "De-opping " + args[i] + " in " + channelName + "...");
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc deop [bot] [channel] [user(s)]");
-                }
+                deOp.dispatch(sender, args);
                 return true;
-            }
-            if (subCmd.equalsIgnoreCase("op")) {
-                if (args.length >= 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 3; i < args.length; i++) {
-                            // #channel, user
-                            plugin.ircBots.get(bot).op(channelName, args[i]);
-                            sender.sendMessage(ChatColor.WHITE + "Opping " + args[i] + " in " + channelName + "...");
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc op [bot] [channel] [user(s)]");
-                }
-                return true;
-            }
+            }            
             if (subCmd.equalsIgnoreCase("kick")) {
-                if (args.length == 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 3; i < args.length; i++) {
-                            // #channel, user
-                            plugin.ircBots.get(bot).kick(channelName, args[3]);  
-                            sender.sendMessage(ChatColor.WHITE + "Kicking " + args[i] + " from " + channelName + "...");
-                        }                        
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc kick [bot] [channel] [user(s)]");
-                }
+                kick.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("addop")) {
-                if (args.length == 4) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        // #channel, user
-                        plugin.ircBots.get(bot).addOp(channelName, args[3], sender);
-                        plugin.ircBots.get(bot).opFriends(channelName);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc addop [bot] [channel] [user mask]");
-                }
+                addOp.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("listops")) {
-                if (args.length == 3) {
-                    String bot = args[1];
-                    String channelName = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        if (plugin.ircBots.get(bot).opsList.containsKey(channelName)) {
-                            sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName
-                                    + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + "Auto Op Masks" + ChatColor.DARK_PURPLE + " ]-----");
-                            for (String userMask : plugin.ircBots.get(bot).opsList.get(channelName)) {
-                                sender.sendMessage(" - " + userMask);
-                            }
-                        } else {
-                            sender.sendMessage(invalidChannel.replace("%CHANNEL%", channelName));
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc listops [bot] [channel]");
-                }
+                listOps.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("removeop")) {
-                if (args.length == 4) {
-                    String bot = args[1];
-                    String channel = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        // #channel, user
-                        plugin.ircBots.get(bot).removeOp(channel, args[3], sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc removeop [bot] [channel] [user mask]");
-                }
+                removeOp.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("mute")) {
-                if (args.length >= 4) {
-                    String bot = args[1];
-                    String channel = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        for (int i = 2; i < args.length; i++) {
-                            // #channel, user
-                            plugin.ircBots.get(bot).mute(channel, sender, args[i]);
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc mute [bot] [channel] [user(s)]");
-                }
+                mute.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("save")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.saveConfig(sender);
-                    }
-                } else if (args.length >= 2) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).saveConfig(sender);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc save ([bot])");
-                }
+                save.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("server")) {
-                if (args.length >= 3) {
-                    String bot = args[1];
-                    String server = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        if (args.length == 3) {
-                            plugin.ircBots.get(bot).setServer(sender, server);
-                        } else if (args.length == 4) {
-                            plugin.ircBots.get(bot).setServer(sender, server, Boolean.parseBoolean(args[3]));
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc server [bot] [server] ([true|false])");
-                }
+                server.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("nick")) {
-                if (args.length == 3) {
-                    String bot = args[1];
-                    String nick = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        if (plugin.ircBots.containsKey(nick)) {
-                            sender.sendMessage(ChatColor.RED + "There is already a bot with that nick!");
-                            return true;
-                        } else {
-                            plugin.ircBots.get(bot).changeNick(sender, nick);
-                            PurpleBot ircBot = plugin.ircBots.remove(bot);
-                            plugin.ircBots.put(nick, ircBot);
-                            boolean isConnected = plugin.botConnected.remove(bot);
-                            plugin.botConnected.put(nick, isConnected);
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc nick [bot] [nick]");
-                }
+                nick.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("messagedelay")) {
-                if (args.length == 3) {
-                    if (args[2].matches("\\d+")) {
-                        String bot = args[1];
-                        if (plugin.ircBots.containsKey(bot)) {
-                            long delay = Long.parseLong(args[2]);
-                            plugin.ircBots.get(bot).setIRCDelay(sender, delay);
-                        } else {
-                            sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
-                    }
-                } else if (args.length == 2) {
-                        String bot = args[1];
-                        if (plugin.ircBots.containsKey(bot)) {
-                            sender.sendMessage(ChatColor.WHITE + "IRC message delay is currently " 
-                                    + plugin.ircBots.get(bot).bot.getMessageDelay() + " ms.");
-                        } else {
-                            sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                        }                                
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
-                }
+                messageDelay.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("login")) {
-                if (args.length == 3) {
-                    String bot = args[1];
-                    String login = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        plugin.ircBots.get(bot).changeLogin(sender, login);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc login [bot] [login]");
-                }
+                login.dispatch(sender, args);
                 return true;
             }
             if (subCmd.equalsIgnoreCase("list")) {
-                if (args.length == 1) {
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.sendUserList(sender);
-                    }
-                } else if (args.length > 1) {
-                    String bot = args[1];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        PurpleBot ircBot = plugin.ircBots.get(bot);
-                        if (args.length > 2) {
-                            ircBot.sendUserList(sender, args[2]);
-                        } else {
-                            ircBot.sendUserList(sender);
-                        }
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                }
+                list.dispatch(sender, args);
                 return true;
             }
+
             if (subCmd.equalsIgnoreCase("whois")) {
-                if (args.length == 2) {
-                    String nick = args[1];
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {
-                        ircBot.sendUserWhois(sender, nick);
-                    }
-                } else if (args.length == 3) {
-                    String bot = args[1];
-                    String nick = args[2];
-                    if (plugin.ircBots.containsKey(bot)) {
-                        PurpleBot ircBot = plugin.ircBots.get(bot);
-                        ircBot.sendUserWhois(sender, nick);
-                    } else {
-                        sender.sendMessage(invalidBotName.replace("%BOT%", bot));
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc whois [bot] [nick]");
-                }
+                whois.dispatch(sender, args);
                 return true;
             }
         }

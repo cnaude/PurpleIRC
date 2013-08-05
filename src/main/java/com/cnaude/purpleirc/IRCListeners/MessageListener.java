@@ -69,18 +69,24 @@ public class MessageListener extends ListenerAdapter {
                 if (privateCommand) {
                     target = user.getNick();
                 }
+                
                 boolean modeOkay = false;
                 if (modes.equals("*")) {
                     modeOkay = true;
-                } else if (modes.contains("o")) {
+                }
+                if (modes.contains("o") && !modeOkay) {
                     modeOkay = user.getChannelsOpIn().contains(channel);
-                } else if (modes.contains("v")) {
+                }
+                if (modes.contains("v") && !modeOkay) {
                     modeOkay = user.getChannelsVoiceIn().contains(channel);
-                } else if (modes.contains("h")) {
+                }
+                if (modes.contains("h") && !modeOkay) {
                     modeOkay = user.getChannelsHalfOpIn().contains(channel);
-                } else if (modes.contains("q")) {
+                }
+                if (modes.contains("q") && !modeOkay) {
                     modeOkay = user.getChannelsOwnerIn().contains(channel);
-                } else if (modes.contains("s")) {
+                }
+                if (modes.contains("s") && !modeOkay) {
                     modeOkay = user.getChannelsSuperOpIn().contains(channel);
                 }
 

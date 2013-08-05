@@ -815,7 +815,7 @@ public final class PurpleBot {
     public void sendUserWhois(CommandSender sender, String nick) {
         User user = bot.getUser(nick);
         if (user.getServer().isEmpty()) {
-            sender.sendMessage(ChatColor.RED + "Inavlid user: " + ChatColor.WHITE + nick);
+            sender.sendMessage(ChatColor.RED + "Invalid user: " + ChatColor.WHITE + nick);
         } else {
             bot.sendRawLineNow(String.format("WHOIS %s %s", nick, nick));
             whoisSenders.add(sender);
