@@ -132,6 +132,7 @@ public class PurpleIRC extends JavaPlugin {
                 logInfo("Hooked into ProtocolLib!");
                 netPackets = new NetPackets(this);
             } else {
+                logError("ProtocolLib not found! The custom tab list is disabled.");
                 netPackets = null;
             }
         } else {
@@ -309,6 +310,9 @@ public class PurpleIRC extends JavaPlugin {
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
             alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
+        }
+        if (alias == null) {
+            alias = worldName;
         }
         return alias;
     }
