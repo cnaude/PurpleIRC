@@ -108,6 +108,10 @@ public class ChatTokenizer {
         if (displayName == null) {
             displayName = "";
         }
+        String worldName = "";
+        if (player.getWorld() != null) {
+            worldName = player.getWorld().getName();
+        }
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", player.getName())
                 .replace("%DISPLAYNAME%", displayName)
@@ -116,8 +120,8 @@ public class ChatTokenizer {
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
                 .replace("%GROUPPREFIX%", gPrefix)
-                .replace("%WORLDALIAS%", plugin.getWorldAlias(player.getWorld().getName()))
-                .replace("%WORLD%", player.getWorld().getName()));
+                .replace("%WORLDALIAS%", plugin.getWorldAlias(worldName))
+                .replace("%WORLD%", worldName));
     }
 
     public String mcMMOChatToIRCTokenizer(Player player, String template, String message, String partyName) {

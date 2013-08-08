@@ -1,7 +1,6 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Commands.*;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,8 +16,10 @@ public class CommandHandlers implements CommandExecutor {
     private final Connect connect;
     private final DeOp deOp;
     private final Debug debug;
-    private final Disconnect disconnect;    
+    private final Disconnect disconnect;  
+    private final Join join;
     private final Kick kick;
+    private final Leave leave;
     private final List list;
     private final ListBots listBots;
     private final ListOps listOps;
@@ -49,7 +50,9 @@ public class CommandHandlers implements CommandExecutor {
         this.deOp = new DeOp(plugin);
         this.debug = new Debug(plugin);
         this.disconnect = new Disconnect(plugin);
+        this.join = new Join(plugin);
         this.kick = new Kick(plugin);
+        this.leave = new Leave(plugin);
         this.list = new List(plugin);
         this.listBots = new ListBots(plugin);
         this.listOps = new ListOps(plugin);
@@ -190,9 +193,16 @@ public class CommandHandlers implements CommandExecutor {
                 list.dispatch(sender, args);
                 return true;
             }
-
             if (subCmd.equalsIgnoreCase("whois")) {
                 whois.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("join")) {
+                join.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("leave")) {
+                leave.dispatch(sender, args);
                 return true;
             }
         }
