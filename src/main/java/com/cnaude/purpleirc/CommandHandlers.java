@@ -11,12 +11,12 @@ import org.bukkit.command.CommandSender;
  */
 public class CommandHandlers implements CommandExecutor {
 
-    private PurpleIRC plugin;    
+    private PurpleIRC plugin;
     private final AddOp addOp;
     private final Connect connect;
     private final DeOp deOp;
     private final Debug debug;
-    private final Disconnect disconnect;  
+    private final Disconnect disconnect;
     private final Join join;
     private final Kick kick;
     private final Leave leave;
@@ -79,7 +79,42 @@ public class CommandHandlers implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        /*
+        String[] subArgs = null;
+        plugin.logDebug("ARGS: " + args.length);
+        if (args.length >= 2) {
+            subArgs = new String[args.length - 2];
+            for (int i = 2; i < args.length; i++) {
+                subArgs[i - 2] = args[i];
+                plugin.logDebug("a[" + i + "] " + args[i]);
+            }
+        } else if (args.length >= 1) {
+            subArgs = new String[1];
+                subArgs[i - 1] = args[i];
+                plugin.logDebug("a[" + i + "] " + args[i]);
+        } else {
+            subArgs = args;
+        }
+        for (String s1 : subArgs) {
+            plugin.logDebug(s1);
+        }*/
+
         if (args.length >= 1) {
+            String botName = "";
+
+            if (plugin.ircBots.size() == 1) {
+                botName = (String) plugin.ircBots.keySet().toArray()[0];
+            } else {
+                if (args.length >= 2) {
+                    for (String s : plugin.ircBots.keySet()) {
+                        if (s.equalsIgnoreCase(args[1])) {
+                            botName = s;
+                            break;
+                        }
+                    }
+                }
+            }
+
             String subCmd = args[0].toLowerCase();
             if (!sender.hasPermission("irc." + subCmd)) {
                 sender.sendMessage(plugin.noPermission);
@@ -129,10 +164,11 @@ public class CommandHandlers implements CommandExecutor {
                 topic.dispatch(sender, args);
                 return true;
             }
+            /*
             if (subCmd.equalsIgnoreCase("msg")) {
                 msg.dispatch(sender, args);
                 return true;
-            }
+            }*/
             if (subCmd.equalsIgnoreCase("say")) {
                 say.dispatch(sender, args);
                 return true;
@@ -148,7 +184,7 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("deop")) {
                 deOp.dispatch(sender, args);
                 return true;
-            }            
+            }
             if (subCmd.equalsIgnoreCase("kick")) {
                 kick.dispatch(sender, args);
                 return true;
@@ -207,5 +243,20 @@ public class CommandHandlers implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private String getBotName(String[] args) {
+        String botName = "";
+        if (plugin.ircBots.size() == 1) {
+            botName = (String) plugin.ircBots.keySet().toArray()[0];
+        } else {
+            for (String s : plugin.ircBots.keySet()) {
+                if (s.equalsIgnoreCase(args[1])) {
+                    botName = s;
+                    break;
+                }
+            }
+        }
+        return botName;
     }
 }

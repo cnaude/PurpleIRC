@@ -33,7 +33,12 @@ public class ChatTokenizer {
 
     // IRC to Hero chat tokenizer without a message
     public String ircChatToHeroChatTokenizer(String nick, String channelName, String template, ChannelManager channelManager, String hChannel) {
-        return ircBot.plugin.colorConverter.ircColorsToGame(template
+        String tmpl = template;
+        Player player = plugin.getServer().getPlayer(nick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        }
+        return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
@@ -43,7 +48,12 @@ public class ChatTokenizer {
 
     // Normal IRC to game chat tokenizer
     public String ircChatToGameTokenizer(String nick, String channelName, String template, String message) {
-        return ircBot.plugin.colorConverter.ircColorsToGame(template
+        String tmpl = template;
+        Player player = plugin.getServer().getPlayer(nick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        }
+        return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%NAME%", nick)
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", channelName));
@@ -51,7 +61,12 @@ public class ChatTokenizer {
 
     // IRC to Hero chat channel tokenizer
     public String ircChatToHeroChatTokenizer(String ircNick, String ircChannelName, String template, String message, ChannelManager channelManager, String hChannel) {
-        return ircBot.plugin.colorConverter.ircColorsToGame(template
+        String tmpl = template;
+        Player player = plugin.getServer().getPlayer(ircNick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        }
+        return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
@@ -73,7 +88,7 @@ public class ChatTokenizer {
     public String chatIRCTokenizer(String recipient, String kicker, String reason, String channelName, String template, ChannelManager channelManager, String hChannel) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
                 .replace("%HEROCHANNEL%", hChannel)
-                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())                
+                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
                 .replace("%NAME%", recipient)
                 .replace("%REASON%", reason)
@@ -81,47 +96,15 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", channelName));
     }
 
-    public String gameChatToIRCTokenizer(String pName, String template, String message) {        
+    public String gameChatToIRCTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", pName)
                 .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
     }
 
     public String gameChatToIRCTokenizer(Player player, String template, String message) {
-        String pSuffix = plugin.getPlayerSuffix(player);
-        if (pSuffix == null) {
-            pSuffix = "";
-        }
-        String pPrefix = plugin.getPlayerPrefix(player);
-        if (pPrefix == null) {
-            pPrefix = "";
-        }
-        String gPrefix = plugin.getGroupPrefix(player);
-        if (gPrefix == null) {
-            gPrefix = "";
-        }
-        String group = plugin.getPlayerGroup(player);
-        if (group == null) {
-            group = "";
-        }
-        String displayName = player.getDisplayName();
-        if (displayName == null) {
-            displayName = "";
-        }
-        String worldName = "";
-        if (player.getWorld() != null) {
-            worldName = player.getWorld().getName();
-        }
-        return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%NAME%", player.getName())
-                .replace("%DISPLAYNAME%", displayName)
-                .replace("%GROUP%", group)
-                .replace("%MESSAGE%", message)
-                .replace("%PLAYERPREFIX%", pPrefix)
-                .replace("%PLAYERSUFFIX%", pSuffix)
-                .replace("%GROUPPREFIX%", gPrefix)
-                .replace("%WORLDALIAS%", plugin.getWorldAlias(worldName))
-                .replace("%WORLD%", worldName));
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)               
+                .replace("%MESSAGE%", message));
     }
 
     public String mcMMOChatToIRCTokenizer(Player player, String template, String message, String partyName) {
@@ -152,7 +135,7 @@ public class ChatTokenizer {
                 .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))
                 .replace("%CHANNEL%", hChannel);
     }
-    
+
     public String titanChatTokenizer(Player player, String tChannel, String tColor, String message) {
         return gameChatToIRCTokenizer(player, plugin.titanChat, message)
                 .replace("%TITANCHANNEL%", tChannel)
@@ -162,25 +145,71 @@ public class ChatTokenizer {
 
     public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%MESSAGE%", message)
-                );
+                .replace("%MESSAGE%", message));
     }
-    
+
     public String reportRTSTokenizer(Player player, String template, HelpRequest request) {
         String message = request.getMessage();
         String modName = request.getModName();
         String name = request.getName();
         String world = request.getWorld();
         int id = request.getId();
-        if (message == null) { message = ""; }
-        if (modName == null) { modName = ""; }
-        if (name == null) { name = ""; }
-        if (world == null) { world = ""; }        
-        return gameChatToIRCTokenizer(player, template, message)        
+        if (message == null) {
+            message = "";
+        }
+        if (modName == null) {
+            modName = "";
+        }
+        if (name == null) {
+            name = "";
+        }
+        if (world == null) {
+            world = "";
+        }
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
                 .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
                 .replace("%RTSWORLD%", world);
+    }
+
+    private String playerTokenizer(Player player, String message) {
+        String pSuffix = plugin.getPlayerSuffix(player);
+        String pPrefix = plugin.getPlayerPrefix(player);
+        String gPrefix = plugin.getGroupPrefix(player);
+        String group = plugin.getPlayerGroup(player);
+        String displayName = player.getDisplayName();
+        String pName = player.getName();
+        String worldName = "";
+        String worldAlias = "";
+        if (pSuffix == null) {
+            pSuffix = "";
+        }
+        if (pPrefix == null) {
+            pPrefix = "";
+        }
+        if (gPrefix == null) {
+            gPrefix = "";
+        }
+        if (group == null) {
+            group = "";
+        }
+        if (displayName == null) {
+            displayName = "";
+        }
+        if (player.getWorld() != null) {
+            worldName = player.getWorld().getName();
+            worldAlias = plugin.getWorldAlias(worldName);
+        }
+        return message.replace("%DISPLAYNAME%", displayName)
+                .replace("%NAME%", pName)
+                .replace("%GROUP%", group)
+                .replace("%MESSAGE%", message)
+                .replace("%PLAYERPREFIX%", pPrefix)
+                .replace("%PLAYERSUFFIX%", pSuffix)
+                .replace("%GROUPPREFIX%", gPrefix)
+                .replace("%WORLDALIAS%", worldAlias)
+                .replace("%WORLD%", worldName);
     }
 }

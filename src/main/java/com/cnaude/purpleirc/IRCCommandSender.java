@@ -20,23 +20,33 @@ public class IRCCommandSender implements CommandSender {
     private final PircBotX bot;
     private String target;
     private final PurpleIRC plugin;
+    private final boolean ctcpResponse;
     
     @Override
-    public void sendMessage(String message) {             
-        bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
+    public void sendMessage(String message) {     
+        if (ctcpResponse) {
+            bot.sendCTCPResponse(target, plugin.colorConverter.gameColorsToIrc(message));                
+        } else {
+            bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
+        }
     }
     
     @Override 
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
-            bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
+            if (ctcpResponse) {
+                bot.sendCTCPResponse(target, plugin.colorConverter.gameColorsToIrc(message));  
+            } else {
+                bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
+            }
         }
     }
     
-    public IRCCommandSender(PircBotX bot, String target, PurpleIRC plugin) {        
+    public IRCCommandSender(PircBotX bot, String target, PurpleIRC plugin, boolean ctcpResponse) {        
         this.target = target;
         this.bot = bot;
         this.plugin = plugin;
+        this.ctcpResponse = ctcpResponse;
     }
     
     @Override 

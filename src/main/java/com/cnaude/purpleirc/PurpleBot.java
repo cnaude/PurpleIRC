@@ -396,10 +396,9 @@ public final class PurpleBot {
                         plugin.logDebug("    " + commandOption + " => " + commandOptionValue);
                     }
                     map.put(command, optionPair);
-
                 }
                 commandMap.put(channelName, map);
-                if (commandMap.isEmpty()) {
+                if (map.isEmpty()) {
                     plugin.logInfo("No commands specified!");
                 }
             }

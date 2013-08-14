@@ -7,7 +7,6 @@ package com.cnaude.purpleirc.Commands;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.pircbotx.Channel;
 
 /**
  *

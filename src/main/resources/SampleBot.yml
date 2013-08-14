@@ -128,32 +128,40 @@ channels:
       chat:
         modes: '*'
         private: false
+        ctcp: false
         game_command: '@chat'       
       list:
         modes: '*'
         private: false
+        ctcp: false
         game_command: '@list'        
       help:
         modes: '*'
         private: false
+        ctcp: false
         game_command: '@help'
       uptime:
         modes: '*'
         private: false
+        ctcp: false
         game_command: '@uptime'        
       version:
         modes: '*'
         private: false
+        ctcp: false
         game_command: version        
       lag:
         modes: '*'
         private: false
+        ctcp: false
         game_command: lag        
       lagmem:
         modes: '*'
         private: true
+        ctcp: false
         game_command: lagmem        
       gamemode:
         modes: 'o'
         private: false
+        ctcp: false
         game_command: 'gamemode %ARGS%'

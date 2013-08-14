@@ -8,7 +8,6 @@ import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.pircbotx.Channel;
 
 /**
  *
@@ -23,25 +22,20 @@ public class Msg {
     }
 
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length == 1) {
-            for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.sendTopic(sender);
-                sender.sendMessage(ChatColor.WHITE + "To change the topic: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
-            }
-        } else if (args.length >= 4) {
+        if (args.length >= 4) {
             String bot = args[1];
             String channelName = args[2];
             if (plugin.ircBots.containsKey(bot)) {
-                String topic = "";
+                String message = "";
                 for (int i = 3; i < args.length; i++) {
-                    topic = topic + " " + args[i];
+                    message = message + " " + args[i];
                 }
-                plugin.ircBots.get(bot).changeTopic(channelName, topic.substring(1), sender);
+                plugin.ircBots.get(bot).changeTopic(channelName, message.substring(1), sender);
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
+            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc msg [bot] [user] [message]");
         }
     }
 }
