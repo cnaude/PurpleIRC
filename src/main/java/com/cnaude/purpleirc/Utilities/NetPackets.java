@@ -40,8 +40,9 @@ public class NetPackets {
             }
         }
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
-        try {
-            PacketContainer packet = playerListConstructor.createPacket(plugin.customTabPrefix + name, true, 0);
+        try {            
+            PacketContainer packet = playerListConstructor.createPacket(
+                    (plugin.customTabPrefix + name).substring(0, 15), true, 0);
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);
@@ -55,7 +56,8 @@ public class NetPackets {
     public void remFromTabList(String name) {
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
         try {
-            PacketContainer packet = playerListConstructor.createPacket(plugin.customTabPrefix + name, false, 0);
+            PacketContainer packet = playerListConstructor.createPacket(
+                    (plugin.customTabPrefix + name).substring(0, 15), false, 0);
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);

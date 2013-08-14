@@ -36,6 +36,7 @@ public class ChatTokenizer {
         String tmpl = template;
         Player player = plugin.getServer().getPlayer(nick);
         if (player != null) {
+            plugin.logDebug("ircChatToHeroChatTokenizer: player not null ");
             tmpl = playerTokenizer(player, template);
         }
         return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
