@@ -18,6 +18,7 @@ import com.cnaude.purpleirc.IRCListeners.JoinListener;
 import com.cnaude.purpleirc.IRCListeners.KickListener;
 import com.cnaude.purpleirc.IRCListeners.MessageListener;
 import com.cnaude.purpleirc.IRCListeners.MotdListener;
+import com.cnaude.purpleirc.IRCListeners.NickChangeListener;
 import com.cnaude.purpleirc.IRCListeners.PartListener;
 import com.cnaude.purpleirc.IRCListeners.QuitListener;
 import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
@@ -93,6 +94,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new JoinListener(plugin, this));
         bot.getListenerManager().addListener(new KickListener(plugin, this));
         bot.getListenerManager().addListener(new MessageListener(plugin, this));
+        bot.getListenerManager().addListener(new NickChangeListener(plugin, this));
         bot.getListenerManager().addListener(new PartListener(plugin, this));
         bot.getListenerManager().addListener(new QuitListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
@@ -875,13 +877,13 @@ public final class PurpleBot {
         // Build current list of names in channel
         ArrayList<String> users = new ArrayList<String>();
         for (User user : bot.getUsers(channel)) {
-            plugin.logDebug("N: " + user.getNick());
+            //plugin.logDebug("N: " + user.getNick());
             users.add(user.getNick());            
         }
         // Iterate over previous list and remove from tab list
         if (channelNicks.containsKey(channel.getName())) {
             for (String name: channelNicks.get(channel.getName())) { 
-                plugin.logDebug("O: " + name);
+                //plugin.logDebug("O: " + name);
                 if (!users.contains(name)) {
                     plugin.logDebug("Removing " + name + " from list.");
                     if (plugin.netPackets != null) {

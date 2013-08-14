@@ -1,7 +1,5 @@
 package com.cnaude.purpleirc;
 
-import org.pircbotx.Channel;
-
 /**
  *
  * @author Chris Naude

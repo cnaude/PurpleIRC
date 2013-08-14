@@ -24,7 +24,7 @@ public class ChannelWatcher {
                         for (Channel channel : ircBot.bot.getChannels()) {
                             ircBot.updateNickList(channel);
                         }
-                    } 
+                    }
                 }
             }
         }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
@@ -33,5 +33,4 @@ public class ChannelWatcher {
     public void cancel() {
         this.plugin.getServer().getScheduler().cancelTask(taskID);        
     }
-
 }

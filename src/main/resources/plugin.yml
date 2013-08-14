@@ -66,6 +66,9 @@ permissions:
   'irc.message.action':
     description: Receive IRC chat actions (/me).
     default: true
+  'irc.message.nickchange':
+    description: Receive IRC nick change messages
+    default: true
   'irc.message.join':
     description: Receive IRC join messages.
     default: false
