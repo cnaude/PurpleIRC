@@ -31,7 +31,7 @@ public class NetPackets {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
-    public void addToTabList(String name, PurpleBot ircBot, Channel channel) {   
+    public void addToTabList(String name, PurpleBot ircBot, Channel channel) {
         String channelName = channel.getName();
         if (ircBot.tabIgnoreNicks.containsKey(channelName)) {
             if (ircBot.tabIgnoreNicks.get(channelName).contains(name)) {
@@ -40,8 +40,8 @@ public class NetPackets {
             }
         }
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
-        try {     
-            
+        try {
+
             PacketContainer packet = playerListConstructor.createPacket(
                     truncateName(plugin.customTabPrefix + name), true, 0);
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
@@ -53,7 +53,7 @@ public class NetPackets {
             plugin.logError(e.getMessage());
         }
     }
-    
+
     public void remFromTabList(String name) {
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
         try {
@@ -75,30 +75,40 @@ public class NetPackets {
             @Override
             public void run() {
                 Channel channel = bot.getChannel(channelName);
-                for (User user : bot.getUsers(channel)) {                    
+                for (User user : bot.getUsers(channel)) {
                     String nick = user.getNick();
                     /*
-                    if (user.isIrcop()) {
-                        nick = "~" + nick;
-                    } else if (user.getChannelsSuperOpIn().contains(channel)) {
-                        nick = "&" + nick;
-                    } else if (user.getChannelsOpIn().contains(channel)) {
-                        nick = "@" + nick;
-                    } else if (user.getChannelsHalfOpIn().contains(channel)) {
-                        nick = "%" + nick;
-                    } else if (user.getChannelsVoiceIn().contains(channel)) {
-                        nick = "+" + nick;
-                    }
-                    if (nick.equals(bot.getNick())) {
-                        nick = ChatColor.DARK_PURPLE + nick;
-                    }*/
+                     if (user.isIrcop()) {
+                     nick = "~" + nick;
+                     } else if (user.getChannelsSuperOpIn().contains(channel)) {
+                     nick = "&" + nick;
+                     } else if (user.getChannelsOpIn().contains(channel)) {
+                     nick = "@" + nick;
+                     } else if (user.getChannelsHalfOpIn().contains(channel)) {
+                     nick = "%" + nick;
+                     } else if (user.getChannelsVoiceIn().contains(channel)) {
+                     nick = "+" + nick;
+                     }
+                     if (nick.equals(bot.getNick())) {
+                     nick = ChatColor.DARK_PURPLE + nick;
+                     }*/
                     addToTabList(nick, ircBot, channel);
                 }
             }
         }, 5);
 
     }
-    
+
+    public void updateTabList(Player player) {
+        if (player.hasPermission("irc.tablist")) {            
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+                for (String channelName : ircBot.botChannels) {
+                    updateTabList(player, ircBot, channelName);
+                }
+            }
+        }
+    }
+
     private String truncateName(String name) {
         if (name.length() > 16) {
             return name.substring(0, 15);

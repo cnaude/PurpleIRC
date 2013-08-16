@@ -60,6 +60,9 @@ public class GameListeners implements Listener {
         for (String botName : plugin.ircBots.keySet()) {
             if (plugin.botConnected.get(botName)) {
                 plugin.ircBots.get(botName).gameJoin(event.getPlayer(), event.getJoinMessage());
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.updateTabList(event.getPlayer());
+                }
             }
         }
     }

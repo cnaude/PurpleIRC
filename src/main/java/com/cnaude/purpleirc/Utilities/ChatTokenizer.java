@@ -33,11 +33,13 @@ public class ChatTokenizer {
 
     // IRC to Hero chat tokenizer without a message
     public String ircChatToHeroChatTokenizer(String nick, String channelName, String template, ChannelManager channelManager, String hChannel) {
-        String tmpl = template;
+        String tmpl;
         Player player = plugin.getServer().getPlayer(nick);
         if (player != null) {
             plugin.logDebug("ircChatToHeroChatTokenizer: player not null ");
             tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(template);
         }
         return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%HEROCHANNEL%", hChannel)
@@ -49,10 +51,12 @@ public class ChatTokenizer {
 
     // Normal IRC to game chat tokenizer
     public String ircChatToGameTokenizer(String nick, String channelName, String template, String message) {
-        String tmpl = template;
+        String tmpl;
         Player player = plugin.getServer().getPlayer(nick);
         if (player != null) {
             tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(template);
         }
         return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%NAME%", nick)
@@ -62,10 +66,12 @@ public class ChatTokenizer {
 
     // IRC to Hero chat channel tokenizer
     public String ircChatToHeroChatTokenizer(String ircNick, String ircChannelName, String template, String message, ChannelManager channelManager, String hChannel) {
-        String tmpl = template;
+        String tmpl;
         Player player = plugin.getServer().getPlayer(ircNick);
         if (player != null) {
             tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(template);
         }
         return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%HEROCHANNEL%", hChannel)
@@ -176,12 +182,12 @@ public class ChatTokenizer {
     }
 
     private String playerTokenizer(Player player, String message) {
+        String pName = player.getName();
         String pSuffix = plugin.getPlayerSuffix(player);
         String pPrefix = plugin.getPlayerPrefix(player);
         String gPrefix = plugin.getGroupPrefix(player);
         String group = plugin.getPlayerGroup(player);
-        String displayName = player.getDisplayName();
-        String pName = player.getName();
+        String displayName = player.getDisplayName();        
         String worldName = "";
         String worldAlias = "";
         if (pSuffix == null) {
@@ -203,7 +209,7 @@ public class ChatTokenizer {
             worldName = player.getWorld().getName();
             worldAlias = plugin.getWorldAlias(worldName);
         }
-        return message.replace("%DISPLAYNAME%", displayName)
+        return message.replace("%DISPLAYNAME%", displayName)  
                 .replace("%NAME%", pName)
                 .replace("%GROUP%", group)
                 .replace("%MESSAGE%", message)
@@ -212,5 +218,16 @@ public class ChatTokenizer {
                 .replace("%GROUPPREFIX%", gPrefix)
                 .replace("%WORLDALIAS%", worldAlias)
                 .replace("%WORLD%", worldName);
+    }
+    
+    private String playerTokenizer(String message) {
+        return message.replace("%DISPLAYNAME%", "")                
+                .replace("%GROUP%", "")
+                .replace("%MESSAGE%", "")
+                .replace("%PLAYERPREFIX%", "")
+                .replace("%PLAYERSUFFIX%", "")
+                .replace("%GROUPPREFIX%", "")
+                .replace("%WORLDALIAS%", "")
+                .replace("%WORLD%", "");
     }
 }
