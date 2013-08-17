@@ -57,7 +57,7 @@ public class ChatTokenizer {
             tmpl = playerTokenizer(player, template);
         } else {
             tmpl = playerTokenizer(template);
-        }
+        }        
         return ircBot.plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%NAME%", nick)
                 .replace("%MESSAGE%", message)
@@ -211,8 +211,7 @@ public class ChatTokenizer {
         }
         return message.replace("%DISPLAYNAME%", displayName)  
                 .replace("%NAME%", pName)
-                .replace("%GROUP%", group)
-                .replace("%MESSAGE%", message)
+                .replace("%GROUP%", group)                
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
                 .replace("%GROUPPREFIX%", gPrefix)
@@ -222,8 +221,7 @@ public class ChatTokenizer {
     
     private String playerTokenizer(String message) {
         return message.replace("%DISPLAYNAME%", "")                
-                .replace("%GROUP%", "")
-                .replace("%MESSAGE%", "")
+                .replace("%GROUP%", "")                
                 .replace("%PLAYERPREFIX%", "")
                 .replace("%PLAYERSUFFIX%", "")
                 .replace("%GROUPPREFIX%", "")
