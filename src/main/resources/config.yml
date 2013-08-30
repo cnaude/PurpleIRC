@@ -83,4 +83,6 @@ strip-irc-colors: false
 custom-tab-list: false
 # Nothing to see here
 custom-tab-prefix: '[IRC] '
+# IRC nick must be an exact match to a player name for token expanding
+nick-exact-match: true
 Debug: false

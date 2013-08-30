@@ -72,8 +72,8 @@ public class GameListeners implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        String msg = event.getMessage();
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
-            String msg = event.getMessage();
             if (msg.startsWith("/me ")) {
                 for (String botName : plugin.ircBots.keySet()) {
                     if (plugin.botConnected.get(botName)) {
@@ -87,8 +87,25 @@ public class GameListeners implements Listener {
                     }
                 }
             }
-
         }
+        /*
+        if (msg.startsWith("/")) {
+            String cmd;
+            if (msg.contains(" ")) {
+                cmd = msg.split(" ", 2)[1];
+            } else {
+                cmd = msg;
+            }
+            cmd = cmd.substring(1);
+            for (String botName : plugin.ircBots.keySet()) {
+                if (plugin.botConnected.get(botName)) {
+                    if (plugin.ircBots.get(botName).watchedCommands.contains(cmd)) {
+                        
+                    }
+                }
+            }
+        }
+        */
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

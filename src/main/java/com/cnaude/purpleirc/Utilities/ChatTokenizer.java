@@ -34,7 +34,7 @@ public class ChatTokenizer {
     // IRC to Hero chat tokenizer without a message
     public String ircChatToHeroChatTokenizer(String nick, String channelName, String template, ChannelManager channelManager, String hChannel) {
         String tmpl;
-        Player player = plugin.getServer().getPlayer(nick);
+        Player player = this.getPlayer(nick);
         if (player != null) {
             plugin.logDebug("ircChatToHeroChatTokenizer: player not null ");
             tmpl = playerTokenizer(player, template);
@@ -52,7 +52,7 @@ public class ChatTokenizer {
     // Normal IRC to game chat tokenizer
     public String ircChatToGameTokenizer(String nick, String channelName, String template, String message) {
         String tmpl;
-        Player player = plugin.getServer().getPlayer(nick);
+        Player player = this.getPlayer(nick);
         if (player != null) {
             tmpl = playerTokenizer(player, template);
         } else {
@@ -67,7 +67,7 @@ public class ChatTokenizer {
     // IRC to Hero chat channel tokenizer
     public String ircChatToHeroChatTokenizer(String ircNick, String ircChannelName, String template, String message, ChannelManager channelManager, String hChannel) {
         String tmpl;
-        Player player = plugin.getServer().getPlayer(ircNick);
+        Player player = this.getPlayer(ircNick);
         if (player != null) {
             tmpl = playerTokenizer(player, template);
         } else {
@@ -227,5 +227,13 @@ public class ChatTokenizer {
                 .replace("%GROUPPREFIX%", "")
                 .replace("%WORLDALIAS%", "")
                 .replace("%WORLD%", "");
+    }
+    
+    private Player getPlayer(String name) {
+        if (plugin.exactNickMatch) {
+            return plugin.getServer().getPlayerExact(name);
+        } else {
+            return plugin.getServer().getPlayer(name);
+        }
     }
 }

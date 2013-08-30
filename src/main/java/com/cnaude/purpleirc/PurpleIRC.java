@@ -65,6 +65,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
+    public boolean exactNickMatch;
     Long ircConnCheckInterval;
     Long ircChannelCheckInterval;
     BotWatcher botWatcher;
@@ -180,6 +181,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("Debug enabled");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
+        exactNickMatch = getConfig().getBoolean("nick-exact-match", true);
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
