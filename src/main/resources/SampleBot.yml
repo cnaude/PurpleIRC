@@ -32,6 +32,15 @@ message-delay: 1000
 raw-message-on-connect: false
 # the raw message
 raw-message: auth name pass
+# notify channels or users when a player uses commands
+command-notify:
+  enabled: true
+  # valid modes: mds, ctcp
+  mode: msg
+  # recipients can be channels or users
+  recipients:
+    - '#minecraft-test'
+    - cnaude
 # channels - List the channels your bot will join here
 channels:
   # Channel name must be surrounded by sing quotes to be YAML compliant.

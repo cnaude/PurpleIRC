@@ -236,4 +236,10 @@ public class ChatTokenizer {
             return plugin.getServer().getPlayer(name);
         }
     }
+    
+    public String gameCommandToIRCTokenizer(Player player, String template, String cmd, String params) {
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)                     
+                .replace("%COMMAND%", cmd)
+                .replace("%PARAMS%", params));                
+    }
 }

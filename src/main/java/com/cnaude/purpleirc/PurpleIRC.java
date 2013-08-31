@@ -44,7 +44,8 @@ public class PurpleIRC extends JavaPlugin {
     private File botsFolder;
     private File configFile;
     public static long startTime;
-    public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick, gameSend;
+    public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
+    public String gameSend, gameCommand;
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String titanChat;
@@ -191,6 +192,7 @@ public class PurpleIRC extends JavaPlugin {
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
         gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
+        gameCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-command", ""));
 
         cleverSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.clever-send", ""));
 

@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -88,24 +89,29 @@ public class GameListeners implements Listener {
                 }
             }
         }
-        /*
-        if (msg.startsWith("/")) {
-            String cmd;
-            if (msg.contains(" ")) {
-                cmd = msg.split(" ", 2)[1];
-            } else {
-                cmd = msg;
-            }
-            cmd = cmd.substring(1);
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    if (plugin.ircBots.get(botName).watchedCommands.contains(cmd)) {
-                        
+        for (String botName : plugin.ircBots.keySet()) {
+            if (plugin.botConnected.get(botName)) {
+                PurpleBot ircBot = plugin.ircBots.get(botName);
+                if (msg.startsWith("/")) {
+                    String cmd;
+                    String params = "";
+                    if (msg.contains(" ")) {
+                        cmd = msg.split(" ", 2)[0];
+                        params = msg.split(" ", 2)[1];
+                    } else {
+                        cmd = msg;
+                    }
+                    
+                    cmd = cmd.substring(0);                    
+                    if (plugin.botConnected.get(botName)) {
+                        if (ircBot.channelCmdNotifyEnabled) {
+                            ircBot.commandNotify(event.getPlayer(),cmd,params);                                
+                        }
                     }
                 }
             }
         }
-        */
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

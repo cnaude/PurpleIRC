@@ -85,6 +85,9 @@ public final class PurpleBot {
     public ArrayList<CommandSender> whoisSenders;
     private ChatTokenizer tokenizer;
     public CommandQueueWatcher commandQueue;
+    public boolean channelCmdNotifyEnabled;
+    public String channelCmdNotifyMode;
+    public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
 
     public PurpleBot(File file, PurpleIRC plugin) {
         bot = new PircBotX();
@@ -297,6 +300,24 @@ public final class PurpleBot {
             enabledMessages.clear();
             worldList.clear();
             commandMap.clear();
+            
+            channelCmdNotifyEnabled = config.getBoolean("command-notify.enabled", false);
+            plugin.logDebug(" CommandNotifyEnabled => " + channelCmdNotifyEnabled);
+
+            channelCmdNotifyMode = config.getString("command-notify.mode", "msg");
+            plugin.logDebug(" channelCmdNotifyMode => " + channelCmdNotifyMode);
+
+            // build command notify recipient list            
+            for (String recipient : config.getStringList("command-notify.recipients")) {
+                if (!channelCmdNotifyRecipients.contains(recipient)) {
+                    channelCmdNotifyRecipients.add(recipient);
+                }
+                plugin.logDebug(" Command Notify Recipient => " + recipient);
+            }            
+            if (channelCmdNotifyRecipients.isEmpty()) {
+                plugin.logInfo(" No command recipients defined.");
+            }
+            
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
                 String channelName = decodeChannel(enChannelName);
                 plugin.logDebug("Channel  => " + channelName);
@@ -1021,6 +1042,20 @@ public final class PurpleBot {
     // Broadcast connect messages from IRC
     public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
+    }
+    
+    // Notify when players use commands
+    public void commandNotify(Player player, String cmd, String params) {
+        String msg = tokenizer.gameCommandToIRCTokenizer(player, plugin.gameCommand, cmd, params);
+        if (channelCmdNotifyMode.equalsIgnoreCase("msg")) {
+            for (String recipient : channelCmdNotifyRecipients) {
+                this.bot.sendMessage(recipient, msg);
+            }
+        } else if (channelCmdNotifyMode.equalsIgnoreCase("ctcp")) {
+            for (String recipient : channelCmdNotifyRecipients) {
+                this.bot.sendCTCPResponse(recipient, msg);
+            }
+        }
     }
 
     protected String getFactionName(Player player) {

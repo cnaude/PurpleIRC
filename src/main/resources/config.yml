@@ -36,6 +36,7 @@ message-format:
   game-kick: '&0[&2%WORLD%&0] %MESSAGE%'
   game-join: '&0[&2%WORLD%&0] %MESSAGE%'
   game-quit: '&0[&2%WORLD%&0] %MESSAGE%'
+  game-command: '&0[&2%WORLD%&0] Command detected by %NAME%: %COMMAND% %PARAMS%'
   # Message template for "/irc send" to IRC message
   game-send: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%' 
   # Message templates for IRC to game messages
