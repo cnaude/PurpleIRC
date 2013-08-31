@@ -35,7 +35,7 @@ raw-message: auth name pass
 # notify channels or users when a player uses commands
 command-notify:
   enabled: false
-  # valid modes: mds, ctcp
+  # valid modes: msg, ctcp
   mode: msg
   # recipients can be channels or users
   recipients:
