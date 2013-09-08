@@ -5,8 +5,6 @@
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
@@ -27,9 +25,13 @@ public class VanishHook {
             plugin.logDebug("Player " + player.getName() + " has vanished metadata.");
             MetadataValue md = player.getMetadata("vanished").get(0);
             if (md.asBoolean()) {
-                plugin.logDebug("Player " + player.getName() + " is invisible.");
+                plugin.logDebug("Player " + player.getName() + " is vanished.");
                 return true;
+            } else {
+                plugin.logDebug("Player " + player.getName() + " is NOT vanished.");
             }
+        } else {
+            plugin.logDebug("Player " + player.getName() + " has NO vanished metadata.");
         }
         return false;
     }

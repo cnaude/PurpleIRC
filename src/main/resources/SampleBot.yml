@@ -136,6 +136,8 @@ channels:
       - AwesomeBot
     # Hide join message when player is invisible (VanishNoPacket)
     hide-join-when-vanished: true
+    # Hide quit message when player is invisible (VanishNoPacket)
+    hide-quit-when-vanished: true
     commands:
       chat:
         modes: '*'
