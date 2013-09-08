@@ -25,7 +25,7 @@ public class FactionChatHook {
     public String getChatMode(Player player) {
         String playerChatMode = null;
         try {
-            playerChatMode = api.getChatMode(player);
+            playerChatMode = FactionChatAPI.getChatMode(player);
             plugin.logDebug("fcHook => [CM: " + playerChatMode + "] [" + player.getName() + "]");
         } catch (Exception ex) {
             plugin.logError("fcHook ERROR: " + ex.getMessage());

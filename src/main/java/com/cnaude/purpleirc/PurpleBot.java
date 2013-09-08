@@ -65,6 +65,7 @@ public final class PurpleBot {
     public boolean trustAllCerts;
     public boolean sendRawMessageOnConnect;
     public String rawMessage;
+    public boolean hideJoinWhenVanishd;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
     public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
@@ -75,6 +76,7 @@ public final class PurpleBot {
     public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> ignoreIRCChat = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
@@ -282,6 +284,7 @@ public final class PurpleBot {
             botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
             chatDelay = config.getLong("message-delay", 1000);
+            hideJoinWhenVanishd = config.getBoolean("hide-join-when-invisible", true);
             bot.setMessageDelay(chatDelay);
             plugin.logDebug("Message Delay => " + chatDelay);
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
@@ -342,6 +345,9 @@ public final class PurpleBot {
 
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
+                
+                hideJoinWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-join-when-vanished", true));
+                plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
