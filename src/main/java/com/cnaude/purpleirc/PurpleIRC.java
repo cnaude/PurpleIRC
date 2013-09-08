@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
+import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import java.io.IOException;
 import org.bukkit.ChatColor;
@@ -76,6 +77,7 @@ public class PurpleIRC extends JavaPlugin {
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
     VaultHook vaultHelpers;
+    VanishHook vanishHook;
     public FactionChatHook fcHook;
     public NetPackets netPackets = null;
 
@@ -116,6 +118,7 @@ public class PurpleIRC extends JavaPlugin {
                 logInfo("FactionChat not detected.");
             }
         }
+        vanishHook = new VanishHook(this);
         if (isReportRTSEnabled()) {
             logInfo("Enabling ReportRTS support.");
             getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);

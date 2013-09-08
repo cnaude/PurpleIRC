@@ -664,6 +664,12 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
+                if (hideJoinWhenVanished.get(channelName)) {
+                    if (plugin.vanishHook.isVanished(player)) {
+                        plugin.logDebug("Not sending join message to IRC for player " + player.getName() + " due to being vanished.");
+                        continue;
+                    }
+                }
                 bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
                 if (plugin.netPackets != null) {
                     plugin.netPackets.updateTabList(player, this, channelName);
