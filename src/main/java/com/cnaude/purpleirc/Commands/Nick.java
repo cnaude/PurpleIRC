@@ -34,6 +34,7 @@ public class Nick {
                     plugin.ircBots.put(nick, ircBot);
                     boolean isConnected = plugin.botConnected.remove(bot);
                     plugin.botConnected.put(nick, isConnected);
+                    plugin.ircBots.get(bot).botNick = nick;
                 }
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
