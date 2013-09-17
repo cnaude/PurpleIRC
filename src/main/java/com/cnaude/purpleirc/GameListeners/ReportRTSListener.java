@@ -5,7 +5,7 @@
 package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import com.nyancraft.reportrts.ReportCreateEvent;
+import com.nyancraft.reportrts.event.ReportCreateEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
