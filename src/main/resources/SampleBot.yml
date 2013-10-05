@@ -75,6 +75,7 @@ channels:
     # These messages are sent from IRC to game (see permissions)
     - irc-action
     - irc-chat
+    - irc-pchat
     - irc-join
     - irc-kick
     - irc-part
@@ -143,7 +144,12 @@ channels:
         modes: '*'
         private: false
         ctcp: false
-        game_command: '@chat'       
+        game_command: '@chat'   
+      msg:
+        modes: '*'
+        private: true
+        ctcp: false
+        game_command: '@msg'   
       list:
         modes: '*'
         private: false

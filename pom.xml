@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.8.4</version>
+    <version>1.9.0-TEST5</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Bukkit API Version, change if out dated -->
-        <bukkit.version>1.6.2-R0.1</bukkit.version>
+        <bukkit.version>1.6.4-R0.1</bukkit.version>
     </properties>
 
     <repositories>
@@ -22,7 +22,7 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
-        
+       
         <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
@@ -85,8 +85,7 @@
         <dependency>
             <groupId>com.nyancraft</groupId>
             <artifactId>ReportRTS</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
+            <version>1.1.2</version>
         </dependency>
         
         <!-- Herochat -->
@@ -244,8 +243,11 @@
                     <execution>
                         <phase>package</phase>
                         <configuration>
-                            <tasks>                                                                
+                            <tasks>                                                                                             
                                 <copy file="../PurpleIRC/target/PurpleIRC-${project.version}.jar" tofile="../PurpleIRC/target/PurpleIRC.jar"/>
+                                <exec dir="../PurpleIRC/target" executable="C:/Users/cnaude/Apps/pscp.exe">
+                                    <arg line="PurpleIRC.jar cnaude@giraffe.lan:minetest/plugins/"/>
+                                </exec>  
                             </tasks>
                         </configuration>
                         <goals>

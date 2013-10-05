@@ -6,8 +6,11 @@ package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.pircbotx.User;
 
 /**
  *
@@ -16,26 +19,50 @@ import org.bukkit.command.CommandSender;
 public class Msg {
 
     private final PurpleIRC plugin;
+    private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc msg ([bot]) [user] [message]";
 
     public Msg(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length >= 4) {
-            String bot = args[1];
-            String channelName = args[2];
-            if (plugin.ircBots.containsKey(bot)) {
-                String message = "";
-                for (int i = 3; i < args.length; i++) {
-                    message = message + " " + args[i];
-                }
-                plugin.ircBots.get(bot).changeTopic(channelName, message.substring(1), sender);
+        if (args.length >= 3) {
+            plugin.logDebug("Dispatching msg command...");
+            int msgIdx = 2;
+            String nick;
+            java.util.List<PurpleBot> myBots = new ArrayList<PurpleBot>();
+            if (plugin.ircBots.containsKey(args[1])) {
+                myBots.add(plugin.ircBots.get(args[1]));
+                msgIdx = 3;
+                nick = args[2];
             } else {
-                sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
+                myBots.addAll(plugin.ircBots.values());
+                nick = args[1];
+            }
+            
+            if (msgIdx == 3 && args.length <= 3) {
+                sender.sendMessage(usage);
+                return;
+            }
+
+            for (PurpleBot ircBot : myBots) {
+                User user = ircBot.bot.getUser(nick);
+                if (user != null) {
+                    String msg = "";
+                    for (int i = msgIdx; i < args.length; i++) {
+                        msg = msg + " " + args[i];
+                    }
+                    if (sender instanceof Player) {
+                        ircBot.msgPlayer((Player) sender, nick, msg.substring(1));
+                    } else {
+                        ircBot.consoleMsgPlayer(nick, msg.substring(1));
+                    }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Invalid IRC nick: " + ChatColor.WHITE + nick);
+                }
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc msg [bot] [user] [message]");
+            sender.sendMessage(usage);
         }
     }
 }

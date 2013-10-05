@@ -39,6 +39,7 @@ public class CommandHandlers implements CommandExecutor {
     private final Save save;
     private final Say say;
     private final Send send;
+    private final SendRaw sendRaw;
     private final Server server;
     private final Topic topic;
     private final Whois whois;
@@ -72,6 +73,7 @@ public class CommandHandlers implements CommandExecutor {
         this.save = new Save(plugin);
         this.say = new Say(plugin);
         this.send = new Send(plugin);
+        this.sendRaw = new SendRaw(plugin);
         this.server = new Server(plugin);
         this.topic = new Topic(plugin);
         this.whois = new Whois(plugin);
@@ -163,12 +165,11 @@ public class CommandHandlers implements CommandExecutor {
             if (subCmd.equalsIgnoreCase("topic")) {
                 topic.dispatch(sender, args);
                 return true;
-            }
-            /*
+            }            
             if (subCmd.equalsIgnoreCase("msg")) {
                 msg.dispatch(sender, args);
                 return true;
-            }*/
+            }
             if (subCmd.equalsIgnoreCase("say")) {
                 say.dispatch(sender, args);
                 return true;
@@ -239,6 +240,10 @@ public class CommandHandlers implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("leave")) {
                 leave.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("sendraw")) {
+                sendRaw.dispatch(sender, args);
                 return true;
             }
         }

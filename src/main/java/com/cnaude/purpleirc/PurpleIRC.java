@@ -52,7 +52,8 @@ public class PurpleIRC extends JavaPlugin {
     public String titanChat;
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
-    public String ircChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange;
+    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange;
+    public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld;
     public String invalidIRCCommand, noPermForIRCCommand;
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
@@ -221,6 +222,7 @@ public class PurpleIRC extends JavaPlugin {
 
         ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
         ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
+        ircPChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat", ""));
         ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
@@ -235,6 +237,12 @@ public class PurpleIRC extends JavaPlugin {
         broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
 
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
+        
+        defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
+        defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
+        defaultPlayerGroup = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-group", ""));
+        defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
+        defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
@@ -420,6 +428,23 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
+    
+    public String getPlayerGroup(String worldName, String player) {
+        String groupName = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.permission != null) {
+                try {
+                    groupName = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
+                }
+            }
+        }
+        if (groupName == null) {
+            groupName = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', groupName);
+    }
 
     public String getPlayerPrefix(Player player) {
         String prefix = "";
@@ -433,12 +458,38 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
+    
+    public String getPlayerPrefix(String worldName, String player) {
+        String prefix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                prefix = vaultHelpers.chat.getPlayerPrefix(worldName, player);
+            }
+        }
+        if (prefix == null) {
+            prefix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', prefix);
+    }
 
     public String getPlayerSuffix(Player player) {
         String suffix = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
                 suffix = vaultHelpers.chat.getPlayerSuffix(player);
+            }
+        }
+        if (suffix == null) {
+            suffix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', suffix);
+    }
+    
+    public String getPlayerSuffix(String worldName, String player) {
+        String suffix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                suffix = vaultHelpers.chat.getPlayerSuffix(worldName, player);
             }
         }
         if (suffix == null) {
@@ -461,6 +512,28 @@ public class PurpleIRC extends JavaPlugin {
                     group = "";
                 }
                 prefix = vaultHelpers.chat.getGroupPrefix(player.getLocation().getWorld(), group);
+            }
+        }
+        if (prefix == null) {
+            prefix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', prefix);
+    }
+    
+    public String getGroupPrefix(String worldName, String player) {
+        String prefix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                String group = "";
+                try {
+                    group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
+                }
+                if (group == null) {
+                    group = "";
+                }
+                prefix = vaultHelpers.chat.getGroupPrefix(worldName, group);
             }
         }
         if (prefix == null) {

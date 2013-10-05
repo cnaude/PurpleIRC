@@ -20,12 +20,14 @@ import com.cnaude.purpleirc.IRCListeners.MessageListener;
 import com.cnaude.purpleirc.IRCListeners.MotdListener;
 import com.cnaude.purpleirc.IRCListeners.NickChangeListener;
 import com.cnaude.purpleirc.IRCListeners.PartListener;
+import com.cnaude.purpleirc.IRCListeners.PrivateMessageListener;
 import com.cnaude.purpleirc.IRCListeners.QuitListener;
 import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
+import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.dthielke.herochat.Herochat;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
@@ -87,6 +89,7 @@ public final class PurpleBot {
     public ArrayList<CommandSender> whoisSenders;
     private ChatTokenizer tokenizer;
     public CommandQueueWatcher commandQueue;
+    public IRCMessageHandler ircMessageHandler;
     public boolean channelCmdNotifyEnabled;
     public String channelCmdNotifyMode;
     public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
@@ -101,6 +104,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new MessageListener(plugin, this));
         bot.getListenerManager().addListener(new NickChangeListener(plugin, this));
         bot.getListenerManager().addListener(new PartListener(plugin, this));
+        bot.getListenerManager().addListener(new PrivateMessageListener(plugin, this));
         bot.getListenerManager().addListener(new QuitListener(plugin, this));
         bot.getListenerManager().addListener(new TopicListener(plugin, this));
         bot.getListenerManager().addListener(new VersionListener(plugin));
@@ -111,6 +115,7 @@ public final class PurpleBot {
         this.file = file;
         commandQueue = new CommandQueueWatcher(this.plugin);
         whoisSenders = new ArrayList<CommandSender>();
+        ircMessageHandler = new IRCMessageHandler(this.plugin, this);
         config = new YamlConfiguration();
         loadConfig();
         asyncConnect(false);
@@ -302,7 +307,7 @@ public final class PurpleBot {
             enabledMessages.clear();
             worldList.clear();
             commandMap.clear();
-            
+
             channelCmdNotifyEnabled = config.getBoolean("command-notify.enabled", false);
             plugin.logDebug(" CommandNotifyEnabled => " + channelCmdNotifyEnabled);
 
@@ -315,11 +320,11 @@ public final class PurpleBot {
                     channelCmdNotifyRecipients.add(recipient);
                 }
                 plugin.logDebug(" Command Notify Recipient => " + recipient);
-            }            
+            }
             if (channelCmdNotifyRecipients.isEmpty()) {
                 plugin.logInfo(" No command recipients defined.");
             }
-            
+
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
                 String channelName = decodeChannel(enChannelName);
                 plugin.logDebug("Channel  => " + channelName);
@@ -344,10 +349,10 @@ public final class PurpleBot {
 
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
-                
+
                 hideJoinWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-join-when-vanished", true));
                 plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
-                
+
                 hideQuitWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-quit-when-vanished", true));
                 plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));
 
@@ -402,7 +407,7 @@ public final class PurpleBot {
                 if (worldList.isEmpty()) {
                     plugin.logInfo("World list is empty!");
                 }
-                
+
                 // build valid world list
                 Collection<String> t = new ArrayList<String>();
                 for (String name : config.getStringList("channels." + enChannelName + ".custom-tab-ignore-list")) {
@@ -414,7 +419,7 @@ public final class PurpleBot {
                 tabIgnoreNicks.put(channelName, t);
                 if (tabIgnoreNicks.isEmpty()) {
                     plugin.logInfo("World list is empty!");
-                }                
+                }
 
                 // build command map
                 Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
@@ -489,7 +494,7 @@ public final class PurpleBot {
 
             if (plugin.fcHook != null) {
                 String playerChatMode;
-                String playerFactionName; 
+                String playerFactionName;
                 try {
                     playerChatMode = plugin.fcHook.getChatMode(player);
                 } catch (IllegalAccessError ex) {
@@ -502,12 +507,12 @@ public final class PurpleBot {
                     plugin.logDebug("FC Error: " + ex.getMessage());
                     playerFactionName = "unknown";
                 }
-                
+
                 String chatName = "faction-" + playerChatMode + "-chat";
                 plugin.logDebug("Faction [Player: " + player.getName()
                         + "] [Tag: " + playerFactionName + "] [Mode: " + playerChatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
-                    asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode));                    
+                    asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode));
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
@@ -604,7 +609,7 @@ public final class PurpleBot {
     }
 
     // Called from ReportRTS event    
-    public void reportRTSNotify(Player player, HelpRequest request) {        
+    public void reportRTSNotify(Player player, HelpRequest request) {
         if (!bot.isConnected()) {
             return;
         }
@@ -624,7 +629,7 @@ public final class PurpleBot {
         }
     }
 
-    public void consoleChat(String message) {        
+    public void consoleChat(String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -635,7 +640,7 @@ public final class PurpleBot {
         }
     }
 
-    public void gameBroadcast(Player player, String message) {        
+    public void gameBroadcast(Player player, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -672,8 +677,8 @@ public final class PurpleBot {
                         plugin.logDebug("Not sending join message to IRC for player " + player.getName() + " due to being vanished.");
                         continue;
                     }
-                }                
-                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));                
+                }
+                bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
                 if (plugin.netPackets != null) {
                     plugin.netPackets.updateTabList(player, this, channelName);
                 }
@@ -696,7 +701,7 @@ public final class PurpleBot {
                         plugin.logDebug("Not sending quit message to IRC for player " + player.getName() + " due to being vanished.");
                         continue;
                     }
-                }      
+                }
                 bot.sendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameQuit, message));
             }
         }
@@ -915,17 +920,17 @@ public final class PurpleBot {
             sendUserList(sender, bot.getChannel(channelName));
         }
     }
-    
-    public void updateNickList(Channel channel) {     
+
+    public void updateNickList(Channel channel) {
         // Build current list of names in channel
         ArrayList<String> users = new ArrayList<String>();
         for (User user : bot.getUsers(channel)) {
             //plugin.logDebug("N: " + user.getNick());
-            users.add(user.getNick());            
+            users.add(user.getNick());
         }
         // Iterate over previous list and remove from tab list
         if (channelNicks.containsKey(channel.getName())) {
-            for (String name: channelNicks.get(channel.getName())) { 
+            for (String name : channelNicks.get(channel.getName())) {
                 //plugin.logDebug("O: " + name);
                 if (!users.contains(name)) {
                     plugin.logDebug("Removing " + name + " from list.");
@@ -938,7 +943,6 @@ public final class PurpleBot {
         }
         channelNicks.put(channel.getName(), users);
     }
-
 
     public void opFriends(Channel channel) {
         for (User user : bot.getUsers(channel)) {
@@ -1000,6 +1004,33 @@ public final class PurpleBot {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
                     .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, myChannel,
                     plugin.ircHeroChat, message, Herochat.getChannelManager(), heroChannel.get(myChannel)));
+        }
+    }
+
+    // Send chat messages from IRC to player
+    public void playerChat(String nick, String myChannel, String message) {
+        String pName;
+        String msg;
+        if (message.contains(" ")) {
+            pName = message.split(" ", 2)[0];
+            msg = message.split(" ", 2)[1];
+            plugin.logDebug("Check if irc-pchat is enabled before broadcasting chat from IRC");
+            if (enabledMessages.get(myChannel).contains("irc-pchat")) {
+                plugin.logDebug("Yup we can broadcast due to irc-pchat enabled... Checking if " + pName + " is a valid player...");
+                Player player = plugin.getServer().getPlayer(pName);
+                if (player != null) {
+                    plugin.logDebug("Yup, " + pName + " is a valid player...");
+                    String t = tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircPChat, msg);
+                    plugin.logDebug("Tokenized message: " + t);
+                    player.sendMessage(t);                    
+                } else {
+                    bot.sendMessage(nick, "Invalid player: " + pName);
+                }
+            } else {
+                plugin.logDebug("NOPE we can't broadcast due to irc-pchat disabled");
+            }            
+        } else {
+            bot.sendMessage(nick, "No message specified.");
         }
     }
 
@@ -1065,7 +1096,7 @@ public final class PurpleBot {
     public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
     }
-    
+
     // Notify when players use commands
     public void commandNotify(Player player, String cmd, String params) {
         String msg = tokenizer.gameCommandToIRCTokenizer(player, plugin.gameCommand, cmd, params);
@@ -1080,10 +1111,19 @@ public final class PurpleBot {
         }
     }
 
+    public void msgPlayer(Player sender, String nick, String message) {
+        String msg = tokenizer.gameChatToIRCTokenizer(sender, plugin.ircChat, message);
+        this.bot.sendMessage(nick, msg);
+    }
+
+    public void consoleMsgPlayer(String nick, String message) {
+        String msg = tokenizer.gameChatToIRCTokenizer("console", plugin.consoleChat, message);
+        this.bot.sendMessage(nick, msg);
+    }
+
     protected String getFactionName(Player player) {
         UPlayer uPlayer = UPlayer.get(player);
         Faction faction = uPlayer.getFaction();
         return faction.getName();
-    }        
-    
+    }
 }
