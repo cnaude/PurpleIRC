@@ -38,7 +38,8 @@ public class SendRaw {
                 for (int i = msgIdx; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
-                ircBot.bot.sendRawLineNow(msg);                
+                plugin.logDebug("Sending raw message to the server: " + msg.substring(1));
+                ircBot.bot.sendRawLineNow(msg.substring(1));                
             }
         } else {
             sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc sendraw ([bot]) [message]");
