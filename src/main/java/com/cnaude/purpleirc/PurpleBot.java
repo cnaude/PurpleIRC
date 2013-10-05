@@ -991,9 +991,9 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC
-    public void broadcastChat(String nick, String myChannel, String message) {
+    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
         plugin.logDebug("Check if irc-chat is enabled before broadcasting chat from IRC");
-        if (enabledMessages.get(myChannel).contains("irc-chat")) {
+        if (enabledMessages.get(myChannel).contains("irc-chat") || override) {
             plugin.logDebug("Yup we can broadcast due to irc-chat enabled");
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircChat, message), "irc.message.chat");
         } else {

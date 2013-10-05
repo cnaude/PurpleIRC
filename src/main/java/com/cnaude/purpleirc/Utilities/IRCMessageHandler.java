@@ -92,7 +92,9 @@ public class IRCMessageHandler {
                     } else if (gameCommand.equals("@help")) {
                         this.sendMessage(bot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@chat")) {
-                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs);
+                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
+                    } else if (gameCommand.equals("@ochat")) {
+                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, true);
                     } else if (gameCommand.equals("@msg")) {
                         ircBot.playerChat(user.getNick(), myChannel, commandArgs);
                     } else {
@@ -125,7 +127,7 @@ public class IRCMessageHandler {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"ignore-irc-chat\" being true ...");
             } else {
                 plugin.logDebug("Message dispatched for broadcast...");
-                ircBot.broadcastChat(user.getNick(), myChannel, message);
+                ircBot.broadcastChat(user.getNick(), myChannel, message, false);
             }
 
         }

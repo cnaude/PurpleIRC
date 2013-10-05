@@ -127,6 +127,7 @@ channels:
     #  @help - print out of all of the commands
     #  @uptime - print the uptime of the game server
     #  @chat - send message to game
+    #  @ochat - send message to game (overrides irc-chat)
     # The modes can be *, o , v , h, q or s. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
@@ -145,6 +146,11 @@ channels:
         private: false
         ctcp: false
         game_command: '@chat'   
+      ochat:
+        modes: '*'
+        private: false
+        ctcp: false
+        game_command: '@ochat'   
       msg:
         modes: '*'
         private: true
