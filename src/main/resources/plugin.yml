@@ -44,6 +44,8 @@ commands:
          /<command> whois ([bot]) [user] - Get IRC user's info
          /<command> send ([bot]) ([channel]) - Bypass valid-messages and send a message to the channel(s).
          /<command> sendraw ([bot]) [message] - Send raw message to the IRC server.
+         /<command> ctcp ([bot]) [nick|channel] [command] - Send CTCP command to the user or channel.
+         /<command> notice ([bot]) [nick|channel] [message] - Send notice message to the user or channel.
          /<command> say [bot] [channel] - Make the bot speak.
          /<command> messagedelay [bot] [milliseconds] - Change IRC message delay.
 permissions:
@@ -106,4 +108,10 @@ permissions:
     default: op 
   'irc.sendraw':
     description: Gives player access to the /irc sendraw command.
+    default: op 
+  'irc.ctcp':
+    description: Gives player access to the /irc ctcp command.
+    default: op 
+  'irc.notice':
+    description: Gives player access to the /irc notice command.
     default: op 

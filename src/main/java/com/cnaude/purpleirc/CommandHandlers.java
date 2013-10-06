@@ -14,6 +14,7 @@ public class CommandHandlers implements CommandExecutor {
     private PurpleIRC plugin;
     private final AddOp addOp;
     private final Connect connect;
+    private final SendCTCP ctcp;
     private final DeOp deOp;
     private final Debug debug;
     private final Disconnect disconnect;
@@ -28,6 +29,7 @@ public class CommandHandlers implements CommandExecutor {
     private final Msg msg;
     private final Mute mute;
     private final Nick nick;
+    private final SendNotice notice;
     private final Op op;
     private final Reload reload;
     private final ReloadBot reloadBot;
@@ -48,6 +50,7 @@ public class CommandHandlers implements CommandExecutor {
         this.plugin = plugin;
         this.addOp = new AddOp(plugin);
         this.connect = new Connect(plugin);
+        this.ctcp = new SendCTCP(plugin);
         this.deOp = new DeOp(plugin);
         this.debug = new Debug(plugin);
         this.disconnect = new Disconnect(plugin);
@@ -62,6 +65,7 @@ public class CommandHandlers implements CommandExecutor {
         this.msg = new Msg(plugin);
         this.mute = new Mute(plugin);
         this.nick = new Nick(plugin);
+        this.notice = new SendNotice(plugin);
         this.op = new Op(plugin);
         this.reload = new Reload(plugin);
         this.reloadBot = new ReloadBot(plugin);
@@ -244,6 +248,14 @@ public class CommandHandlers implements CommandExecutor {
             }
             if (subCmd.equalsIgnoreCase("sendraw")) {
                 sendRaw.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("ctcp")) {
+                ctcp.dispatch(sender, args);
+                return true;
+            }
+            if (subCmd.equalsIgnoreCase("notice")) {
+                notice.dispatch(sender, args);
                 return true;
             }
         }
