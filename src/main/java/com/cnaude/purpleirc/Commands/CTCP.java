@@ -16,18 +16,18 @@ import org.pircbotx.User;
  *
  * @author cnaude
  */
-public class SendNotice {
+public class CTCP {
 
     private final PurpleIRC plugin;
-    private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc notice ([bot]) [nick|channel] [message]";
+    private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc ctcp ([bot]) [nick|channel] [message]";
 
-    public SendNotice(PurpleIRC plugin) {
+    public CTCP(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
-            plugin.logDebug("Dispatching notice command...");
+            plugin.logDebug("Dispatching ctcp command...");
             int msgIdx = 2;
             String target;
             java.util.List<PurpleBot> myBots = new ArrayList<PurpleBot>();
@@ -50,8 +50,8 @@ public class SendNotice {
                 for (int i = msgIdx; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
-                ircBot.bot.sendNotice(target, msg.substring(1));
-                sender.sendMessage("Sent notice message \"" + msg.substring(1) + "\" to \"" + target + "\"");
+                ircBot.bot.sendCTCPCommand(target, msg.substring(1));
+                sender.sendMessage("Sent CTCP command \"" + msg.substring(1) + "\" to \"" + target + "\"");
             }
         } else {
             sender.sendMessage(usage);
