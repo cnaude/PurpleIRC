@@ -58,14 +58,13 @@ public class CommandHandlers implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
         if (args.length >= 1) {
             String subCmd = args[0].toLowerCase();
-            if (!sender.hasPermission("irc." + subCmd)) {
-                sender.sendMessage(plugin.noPermission);
-                return true;
-            }
             if (commands.containsKey(subCmd)) {
+                if (!sender.hasPermission("irc." + subCmd)) {
+                    sender.sendMessage(plugin.noPermission);
+                    return true;
+                }
                 try {
                     Method method = commands.get(subCmd).getClass().getMethod("dispatch", CommandSender.class, String[].class);
                     method.invoke(commands.get(subCmd), sender, args);

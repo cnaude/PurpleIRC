@@ -18,7 +18,7 @@ public class ChannelWatcher {
         taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.logDebug("Checking connection status of IRC bots.");
+                //plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (plugin.botConnected.get(ircBot.botNick)) {
                         for (Channel channel : ircBot.bot.getChannels()) {

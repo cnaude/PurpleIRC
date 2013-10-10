@@ -426,10 +426,15 @@ public final class PurpleBot {
                 for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
                     plugin.logDebug("  Command => " + command);
                     Map<String, String> optionPair = new HashMap<String, String>();
-                    for (String commandOption : config.getConfigurationSection("channels." + enChannelName + ".commands." + command).getKeys(false)) {
-                        String commandOptionValue = config.getString("channels." + enChannelName + ".commands." + command + "." + commandOption);
-                        optionPair.put(commandOption, commandOptionValue);
-                        plugin.logDebug("    " + commandOption + " => " + commandOptionValue);
+                    String commandKey = "channels." + enChannelName + ".commands." + command + ".";
+                    optionPair.put("modes",          config.getString(commandKey + "modes","*"));
+                    optionPair.put("private",        config.getString(commandKey + "private","false"));
+                    optionPair.put("ctcp",           config.getString(commandKey + "ctcp","false"));
+                    optionPair.put("game_command",   config.getString(commandKey + "game_command","@help"));
+                    optionPair.put("private_listen", config.getString(commandKey + "private_listen","true"));
+                    optionPair.put("channel_listen", config.getString(commandKey + "channel_listen","true"));
+                    for (String s : optionPair.keySet()) {
+                        config.set(commandKey + s, optionPair.get(s));
                     }
                     map.put(command, optionPair);
                 }

@@ -145,49 +145,69 @@ channels:
         modes: '*'
         private: false
         ctcp: false
-        game_command: '@chat'   
+        game_command: '@chat'
+        private_listen: true
+        channel_listen: true
       ochat:
         modes: '*'
         private: false
         ctcp: false
         game_command: '@ochat'   
+        private_listen: true
+        channel_listen: true
       msg:
         modes: '*'
         private: true
         ctcp: false
-        game_command: '@msg'   
+        game_command: '@msg'
+        private_listen: true
+        channel_listen: true
       list:
         modes: '*'
         private: false
         ctcp: false
         game_command: '@list'        
+        private_listen: true
+        channel_listen: true
       help:
         modes: '*'
         private: false
         ctcp: false
         game_command: '@help'
+        private_listen: true
+        channel_listen: true
       uptime:
         modes: '*'
         private: false
         ctcp: false
         game_command: '@uptime'        
+        private_listen: true
+        channel_listen: true
       version:
         modes: '*'
         private: false
         ctcp: false
         game_command: version        
+        private_listen: true
+        channel_listen: true
       lag:
         modes: '*'
         private: false
         ctcp: false
-        game_command: lag        
+        game_command: lag   
+        private_listen: true
+        channel_listen: true
       lagmem:
         modes: '*'
         private: true
         ctcp: false
         game_command: lagmem        
+        private_listen: true
+        channel_listen: true
       gamemode:
         modes: 'o'
         private: false
         ctcp: false
         game_command: 'gamemode %ARGS%'
+        private_listen: true
+        channel_listen: true

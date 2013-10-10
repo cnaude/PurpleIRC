@@ -46,13 +46,29 @@ public class IRCMessageHandler {
         }
         if (message.startsWith(ircBot.commandPrefix) && (!message.startsWith(ircBot.commandPrefix + ircBot.commandPrefix))) {
             String command = message.split(" ")[0].substring(ircBot.commandPrefix.length());
+            
             String commandArgs = null;
             if (message.contains(" ")) {
                 commandArgs = message.split(" ", 2)[1];
             }
             plugin.logDebug("IRC command detected: " + command);
+            
+            plugin.logDebug(message);
             String target = channel.getName();
             if (ircBot.commandMap.get(myChannel).containsKey(command)) {
+                boolean privateListen = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private_listen"));
+                boolean channelListen = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("channel_listen"));
+                plugin.logDebug("privateListen: " + privateListen);
+                plugin.logDebug("channelListen: " + channelListen);
+                if (privateMessage && !privateListen) {
+                    plugin.logDebug("This is a private message but privateListen is false. Ignoring...");
+                    return;
+                }
+                if (!privateMessage && !channelListen) {
+                    plugin.logDebug("This is a channel message but channelListen is false. Ignoring...");
+                    return;
+                }
+                
                 String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
                 String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
                 boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
