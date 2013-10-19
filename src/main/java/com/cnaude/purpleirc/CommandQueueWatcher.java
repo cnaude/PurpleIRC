@@ -26,7 +26,6 @@ public class CommandQueueWatcher {
                     plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
                     plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
                 }
-                
             }
         }, 20, 20);
     }

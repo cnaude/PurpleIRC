@@ -19,7 +19,7 @@ public class IRCCommandEvent extends Event {
     private IRCCommand ircCommand;
 
     public IRCCommandEvent(IRCCommand ircCommand) {
-        this.ircCommand = ircCommand;        
+        this.ircCommand = ircCommand;             
     }
     
     public IRCCommand getIRCCommand() {
