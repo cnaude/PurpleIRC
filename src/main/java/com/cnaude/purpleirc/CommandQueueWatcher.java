@@ -1,5 +1,6 @@
 package com.cnaude.purpleirc;
 
+import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -19,14 +20,11 @@ public class CommandQueueWatcher {
 
         taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
             @Override
-            public void run() {
-                //plugin.logDebug("Checking IRC command queue.");
+            public void run() {                
                 IRCCommand ircCommand = queue.poll();
-                if (ircCommand == null) {
-                    //plugin.logDebug("Command queue is empty.");
-                } else {
+                if (ircCommand != null) {
                     plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
-                    //plugin.logDebug("Dispatching command from queue: " + ircCommand.getGameCommand());
+                    plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
                 }
                 
             }

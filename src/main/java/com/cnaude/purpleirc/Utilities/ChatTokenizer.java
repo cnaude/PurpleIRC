@@ -111,6 +111,9 @@ public class ChatTokenizer {
     }
 
     public String gameChatToIRCTokenizer(Player player, String template, String message) {
+        if (message == null) {
+            message = "";
+        }
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
                 .replace("%MESSAGE%", message));
     }
