@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>1.5.4</version>
+  <version>1.8.0</version>
   <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -83,6 +83,11 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
+      <id>comphenix-rep</id>
+      <name>Comphenix Repository</name>
+      <url>http://repo.comphenix.net/content/groups/public</url>
+    </repository>
+    <repository>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -96,7 +101,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.5.2-R1.0</version>
+      <version>1.6.2-R0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -120,7 +125,7 @@
     <dependency>
       <groupId>com.nyancraft</groupId>
       <artifactId>ReportRTS</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -132,13 +137,19 @@
     <dependency>
       <groupId>com.massivecraft</groupId>
       <artifactId>Factions</artifactId>
-      <version>1.8.2</version>
+      <version>2.0.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.james137137</groupId>
+      <groupId>com.massivecraft</groupId>
+      <artifactId>mcore</artifactId>
+      <version>6.4.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>nz.co.lolnet.james137137</groupId>
       <artifactId>FactionChat</artifactId>
-      <version>1.523</version>
+      <version>1.6122</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -157,6 +168,12 @@
       <groupId>com.onarandombox</groupId>
       <artifactId>Multiverse-Core</artifactId>
       <version>2.5-670</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib</artifactId>
+      <version>2.4.7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -196,7 +213,7 @@
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bukkit.version>1.5.2-R1.0</bukkit.version>
+    <bukkit.version>1.6.2-R0.1</bukkit.version>
   </properties>
 </project>
 
