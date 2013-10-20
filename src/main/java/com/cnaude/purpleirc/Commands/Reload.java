@@ -4,9 +4,7 @@
  */
 package com.cnaude.purpleirc.Commands;
 
-import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -21,7 +19,7 @@ public class Reload {
         this.plugin = plugin;
     }
 
-    public void dispatch(CommandSender sender) {
+    public void dispatch(CommandSender sender, String[] args) {
         sender.sendMessage("Disabling PurpleIRC...");
         plugin.getServer().getPluginManager().disablePlugin(plugin);
         sender.sendMessage("Enabling PurpleIRC...");

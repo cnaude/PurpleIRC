@@ -19,7 +19,7 @@ public class ReloadConfig {
         this.plugin = plugin;
     }
 
-    public void dispatch(CommandSender sender) {
+    public void dispatch(CommandSender sender, String[] args) {
         plugin.reloadMainConfig(sender);
     }
 }

@@ -22,7 +22,7 @@ public class ListBots {
         this.plugin = plugin;
     }
 
-    public void dispatch(CommandSender sender) {
+    public void dispatch(CommandSender sender, String[] args) {
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                 + ChatColor.DARK_PURPLE + "   ]-----");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
