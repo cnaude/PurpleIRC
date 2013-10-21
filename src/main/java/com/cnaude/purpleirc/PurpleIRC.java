@@ -52,7 +52,7 @@ public class PurpleIRC extends JavaPlugin {
     public String titanChat;
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
-    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange;
+    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode;
     public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld;
     public String invalidIRCCommand, noPermForIRCCommand;
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
@@ -172,7 +172,7 @@ public class PurpleIRC extends JavaPlugin {
         getConfig().set("Debug", debug);
         try {
             getConfig().save(configFile);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             logError("Problem saving to " + configFile.getName() + ": " + ex.getMessage());
         }
     }
@@ -209,7 +209,7 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
         ircHeroJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-join", ""));
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
-        ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
+        ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));        
 
         titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
         ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
@@ -229,6 +229,7 @@ public class PurpleIRC extends JavaPlugin {
         ircQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-quit", ""));
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
         ircNickChange = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-nickchange", ""));
+        ircMode = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-mode", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
         noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));
@@ -355,7 +356,7 @@ public class PurpleIRC extends JavaPlugin {
         if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logError(e.getMessage());
             }
         }

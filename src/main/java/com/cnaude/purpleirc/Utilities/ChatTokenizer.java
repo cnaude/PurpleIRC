@@ -84,7 +84,7 @@ public class ChatTokenizer {
     }
 
     // Kick message
-    public String ircKickToHeroChatTokenizer(String recipient, String kicker, String reason, String channelName, String template) {
+    public String ircKickTokenizer(String recipient, String kicker, String reason, String channelName, String template) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", recipient)
                 .replace("%REASON%", reason)
@@ -93,7 +93,7 @@ public class ChatTokenizer {
     }
 
     // IRC to hero kick message
-    public String chatIRCTokenizer(String recipient, String kicker, String reason, String channelName, String template, ChannelManager channelManager, String hChannel) {
+    public String ircKickToHeroChatTokenizer(String recipient, String kicker, String reason, String channelName, String template, ChannelManager channelManager, String hChannel) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
@@ -102,6 +102,14 @@ public class ChatTokenizer {
                 .replace("%REASON%", reason)
                 .replace("%KICKER%", kicker)
                 .replace("%CHANNEL%", channelName));
+    }
+    
+    // IRC mode change messages
+    public String ircModeTokenizer(String nick, String mode, String myChannel, String template) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%NAME%", nick)
+                .replace("%MODE%", mode)                
+                .replace("%CHANNEL%", myChannel));
     }
 
     public String gameChatToIRCTokenizer(String pName, String template, String message) {

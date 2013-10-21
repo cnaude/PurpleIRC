@@ -115,3 +115,6 @@ permissions:
   'irc.notice':
     description: Gives player access to the /irc notice command.
     default: op 
+  'irc.message.mode':
+    description: Player receives IRC mode change messages.
+    default: op 
