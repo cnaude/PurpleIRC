@@ -1,6 +1,7 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
+import com.cnaude.purpleirc.GameListeners.EssentialsListener;
 import com.cnaude.purpleirc.GameListeners.GameListeners;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
@@ -54,6 +55,7 @@ public class PurpleIRC extends JavaPlugin {
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode, ircNotice;
     public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld;
+    public String playerAFK, playerNotAFK;
     public String invalidIRCCommand, noPermForIRCCommand;
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
@@ -118,6 +120,12 @@ public class PurpleIRC extends JavaPlugin {
             } else {
                 logInfo("FactionChat not detected.");
             }
+        }
+        if (isEssentialsEnabled()) {
+            logInfo("Enabling Essentials support.");
+            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
+        } else {
+            logInfo("Essentials not detected.");
         }
         vanishHook = new VanishHook(this);
         if (isReportRTSEnabled()) {
@@ -209,7 +217,7 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
         ircHeroJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-join", ""));
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
-        ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));        
+        ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
 
         titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
         ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
@@ -231,6 +239,9 @@ public class PurpleIRC extends JavaPlugin {
         ircNickChange = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-nickchange", ""));
         ircMode = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-mode", ""));
         ircNotice = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-notice", ""));
+
+        playerAFK = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.player-afk", ""));
+        playerNotAFK = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.player-not-afk", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
         noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));
@@ -286,6 +297,10 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public boolean isEssentialsEnabled() {
+        return getServer().getPluginManager().getPlugin("Essentials") != null;
     }
 
     public boolean isReportRTSEnabled() {

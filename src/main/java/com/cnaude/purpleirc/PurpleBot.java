@@ -52,7 +52,7 @@ public final class PurpleBot {
 
     public final PircBotX bot;
     public final PurpleIRC plugin;
-    private File file;
+    private final File file;
     private YamlConfiguration config;
     public boolean autoConnect;
     public String botServer;
@@ -1131,6 +1131,28 @@ public final class PurpleBot {
                 this.bot.sendCTCPResponse(recipient, msg);
             }
         }
+    }
+    
+    // Notify when player goes AFK
+    public void essentialsAFK(Player player, boolean afk) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains("game-afk")) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    return;
+                }
+                String template;
+                if (afk) {
+                    template = plugin.playerAFK;
+                } else {
+                    template = plugin.playerNotAFK;
+                }
+                plugin.logDebug("Sending AFK message to " + channelName);
+                bot.sendMessage(channelName, tokenizer.gamePlayerAFKTokenizer(player, template));
+            }
+        }        
     }
 
     public void msgPlayer(Player sender, String nick, String message) {

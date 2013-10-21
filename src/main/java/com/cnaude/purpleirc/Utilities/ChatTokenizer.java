@@ -91,7 +91,7 @@ public class ChatTokenizer {
                 .replace("%KICKER%", kicker)
                 .replace("%CHANNEL%", channelName));
     }
-
+    
     // IRC to hero kick message
     public String ircKickToHeroChatTokenizer(String recipient, String kicker, String reason, String channelName, String template, ChannelManager channelManager, String hChannel) {
         return ircBot.plugin.colorConverter.ircColorsToGame(template
@@ -133,6 +133,10 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
                 .replace("%MESSAGE%", message));
+    }
+    
+    public String gamePlayerAFKTokenizer(Player player, String template) {
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template));                
     }
 
     public String mcMMOChatToIRCTokenizer(Player player, String template, String message, String partyName) {

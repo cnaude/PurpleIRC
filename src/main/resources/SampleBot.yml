@@ -72,6 +72,7 @@ channels:
     - game-kick
     - game-join
     - game-quit
+    - game-afk
     # These messages are sent from IRC to game (see permissions)
     - irc-action
     - irc-chat

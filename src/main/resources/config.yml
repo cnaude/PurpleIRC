@@ -39,6 +39,9 @@ message-format:
   game-command: '&0[&2%WORLD%&0] Command detected by %NAME%: %COMMAND% %PARAMS%'
   # Message template for "/irc send" to IRC message
   game-send: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%' 
+  # Essentials messages
+  ess-player-afk: '&0[&2%WORLD%&0] %NAME% &0is now AFK' 
+  ess-player-not-afk: '&0[&2%WORLD%&0] %NAME% &0is no longer AFK' 
   # Message templates for IRC to game messages
   irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
   irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  

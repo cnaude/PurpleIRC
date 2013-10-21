@@ -12,6 +12,7 @@ softdepend:
 - CleverNotch
 - TitanChat
 - ReportRTS
+- Essentials
 commands:
     irc:
         description: Various irc commands
