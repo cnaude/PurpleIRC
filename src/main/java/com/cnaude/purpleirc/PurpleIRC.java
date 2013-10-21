@@ -231,13 +231,13 @@ public class PurpleIRC extends JavaPlugin {
         ircNickChange = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-nickchange", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
-        noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));        
+        noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));
 
         broadcastMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-message", ""));
         broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
 
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
-        
+
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
         defaultPlayerGroup = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-group", ""));
@@ -246,7 +246,7 @@ public class PurpleIRC extends JavaPlugin {
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
-        
+
         customTabList = getConfig().getBoolean("custom-tab-list", false);
         customTabPrefix = getConfig().getString("custom-tab-prefix", "[IRC} ");
         logDebug("custom-tab-list: " + customTabList);
@@ -272,7 +272,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isFactionChatEnabled() {
         return (getServer().getPluginManager().getPlugin("FactionChat") != null);
     }
-    
+
     public boolean isFactionsEnabled() {
         if (getServer().getPluginManager().getPlugin("Factions") != null) {
             String v = getServer().getPluginManager().getPlugin("Factions").getDescription().getVersion();
@@ -315,7 +315,7 @@ public class PurpleIRC extends JavaPlugin {
             out.close();
         } catch (IOException ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
-        } 
+        }
     }
 
     public String getWorldAlias(String worldName) {
@@ -324,8 +324,8 @@ public class PurpleIRC extends JavaPlugin {
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
             try {
-            alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
-            } catch (Exception ex) {                
+                alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
+            } catch (Exception ex) {
                 logDebug("Problem getting alias name for '" + worldName + "': " + ex.getMessage());
             }
         }
@@ -430,7 +430,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
-    
+
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
         if (vaultHelpers != null) {
@@ -460,7 +460,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
-    
+
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -486,7 +486,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
-    
+
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -521,7 +521,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
-    
+
     public String getGroupPrefix(String worldName, String player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -543,7 +543,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
-    
+
     public boolean checkForProtocolLib() {
         return (getServer().getPluginManager().getPlugin("ProtocolLib") != null);
     }
