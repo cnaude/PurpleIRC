@@ -33,8 +33,7 @@ public class ModeListener extends ListenerAdapter {
 
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
-        }
-        plugin.logDebug("MODE: " + user.getNick() + ":" + channel.getName() + ":" + mode);
+        }        
         ircBot.broadcastIRCMode(user.getNick(), mode, channel.getName());        
     }
 }
