@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 public class CommandHandlers implements CommandExecutor {
 
     HashMap<String, Object> commands = new HashMap<String, Object>();
-    private PurpleIRC plugin;
+    private final PurpleIRC plugin;
 
     public CommandHandlers(PurpleIRC plugin) {
 
