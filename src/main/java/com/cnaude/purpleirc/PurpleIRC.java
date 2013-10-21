@@ -52,7 +52,7 @@ public class PurpleIRC extends JavaPlugin {
     public String titanChat;
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
-    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode;
+    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode, ircNotice;
     public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld;
     public String invalidIRCCommand, noPermForIRCCommand;
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
@@ -230,6 +230,7 @@ public class PurpleIRC extends JavaPlugin {
         ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
         ircNickChange = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-nickchange", ""));
         ircMode = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-mode", ""));
+        ircNotice = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-notice", ""));
 
         invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
         noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));

@@ -111,6 +111,15 @@ public class ChatTokenizer {
                 .replace("%MODE%", mode)                
                 .replace("%CHANNEL%", myChannel));
     }
+    
+    // IRC notice change messages
+    public String ircNoticeTokenizer(String nick, String message, String notice, String myChannel, String template) {
+        return ircBot.plugin.colorConverter.ircColorsToGame(template
+                .replace("%NAME%", nick)
+                .replace("%MESSAGE%", message)                
+                .replace("%NOTICE%", notice) 
+                .replace("%CHANNEL%", myChannel));
+    }        
 
     public String gameChatToIRCTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template

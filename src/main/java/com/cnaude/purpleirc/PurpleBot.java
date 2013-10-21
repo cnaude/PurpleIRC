@@ -20,6 +20,7 @@ import com.cnaude.purpleirc.IRCListeners.MessageListener;
 import com.cnaude.purpleirc.IRCListeners.ModeListener;
 import com.cnaude.purpleirc.IRCListeners.MotdListener;
 import com.cnaude.purpleirc.IRCListeners.NickChangeListener;
+import com.cnaude.purpleirc.IRCListeners.NoticeListener;
 import com.cnaude.purpleirc.IRCListeners.PartListener;
 import com.cnaude.purpleirc.IRCListeners.PrivateMessageListener;
 import com.cnaude.purpleirc.IRCListeners.QuitListener;
@@ -105,6 +106,7 @@ public final class PurpleBot {
         bot.getListenerManager().addListener(new MessageListener(plugin, this));
         bot.getListenerManager().addListener(new ModeListener(plugin, this));
         bot.getListenerManager().addListener(new NickChangeListener(plugin, this));
+        bot.getListenerManager().addListener(new NoticeListener(plugin, this));
         bot.getListenerManager().addListener(new PartListener(plugin, this));
         bot.getListenerManager().addListener(new PrivateMessageListener(plugin, this));
         bot.getListenerManager().addListener(new QuitListener(plugin, this));
@@ -1068,9 +1070,18 @@ public final class PurpleBot {
 
     public void broadcastIRCMode(String nick, String mode, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-mode")) {
-            plugin.getServer().broadcast(tokenizer.ircModeTokenizer(nick, mode, myChannel, plugin.ircMode), "irc.message.mode");
+            plugin.getServer().broadcast(tokenizer.ircModeTokenizer(nick, mode, 
+                    myChannel, plugin.ircMode), "irc.message.mode");
         }
     }
+    
+    public void broadcastIRCNotice(String nick, String message, String notice, String myChannel) {
+        if (enabledMessages.get(myChannel).contains("irc-notice")) {
+            plugin.getServer().broadcast(tokenizer.ircNoticeTokenizer(nick, 
+                    message, notice, myChannel, plugin.ircNotice), "irc.message.notice");
+        }
+    }
+    
 
     // Broadcast join messages from IRC
     public void broadcastIRCJoin(String nick, String myChannel) {

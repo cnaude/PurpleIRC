@@ -82,6 +82,8 @@ channels:
     - irc-topic
     - irc-quit
     - irc-nickchange
+    - irc-mode
+    - irc-notice
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat
