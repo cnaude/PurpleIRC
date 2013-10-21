@@ -226,29 +226,26 @@ public class ChatTokenizer {
     
     private String playerTokenizer(String player, String message) {
         plugin.logDebug("Tokenizing " + player);
-        String worldName = null;        
-        if (worldName == null || worldName.isEmpty()) {
-            worldName = plugin.defaultPlayerWorld;
-        }        
+        String worldName = plugin.defaultPlayerWorld;
         String pSuffix = plugin.getPlayerSuffix(worldName,player);
         String pPrefix = plugin.getPlayerPrefix(worldName,player);
         String gPrefix = plugin.getGroupPrefix(worldName,player);
-        String group = plugin.getPlayerGroup(worldName,player);
-        String worldAlias = plugin.getWorldAlias(worldName);
-        if (pSuffix == null) {
-            pSuffix = plugin.defaultPlayerSuffix;
-        }
-        if (pPrefix == null) {
-            pPrefix = plugin.defaultPlayerPrefix;
-        }
-        if (gPrefix == null) {
+        String group = plugin.getPlayerGroup(worldName,player);       
+        String worldAlias = plugin.getWorldAlias(worldName);        
+        if (pSuffix == null) {            
+            pSuffix = plugin.defaultPlayerSuffix;            
+        }        
+        if (pPrefix == null) {            
+            pPrefix = plugin.defaultPlayerPrefix;            
+        }        
+        if (gPrefix == null) {         
             gPrefix = plugin.defaultGroupPrefix;
-        }
+        }        
         if (group == null) {
             group = plugin.defaultPlayerGroup;
-        }
+        }       
         
-        plugin.logDebug("Message:");
+        plugin.logDebug("Message:" + message);
         return message.replace("%DISPLAYNAME%", player)
                 .replace("%NAME%", player)
                 .replace("%GROUP%", group)

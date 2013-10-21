@@ -315,9 +315,7 @@ public class PurpleIRC extends JavaPlugin {
             out.close();
         } catch (IOException ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
-        } catch (Exception ex) {
-            logError("Problem creating sample bot: " + ex.getMessage());
-        }
+        } 
     }
 
     public String getWorldAlias(String worldName) {
@@ -325,7 +323,11 @@ public class PurpleIRC extends JavaPlugin {
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
+            try {
             alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
+            } catch (Exception ex) {                
+                logDebug("Problem getting alias name for '" + worldName + "': " + ex.getMessage());
+            }
         }
         if (alias == null) {
             alias = worldName;
