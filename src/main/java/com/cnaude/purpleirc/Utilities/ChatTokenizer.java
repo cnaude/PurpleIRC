@@ -212,15 +212,20 @@ public class ChatTokenizer {
         String pSuffix = plugin.getPlayerSuffix(player);
         String pPrefix = plugin.getPlayerPrefix(player);
         String gPrefix = plugin.getGroupPrefix(player);
+        String gSuffix = plugin.getGroupSuffix(player);
         String group = plugin.getPlayerGroup(player);
         String displayName = player.getDisplayName();
         String worldName = "";
         String worldAlias = "";
+        String worldColor = "";
         if (pSuffix == null) {
             pSuffix = "";
         }
         if (pPrefix == null) {
             pPrefix = "";
+        }
+        if (gSuffix == null) {
+            gSuffix = "";
         }
         if (gPrefix == null) {
             gPrefix = "";
@@ -234,6 +239,7 @@ public class ChatTokenizer {
         if (player.getWorld() != null) {
             worldName = player.getWorld().getName();
             worldAlias = plugin.getWorldAlias(worldName);
+            worldColor = plugin.getWorldColor(worldName);
         }
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%NAME%", pName)
@@ -241,39 +247,51 @@ public class ChatTokenizer {
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
                 .replace("%GROUPPREFIX%", gPrefix)
+                .replace("%GROUPSUFFIX%", gSuffix)
                 .replace("%WORLDALIAS%", worldAlias)
+                .replace("%WORLDCOLOR%", worldColor)
                 .replace("%WORLD%", worldName);
     }
     
     private String playerTokenizer(String player, String message) {
         plugin.logDebug("Tokenizing " + player);
-        String worldName = plugin.defaultPlayerWorld;
+        String worldName = null;        
+        if (worldName == null || worldName.isEmpty()) {
+            worldName = plugin.defaultPlayerWorld;
+        }        
         String pSuffix = plugin.getPlayerSuffix(worldName,player);
         String pPrefix = plugin.getPlayerPrefix(worldName,player);
         String gPrefix = plugin.getGroupPrefix(worldName,player);
-        String group = plugin.getPlayerGroup(worldName,player);       
-        String worldAlias = plugin.getWorldAlias(worldName);        
-        if (pSuffix == null) {            
-            pSuffix = plugin.defaultPlayerSuffix;            
-        }        
-        if (pPrefix == null) {            
-            pPrefix = plugin.defaultPlayerPrefix;            
-        }        
-        if (gPrefix == null) {         
+        String gSuffix = plugin.getGroupSuffix(worldName,player);
+        String group = plugin.getPlayerGroup(worldName,player);
+        String worldAlias = plugin.getWorldAlias(worldName);
+        String worldColor = plugin.getWorldColor(worldName);
+        if (pSuffix == null) {
+            pSuffix = plugin.defaultPlayerSuffix;
+        }
+        if (pPrefix == null) {
+            pPrefix = plugin.defaultPlayerPrefix;
+        }
+        if (gSuffix == null) {
+            gSuffix = plugin.defaultGroupSuffix;
+        }
+        if (gPrefix == null) {
             gPrefix = plugin.defaultGroupPrefix;
-        }        
+        }
         if (group == null) {
             group = plugin.defaultPlayerGroup;
-        }       
+        }
         
-        plugin.logDebug("Message:" + message);
+        plugin.logDebug("Message:");
         return message.replace("%DISPLAYNAME%", player)
                 .replace("%NAME%", player)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
+                .replace("%GROUPSUFFIX%", gSuffix)
                 .replace("%GROUPPREFIX%", gPrefix)
                 .replace("%WORLDALIAS%", worldAlias)
+                .replace("%WORLDCOLOR%", worldColor)
                 .replace("%WORLD%", worldName);
     }
 

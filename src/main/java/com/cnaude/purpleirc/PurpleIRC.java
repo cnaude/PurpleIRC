@@ -54,7 +54,7 @@ public class PurpleIRC extends JavaPlugin {
     public String ircTitanChat;
     public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
     public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode, ircNotice;
-    public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld;
+    public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld, defaultGroupSuffix;
     public String playerAFK, playerNotAFK;
     public String invalidIRCCommand, noPermForIRCCommand;
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
@@ -254,9 +254,10 @@ public class PurpleIRC extends JavaPlugin {
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
         defaultPlayerGroup = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-group", ""));
+        defaultGroupSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-suffix", ""));
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
         defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
-
+        
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
@@ -559,6 +560,63 @@ public class PurpleIRC extends JavaPlugin {
             prefix = "";
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
+    }
+    
+    public String getWorldColor(String worldColor) {
+        String color = worldColor;
+        Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
+        if (plugin != null) {
+            MVPlugin mvPlugin = (MVPlugin) plugin;
+            color = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldColor).getColor().toString();
+        }
+        if (color == null) {
+            color = worldColor;
+        }
+        return color;
+    }
+    
+    public String getGroupSuffix(Player player) {
+        String suffix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                String group = "";
+                try {
+                    group = vaultHelpers.permission.getPrimaryGroup(player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player.getName() + "): " + ex.getMessage());
+                }
+                if (group == null) {
+                    group = "";
+                }
+                suffix = vaultHelpers.chat.getGroupSuffix(player.getLocation().getWorld(), group);
+            }
+        }
+        if (suffix == null) {
+            suffix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', suffix);
+    }
+    
+    public String getGroupSuffix(String worldName, String player) {
+        String suffix = "";
+        if (vaultHelpers != null) {
+            if (vaultHelpers.chat != null) {
+                String group = "";
+                try {
+                    group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                } catch (Exception ex) {
+                    logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
+                }
+                if (group == null) {
+                    group = "";
+                }
+                suffix = vaultHelpers.chat.getGroupSuffix(worldName, group);
+            }
+        }
+        if (suffix == null) {
+            suffix = "";
+        }
+        return ChatColor.translateAlternateColorCodes('&', suffix);
     }
 
     public boolean checkForProtocolLib() {

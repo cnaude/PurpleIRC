@@ -8,7 +8,7 @@ package com.cnaude.purpleirc;
 public class BotWatcher {
     
     private final PurpleIRC plugin;
-    private int taskID;
+    private final int taskID;
     
     public BotWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;

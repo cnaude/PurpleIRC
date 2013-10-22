@@ -15,10 +15,10 @@ import org.pircbotx.Colors;
  */
 public class ColorConverter {
     
-    private boolean stripGameColors;    
-    private boolean stripIRCColors;    
-    private EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
-    private HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
+    private final boolean stripGameColors;    
+    private final boolean stripIRCColors;    
+    private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
+    private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     
     public ColorConverter(boolean stripGameColors, boolean stripIRCColors) {
         this.stripGameColors = stripGameColors;
@@ -64,8 +64,8 @@ public class ColorConverter {
         ircColorMap.put(ChatColor.DARK_GREEN, Colors.DARK_GREEN);
         ircColorMap.put(ChatColor.DARK_PURPLE, Colors.PURPLE);
         ircColorMap.put(ChatColor.DARK_RED, Colors.RED);
-        ircColorMap.put(ChatColor.GOLD, Colors.YELLOW);
-        ircColorMap.put(ChatColor.GRAY, Colors.DARK_GRAY);
+        ircColorMap.put(ChatColor.GOLD, Colors.OLIVE);
+        ircColorMap.put(ChatColor.GRAY, Colors.LIGHT_GRAY);
         ircColorMap.put(ChatColor.GREEN, Colors.GREEN);
         ircColorMap.put(ChatColor.LIGHT_PURPLE, Colors.MAGENTA);
         ircColorMap.put(ChatColor.RED, Colors.RED);
@@ -86,6 +86,7 @@ public class ColorConverter {
         gameColorMap.put(Colors.LIGHT_GRAY, ChatColor.GRAY);
         gameColorMap.put(Colors.MAGENTA,    ChatColor.LIGHT_PURPLE);
         gameColorMap.put(Colors.NORMAL,     ChatColor.RESET);
+        gameColorMap.put(Colors.OLIVE,      ChatColor.GOLD);
         gameColorMap.put(Colors.PURPLE,     ChatColor.DARK_PURPLE);
         gameColorMap.put(Colors.RED,        ChatColor.RED);
         gameColorMap.put(Colors.TEAL,       ChatColor.DARK_AQUA);
