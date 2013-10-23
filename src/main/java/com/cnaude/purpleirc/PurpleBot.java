@@ -35,6 +35,7 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
+import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,6 +44,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.exception.IrcException;
 
 /**
  *
@@ -81,6 +83,7 @@ public final class PurpleBot {
     public HashMap<String, Boolean> ignoreIRCChat = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
+    public boolean relayPrivateChat;
     public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
@@ -224,7 +227,10 @@ public final class PurpleBot {
                 plugin.logInfo("NO SSL");
                 bot.connect(botServer, botServerPort, botServerPass);
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
+            plugin.logError("Problem connecting to " + botServer + " => "
+                    + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
+        } catch (IrcException ex) {
             plugin.logError("Problem connecting to " + botServer + " => "
                     + " as " + bot.getName() + " [Error: " + ex.getMessage() + "]");
         }
@@ -234,7 +240,7 @@ public final class PurpleBot {
         try {
             config.save(file);
             sender.sendMessage("Saving bot \"" + botNick + "\" to " + file.getName());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             plugin.logError(ex.getMessage());
             sender.sendMessage(ex.getMessage());
         }
@@ -243,7 +249,7 @@ public final class PurpleBot {
     public void saveConfig() {
         try {
             config.save(file);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             plugin.logError(ex.getMessage());
         }
     }
@@ -279,6 +285,7 @@ public final class PurpleBot {
             trustAllCerts = config.getBoolean("trust-all-certs", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
+            relayPrivateChat = config.getBoolean("relay-private-chat", false);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
             bot.setName(botNick);
@@ -358,7 +365,7 @@ public final class PurpleBot {
                 plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
 
                 hideQuitWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-quit-when-vanished", true));
-                plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));
+                plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));                
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();

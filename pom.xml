@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>1.10.6</version>
+    <version>1.10.6-SNAPSHOT2</version>
     <name>PurpleIRC</name>
     <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -254,7 +254,7 @@
                             <tasks>                                                                                             
                                 <copy file="../PurpleIRC/target/PurpleIRC-${project.version}.jar" tofile="../PurpleIRC/target/PurpleIRC.jar"/>
                                 <exec dir="../PurpleIRC/target" executable="C:/Users/cnaude/Apps/pscp.exe">
-                                    <arg line="PurpleIRC.jar cnaude@giraffe.lan:minetest/plugins/"/>
+                                    <arg line="-i c:/Users/cnaude/ssh/naudec-priv-key.ppk PurpleIRC.jar cnaude@giraffe.lan:minetest/plugins/"/>
                                 </exec>  
                             </tasks>
                         </configuration>

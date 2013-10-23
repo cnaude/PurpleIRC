@@ -141,11 +141,14 @@ public class IRCMessageHandler {
         } else {
             if (ircBot.ignoreIRCChat.get(myChannel)) {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"ignore-irc-chat\" being true ...");
-            } else {
-                plugin.logDebug("Message dispatched for broadcast...");
-                ircBot.broadcastChat(user.getNick(), myChannel, message, false);
+                return;
             }
-
+            if (privateMessage && !ircBot.relayPrivateChat) {
+                plugin.logDebug("Message NOT dispatched for broadcast due to \"relay-private-chat\" being false and this is a private message ...");
+                return;
+            }                
+            plugin.logDebug("Message dispatched for broadcast...");
+            ircBot.broadcastChat(user.getNick(), myChannel, message, false);            
         }
     }
     

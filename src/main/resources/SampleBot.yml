@@ -32,6 +32,8 @@ message-delay: 1000
 raw-message-on-connect: false
 # the raw message
 raw-message: auth name pass
+# relay-private-chat - Allow private chat to the bot to relay to the game
+relay-private-chat: false
 # notify channels or users when a player uses commands
 command-notify:
   enabled: false
@@ -60,9 +62,9 @@ channels:
     # topic - Channel topic
     topic: New topic
     # topic-protect - Prevent others from changing the topic
-    topic-protect: true
+    topic-protect: true    
     # enabled-messages - These are the message types that are either sent to the game or IRC
-    # config.yml. Remove or comment the messages you don't want.    
+    # config.yml. Remove or comment the messages you don't want.       
     enabled-messages:
     # These messages are sent from game to IRC (see permissions)
     - console-chat
