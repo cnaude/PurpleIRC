@@ -33,6 +33,7 @@ message-format:
   # Message templates for game to IRC messages
   console-chat: '&0[&5Server&0] %MESSAGE%' 
   game-action: '&0[&2%WORLD%&0] ***%NAME%&0 %MESSAGE%'
+  game-pchat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
   game-chat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
   game-death: '&0[&2%WORLD%&0] %MESSAGE%'  
   game-kick: '&0[&2%WORLD%&0] %MESSAGE%'

@@ -47,7 +47,7 @@ public class PurpleIRC extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String gameSend, gameCommand;
+    public String gameSend, gameCommand, gamePChat;
     public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
     public String factionPublicChat, factionAllyChat, factionEnemyChat;
     public String titanChat;
@@ -200,6 +200,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("strip-irc-colors: " + stripIRCColors);
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
+        gamePChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-pchat", ""));
         gameSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-send", ""));
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
@@ -260,9 +261,9 @@ public class PurpleIRC extends JavaPlugin {
         
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
-
+        // §
         customTabList = getConfig().getBoolean("custom-tab-list", false);
-        customTabPrefix = getConfig().getString("custom-tab-prefix", "[IRC} ");
+        customTabPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("custom-tab-prefix", "[IRC] "));
         logDebug("custom-tab-list: " + customTabList);
         logDebug("custom-tab-prefix: " + customTabPrefix);
     }

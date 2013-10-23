@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class CommandQueueWatcher {
     
     private final PurpleIRC plugin;
-    private int taskID;
+    private final int taskID;
     private Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
     
     public CommandQueueWatcher(final PurpleIRC plugin) {

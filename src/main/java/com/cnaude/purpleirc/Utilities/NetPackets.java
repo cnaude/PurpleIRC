@@ -11,6 +11,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.injector.PacketConstructor;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import java.lang.reflect.InvocationTargetException;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -49,7 +51,9 @@ public class NetPackets {
                     protocolManager.sendServerPacket(reciever, packet);
                 }
             }
-        } catch (Exception e) {
+        } catch (FieldAccessException e) {
+            plugin.logError(e.getMessage());
+        } catch (InvocationTargetException e) {
             plugin.logError(e.getMessage());
         }
     }

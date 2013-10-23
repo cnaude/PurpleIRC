@@ -1163,7 +1163,7 @@ public final class PurpleBot {
     }
 
     public void msgPlayer(Player sender, String nick, String message) {
-        String msg = tokenizer.gameChatToIRCTokenizer(sender, plugin.ircChat, message);
+        String msg = tokenizer.gameChatToIRCTokenizer(sender, plugin.gamePChat, message);
         this.bot.sendMessage(nick, msg);
     }
 
