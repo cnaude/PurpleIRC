@@ -38,6 +38,7 @@ import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
@@ -365,7 +366,7 @@ public final class PurpleBot {
                 plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
 
                 hideQuitWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-quit-when-vanished", true));
-                plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));                
+                plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
@@ -454,7 +455,9 @@ public final class PurpleBot {
                     plugin.logInfo("No commands specified!");
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
+            plugin.logError(ex.getMessage());
+        } catch (InvalidConfigurationException ex) {
             plugin.logError(ex.getMessage());
         }
     }
@@ -1023,6 +1026,31 @@ public final class PurpleBot {
         }
     }
 
+    // Broadcast chat messages from IRC to specific hero channel
+    public void broadcastHeroChat(String nick, String ircChannel, String message) {
+        if (message.contains(" ")) {
+            String hChannel;
+            String msg;
+            hChannel = message.split(" ", 2)[0];
+            msg = message.split(" ", 2)[1];
+            plugin.logDebug("Check if irc-hero-chat is enabled before broadcasting chat from IRC");
+            if (enabledMessages.get(ircChannel).contains("irc-hero-chat")) {
+                plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
+                if (Herochat.getChannelManager().hasChannel(hChannel)) {
+                    Herochat.getChannelManager().getChannel(hChannel)
+                            .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, ircChannel,
+                                            plugin.ircHeroChat, msg, Herochat.getChannelManager(), hChannel));
+                } else {
+                    bot.sendMessage(nick, "Channel does not exist: " + hChannel);
+                }
+            } else {
+                plugin.logDebug("NOPE we can't broadcast due to irc-hero-chat disabled");
+            }
+        } else {
+            bot.sendMessage(nick, "No message specified.");
+        }
+    }
+
     // Send chat messages from IRC to player
     public void playerChat(String nick, String myChannel, String message) {
         String pName;
@@ -1077,18 +1105,17 @@ public final class PurpleBot {
 
     public void broadcastIRCMode(String nick, String mode, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-mode")) {
-            plugin.getServer().broadcast(tokenizer.ircModeTokenizer(nick, mode, 
+            plugin.getServer().broadcast(tokenizer.ircModeTokenizer(nick, mode,
                     myChannel, plugin.ircMode), "irc.message.mode");
         }
     }
-    
+
     public void broadcastIRCNotice(String nick, String message, String notice, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-notice")) {
-            plugin.getServer().broadcast(tokenizer.ircNoticeTokenizer(nick, 
+            plugin.getServer().broadcast(tokenizer.ircNoticeTokenizer(nick,
                     message, notice, myChannel, plugin.ircNotice), "irc.message.notice");
         }
     }
-    
 
     // Broadcast join messages from IRC
     public void broadcastIRCJoin(String nick, String myChannel) {
@@ -1139,7 +1166,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     // Notify when player goes AFK
     public void essentialsAFK(Player player, boolean afk) {
         if (!bot.isConnected()) {
@@ -1159,7 +1186,7 @@ public final class PurpleBot {
                 plugin.logDebug("Sending AFK message to " + channelName);
                 bot.sendMessage(channelName, tokenizer.gamePlayerAFKTokenizer(player, template));
             }
-        }        
+        }
     }
 
     public void msgPlayer(Player sender, String nick, String message) {

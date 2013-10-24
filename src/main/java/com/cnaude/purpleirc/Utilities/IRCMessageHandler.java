@@ -23,7 +23,7 @@ import org.pircbotx.User;
  * @author cnaude
  */
 public class IRCMessageHandler {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
     PircBotX bot;
@@ -33,7 +33,7 @@ public class IRCMessageHandler {
         this.ircBot = ircBot;
         this.bot = this.ircBot.bot;
     }
-    
+
     public void processMessage(User user, Channel channel, String message, boolean privateMessage) {
         if (!ircBot.botChannels.contains(channel.getName())) {
             plugin.logDebug("Invalid IRC channel (" + channel.getName() + "). Ignoring message from " + user.getNick() + ": " + message);
@@ -46,13 +46,13 @@ public class IRCMessageHandler {
         }
         if (message.startsWith(ircBot.commandPrefix) && (!message.startsWith(ircBot.commandPrefix + ircBot.commandPrefix))) {
             String command = message.split(" ")[0].substring(ircBot.commandPrefix.length());
-            
+
             String commandArgs = null;
             if (message.contains(" ")) {
                 commandArgs = message.split(" ", 2)[1];
             }
             plugin.logDebug("IRC command detected: " + command);
-            
+
             plugin.logDebug(message);
             String target = channel.getName();
             if (ircBot.commandMap.get(myChannel).containsKey(command)) {
@@ -68,14 +68,14 @@ public class IRCMessageHandler {
                     plugin.logDebug("This is a channel message but channelListen is false. Ignoring...");
                     return;
                 }
-                
+
                 String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
                 String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
                 boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
                 boolean ctcpResponse = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("ctcp"));
 
                 plugin.logDebug(gameCommand + ":" + modes + ":" + privateCommand);
-                
+
                 if (privateCommand || privateMessage) {
                     target = user.getNick();
                 }
@@ -111,6 +111,8 @@ public class IRCMessageHandler {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
                     } else if (gameCommand.equals("@ochat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, true);
+                    } else if (gameCommand.equals("@hchat")) {                        
+                        ircBot.broadcastHeroChat(user.getNick(), myChannel, commandArgs);
                     } else if (gameCommand.equals("@msg")) {
                         ircBot.playerChat(user.getNick(), myChannel, commandArgs);
                     } else {
@@ -146,12 +148,12 @@ public class IRCMessageHandler {
             if (privateMessage && !ircBot.relayPrivateChat) {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"relay-private-chat\" being false and this is a private message ...");
                 return;
-            }                
+            }
             plugin.logDebug("Message dispatched for broadcast...");
-            ircBot.broadcastChat(user.getNick(), myChannel, message, false);            
+            ircBot.broadcastChat(user.getNick(), myChannel, message, false);
         }
     }
-    
+
     private void sendMessage(PircBotX bot, String target, String message, boolean ctcpResponse) {
         if (ctcpResponse) {
             bot.sendCTCPResponse(target, message);
