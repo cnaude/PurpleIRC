@@ -28,12 +28,24 @@ public class IRCMessageHandler {
     PurpleBot ircBot;
     PircBotX bot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public IRCMessageHandler(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
         this.bot = this.ircBot.bot;
     }
 
+    /**
+     *
+     * @param user
+     * @param channel
+     * @param message
+     * @param privateMessage
+     */
     public void processMessage(User user, Channel channel, String message, boolean privateMessage) {
         if (!ircBot.botChannels.contains(channel.getName())) {
             plugin.logDebug("Invalid IRC channel (" + channel.getName() + "). Ignoring message from " + user.getNick() + ": " + message);

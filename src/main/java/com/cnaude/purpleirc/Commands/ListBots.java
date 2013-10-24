@@ -18,10 +18,19 @@ public class ListBots {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public ListBots(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                 + ChatColor.DARK_PURPLE + "   ]-----");

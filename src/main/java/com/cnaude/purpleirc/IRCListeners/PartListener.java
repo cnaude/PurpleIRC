@@ -20,11 +20,20 @@ public class PartListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public PartListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
     
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onPart(PartEvent event) {
         Channel channel = event.getChannel();

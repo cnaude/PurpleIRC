@@ -17,6 +17,10 @@ public class CommandHandlers implements CommandExecutor {
     HashMap<String, Object> commands = new HashMap<String, Object>();
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public CommandHandlers(PurpleIRC plugin) {
 
         this.plugin = plugin;
@@ -56,6 +60,14 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("whois", new Whois(plugin));
     }
 
+    /**
+     *
+     * @param sender
+     * @param cmd
+     * @param commandLabel
+     * @param args
+     * @return
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (args.length >= 1) {

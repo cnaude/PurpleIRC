@@ -16,10 +16,19 @@ public class ReloadBot {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public ReloadBot(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 2) {
             String bot = args[1];

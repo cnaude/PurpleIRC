@@ -17,10 +17,18 @@ public class CleverNotchListener implements Listener {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public CleverNotchListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler
     public void onCleverEvent(CleverEvent event) {
         for (String botName : plugin.ircBots.keySet()) {

@@ -15,6 +15,10 @@ public class CommandQueueWatcher {
     private final int taskID;
     private Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
     
+    /**
+     *
+     * @param plugin
+     */
     public CommandQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
@@ -30,10 +34,17 @@ public class CommandQueueWatcher {
         }, 20, 20);
     }
     
+    /**
+     *
+     */
     public void cancel() {
         this.plugin.getServer().getScheduler().cancelTask(taskID);        
     }
     
+    /**
+     *
+     * @param command
+     */
     public void add(IRCCommand command) {
         queue.offer(command);
     }

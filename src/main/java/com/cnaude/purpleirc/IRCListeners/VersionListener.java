@@ -16,10 +16,18 @@ public class VersionListener extends ListenerAdapter {
     
     PurpleIRC plugin;    
 
+    /**
+     *
+     * @param plugin
+     */
     public VersionListener(PurpleIRC plugin) {
         this.plugin = plugin;        
     }
     
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onVersion(VersionEvent event) {
         event.respond("[Name: " + plugin.getDescription().getFullName() + "]"

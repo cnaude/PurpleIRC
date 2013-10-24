@@ -21,11 +21,20 @@ public class JoinListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public JoinListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onJoin(JoinEvent event) {
         Channel channel = event.getChannel();

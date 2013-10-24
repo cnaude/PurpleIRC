@@ -17,10 +17,19 @@ public class Whois {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public Whois(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 2) {
             String nick = args[1];

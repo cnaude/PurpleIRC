@@ -20,11 +20,20 @@ public class MessageListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public MessageListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onMessage(MessageEvent event) {
 

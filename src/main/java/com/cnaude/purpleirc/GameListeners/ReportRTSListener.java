@@ -18,10 +18,18 @@ public class ReportRTSListener implements Listener {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public ReportRTSListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler
     public void onReportCreateEvent(ReportCreateEvent event) {
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());

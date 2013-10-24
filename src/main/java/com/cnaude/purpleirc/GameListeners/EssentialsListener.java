@@ -18,10 +18,18 @@ public class EssentialsListener implements Listener {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public EssentialsListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler
     public void onAfkStatusChangeEvent(AfkStatusChangeEvent event) {
         User user = event.getAffected();     

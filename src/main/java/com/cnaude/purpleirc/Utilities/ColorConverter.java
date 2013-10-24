@@ -20,12 +20,22 @@ public class ColorConverter {
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     
+    /**
+     *
+     * @param stripGameColors
+     * @param stripIRCColors
+     */
     public ColorConverter(boolean stripGameColors, boolean stripIRCColors) {
         this.stripGameColors = stripGameColors;
         this.stripIRCColors = stripIRCColors;
         buildColorMaps();
     }
     
+    /**
+     *
+     * @param message
+     * @return
+     */
     public String gameColorsToIrc(String message) {
         if (stripGameColors) {
             return ChatColor.stripColor(message);
@@ -39,6 +49,11 @@ public class ColorConverter {
         }
     }
 
+    /**
+     *
+     * @param message
+     * @return
+     */
     public String ircColorsToGame(String message) {
         if (stripIRCColors) {
             return Colors.removeFormattingAndColors(message);

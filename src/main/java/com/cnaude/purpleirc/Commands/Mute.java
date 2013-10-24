@@ -17,10 +17,19 @@ public class Mute {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public Mute(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 4) {
             String bot = args[1];

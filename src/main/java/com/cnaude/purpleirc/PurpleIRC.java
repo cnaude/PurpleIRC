@@ -39,51 +39,486 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PurpleIRC extends JavaPlugin {
 
+    /**
+     *
+     */
     public static String LOG_HEADER;
     static final Logger log = Logger.getLogger("Minecraft");
     private final String sampleFileName = "SampleBot.yml";
     private File pluginFolder;
     private File botsFolder;
     private File configFile;
+
+    /**
+     *
+     */
     public static long startTime;
-    public String gameChat, gameAction, gameDeath, gameQuit, gameJoin, gameKick;
-    public String gameSend, gameCommand, gamePChat;
-    public String mcMMOAdminChat, mcMMOPartyChat, consoleChat, heroChat;
-    public String factionPublicChat, factionAllyChat, factionEnemyChat;
+
+    /**
+     *
+     */
+    pub
+    public String gameChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameAction,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameDeath,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameQuit,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameJoin,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameKick;
+
+    /**
+     *
+     */
+    pub
+    public String gameSend,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gameCommand,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    gamePChat;
+
+    /**
+     *
+     */
+    pub
+    public String mcMMOAdminChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    mcMMOPartyChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    consoleChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    heroChat;
+
+    /**
+     *
+     */
+    pub
+    public String factionPublicChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    factionAllyChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    factionEnemyChat;
+
+    /**
+     *
+     */
     public String titanChat;
+
+    /**
+     *
+     */
     public String ircTitanChat;
-    public String ircHeroChat, ircHeroAction, ircHeroPart, ircHeroKick, ircHeroJoin, ircHeroTopic;
-    public String ircChat, ircPChat, ircAction, ircPart, ircKick, ircJoin, ircTopic, ircQuit, ircNickChange, ircMode, ircNotice;
-    public String defaultPlayerSuffix, defaultPlayerPrefix, defaultPlayerGroup, defaultGroupPrefix, defaultPlayerWorld, defaultGroupSuffix;
-    public String playerAFK, playerNotAFK;
-    public String invalidIRCCommand, noPermForIRCCommand;
+
+    /**
+     *
+     */
+    pub
+    public String ircHeroChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircHeroAction,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircHeroPart,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircHeroKick,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircHeroJoin,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircHeroTopic;
+
+    /**
+     *
+     */
+    pub
+    public String ircChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircPChat,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircAction,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircPart,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircKick,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircJoin,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircTopic,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircQuit,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircNickChange,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircMode,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    ircNotice;
+
+    /**
+     *
+     */
+    pub
+    public String defaultPlayerSuffix,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    defaultPlayerPrefix,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    defaultPlayerGroup,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    defaultGroupPrefix,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    defaultPlayerWorld,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    defaultGroupSuffix;
+
+    /**
+     *
+     */
+    pub
+    public String playerAFK,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    playerNotAFK;
+
+    /**
+     *
+     */
+    pub
+    public String invalidIRCCommand,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    noPermForIRCCommand;
+
+    /**
+     *
+     */
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
+
+    /**
+     *
+     */
     public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
+
+    /**
+     *
+     */
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
+
+    /**
+     *
+     */
     public String customTabPrefix;
+
+    /**
+     *
+     */
     public String reportRTSSend;
+
+    /**
+     *
+     */
     public String cleverSend;
-    public String broadcastMessage, broadcastConsoleMessage;
+
+    /**
+     *
+     */
+    pub
+    public String broadcastMessage,
+
+    /**
+     *
+     */
+
+    /**
+     *
+     */
+    broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
+
+    /**
+     *
+     */
     public boolean exactNickMatch;
     Long ircConnCheckInterval;
     Long ircChannelCheckInterval;
     BotWatcher botWatcher;
     ChannelWatcher channelWatcher;
+
+    /**
+     *
+     */
     public ColorConverter colorConverter;
+
+    /**
+     *
+     */
     public RegexGlobber regexGlobber;
+
+    /**
+     *
+     */
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
     VaultHook vaultHelpers;
     VanishHook vanishHook;
+
+    /**
+     *
+     */
     public FactionChatHook fcHook;
+
+    /**
+     *
+     */
     public NetPackets netPackets = null;
 
+    /**
+     *
+     */
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
@@ -154,6 +589,9 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onDisable() {
         if (botWatcher != null) {
@@ -175,6 +613,10 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @param debug
+     */
     public void debugMode(boolean debug) {
         debugEnabled = debug;
         getConfig().set("Debug", debug);
@@ -185,6 +627,10 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean debugMode() {
         return debugEnabled;
     }
@@ -280,14 +726,26 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMcMMOEnabled() {
         return (getServer().getPluginManager().getPlugin("mcMMO") != null);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isFactionChatEnabled() {
         return (getServer().getPluginManager().getPlugin("FactionChat") != null);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isFactionsEnabled() {
         if (getServer().getPluginManager().getPlugin("Factions") != null) {
             String v = getServer().getPluginManager().getPlugin("Factions").getDescription().getVersion();
@@ -301,22 +759,42 @@ public class PurpleIRC extends JavaPlugin {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isEssentialsEnabled() {
         return getServer().getPluginManager().getPlugin("Essentials") != null;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isReportRTSEnabled() {
         return (getServer().getPluginManager().getPlugin("ReportRTS") != null);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isHeroChatEnabled() {
         return (getServer().getPluginManager().getPlugin("Herochat") != null);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isTitanChatEnabled() {
         return (getServer().getPluginManager().getPlugin("TitanChat") != null);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCleverNotchEnabled() {
         return (getServer().getPluginManager().getPlugin("CleverNotch") != null);
     }
@@ -338,6 +816,11 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @param worldName
+     * @return
+     */
     public String getWorldAlias(String worldName) {
         String alias = worldName;
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
@@ -355,6 +838,10 @@ public class PurpleIRC extends JavaPlugin {
         return alias;
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void reloadMainConfig(CommandSender sender) {
         sender.sendMessage("Reloading config.yml...");
         reloadConfig();
@@ -389,20 +876,36 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @param _message
+     */
     public void logInfo(String _message) {
         log.log(Level.INFO, String.format("%s %s", LOG_HEADER, _message));
     }
 
+    /**
+     *
+     * @param _message
+     */
     public void logError(String _message) {
         log.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, _message));
     }
 
+    /**
+     *
+     * @param _message
+     */
     public void logDebug(String _message) {
         if (debugEnabled) {
             log.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, _message));
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMCUptime() {
         long jvmUptime = ManagementFactory.getRuntimeMXBean().getUptime();
         String msg = "Server uptime: " + (int) (jvmUptime / 86400000L) + " days"
@@ -412,6 +915,10 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMCPlayers() {
         ArrayList<String> playerList = new ArrayList<String>();
         for (Player player : getServer().getOnlinePlayers()) {
@@ -425,6 +932,9 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
+    /**
+     *
+     */
     public void setupVault() {
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             vaultHelpers = new VaultHook(this);
@@ -434,6 +944,11 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getPlayerGroup(Player player) {
         String groupName = "";
         if (vaultHelpers != null) {
@@ -451,6 +966,12 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
 
+    /**
+     *
+     * @param worldName
+     * @param player
+     * @return
+     */
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
         if (vaultHelpers != null) {
@@ -468,6 +989,11 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getPlayerPrefix(Player player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -481,6 +1007,12 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
+    /**
+     *
+     * @param worldName
+     * @param player
+     * @return
+     */
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -494,6 +1026,11 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getPlayerSuffix(Player player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -507,6 +1044,12 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
 
+    /**
+     *
+     * @param worldName
+     * @param player
+     * @return
+     */
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -520,6 +1063,11 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getGroupPrefix(Player player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -542,6 +1090,12 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
+    /**
+     *
+     * @param worldName
+     * @param player
+     * @return
+     */
     public String getGroupPrefix(String worldName, String player) {
         String prefix = "";
         if (vaultHelpers != null) {
@@ -564,6 +1118,11 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
     
+    /**
+     *
+     * @param worldColor
+     * @return
+     */
     public String getWorldColor(String worldColor) {
         String color = worldColor;
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
@@ -577,6 +1136,11 @@ public class PurpleIRC extends JavaPlugin {
         return color;
     }
     
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getGroupSuffix(Player player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -599,6 +1163,12 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
     
+    /**
+     *
+     * @param worldName
+     * @param player
+     * @return
+     */
     public String getGroupSuffix(String worldName, String player) {
         String suffix = "";
         if (vaultHelpers != null) {
@@ -621,6 +1191,10 @@ public class PurpleIRC extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean checkForProtocolLib() {
         return (getServer().getPluginManager().getPlugin("ProtocolLib") != null);
     }

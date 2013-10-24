@@ -17,9 +17,20 @@ public class VaultHook {
     
     final PurpleIRC plugin;
     
+    /**
+     *
+     */
     public Permission permission;    
+
+    /**
+     *
+     */
     public Chat chat;
     
+    /**
+     *
+     * @param plugin
+     */
     public VaultHook(PurpleIRC plugin) {
         this.plugin = plugin;
         

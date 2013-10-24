@@ -20,11 +20,20 @@ public class NickChangeListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public NickChangeListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onNickChange(NickChangeEvent event) {
         PircBotX bot = event.getBot();

@@ -16,10 +16,19 @@ public class MessageDelay {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public MessageDelay(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 3) {
             if (args[2].matches("\\d+")) {

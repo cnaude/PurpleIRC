@@ -21,10 +21,19 @@ public class Msg {
     private final PurpleIRC plugin;
     private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc msg ([bot]) [user] [message]";
 
+    /**
+     *
+     * @param plugin
+     */
     public Msg(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
             plugin.logDebug("Dispatching msg command...");

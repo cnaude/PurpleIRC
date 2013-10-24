@@ -17,10 +17,19 @@ public class Topic {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public Topic(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 1) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {

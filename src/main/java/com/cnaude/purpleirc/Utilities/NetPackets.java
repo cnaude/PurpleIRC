@@ -28,11 +28,21 @@ public class NetPackets {
     private ProtocolManager protocolManager;
     private PacketConstructor playerListConstructor;
 
+    /**
+     *
+     * @param plugin
+     */
     public NetPackets(PurpleIRC plugin) {
         this.plugin = plugin;
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
+    /**
+     *
+     * @param name
+     * @param ircBot
+     * @param channel
+     */
     public void addToTabList(String name, PurpleBot ircBot, Channel channel) {
         String channelName = channel.getName();
         if (ircBot.tabIgnoreNicks.containsKey(channelName)) {
@@ -58,6 +68,10 @@ public class NetPackets {
         }
     }
 
+    /**
+     *
+     * @param name
+     */
     public void remFromTabList(String name) {
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
         try {
@@ -73,6 +87,12 @@ public class NetPackets {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param ircBot
+     * @param channelName
+     */
     public void updateTabList(Player player, final PurpleBot ircBot, final String channelName) {
         final PircBotX bot = ircBot.bot;
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
@@ -103,6 +123,10 @@ public class NetPackets {
 
     }
 
+    /**
+     *
+     * @param player
+     */
     public void updateTabList(Player player) {
         if (player.hasPermission("irc.tablist")) {            
             for (PurpleBot ircBot : plugin.ircBots.values()) {

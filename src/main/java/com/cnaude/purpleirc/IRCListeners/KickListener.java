@@ -20,11 +20,20 @@ public class KickListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public KickListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onKick(KickEvent event) {
         Channel channel = event.getChannel();

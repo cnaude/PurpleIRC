@@ -12,6 +12,10 @@ public class ChannelWatcher {
     private final PurpleIRC plugin;
     private int taskID;
     
+    /**
+     *
+     * @param plugin
+     */
     public ChannelWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
@@ -30,6 +34,9 @@ public class ChannelWatcher {
         }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
     }
     
+    /**
+     *
+     */
     public void cancel() {
         this.plugin.getServer().getScheduler().cancelTask(taskID);        
     }

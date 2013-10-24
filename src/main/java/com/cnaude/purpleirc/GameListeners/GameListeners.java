@@ -25,10 +25,18 @@ public class GameListeners implements Listener {
 
     private final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public GameListeners(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
@@ -47,6 +55,10 @@ public class GameListeners implements Listener {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
@@ -56,6 +68,10 @@ public class GameListeners implements Listener {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         for (String botName : plugin.ircBots.keySet()) {
@@ -68,6 +84,10 @@ public class GameListeners implements Listener {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
         if (event.isCancelled()) {
@@ -114,6 +134,10 @@ public class GameListeners implements Listener {
 
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onServerCommandEvent(ServerCommandEvent event) {
         String cmd = event.getCommand();
@@ -137,6 +161,10 @@ public class GameListeners implements Listener {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         for (String botName : plugin.ircBots.keySet()) {

@@ -17,11 +17,20 @@ public class FactionChatHook {
     private final PurpleIRC plugin;
     FactionChatAPI api;
 
+    /**
+     *
+     * @param plugin
+     */
     public FactionChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
         api = new FactionChatAPI();
     }
     
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getChatMode(Player player) {
         String playerChatMode = null;
         try {
@@ -36,6 +45,11 @@ public class FactionChatHook {
         return playerChatMode.toLowerCase();
     }
     
+    /**
+     *
+     * @param player
+     * @return
+     */
     public String getFactionName(Player player) {
         String factionName = null;
         try {

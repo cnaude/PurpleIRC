@@ -19,11 +19,20 @@ public class ServerResponseListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public ServerResponseListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onServerResponse(ServerResponseEvent event) {
         int serverReply = event.getCode();

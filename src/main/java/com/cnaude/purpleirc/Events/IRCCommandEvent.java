@@ -18,18 +18,34 @@ public class IRCCommandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();    
     private IRCCommand ircCommand;
 
+    /**
+     *
+     * @param ircCommand
+     */
     public IRCCommandEvent(IRCCommand ircCommand) {
         this.ircCommand = ircCommand;             
     }
     
+    /**
+     *
+     * @return
+     */
     public IRCCommand getIRCCommand() {
         return this.ircCommand;
     }
 
+    /**
+     *
+     * @return
+     */
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    /**
+     *
+     * @return
+     */
     public static HandlerList getHandlerList() {
         return handlers;
     }

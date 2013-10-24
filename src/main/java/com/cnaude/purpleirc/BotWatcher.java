@@ -1,15 +1,19 @@
 package com.cnaude.purpleirc;
 
-/**
+/** This thread checks each bot for connectivity and reconnects when appropriate.
  *
  * @author Chris Naude
- * This thread checks each bot for connectivity and reconnects when appropriate.
+ * 
  */
 public class BotWatcher {
     
     private final PurpleIRC plugin;
     private final int taskID;
     
+    /**
+     *
+     * @param plugin
+     */
     public BotWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
@@ -31,6 +35,9 @@ public class BotWatcher {
         }, plugin.ircConnCheckInterval, plugin.ircConnCheckInterval);
     }
     
+    /**
+     *
+     */
     public void cancel() {
         this.plugin.getServer().getScheduler().cancelTask(taskID);        
     }

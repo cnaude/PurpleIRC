@@ -21,10 +21,18 @@ public class HeroChatListener implements Listener {
 
     final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public HeroChatListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onChannelChatEvent(ChannelChatEvent event) {
         Chatter chatter = event.getSender();        

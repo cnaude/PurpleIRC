@@ -19,10 +19,19 @@ public class Notice {
     private final PurpleIRC plugin;
     private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc notice ([bot]) [nick|channel] [message]";
 
+    /**
+     *
+     * @param plugin
+     */
     public Notice(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param sender
+     * @param args
+     */
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
             plugin.logDebug("Dispatching notice command...");

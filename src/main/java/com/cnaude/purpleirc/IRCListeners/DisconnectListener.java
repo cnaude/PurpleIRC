@@ -19,11 +19,20 @@ public class DisconnectListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public DisconnectListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
     
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onDisconnect(DisconnectEvent event) {                
         PircBotX bot = event.getBot();

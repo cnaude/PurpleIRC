@@ -16,10 +16,19 @@ public class VanishHook {
     
     final PurpleIRC plugin;
     
+    /**
+     *
+     * @param plugin
+     */
     public VanishHook(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public boolean isVanished(Player player) {
         if (player.hasMetadata("vanished")) {
             plugin.logDebug("Player " + player.getName() + " has vanished metadata.");

@@ -53,53 +53,225 @@ import org.pircbotx.exception.IrcException;
  */
 public final class PurpleBot {
 
+    /**
+     *
+     */
     public final PircBotX bot;
+
+    /**
+     *
+     */
     public final PurpleIRC plugin;
     private final File file;
     private YamlConfiguration config;
+
+    /**
+     *
+     */
     public boolean autoConnect;
+
+    /**
+     *
+     */
     public String botServer;
+
+    /**
+     *
+     */
     public String botNick;
+
+    /**
+     *
+     */
     public String botLogin;
+
+    /**
+     *
+     */
     public String botServerPass;
+
+    /**
+     *
+     */
     public int botServerPort;
+
+    /**
+     *
+     */
     public String commandPrefix;
+
+    /**
+     *
+     */
     public String quitMessage;
+
+    /**
+     *
+     */
     public boolean showMOTD;
+
+    /**
+     *
+     */
     public String botIdentPassword;
+
+    /**
+     *
+     */
     public long chatDelay;
+
+    /**
+     *
+     */
     public boolean ssl;
+
+    /**
+     *
+     */
     public boolean trustAllCerts;
+
+    /**
+     *
+     */
     public boolean sendRawMessageOnConnect;
+
+    /**
+     *
+     */
     public String rawMessage;
+
+    /**
+     *
+     */
     public ArrayList<String> botChannels = new ArrayList<String>();
+
+    /**
+     *
+     */
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
+
+    /**
+     *
+     */
     public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
+
+    /**
+     *
+     */
     public HashMap<String, String> channelPassword = new HashMap<String, String>();
+
+    /**
+     *
+     */
     public HashMap<String, String> channelTopic = new HashMap<String, String>();
+
+    /**
+     *
+     */
     public HashMap<String, String> activeTopic = new HashMap<String, String>();
+
+    /**
+     *
+     */
     public HashMap<String, String> channelModes = new HashMap<String, String>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> ignoreIRCChat = new HashMap<String, Boolean>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
+
+    /**
+     *
+     */
     public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
+
+    /**
+     *
+     */
     public boolean relayPrivateChat;
+
+    /**
+     *
+     */
     public HashMap<String, String> heroChannel = new HashMap<String, String>();
+
+    /**
+     *
+     */
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
+
+    /**
+     *
+     */
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
+
+    /**
+     *
+     */
     public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
+
+    /**
+     *
+     */
     public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     //          channel     command option     value
-    public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+
+    /**
+     *
+     */
+        public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+
+    /**
+     *
+     */
     public ArrayList<CommandSender> whoisSenders;
     private ChatTokenizer tokenizer;
+
+    /**
+     *
+     */
     public CommandQueueWatcher commandQueue;
+
+    /**
+     *
+     */
     public IRCMessageHandler ircMessageHandler;
+
+    /**
+     *
+     */
     public boolean channelCmdNotifyEnabled;
+
+    /**
+     *
+     */
     public String channelCmdNotifyMode;
+
+    /**
+     *
+     */
     public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
 
+    /**
+     *
+     * @param file
+     * @param plugin
+     */
     public PurpleBot(File file, PurpleIRC plugin) {
         bot = new PircBotX();
         bot.getListenerManager().addListener(new ActionListener(plugin, this));
@@ -129,18 +301,29 @@ public final class PurpleBot {
         asyncConnect(false);
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void reload(CommandSender sender) {
         config = new YamlConfiguration();
         loadConfig();
         asyncReConnect();
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void reloadConfig(CommandSender sender) {
         config = new YamlConfiguration();
         loadConfig();
         sender.sendMessage("[PurpleIRC] [" + botNick + "] IRC bot configuration reloaded.");
     }
 
+    /**
+     *
+     */
     public void asyncReConnect() {
         // We want to void blocking the main Bukkit thread        
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
@@ -164,6 +347,12 @@ public final class PurpleBot {
         }, 100L);
     }
 
+    /**
+     *
+     * @param channelName
+     * @param sender
+     * @param user
+     */
     public void mute(String channelName, CommandSender sender, String user) {
         if (muteList.get(channelName).contains(user)) {
             sender.sendMessage("User '" + user + "' is already muted.");
@@ -175,6 +364,12 @@ public final class PurpleBot {
 
     }
 
+    /**
+     *
+     * @param channelName
+     * @param sender
+     * @param user
+     */
     public void unMute(String channelName, CommandSender sender, String user) {
         if (muteList.get(channelName).contains(user)) {
             sender.sendMessage("User '" + user + "' is no longer muted.");
@@ -185,6 +380,10 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param fromCommand
+     */
     public void asyncConnect(boolean fromCommand) {
         // We want to void blocking the main Bukkit thread
         if (autoConnect || fromCommand) {
@@ -199,6 +398,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param fromCommand
+     */
     public void asyncConnect(CommandSender sender, boolean fromCommand) {
         // We want to void blocking the main Bukkit thread
         if (autoConnect || fromCommand) {
@@ -237,6 +441,10 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void saveConfig(CommandSender sender) {
         try {
             config.save(file);
@@ -247,6 +455,9 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     */
     public void saveConfig() {
         try {
             config.save(file);
@@ -255,6 +466,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param nick
+     */
     public void changeNick(CommandSender sender, String nick) {
         bot.setName(nick);
         bot.changeNick(nick);
@@ -263,6 +479,11 @@ public final class PurpleBot {
         saveConfig();
     }
 
+    /**
+     *
+     * @param sender
+     * @param name
+     */
     public void changeLogin(CommandSender sender, String name) {
         bot.setLogin(name);
         sender.sendMessage("Setting login to " + name);
@@ -462,6 +683,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param delay
+     */
     public void setIRCDelay(CommandSender sender, long delay) {
         bot.setMessageDelay(delay);
         config.set("message-delay", delay);
@@ -482,7 +708,13 @@ public final class PurpleBot {
     }
 
     // Called from normal game chat listener
-    public void gameChat(Player player, String message) {
+
+    /**
+     *
+     * @param player
+     * @param message
+     */
+        public void gameChat(Player player, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -560,7 +792,14 @@ public final class PurpleBot {
     }
 
     // Called from HeroChat listener
-    public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
+
+    /**
+     *
+     * @param chatter
+     * @param chatColor
+     * @param message
+     */
+        public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
             return;
@@ -584,7 +823,15 @@ public final class PurpleBot {
     }
 
     // Called from TitanChat listener
-    public void titanChat(Participant participant, String tChannel, String tColor, String message) {
+
+    /**
+     *
+     * @param participant
+     * @param tChannel
+     * @param tColor
+     * @param message
+     */
+        public void titanChat(Participant participant, String tChannel, String tColor, String message) {
         Player player = plugin.getServer().getPlayer(participant.getName());
         if (!bot.isConnected()) {
             return;
@@ -606,7 +853,14 @@ public final class PurpleBot {
     }
 
     // Called from /irc send
-    public void gameChat(Player player, String channelName, String message) {
+
+    /**
+     *
+     * @param player
+     * @param channelName
+     * @param message
+     */
+        public void gameChat(Player player, String channelName, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -616,7 +870,13 @@ public final class PurpleBot {
     }
 
     // Called from CleverEvent
-    public void cleverChat(String cleverBotName, String message) {
+
+    /**
+     *
+     * @param cleverBotName
+     * @param message
+     */
+        public void cleverChat(String cleverBotName, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -627,8 +887,14 @@ public final class PurpleBot {
         }
     }
 
-    // Called from ReportRTS event    
-    public void reportRTSNotify(Player player, HelpRequest request) {
+    // Called from ReportRTS event
+
+    /**
+     *
+     * @param player
+     * @param request
+     */
+        public void reportRTSNotify(Player player, HelpRequest request) {
         if (!bot.isConnected()) {
             return;
         }
@@ -639,6 +905,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param channelName
+     * @param message
+     */
     public void consoleChat(String channelName, String message) {
         if (!bot.isConnected()) {
             return;
@@ -648,6 +919,10 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public void consoleChat(String message) {
         if (!bot.isConnected()) {
             return;
@@ -659,6 +934,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param message
+     */
     public void gameBroadcast(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -670,6 +950,10 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public void consoleBroadcast(String message) {
         if (!bot.isConnected()) {
             return;
@@ -681,6 +965,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param message
+     */
     public void gameJoin(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -705,6 +994,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param message
+     */
     public void gameQuit(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -726,6 +1020,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param message
+     */
     public void gameAction(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -740,6 +1039,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param message
+     */
     public void gameDeath(Player player, String message) {
         if (!bot.isConnected()) {
             return;
@@ -754,10 +1058,22 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param channelName
+     * @param topic
+     * @param sender
+     */
     public void changeTopic(String channelName, String topic, CommandSender sender) {
         changeTopic(bot.getChannel(channelName), topic, sender);
     }
 
+    /**
+     *
+     * @param channel
+     * @param topic
+     * @param sender
+     */
     public void changeTopic(Channel channel, String topic, CommandSender sender) {
         String channelName = channel.getName();
         bot.setTopic(channel, topic);
@@ -766,10 +1082,21 @@ public final class PurpleBot {
         sender.sendMessage("IRC topic for " + channelName + " changed to \"" + topic + "\"");
     }
 
+    /**
+     *
+     * @param sender
+     * @param botServer
+     */
     public void setServer(CommandSender sender, String botServer) {
         setServer(sender, botServer, autoConnect);
     }
 
+    /**
+     *
+     * @param sender
+     * @param botServer
+     * @param autoConnect
+     */
     public void setServer(CommandSender sender, String botServer, Boolean autoConnect) {
         this.botServer = botServer;
         config.set("server", botServer);
@@ -779,6 +1106,12 @@ public final class PurpleBot {
         sender.sendMessage("IRC server changed to \"" + botServer + "\". (AutoConnect: " + autoConnect.toString() + ")");
     }
 
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
     public void addOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
             sender.sendMessage("User mask'" + userMask + "' is already in the ops list.");
@@ -790,6 +1123,12 @@ public final class PurpleBot {
         saveConfig();
     }
 
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
     public void removeOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
             sender.sendMessage("User mask'" + userMask + "' has been removed to the ops list.");
@@ -801,14 +1140,29 @@ public final class PurpleBot {
         saveConfig();
     }
 
+    /**
+     *
+     * @param channelName
+     * @param nick
+     */
     public void op(String channelName, String nick) {
         bot.op(bot.getChannel(channelName), bot.getUser(nick));
     }
 
+    /**
+     *
+     * @param channelName
+     * @param nick
+     */
     public void deOp(String channelName, String nick) {
         bot.deOp(bot.getChannel(channelName), bot.getUser(nick));
     }
 
+    /**
+     *
+     * @param channelName
+     * @param nick
+     */
     public void kick(String channelName, String nick) {
         bot.kick(bot.getChannel(channelName), bot.getUser(nick));
     }
@@ -821,6 +1175,12 @@ public final class PurpleBot {
         return s.replace("%2E", ".");
     }
 
+    /**
+     *
+     * @param channel
+     * @param topic
+     * @param setBy
+     */
     public void fixTopic(Channel channel, String topic, String setBy) {
         String channelName = channel.getName();
         if (setBy.equals(botNick)) {
@@ -841,11 +1201,18 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void quit(CommandSender sender) {
         sender.sendMessage("Disconnecting " + bot.getNick() + " from IRC server " + botServer);
         asyncQuit();
     }
 
+    /**
+     *
+     */
     public void quit() {
         if (quitMessage.isEmpty()) {
             bot.quitServer();
@@ -854,6 +1221,9 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     */
     public void asyncQuit() {
         // We want to void blocking the main Bukkit thread
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
@@ -868,6 +1238,10 @@ public final class PurpleBot {
         });
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void sendTopic(CommandSender sender) {
         for (String channelName : botChannels) {
             if (commandMap.containsKey(channelName)) {
@@ -880,6 +1254,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param nick
+     */
     public void sendUserWhois(CommandSender sender, String nick) {
         User user = bot.getUser(nick);
         if (user.getServer().isEmpty()) {
@@ -890,10 +1269,20 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param channel
+     */
     public void sendUserList(CommandSender sender, String channel) {
         sendUserList(sender, bot.getChannel(channel));
     }
 
+    /**
+     *
+     * @param sender
+     * @param channel
+     */
     public void sendUserList(CommandSender sender, Channel channel) {
         String channelName = channel.getName();
         if (!botChannels.contains(channelName)) {
@@ -934,12 +1323,20 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     */
     public void sendUserList(CommandSender sender) {
         for (String channelName : botChannels) {
             sendUserList(sender, bot.getChannel(channelName));
         }
     }
 
+    /**
+     *
+     * @param channel
+     */
     public void updateNickList(Channel channel) {
         // Build current list of names in channel
         ArrayList<String> users = new ArrayList<String>();
@@ -963,12 +1360,20 @@ public final class PurpleBot {
         channelNicks.put(channel.getName(), users);
     }
 
+    /**
+     *
+     * @param channel
+     */
     public void opFriends(Channel channel) {
         for (User user : bot.getUsers(channel)) {
             opFriends(channel, user);
         }
     }
 
+    /**
+     *
+     * @param channelName
+     */
     public void opFriends(String channelName) {
         Channel channel = bot.getChannel(channelName);
         for (User user : bot.getUsers(channel)) {
@@ -976,6 +1381,11 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param channel
+     * @param user
+     */
     public void opFriends(Channel channel, User user) {
         if (user.getNick().equals(botNick)) {
             return;
@@ -1010,7 +1420,15 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC
-    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
+
+    /**
+     *
+     * @param nick
+     * @param myChannel
+     * @param message
+     * @param override
+     */
+        public void broadcastChat(String nick, String myChannel, String message, boolean override) {
         plugin.logDebug("Check if irc-chat is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains("irc-chat") || override) {
             plugin.logDebug("Yup we can broadcast due to irc-chat enabled");
@@ -1027,7 +1445,15 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC to specific hero channel
-    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+
+    /**
+     *
+     * @param nick
+     * @param ircChannel
+     * @param target
+     * @param message
+     */
+        public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             bot.sendMessage(target, "No channel specified!");
@@ -1047,7 +1473,7 @@ public final class PurpleBot {
                             Herochat.getChannelManager(), hChannel);
                     Herochat.getChannelManager().getChannel(hChannel)
                             .sendRawMessage(t);
-                    bot.sendMessage(target, "Message sent to hero channel \"" + hChannel + "\": " + msg);
+                    bot.sendMessage(target, "Message sent to hero channel [" + hChannel + "]: " + msg);
                 } else {
                     bot.sendMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
                 }
@@ -1060,7 +1486,15 @@ public final class PurpleBot {
     }
 
     // Send chat messages from IRC to player
-    public void playerChat(String nick, String myChannel, String target, String message) {
+
+    /**
+     *
+     * @param nick
+     * @param myChannel
+     * @param target
+     * @param message
+     */
+        public void playerChat(String nick, String myChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             bot.sendMessage(target, "No player specified!");
@@ -1079,7 +1513,7 @@ public final class PurpleBot {
                     if (player.isOnline()) {
                         plugin.logDebug("Yup, " + pName + " is a valid player...");
                         String t = tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircPChat, msg);
-                        bot.sendMessage(target, "Message sent to player \"" + pName + "\": " + msg);
+                        bot.sendMessage(target, "Message sent to player [" + pName + "]: " + msg);
                         plugin.logDebug("Tokenized message: " + t);
                         player.sendMessage(t);
                     } else {
@@ -1097,7 +1531,14 @@ public final class PurpleBot {
     }
 
 // Broadcast action messages from IRC
-    public void broadcastAction(String nick, String myChannel, String message) {
+
+    /**
+     *
+     * @param nick
+     * @param myChannel
+     * @param message
+     */
+        public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
         }
@@ -1109,6 +1550,13 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param recipient
+     * @param kicker
+     * @param reason
+     * @param myChannel
+     */
     public void broadcastIRCKick(String recipient, String kicker, String reason, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-kick")) {
             plugin.getServer().broadcast(tokenizer.ircKickTokenizer(recipient, kicker, reason, myChannel, plugin.ircKick), "irc.message.kick");
@@ -1121,6 +1569,12 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param nick
+     * @param mode
+     * @param myChannel
+     */
     public void broadcastIRCMode(String nick, String mode, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-mode")) {
             plugin.getServer().broadcast(tokenizer.ircModeTokenizer(nick, mode,
@@ -1128,6 +1582,13 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param nick
+     * @param message
+     * @param notice
+     * @param myChannel
+     */
     public void broadcastIRCNotice(String nick, String message, String notice, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-notice")) {
             plugin.getServer().broadcast(tokenizer.ircNoticeTokenizer(nick,
@@ -1136,7 +1597,13 @@ public final class PurpleBot {
     }
 
     // Broadcast join messages from IRC
-    public void broadcastIRCJoin(String nick, String myChannel) {
+
+    /**
+     *
+     * @param nick
+     * @param myChannel
+     */
+        public void broadcastIRCJoin(String nick, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-join")) {
             plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircJoin), "irc.message.join");
         }
@@ -1149,7 +1616,14 @@ public final class PurpleBot {
     }
 
     // Broadcast topic changes from IRC
-    public void broadcastIRCTopic(String nick, String myChannel, String message) {
+
+    /**
+     *
+     * @param nick
+     * @param myChannel
+     * @param message
+     */
+        public void broadcastIRCTopic(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-topic")) {
             plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircTopic), "irc.message.topic");
         }
@@ -1162,17 +1636,32 @@ public final class PurpleBot {
     }
 
     // Broadcast disconnect messages from IRC
-    public void broadcastIRCDisconnect() {
+
+    /**
+     *
+     */
+        public void broadcastIRCDisconnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Disconnected from IRC server.", "irc.message.disconnect");
     }
 
     // Broadcast connect messages from IRC
-    public void broadcastIRCConnect() {
+
+    /**
+     *
+     */
+        public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
     }
 
     // Notify when players use commands
-    public void commandNotify(Player player, String cmd, String params) {
+
+    /**
+     *
+     * @param player
+     * @param cmd
+     * @param params
+     */
+        public void commandNotify(Player player, String cmd, String params) {
         String msg = tokenizer.gameCommandToIRCTokenizer(player, plugin.gameCommand, cmd, params);
         if (channelCmdNotifyMode.equalsIgnoreCase("msg")) {
             for (String recipient : channelCmdNotifyRecipients) {
@@ -1186,7 +1675,13 @@ public final class PurpleBot {
     }
 
     // Notify when player goes AFK
-    public void essentialsAFK(Player player, boolean afk) {
+
+    /**
+     *
+     * @param player
+     * @param afk
+     */
+        public void essentialsAFK(Player player, boolean afk) {
         if (!bot.isConnected()) {
             return;
         }
@@ -1207,16 +1702,32 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     *
+     * @param sender
+     * @param nick
+     * @param message
+     */
     public void msgPlayer(Player sender, String nick, String message) {
         String msg = tokenizer.gameChatToIRCTokenizer(sender, plugin.gamePChat, message);
         this.bot.sendMessage(nick, msg);
     }
 
+    /**
+     *
+     * @param nick
+     * @param message
+     */
     public void consoleMsgPlayer(String nick, String message) {
         String msg = tokenizer.gameChatToIRCTokenizer("console", plugin.consoleChat, message);
         this.bot.sendMessage(nick, msg);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     protected String getFactionName(Player player) {
         UPlayer uPlayer = UPlayer.get(player);
         Faction faction = uPlayer.getFaction();

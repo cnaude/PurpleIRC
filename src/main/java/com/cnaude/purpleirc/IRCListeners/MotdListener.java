@@ -18,11 +18,20 @@ public class MotdListener extends ListenerAdapter {
     PurpleIRC plugin;
     PurpleBot ircBot;
 
+    /**
+     *
+     * @param plugin
+     * @param ircBot
+     */
     public MotdListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
     
+    /**
+     *
+     * @param event
+     */
     @Override
     public void onMotd(MotdEvent event) {
         if (ircBot.showMOTD) {

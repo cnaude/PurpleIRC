@@ -20,10 +20,18 @@ public class TitanChatListener implements Listener {
 
     final PurpleIRC plugin;
 
+    /**
+     *
+     * @param plugin
+     */
     public TitanChatListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onChannelChatEvent(ChannelChatEvent event) {
         Participant participant = event.getSender();
