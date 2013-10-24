@@ -1027,7 +1027,12 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC to specific hero channel
-    public void broadcastHeroChat(String nick, String ircChannel, String message) {
+    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+        if (message == null) {
+            plugin.logDebug("H: NULL MESSAGE");
+            bot.sendMessage(target, "No channel specified!");
+            return;
+        }
         if (message.contains(" ")) {
             String hChannel;
             String msg;
@@ -1037,25 +1042,33 @@ public final class PurpleBot {
             if (enabledMessages.get(ircChannel).contains("irc-hero-chat")) {
                 plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
                 if (Herochat.getChannelManager().hasChannel(hChannel)) {
+                    String t = tokenizer.ircChatToHeroChatTokenizer(nick,
+                            ircChannel, plugin.ircHeroChat, msg,
+                            Herochat.getChannelManager(), hChannel);
                     Herochat.getChannelManager().getChannel(hChannel)
-                            .sendRawMessage(tokenizer.ircChatToHeroChatTokenizer(nick, ircChannel,
-                                            plugin.ircHeroChat, msg, Herochat.getChannelManager(), hChannel));
+                            .sendRawMessage(t);
+                    bot.sendMessage(target, "Message sent to hero channel \"" + hChannel + "\": " + msg);
                 } else {
-                    bot.sendMessage(nick, "Channel does not exist: " + hChannel);
+                    bot.sendMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
                 }
             } else {
                 plugin.logDebug("NOPE we can't broadcast due to irc-hero-chat disabled");
             }
         } else {
-            bot.sendMessage(nick, "No message specified.");
+            bot.sendMessage(target, "No message specified.");
         }
     }
 
     // Send chat messages from IRC to player
-    public void playerChat(String nick, String myChannel, String message) {
-        String pName;
-        String msg;
+    public void playerChat(String nick, String myChannel, String target, String message) {
+        if (message == null) {
+            plugin.logDebug("H: NULL MESSAGE");
+            bot.sendMessage(target, "No player specified!");
+            return;
+        }
         if (message.contains(" ")) {
+            String pName;
+            String msg;
             pName = message.split(" ", 2)[0];
             msg = message.split(" ", 2)[1];
             plugin.logDebug("Check if irc-pchat is enabled before broadcasting chat from IRC");
@@ -1063,22 +1076,27 @@ public final class PurpleBot {
                 plugin.logDebug("Yup we can broadcast due to irc-pchat enabled... Checking if " + pName + " is a valid player...");
                 Player player = plugin.getServer().getPlayer(pName);
                 if (player != null) {
-                    plugin.logDebug("Yup, " + pName + " is a valid player...");
-                    String t = tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircPChat, msg);
-                    plugin.logDebug("Tokenized message: " + t);
-                    player.sendMessage(t);
+                    if (player.isOnline()) {
+                        plugin.logDebug("Yup, " + pName + " is a valid player...");
+                        String t = tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircPChat, msg);
+                        bot.sendMessage(target, "Message sent to player \"" + pName + "\": " + msg);
+                        plugin.logDebug("Tokenized message: " + t);
+                        player.sendMessage(t);
+                    } else {
+                        bot.sendMessage(target, "Player is offline: " + pName);
+                    }
                 } else {
-                    bot.sendMessage(nick, "Invalid player: " + pName);
+                    bot.sendMessage(target, "Invalid player: " + pName);
                 }
             } else {
                 plugin.logDebug("NOPE we can't broadcast due to irc-pchat disabled");
             }
         } else {
-            bot.sendMessage(nick, "No message specified.");
+            bot.sendMessage(target, "No message specified.");
         }
     }
 
-    // Broadcast action messages from IRC
+// Broadcast action messages from IRC
     public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");

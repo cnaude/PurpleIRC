@@ -160,6 +160,13 @@ channels:
         game_command: '@ochat'   
         private_listen: true
         channel_listen: true
+      h:
+        modes: '*'
+        private: false
+        ctcp: false
+        game_command: '@hchat'   
+        private_listen: true
+        channel_listen: true  
       msg:
         modes: '*'
         private: true

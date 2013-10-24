@@ -332,6 +332,7 @@ public class PurpleIRC extends JavaPlugin {
                 out.write(buf, 0, len);
             }
             out.close();
+            in.close();
         } catch (IOException ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
         }

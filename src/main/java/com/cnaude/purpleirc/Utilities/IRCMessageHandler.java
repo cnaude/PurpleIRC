@@ -112,9 +112,9 @@ public class IRCMessageHandler {
                     } else if (gameCommand.equals("@ochat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, true);
                     } else if (gameCommand.equals("@hchat")) {                        
-                        ircBot.broadcastHeroChat(user.getNick(), myChannel, commandArgs);
+                        ircBot.broadcastHeroChat(user.getNick(), myChannel, target, commandArgs);
                     } else if (gameCommand.equals("@msg")) {
-                        ircBot.playerChat(user.getNick(), myChannel, commandArgs);
+                        ircBot.playerChat(user.getNick(), myChannel, target, commandArgs);
                     } else {
                         if (commandArgs == null) {
                             commandArgs = "";
