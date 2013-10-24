@@ -48,402 +48,61 @@ public class PurpleIRC extends JavaPlugin {
     private File pluginFolder;
     private File botsFolder;
     private File configFile;
-
-    /**
-     *
-     */
     public static long startTime;
-
-    /**
-     *
-     */
-    pub
     public String gameChat,
+            gameAction,
+            gameDeath,
+            gameQuit,
+            gameJoin,
+            gameKick,
+            gameSend,
+            gameCommand,
+            gamePChat,
+            mcMMOAdminChat,
+            mcMMOPartyChat,
+            consoleChat,
+            heroChat,
+            factionPublicChat,
+            factionAllyChat,
+            factionEnemyChat,
+            titanChat,
+            ircTitanChat,
+            ircHeroChat,
+            ircHeroAction,
+            ircHeroPart,
+            ircHeroKick,
+            ircHeroJoin,
+            ircHeroTopic,
+            ircChat,
+            ircPChat,
+            ircAction,
+            ircPart,
+            ircKick,
+            ircJoin,
+            ircTopic,
+            ircQuit,
+            ircMode,
+            ircNickChange,
+            ircNotice,
+            defaultPlayerSuffix,
+            defaultPlayerPrefix,
+            defaultPlayerGroup,
+            defaultGroupPrefix,
+            defaultPlayerWorld,
+            defaultGroupSuffix,
+            playerAFK,
+            playerNotAFK,
+            invalidIRCCommand,
+            noPermForIRCCommand;
 
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameAction,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameDeath,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameQuit,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameJoin,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameKick;
-
-    /**
-     *
-     */
-    pub
-    public String gameSend,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gameCommand,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    gamePChat;
-
-    /**
-     *
-     */
-    pub
-    public String mcMMOAdminChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    mcMMOPartyChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    consoleChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    heroChat;
-
-    /**
-     *
-     */
-    pub
-    public String factionPublicChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    factionAllyChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    factionEnemyChat;
-
-    /**
-     *
-     */
-    public String titanChat;
-
-    /**
-     *
-     */
-    public String ircTitanChat;
-
-    /**
-     *
-     */
-    pub
-    public String ircHeroChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircHeroAction,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircHeroPart,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircHeroKick,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircHeroJoin,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircHeroTopic;
-
-    /**
-     *
-     */
-    pub
-    public String ircChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircPChat,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircAction,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircPart,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircKick,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircJoin,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircTopic,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircQuit,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircNickChange,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircMode,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    ircNotice;
-
-    /**
-     *
-     */
-    pub
-    public String defaultPlayerSuffix,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    defaultPlayerPrefix,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    defaultPlayerGroup,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    defaultGroupPrefix,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    defaultPlayerWorld,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    defaultGroupSuffix;
-
-    /**
-     *
-     */
-    pub
-    public String playerAFK,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    playerNotAFK;
-
-    /**
-     *
-     */
-    pub
-    public String invalidIRCCommand,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    noPermForIRCCommand;
-
-    /**
-     *
-     */
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
 
-    /**
-     *
-     */
     public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
 
-    /**
-     *
-     */
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
-    /**
-     *
-     */
     public String customTabPrefix;
 
     /**
@@ -459,17 +118,14 @@ public class PurpleIRC extends JavaPlugin {
     /**
      *
      */
-    pub
     public String broadcastMessage,
-
-    /**
-     *
-     */
-
-    /**
-     *
-     */
-    broadcastConsoleMessage;
+            /**
+             *
+             */
+            /**
+             *
+             */
+            broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
@@ -704,7 +360,7 @@ public class PurpleIRC extends JavaPlugin {
         defaultGroupSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-suffix", ""));
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
         defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
-        
+
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
         // §
@@ -1117,7 +773,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
-    
+
     /**
      *
      * @param worldColor
@@ -1135,7 +791,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return color;
     }
-    
+
     /**
      *
      * @param player
@@ -1162,7 +818,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', suffix);
     }
-    
+
     /**
      *
      * @param worldName
