@@ -91,6 +91,8 @@ public class IRCMessageHandler {
                 if (privateCommand || privateMessage) {
                     target = user.getNick();
                 }
+                
+                plugin.logDebug("Target: " + target);
 
                 boolean modeOkay = false;
                 if (modes.equals("*")) {

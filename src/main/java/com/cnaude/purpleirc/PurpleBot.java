@@ -234,13 +234,13 @@ public final class PurpleBot {
     /**
      *
      */
-        public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+    public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
 
     /**
      *
      */
     public ArrayList<CommandSender> whoisSenders;
-    private ChatTokenizer tokenizer;
+    public ChatTokenizer tokenizer;
 
     /**
      *
@@ -708,13 +708,12 @@ public final class PurpleBot {
     }
 
     // Called from normal game chat listener
-
     /**
      *
      * @param player
      * @param message
      */
-        public void gameChat(Player player, String message) {
+    public void gameChat(Player player, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -792,14 +791,13 @@ public final class PurpleBot {
     }
 
     // Called from HeroChat listener
-
     /**
      *
      * @param chatter
      * @param chatColor
      * @param message
      */
-        public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
+    public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
             return;
@@ -823,7 +821,6 @@ public final class PurpleBot {
     }
 
     // Called from TitanChat listener
-
     /**
      *
      * @param participant
@@ -831,7 +828,7 @@ public final class PurpleBot {
      * @param tColor
      * @param message
      */
-        public void titanChat(Participant participant, String tChannel, String tColor, String message) {
+    public void titanChat(Participant participant, String tChannel, String tColor, String message) {
         Player player = plugin.getServer().getPlayer(participant.getName());
         if (!bot.isConnected()) {
             return;
@@ -853,14 +850,13 @@ public final class PurpleBot {
     }
 
     // Called from /irc send
-
     /**
      *
      * @param player
      * @param channelName
      * @param message
      */
-        public void gameChat(Player player, String channelName, String message) {
+    public void gameChat(Player player, String channelName, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -870,13 +866,12 @@ public final class PurpleBot {
     }
 
     // Called from CleverEvent
-
     /**
      *
      * @param cleverBotName
      * @param message
      */
-        public void cleverChat(String cleverBotName, String message) {
+    public void cleverChat(String cleverBotName, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -888,13 +883,12 @@ public final class PurpleBot {
     }
 
     // Called from ReportRTS event
-
     /**
      *
      * @param player
      * @param request
      */
-        public void reportRTSNotify(Player player, HelpRequest request) {
+    public void reportRTSNotify(Player player, HelpRequest request) {
         if (!bot.isConnected()) {
             return;
         }
@@ -1420,7 +1414,6 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC
-
     /**
      *
      * @param nick
@@ -1428,7 +1421,7 @@ public final class PurpleBot {
      * @param message
      * @param override
      */
-        public void broadcastChat(String nick, String myChannel, String message, boolean override) {
+    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
         plugin.logDebug("Check if irc-chat is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains("irc-chat") || override) {
             plugin.logDebug("Yup we can broadcast due to irc-chat enabled");
@@ -1445,7 +1438,6 @@ public final class PurpleBot {
     }
 
     // Broadcast chat messages from IRC to specific hero channel
-
     /**
      *
      * @param nick
@@ -1453,7 +1445,7 @@ public final class PurpleBot {
      * @param target
      * @param message
      */
-        public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             bot.sendMessage(target, "No channel specified!");
@@ -1471,9 +1463,12 @@ public final class PurpleBot {
                     String t = tokenizer.ircChatToHeroChatTokenizer(nick,
                             ircChannel, plugin.ircHeroChat, msg,
                             Herochat.getChannelManager(), hChannel);
+                    plugin.logDebug("Sending message to" + hChannel + ":" + t);
                     Herochat.getChannelManager().getChannel(hChannel)
                             .sendRawMessage(t);
-                    bot.sendMessage(target, "Message sent to hero channel [" + hChannel + "]: " + msg);
+                    if (!plugin.ircHChatResponse.isEmpty()) {
+                        bot.sendMessage(target, tokenizer.targetChatResponseTokenizer(hChannel, msg, plugin.ircHChatResponse));
+                    }
                 } else {
                     bot.sendMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
                 }
@@ -1486,7 +1481,6 @@ public final class PurpleBot {
     }
 
     // Send chat messages from IRC to player
-
     /**
      *
      * @param nick
@@ -1494,7 +1488,7 @@ public final class PurpleBot {
      * @param target
      * @param message
      */
-        public void playerChat(String nick, String myChannel, String target, String message) {
+    public void playerChat(String nick, String myChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             bot.sendMessage(target, "No player specified!");
@@ -1513,14 +1507,16 @@ public final class PurpleBot {
                     if (player.isOnline()) {
                         plugin.logDebug("Yup, " + pName + " is a valid player...");
                         String t = tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircPChat, msg);
-                        bot.sendMessage(target, "Message sent to player [" + pName + "]: " + msg);
+                        if (!plugin.ircPChatResponse.isEmpty()) {
+                            bot.sendMessage(target, tokenizer.targetChatResponseTokenizer(pName, msg, plugin.ircPChatResponse));
+                        }
                         plugin.logDebug("Tokenized message: " + t);
                         player.sendMessage(t);
                     } else {
                         bot.sendMessage(target, "Player is offline: " + pName);
                     }
                 } else {
-                    bot.sendMessage(target, "Invalid player: " + pName);
+                    bot.sendMessage(target, "Player not found (possibly offline): " + pName);
                 }
             } else {
                 plugin.logDebug("NOPE we can't broadcast due to irc-pchat disabled");
@@ -1531,14 +1527,13 @@ public final class PurpleBot {
     }
 
 // Broadcast action messages from IRC
-
     /**
      *
      * @param nick
      * @param myChannel
      * @param message
      */
-        public void broadcastAction(String nick, String myChannel, String message) {
+    public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
         }
@@ -1597,13 +1592,12 @@ public final class PurpleBot {
     }
 
     // Broadcast join messages from IRC
-
     /**
      *
      * @param nick
      * @param myChannel
      */
-        public void broadcastIRCJoin(String nick, String myChannel) {
+    public void broadcastIRCJoin(String nick, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-join")) {
             plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircJoin), "irc.message.join");
         }
@@ -1616,14 +1610,13 @@ public final class PurpleBot {
     }
 
     // Broadcast topic changes from IRC
-
     /**
      *
      * @param nick
      * @param myChannel
      * @param message
      */
-        public void broadcastIRCTopic(String nick, String myChannel, String message) {
+    public void broadcastIRCTopic(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-topic")) {
             plugin.getServer().broadcast(tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircTopic), "irc.message.topic");
         }
@@ -1636,32 +1629,29 @@ public final class PurpleBot {
     }
 
     // Broadcast disconnect messages from IRC
-
     /**
      *
      */
-        public void broadcastIRCDisconnect() {
+    public void broadcastIRCDisconnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Disconnected from IRC server.", "irc.message.disconnect");
     }
 
     // Broadcast connect messages from IRC
-
     /**
      *
      */
-        public void broadcastIRCConnect() {
+    public void broadcastIRCConnect() {
         plugin.getServer().broadcast("[" + bot.getNick() + "] Connected to IRC server.", "irc.message.connect");
     }
 
     // Notify when players use commands
-
     /**
      *
      * @param player
      * @param cmd
      * @param params
      */
-        public void commandNotify(Player player, String cmd, String params) {
+    public void commandNotify(Player player, String cmd, String params) {
         String msg = tokenizer.gameCommandToIRCTokenizer(player, plugin.gameCommand, cmd, params);
         if (channelCmdNotifyMode.equalsIgnoreCase("msg")) {
             for (String recipient : channelCmdNotifyRecipients) {
@@ -1675,13 +1665,12 @@ public final class PurpleBot {
     }
 
     // Notify when player goes AFK
-
     /**
      *
      * @param player
      * @param afk
      */
-        public void essentialsAFK(Player player, boolean afk) {
+    public void essentialsAFK(Player player, boolean afk) {
         if (!bot.isConnected()) {
             return;
         }

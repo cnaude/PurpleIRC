@@ -34,6 +34,8 @@ message-format:
   console-chat: '&0[&5Server&0] %MESSAGE%' 
   game-action: '&0[&2%WORLD%&0] ***%NAME%&0 %MESSAGE%'
   game-pchat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
+  # Notification to player when sending a private message to an IRC user
+  game-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   game-chat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
   game-death: '&0[&2%WORLD%&0] %MESSAGE%'  
   game-kick: '&0[&2%WORLD%&0] %MESSAGE%'
@@ -48,7 +50,11 @@ message-format:
   # Message templates for IRC to game messages
   irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
   irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
-  irc-pchat: '&dPrivate message: &f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
+  irc-pchat: '&dPrivate message: &f[&4IRC&f]<%NAME%&f> %MESSAGE%' 
+  # Notification to user when sending a private message to a player
+  irc-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
+  # Notification to user when sending a message to a specific hero channel
+  irc-hchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
   irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  

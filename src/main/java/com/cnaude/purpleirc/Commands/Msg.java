@@ -48,7 +48,7 @@ public class Msg {
                 myBots.addAll(plugin.ircBots.values());
                 nick = args[1];
             }
-            
+
             if (msgIdx == 3 && args.length <= 3) {
                 sender.sendMessage(usage);
                 return;
@@ -65,6 +65,9 @@ public class Msg {
                         ircBot.msgPlayer((Player) sender, nick, msg.substring(1));
                     } else {
                         ircBot.consoleMsgPlayer(nick, msg.substring(1));
+                    }
+                    if (!plugin.gamePChatResponse.isEmpty()) {
+                        sender.sendMessage(ircBot.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "Invalid IRC nick: " + ChatColor.WHITE + nick);

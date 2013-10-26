@@ -39,9 +39,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PurpleIRC extends JavaPlugin {
 
-    /**
-     *
-     */
     public static String LOG_HEADER;
     static final Logger log = Logger.getLogger("Minecraft");
     private final String sampleFileName = "SampleBot.yml";
@@ -58,6 +55,7 @@ public class PurpleIRC extends JavaPlugin {
             gameSend,
             gameCommand,
             gamePChat,
+            gamePChatResponse,
             mcMMOAdminChat,
             mcMMOPartyChat,
             consoleChat,
@@ -74,7 +72,9 @@ public class PurpleIRC extends JavaPlugin {
             ircHeroJoin,
             ircHeroTopic,
             ircChat,
+            ircHChatResponse,
             ircPChat,
+            ircPChatResponse,
             ircAction,
             ircPart,
             ircKick,
@@ -104,72 +104,26 @@ public class PurpleIRC extends JavaPlugin {
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
     public String customTabPrefix;
-
-    /**
-     *
-     */
     public String reportRTSSend;
-
-    /**
-     *
-     */
     public String cleverSend;
-
-    /**
-     *
-     */
     public String broadcastMessage,
-            /**
-             *
-             */
-            /**
-             *
-             */
             broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
-
-    /**
-     *
-     */
     public boolean exactNickMatch;
     Long ircConnCheckInterval;
     Long ircChannelCheckInterval;
     BotWatcher botWatcher;
     ChannelWatcher channelWatcher;
-
-    /**
-     *
-     */
     public ColorConverter colorConverter;
-
-    /**
-     *
-     */
     public RegexGlobber regexGlobber;
-
-    /**
-     *
-     */
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
-
-    /**
-     *
-     */
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
     VaultHook vaultHelpers;
     VanishHook vanishHook;
-
-    /**
-     *
-     */
     public FactionChatHook fcHook;
-
-    /**
-     *
-     */
     public NetPackets netPackets = null;
 
     /**
@@ -303,6 +257,7 @@ public class PurpleIRC extends JavaPlugin {
         gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
         gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
         gamePChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-pchat", ""));
+        gamePChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-pchat-response", ""));
         gameSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-send", ""));
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
@@ -332,8 +287,10 @@ public class PurpleIRC extends JavaPlugin {
         consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
 
         ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
-        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
+        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));        
+        ircHChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hchat-response", ""));
         ircPChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat", ""));
+        ircPChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat-response", ""));
         ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
         ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
         ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
@@ -363,7 +320,7 @@ public class PurpleIRC extends JavaPlugin {
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
-        // §
+
         customTabList = getConfig().getBoolean("custom-tab-list", false);
         customTabPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("custom-tab-prefix", "[IRC] "));
         logDebug("custom-tab-list: " + customTabList);
@@ -459,9 +416,10 @@ public class PurpleIRC extends JavaPlugin {
         File file = new File(pluginFolder + "/" + sampleFileName);
         try {
             InputStream in = PurpleIRC.class.getResourceAsStream("/" + sampleFileName);
+            logDebug("in: " + in.available());
             byte[] buf = new byte[1024];
             int len;
-            OutputStream out = new FileOutputStream(file);
+            OutputStream out = new FileOutputStream(file);                        
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
@@ -469,7 +427,7 @@ public class PurpleIRC extends JavaPlugin {
             in.close();
         } catch (IOException ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
-        }
+        } 
     }
 
     /**
