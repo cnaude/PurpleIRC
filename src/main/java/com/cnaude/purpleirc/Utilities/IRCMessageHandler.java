@@ -116,7 +116,7 @@ public class IRCMessageHandler {
 
                 if (modeOkay) {
                     if (gameCommand.equals("@list")) {
-                        this.sendMessage(bot, target, plugin.getMCPlayers(), ctcpResponse);
+                        this.sendMessage(bot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@uptime")) {
                         this.sendMessage(bot, target, plugin.getMCUptime(), ctcpResponse);
                     } else if (gameCommand.equals("@help")) {

@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Bukkit API Version, change if out dated -->
-        <bukkit.version>1.6.4-R0.1</bukkit.version>
+        <bukkit.version>1.6.4-R1.0</bukkit.version>
     </properties>
 
     <repositories>
@@ -252,10 +252,10 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>                                                                                             
-                                <copy file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../PurpleIRC/target/${project.name}.jar"/>
+                                <copy file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../${project.name}/target/${project.name}.jar"/>
                                 <exec dir="../${project.name}/target" executable="${scp}">
                                     <arg line="${arg} ${project.name}.jar cnaude@cn.revisited.us:minetest/plugins/"/>
-                                </exec>  
+                                </exec>                                  
                             </tasks>
                         </configuration>
                         <goals>

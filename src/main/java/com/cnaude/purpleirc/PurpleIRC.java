@@ -531,11 +531,20 @@ public class PurpleIRC extends JavaPlugin {
 
     /**
      *
+     * @param ircBot
+     * @param channelName
      * @return
      */
-    public String getMCPlayers() {
+    public String getMCPlayers(PurpleBot ircBot, String channelName) {
         ArrayList<String> playerList = new ArrayList<String>();
         for (Player player : getServer().getOnlinePlayers()) {
+            if (ircBot.hideListWhenVanished.get(channelName)) {
+                    logDebug("Checking if player " + player.getName() + " is vanished.");
+                    if (vanishHook.isVanished(player)) {
+                        logDebug("Not adding player to list command" + player.getName() + " due to being vanished.");
+                        continue;
+                    }
+                }
             playerList.add(player.getName());
         }
         Collections.sort(playerList, Collator.getInstance());

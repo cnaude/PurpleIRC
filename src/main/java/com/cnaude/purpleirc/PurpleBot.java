@@ -194,6 +194,11 @@ public final class PurpleBot {
      *
      */
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
+    
+    /**
+     *
+     */
+    public HashMap<String, Boolean> hideListWhenVanished = new HashMap<String, Boolean>();
 
     /**
      *
@@ -585,6 +590,9 @@ public final class PurpleBot {
 
                 hideJoinWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-join-when-vanished", true));
                 plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
+                
+                hideListWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-list-when-vanished", true));
+                plugin.logDebug("  HideListWhenVanished => " + hideListWhenVanished.get(channelName));
 
                 hideQuitWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-quit-when-vanished", true));
                 plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));
@@ -1466,6 +1474,7 @@ public final class PurpleBot {
                     plugin.logDebug("Sending message to" + hChannel + ":" + t);
                     Herochat.getChannelManager().getChannel(hChannel)
                             .sendRawMessage(t);
+                    plugin.logDebug("Channel format: " + Herochat.getChannelManager().getChannel(hChannel).getFormat());
                     if (!plugin.ircHChatResponse.isEmpty()) {
                         bot.sendMessage(target, tokenizer.targetChatResponseTokenizer(hChannel, msg, plugin.ircHChatResponse));
                     }
