@@ -89,6 +89,8 @@ message-format:
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   rts-notify: '[RTS] <%NAME%> %MESSAGE%'
+  irc-hero-channels:
+      Global: '&f[G]&f[IRC]%PLAYERPREFIX%%NAME%&f %MESSAGE%'
   broadcast-message: '[Broadcast] <%NAME%> %MESSAGE%'
   broadcast-console-message: '[Broadcast] <Console> %MESSAGE%'
   # Defaults below take effect when user joins IRC and matching player is offline

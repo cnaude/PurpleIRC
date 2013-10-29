@@ -121,6 +121,7 @@ public class PurpleIRC extends JavaPlugin {
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
+    public HashMap<String, String> ircHeroChannelMessages = new HashMap<String, String>();
     VaultHook vaultHelpers;
     VanishHook vanishHook;
     public FactionChatHook fcHook;
@@ -277,6 +278,13 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
         ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
 
+        for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
+            ircHeroChannelMessages.put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', getConfig()
+                            .getString("message-format.irc-hero-channels."
+                                    + hChannelName)));
+        }
+
         titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
         ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
 
@@ -287,7 +295,7 @@ public class PurpleIRC extends JavaPlugin {
         consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
 
         ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
-        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));        
+        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
         ircHChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hchat-response", ""));
         ircPChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat", ""));
         ircPChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat-response", ""));
@@ -419,7 +427,7 @@ public class PurpleIRC extends JavaPlugin {
             logDebug("in: " + in.available());
             byte[] buf = new byte[1024];
             int len;
-            OutputStream out = new FileOutputStream(file);                        
+            OutputStream out = new FileOutputStream(file);
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
@@ -427,7 +435,7 @@ public class PurpleIRC extends JavaPlugin {
             in.close();
         } catch (IOException ex) {
             logError("Problem creating sample bot: " + ex.getMessage());
-        } 
+        }
     }
 
     /**
@@ -539,17 +547,17 @@ public class PurpleIRC extends JavaPlugin {
         ArrayList<String> playerList = new ArrayList<String>();
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
-                    logDebug("Checking if player " + player.getName() + " is vanished.");
-                    if (vanishHook.isVanished(player)) {
-                        logDebug("Not adding player to list command" + player.getName() + " due to being vanished.");
-                        continue;
-                    }
+                logDebug("List: Checking if player " + player.getName() + " is vanished.");
+                if (vanishHook.isVanished(player)) {
+                    logDebug("Not adding player to list command" + player.getName() + " due to being vanished.");
+                    continue;
                 }
+            }
             playerList.add(player.getName());
         }
         Collections.sort(playerList, Collator.getInstance());
         String msg = "Players currently online("
-                + getServer().getOnlinePlayers().length
+                + playerList.size()
                 + "/" + getServer().getMaxPlayers() + "): "
                 + Joiner.on(", ").join(playerList);
         return msg;

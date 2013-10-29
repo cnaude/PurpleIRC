@@ -194,7 +194,7 @@ public final class PurpleBot {
      *
      */
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
-    
+
     /**
      *
      */
@@ -590,7 +590,7 @@ public final class PurpleBot {
 
                 hideJoinWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-join-when-vanished", true));
                 plugin.logDebug("  HideJoinWhenVanished => " + hideJoinWhenVanished.get(channelName));
-                
+
                 hideListWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-list-when-vanished", true));
                 plugin.logDebug("  HideListWhenVanished => " + hideListWhenVanished.get(channelName));
 
@@ -1468,8 +1468,14 @@ public final class PurpleBot {
             if (enabledMessages.get(ircChannel).contains("irc-hero-chat")) {
                 plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
                 if (Herochat.getChannelManager().hasChannel(hChannel)) {
+                    hChannel = Herochat.getChannelManager().getChannel(hChannel).getName();
+                    String template = plugin.ircHeroChat;
+                    if (plugin.ircHeroChannelMessages.containsKey(hChannel.toLowerCase())) {
+                        template = plugin.ircHeroChannelMessages.get(hChannel.toLowerCase());
+                    }
+                    plugin.logDebug("T: " + template);
                     String t = tokenizer.ircChatToHeroChatTokenizer(nick,
-                            ircChannel, plugin.ircHeroChat, msg,
+                            ircChannel, template, msg,
                             Herochat.getChannelManager(), hChannel);
                     plugin.logDebug("Sending message to" + hChannel + ":" + t);
                     Herochat.getChannelManager().getChannel(hChannel)
