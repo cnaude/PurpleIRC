@@ -477,7 +477,7 @@ public class ChatTokenizer {
     }
     
     public String targetChatResponseTokenizer(String target, String message, String template) {
-        return ChatColor.translateAlternateColorCodes('&',template
+        return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%TARGET%", target)
                 .replace("%MESSAGE%", message)
         );
