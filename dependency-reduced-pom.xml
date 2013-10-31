@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>1.11.0-SNAPSHOT7</version>
+  <version>1.11.1</version>
   <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -104,7 +104,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.6.4-R1.0</version>
+      <version>1.6.4-R2.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -228,7 +228,7 @@
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bukkit.version>1.6.4-R1.0</bukkit.version>
+    <bukkit.version>1.6.4-R2.0</bukkit.version>
   </properties>
 </project>
 
