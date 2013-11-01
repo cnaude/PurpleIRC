@@ -14,10 +14,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class Notice {
+public class Notice implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc notice ([bot]) [nick|channel] [message]";
+    private final String usage = "([bot]) [target] [message]";
+    private final String desc = "Send notice message to the user or channel.";
+    private final String name = "notice";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;     
 
     /**
      *
@@ -32,6 +35,7 @@ public class Notice {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
             plugin.logDebug("Dispatching notice command...");
@@ -48,7 +52,7 @@ public class Notice {
             }
 
             if (msgIdx == 3 && args.length <= 3) {
-                sender.sendMessage(usage);
+                sender.sendMessage(fullUsage);
                 return;
             }
 
@@ -61,7 +65,22 @@ public class Notice {
                 sender.sendMessage("Sent notice message \"" + msg.substring(1) + "\" to \"" + target + "\"");
             }
         } else {
-            sender.sendMessage(usage);
+            sender.sendMessage(fullUsage);
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

@@ -9,17 +9,18 @@ import com.cnaude.purpleirc.PurpleIRC;
 import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.pircbotx.User;
 
 /**
  *
  * @author cnaude
  */
-public class CTCP {
+public class CTCP implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc ctcp ([bot]) [nick|channel] [message]";
+    private final String usage = "([bot]) [target] [command]";
+    private final String desc = "Send CTCP command to the user or channel.";
+    private final String name = "ctcp";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;    
 
     /**
      *
@@ -34,6 +35,7 @@ public class CTCP {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
             plugin.logDebug("Dispatching ctcp command...");
@@ -50,7 +52,7 @@ public class CTCP {
             }
 
             if (msgIdx == 3 && args.length <= 3) {
-                sender.sendMessage(usage);
+                sender.sendMessage(fullUsage);
                 return;
             }
 
@@ -63,7 +65,22 @@ public class CTCP {
                 sender.sendMessage("Sent CTCP command \"" + msg.substring(1) + "\" to \"" + target + "\"");
             }
         } else {
-            sender.sendMessage(usage);
+            sender.sendMessage(fullUsage);
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

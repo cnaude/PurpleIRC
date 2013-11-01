@@ -12,9 +12,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class Say {
+public class Say implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
+    private final String usage = "[bot] [channel]";
+    private final String desc = "Make the bot speak.";
+    private final String name = "say";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -29,6 +33,7 @@ public class Say {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 4) {
             String bot = args[1];
@@ -45,5 +50,20 @@ public class Say {
         } else {
             sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc say [bot] [channel] [message]");
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

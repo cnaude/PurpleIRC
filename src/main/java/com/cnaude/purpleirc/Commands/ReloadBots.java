@@ -13,9 +13,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class ReloadBots {
+public class ReloadBots implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
+    private final String usage = "([bot])";
+    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String name = "connect";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -30,6 +34,7 @@ public class ReloadBots {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 1) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
@@ -38,5 +43,20 @@ public class ReloadBots {
         } else {
             sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbots");
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

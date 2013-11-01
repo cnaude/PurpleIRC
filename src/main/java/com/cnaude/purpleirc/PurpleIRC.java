@@ -126,6 +126,7 @@ public class PurpleIRC extends JavaPlugin {
     VanishHook vanishHook;
     public FactionChatHook fcHook;
     public NetPackets netPackets = null;
+    public CommandHandlers commandHandlers;
 
     /**
      *
@@ -180,7 +181,8 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("ReportRTS not detected.");
         }
-        getCommand("irc").setExecutor(new CommandHandlers(this));
+        commandHandlers = new CommandHandlers(this);
+        getCommand("irc").setExecutor(commandHandlers);
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();

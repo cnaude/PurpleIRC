@@ -16,9 +16,13 @@ import org.bukkit.entity.Player;
  *
  * @author cnaude
  */
-public class Send {
+public class Send implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
+    private final String usage = "([bot])";
+    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String name = "connect";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -33,6 +37,7 @@ public class Send {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 2) {
             int msgIdx = 1;
@@ -74,5 +79,20 @@ public class Send {
         } else {
             sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc send ([bot]) ([channel]) [message]");
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

@@ -15,9 +15,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class SendRaw {
+public class SendRaw implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
+    private final String usage = "([bot])";
+    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String name = "connect";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -32,6 +36,7 @@ public class SendRaw {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 2) {
             int msgIdx = 1;
@@ -53,5 +58,20 @@ public class SendRaw {
         } else {
             sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc sendraw ([bot]) [message]");
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

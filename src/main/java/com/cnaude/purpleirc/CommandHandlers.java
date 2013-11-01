@@ -1,8 +1,6 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Commands.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +12,7 @@ import org.bukkit.command.CommandSender;
  */
 public class CommandHandlers implements CommandExecutor {
 
-    HashMap<String, Object> commands = new HashMap<String, Object>();
+    public HashMap<String, IRCCommandInterface> commands = new HashMap<String, IRCCommandInterface>();
     private final PurpleIRC plugin;
 
     /**
@@ -58,6 +56,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("server", new Server(plugin));
         commands.put("topic", new Topic(plugin));
         commands.put("whois", new Whois(plugin));
+        commands.put("help", new Help(plugin));
     }
 
     /**
@@ -77,19 +76,11 @@ public class CommandHandlers implements CommandExecutor {
                     sender.sendMessage(plugin.noPermission);
                     return true;
                 }
-                try {
-                    Method method = commands.get(subCmd).getClass().getMethod("dispatch", CommandSender.class, String[].class);
-                    method.invoke(commands.get(subCmd), sender, args);
-                    return true;
-                } catch (NoSuchMethodException ex) {
-                    plugin.logError(ex.getMessage());
-                } catch (IllegalAccessException ex) {
-                    plugin.logError(ex.getMessage());
-                } catch (InvocationTargetException ex) {
-                    plugin.logError(ex.getMessage());
-                }
+                commands.get(subCmd).dispatch(sender, args);
             }
+        } else {
+            commands.get("help").dispatch(sender, args);
         }
-        return false;
+        return true;
     }
 }

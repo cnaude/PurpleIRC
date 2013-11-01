@@ -14,9 +14,13 @@ import org.pircbotx.Channel;
  *
  * @author cnaude
  */
-public class ListBots {
+public class ListBots implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
+    private final String usage = "([bot])";
+    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String name = "connect";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -31,6 +35,7 @@ public class ListBots {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                 + ChatColor.DARK_PURPLE + "   ]-----");
@@ -40,5 +45,20 @@ public class ListBots {
                 sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
             }
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

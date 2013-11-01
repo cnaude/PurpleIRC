@@ -12,9 +12,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class AddOp {
-
+public class AddOp implements IRCCommandInterface {
+    
     private final PurpleIRC plugin;
+    private final String usage = "[bot] [channel] [user mask]";
+    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String name = "addop";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
@@ -29,6 +33,7 @@ public class AddOp {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 4) {
             String bot = args[1];
@@ -41,7 +46,22 @@ public class AddOp {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc addop [bot] [channel] [user mask]");
+            sender.sendMessage(fullUsage);
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }

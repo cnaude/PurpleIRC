@@ -12,9 +12,13 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class MessageDelay {
+public class MessageDelay implements IRCCommandInterface  {
 
     private final PurpleIRC plugin;
+    private final String usage = "[bot] [milliseconds]";
+    private final String desc = "Change IRC message delay.";
+    private final String name = "messagedelay";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
@@ -29,6 +33,7 @@ public class MessageDelay {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 3) {
             if (args[2].matches("\\d+")) {
@@ -40,7 +45,7 @@ public class MessageDelay {
                     sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
                 }
             } else {
-                sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
+                sender.sendMessage(fullUsage);
             }
         } else if (args.length == 2) {
             String bot = args[1];
@@ -51,7 +56,22 @@ public class MessageDelay {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc messagedelay [bot] ([milliseconds])");
+            sender.sendMessage(fullUsage);
         }
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public String desc() {
+        return desc;
+    }
+
+    @Override
+    public String usage() {
+        return usage;
     }
 }
