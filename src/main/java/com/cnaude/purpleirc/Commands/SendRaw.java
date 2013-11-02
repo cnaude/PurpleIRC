@@ -18,9 +18,9 @@ import org.bukkit.command.CommandSender;
 public class SendRaw implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "([bot]) [message]";
+    private final String desc = "Send raw message to the IRC server.";
+    private final String name = "sendraw";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -56,7 +56,7 @@ public class SendRaw implements IRCCommandInterface {
                 ircBot.bot.sendRawLineNow(msg.substring(1));                
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc sendraw ([bot]) [message]");
+            sender.sendMessage(fullUsage);
         }
     }
 

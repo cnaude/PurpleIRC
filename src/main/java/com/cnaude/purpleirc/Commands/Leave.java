@@ -16,9 +16,9 @@ import org.pircbotx.Channel;
 public class Leave implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel]";
+    private final String desc = "Leave IRC channel.";
+    private final String name = "leave";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -58,7 +58,7 @@ public class Leave implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc leave [bot] [channel]");
+            sender.sendMessage(fullUsage);
         }
     }
 

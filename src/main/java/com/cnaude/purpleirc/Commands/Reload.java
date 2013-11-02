@@ -5,7 +5,6 @@
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -15,10 +14,9 @@ import org.bukkit.command.CommandSender;
 public class Reload implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String usage = "";
+    private final String desc = "Reload the plugin.";
+    private final String name = "reload";
 
     /**
      *

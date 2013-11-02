@@ -16,9 +16,9 @@ import org.bukkit.command.CommandSender;
 public class Topic implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel] ([topic])";
+    private final String desc = "Set, or get, IRC channel top";
+    private final String name = "topic";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -39,7 +39,7 @@ public class Topic implements IRCCommandInterface {
         if (args.length == 1) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
                 ircBot.sendTopic(sender);
-                sender.sendMessage(ChatColor.WHITE + "To change the topic: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
+                sender.sendMessage(fullUsage);
             }
         } else if (args.length >= 4) {
             String bot = args[1];
@@ -54,7 +54,7 @@ public class Topic implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc topic [bot] [channel] [topic]");
+            sender.sendMessage(fullUsage);
         }
     }
 

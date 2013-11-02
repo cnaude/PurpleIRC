@@ -19,9 +19,9 @@ import org.pircbotx.User;
 public class Msg implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "([bot]) [user] [message]";
+    private final String desc = "Send a private message to an IRC user.";
+    private final String name = "msg";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;     
 
     /**
@@ -54,7 +54,7 @@ public class Msg implements IRCCommandInterface {
             }
 
             if (msgIdx == 3 && args.length <= 3) {
-                sender.sendMessage(usage);
+                sender.sendMessage(fullUsage);
                 return;
             }
 
@@ -78,7 +78,7 @@ public class Msg implements IRCCommandInterface {
                 }
             }
         } else {
-            sender.sendMessage(usage);
+            sender.sendMessage(fullUsage);
         }
     }
 

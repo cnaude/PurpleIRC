@@ -19,9 +19,9 @@ import org.bukkit.entity.Player;
 public class Send implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "([bot]) ([channel]) [message]";
+    private final String desc = "Send a message to an IRC channel.";
+    private final String name = "send";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -77,7 +77,7 @@ public class Send implements IRCCommandInterface {
 
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc send ([bot]) ([channel]) [message]");
+            sender.sendMessage(fullUsage);
         }
     }
 

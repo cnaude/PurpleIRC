@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class DeOp implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel] [user(s)]";
+    private final String desc = "De-op IRC user(s).";
+    private final String name = "deop";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -48,7 +48,7 @@ public class DeOp implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc deop [bot] [channel] [user(s)]");
+            sender.sendMessage(fullUsage);
         }
     }
 

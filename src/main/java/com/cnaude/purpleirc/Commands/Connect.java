@@ -17,7 +17,7 @@ public class Connect implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
     private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
+    private final String desc = "Connect to configured IRC server.";
     private final String name = "connect";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 

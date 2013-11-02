@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class Debug implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "([t|f])";
+    private final String desc = "Enable or disable debug mode.";
+    private final String name = "debug";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
     
     /**
@@ -34,8 +34,7 @@ public class Debug implements IRCCommandInterface {
      * @param args
      */
     @Override
-    public void dispatch(CommandSender sender, String[] args) {
-        String usage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc debug ([t|f])";
+    public void dispatch(CommandSender sender, String[] args) {        
         if (args.length == 1) {
             sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is currently "
                     + ChatColor.WHITE + plugin.debugMode());
@@ -50,7 +49,7 @@ public class Debug implements IRCCommandInterface {
             sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is now "
                     + ChatColor.WHITE + plugin.debugMode());
         } else {
-            sender.sendMessage(usage);
+            sender.sendMessage(fullUsage);
         }
     }
 

@@ -17,8 +17,8 @@ public class Disconnect implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
     private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String desc = "Disconnect from IRC server.";
+    private final String name = "disconnect";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -48,7 +48,7 @@ public class Disconnect implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc disconnect ([bot])");
+            sender.sendMessage(fullUsage);
         }
     }
 

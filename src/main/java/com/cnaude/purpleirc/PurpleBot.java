@@ -1274,10 +1274,15 @@ public final class PurpleBot {
     /**
      *
      * @param sender
-     * @param channel
+     * @param channelName
      */
-    public void sendUserList(CommandSender sender, String channel) {
-        sendUserList(sender, bot.getChannel(channel));
+    public void sendUserList(CommandSender sender, String channelName) {
+        if (!botChannels.contains(channelName)) {
+            sender.sendMessage(ChatColor.RED + "Invalid channel: " 
+                    + ChatColor.WHITE + channelName);
+            return;
+        }
+        sendUserList(sender, bot.getChannel(channelName));        
     }
 
     /**
@@ -1288,7 +1293,8 @@ public final class PurpleBot {
     public void sendUserList(CommandSender sender, Channel channel) {
         String channelName = channel.getName();
         if (!botChannels.contains(channelName)) {
-            sender.sendMessage(ChatColor.RED + "Invalid channel: " + channelName);
+            sender.sendMessage(ChatColor.RED + "Invalid channel: " 
+                    +ChatColor.WHITE + channelName);
             return;
         }
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName

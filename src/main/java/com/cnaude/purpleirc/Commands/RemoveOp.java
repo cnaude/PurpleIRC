@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class RemoveOp implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel] [user mask]";
+    private final String desc = "Remove a user mask from the auto-op list.";
+    private final String name = "removeop";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -45,7 +45,7 @@ public class RemoveOp implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc removeop [bot] [channel] [user mask]");
+            sender.sendMessage(fullUsage);
         }
     }
 

@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class ReloadBot implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot]";
+    private final String desc = "Reload a bot.";
+    private final String name = "reloadbot";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -43,7 +43,7 @@ public class ReloadBot implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc reloadbot [bot]");
+            sender.sendMessage(fullUsage);
         }
     }
 

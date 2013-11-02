@@ -17,8 +17,8 @@ public class Save implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
     private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String desc = "Save bot configuration.";
+    private final String name = "save";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -48,7 +48,7 @@ public class Save implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc save ([bot])");
+            sender.sendMessage(fullUsage);
         }
     }
 

@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 public class Say implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[bot] [channel]";
+    private final String usage = "[bot] [channel] [message]";
     private final String desc = "Make the bot speak.";
     private final String name = "say";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
@@ -48,7 +48,7 @@ public class Say implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc say [bot] [channel] [message]");
+            sender.sendMessage(fullUsage);
         }
     }
 

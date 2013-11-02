@@ -17,10 +17,9 @@ import org.pircbotx.Channel;
 public class ListBots implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String usage = "";
+    private final String desc = "List IRC bots.";
+    private final String name = "listbots";    
 
     /**
      *

@@ -6,7 +6,6 @@ package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -16,10 +15,10 @@ import org.bukkit.command.CommandSender;
 public class List implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String usage = "([bot]) ([channel])";
+    private final String desc = "List users in IRC channel.";
+    private final String name = "list";
+    //private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *

@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class Login implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [login]";
+    private final String desc = "Change bot's IRC login name.";
+    private final String name = "login";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -33,6 +33,7 @@ public class Login implements IRCCommandInterface {
      * @param sender
      * @param args
      */
+    @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 3) {
             String bot = args[1];
@@ -43,7 +44,7 @@ public class Login implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc login [bot] [login]");
+            sender.sendMessage(fullUsage);
         }
     }
 

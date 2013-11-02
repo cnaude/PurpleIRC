@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class Mute implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel] [user(s)]";
+    private final String desc = "Mute IRC user(s) in a channel.";
+    private final String name = "mute";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -47,7 +47,7 @@ public class Mute implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc mute [bot] [channel] [user(s)]");
+            sender.sendMessage(fullUsage);
         }
     }
 

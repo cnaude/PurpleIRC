@@ -15,9 +15,9 @@ import org.bukkit.command.CommandSender;
 public class Server implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Add IRC users to IRC auto op list.";
-    private final String name = "connect";
+    private final String usage = "[bot] [server] ([true|false])";
+    private final String desc = "Set IRC server hostname. Optionally set autoconnect.";
+    private final String name = "server";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
@@ -48,7 +48,7 @@ public class Server implements IRCCommandInterface {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
         } else {
-            sender.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc server [bot] [server] ([true|false])");
+            sender.sendMessage(fullUsage);
         }
     }
 
