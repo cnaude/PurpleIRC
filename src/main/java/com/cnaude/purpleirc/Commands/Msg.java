@@ -22,7 +22,7 @@ public class Msg implements IRCCommandInterface {
     private final String usage = "([bot]) [user] [message]";
     private final String desc = "Send a private message to an IRC user.";
     private final String name = "msg";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;     
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
@@ -59,41 +59,37 @@ public class Msg implements IRCCommandInterface {
             }
 
             for (PurpleBot ircBot : myBots) {
-                User user = ircBot.bot.getUser(nick);
-                if (user != null) {
-                    String msg = "";
-                    for (int i = msgIdx; i < args.length; i++) {
-                        msg = msg + " " + args[i];
-                    }
-                    if (sender instanceof Player) {
-                        ircBot.msgPlayer((Player) sender, nick, msg.substring(1));
-                    } else {
-                        ircBot.consoleMsgPlayer(nick, msg.substring(1));
-                    }
-                    if (!plugin.gamePChatResponse.isEmpty()) {
-                        sender.sendMessage(ircBot.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
-                    }
+                String msg = "";
+                for (int i = msgIdx; i < args.length; i++) {
+                    msg = msg + " " + args[i];
+                }
+                if (sender instanceof Player) {
+                    ircBot.msgPlayer((Player) sender, nick, msg.substring(1));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Invalid IRC nick: " + ChatColor.WHITE + nick);
+                    ircBot.consoleMsgPlayer(nick, msg.substring(1));
+                }
+                if (!plugin.gamePChatResponse.isEmpty()) {
+                    sender.sendMessage(ircBot.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
                 }
             }
-        } else {
-            sender.sendMessage(fullUsage);
         }
+        else {
+            sender.sendMessage(fullUsage);
     }
+}
 
-    @Override
-    public String name() {
+@Override
+        public String name() {
         return name;
     }
 
     @Override
-    public String desc() {
+        public String desc() {
         return desc;
     }
 
     @Override
-    public String usage() {
+        public String usage() {
         return usage;
     }
 }

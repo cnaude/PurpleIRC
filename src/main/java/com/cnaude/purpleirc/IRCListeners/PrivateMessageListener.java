@@ -18,7 +18,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 public class PrivateMessageListener extends ListenerAdapter {
 
     PurpleIRC plugin;
-    PurpleBot ircBot;    
+    PurpleBot ircBot;
 
     /**
      *
@@ -37,19 +37,21 @@ public class PrivateMessageListener extends ListenerAdapter {
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) {
 
-        String message = event.getMessage();        
+        String message = event.getMessage();
         User user = event.getUser();
         Channel channel;
 
         plugin.logDebug("Private message caught <" + user.getNick() + ">: " + message);
 
         for (String myChannel : ircBot.botChannels) {
-            channel = ircBot.bot.getChannel(myChannel);
-            if (user.getChannels().contains(channel)) {
-                ircBot.ircMessageHandler.processMessage(user, channel, message, true);
-                return;
+            channel = ircBot.getChannel(myChannel);
+            if (channel != null) {
+                if (user.getChannels().contains(channel)) {
+                    ircBot.ircMessageHandler.processMessage(user, channel, message, true);
+                    return;
+                }
+                plugin.logDebug("Private message from " + user.getNick() + " ignored because not in valid channel.");
             }
-            plugin.logDebug("Private message from " + user.getNick() + " ignored because not in valid channel.");
         }
     }
 }

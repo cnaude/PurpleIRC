@@ -43,7 +43,7 @@ public class Say implements IRCCommandInterface {
                 for (int i = 3; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
-                plugin.ircBots.get(bot).bot.sendMessage(channelName, msg.substring(1));
+                plugin.ircBots.get(bot).bot.sendIRC().message(channelName, msg.substring(1));
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

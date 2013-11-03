@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>1.12.0-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
   <description>CraftBukkit plugin that bridges IRC and game chat via an IRC bot.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -46,6 +46,8 @@
               <artifactSet>
                 <includes>
                   <include>org.pircbotx</include>
+                  <include>org.slf4j</include>
+                  <include>org.slf4j.impl</include>
                 </includes>
               </artifactSet>
               <filters />
@@ -53,6 +55,14 @@
                 <relocation>
                   <pattern>org.pircbotx</pattern>
                   <shadedPattern>org.pircbotx</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.slf4j</pattern>
+                  <shadedPattern>org.slf4j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.slf4j.impl</pattern>
+                  <shadedPattern>org.slf4j.impl</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

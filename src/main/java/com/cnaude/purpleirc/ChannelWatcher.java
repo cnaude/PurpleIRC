@@ -10,7 +10,7 @@ import org.pircbotx.Channel;
 public class ChannelWatcher {
     
     private final PurpleIRC plugin;
-    private int taskID;
+    private final int taskID;
     
     /**
      *
@@ -25,7 +25,7 @@ public class ChannelWatcher {
                 //plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (plugin.botConnected.get(ircBot.botNick)) {
-                        for (Channel channel : ircBot.bot.getChannels()) {
+                        for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
                             ircBot.updateNickList(channel);
                         }
                     }

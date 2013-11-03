@@ -19,7 +19,7 @@ public class Leave implements IRCCommandInterface {
     private final String usage = "[bot] [channel]";
     private final String desc = "Leave IRC channel.";
     private final String name = "leave";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
@@ -46,14 +46,14 @@ public class Leave implements IRCCommandInterface {
                 }
             }
             if (plugin.ircBots.containsKey(bot)) {
-                Channel channel = plugin.ircBots.get(bot).bot.getChannel(channelName);
-                if (channel != null) {
-                    // #channel, reason
-                    plugin.ircBots.get(bot).bot.partChannel(channel, reason);
-                    sender.sendMessage(ChatColor.WHITE + "Leaving " + channelName + "...");
-                } else {
-                    sender.sendMessage(ChatColor.WHITE + "Channel " + channelName + " is not valid.");
+                for (Channel channel : plugin.ircBots.get(bot).bot.getUserBot().getChannels()) {
+                    if (channel.getName().equals(channelName)) {
+                        channel.send().part(reason);
+                        sender.sendMessage(ChatColor.WHITE + "Leaving " + channelName + "...");
+                        return;
+                    }
                 }
+                sender.sendMessage(ChatColor.WHITE + "Channel " + channelName + " is not valid.");
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

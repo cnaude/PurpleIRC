@@ -16,7 +16,7 @@ public class Help implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
     private final String usage = "([command])";
-    private final String desc = "Display all available commands.";
+    private final String desc = "Display help on a specific command or list all commands.";
     private final String name = "help";
 
     /**

@@ -38,12 +38,12 @@ public class KickListener extends ListenerAdapter {
     public void onKick(KickEvent event) {
         Channel channel = event.getChannel();
         User recipient = event.getRecipient();
-        User kicker = event.getSource();
+        User user = event.getUser();
 
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        ircBot.broadcastIRCKick(recipient.getNick(), kicker.getNick(), event.getReason(), channel.getName());
+        ircBot.broadcastIRCKick(recipient.getNick(), user.getNick(), event.getReason(), channel.getName());
         if (plugin.netPackets != null) {
             plugin.netPackets.remFromTabList(recipient.getNick());
         }

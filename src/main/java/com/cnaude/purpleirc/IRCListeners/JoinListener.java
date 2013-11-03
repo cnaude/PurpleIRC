@@ -39,7 +39,6 @@ public class JoinListener extends ListenerAdapter {
     public void onJoin(JoinEvent event) {
         Channel channel = event.getChannel();
         User user = event.getUser();
-        PircBotX bot = event.getBot();
 
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
@@ -49,7 +48,7 @@ public class JoinListener extends ListenerAdapter {
         if (user.getNick().equals(ircBot.botNick)) {
             plugin.logDebug("Setting channel modes: " + channel.getName() + " => "
                     + ircBot.channelModes.get(channel.getName()));
-            bot.setMode(channel, ircBot.channelModes.get(channel.getName()));
+            channel.send().setMode(ircBot.channelModes.get(channel.getName()));
             ircBot.fixTopic(channel, channel.getTopic(), channel.getTopicSetter());
             ircBot.updateNickList(channel);
         }

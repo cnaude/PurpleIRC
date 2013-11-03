@@ -18,7 +18,7 @@ import org.pircbotx.PircBotX;
  */
 public class IRCCommandSender implements CommandSender {
     private final PircBotX bot;
-    private String target;
+    private final String target;
     private final PurpleIRC plugin;
     private final boolean ctcpResponse;
     
@@ -29,9 +29,9 @@ public class IRCCommandSender implements CommandSender {
     @Override
     public void sendMessage(String message) {     
         if (ctcpResponse) {
-            bot.sendCTCPResponse(target, plugin.colorConverter.gameColorsToIrc(message));                
+            bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));                
         } else {
-            bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
+            bot.sendIRC().message(target, plugin.colorConverter.gameColorsToIrc(message));                
         }
     }
     
@@ -43,9 +43,9 @@ public class IRCCommandSender implements CommandSender {
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
             if (ctcpResponse) {
-                bot.sendCTCPResponse(target, plugin.colorConverter.gameColorsToIrc(message));  
+                bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));  
             } else {
-                bot.sendMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
+                bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));  
             }
         }
     }

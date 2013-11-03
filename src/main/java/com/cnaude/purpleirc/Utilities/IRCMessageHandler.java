@@ -116,11 +116,11 @@ public class IRCMessageHandler {
 
                 if (modeOkay) {
                     if (gameCommand.equals("@list")) {
-                        this.sendMessage(bot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
+                        sendMessage(bot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@uptime")) {
-                        this.sendMessage(bot, target, plugin.getMCUptime(), ctcpResponse);
+                        sendMessage(bot, target, plugin.getMCUptime(), ctcpResponse);
                     } else if (gameCommand.equals("@help")) {
-                        this.sendMessage(bot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
+                        sendMessage(bot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@chat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
                     } else if (gameCommand.equals("@ochat")) {
@@ -144,14 +144,14 @@ public class IRCMessageHandler {
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
-                    bot.sendMessage(target, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
+                    bot.sendIRC().message(target, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             } else {
                 if (privateMessage) {
                     target = user.getNick();
                 }
-                bot.sendMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                bot.sendIRC().message(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
                         .replace("%CMDPREFIX%", ircBot.commandPrefix));
             }
         } else {
@@ -170,9 +170,11 @@ public class IRCMessageHandler {
 
     private void sendMessage(PircBotX bot, String target, String message, boolean ctcpResponse) {
         if (ctcpResponse) {
-            bot.sendCTCPResponse(target, message);
+            plugin.logDebug("Sending message to target: " + target + " => " + message);
+            bot.sendIRC().ctcpResponse(target, message);
         } else {
-            bot.sendMessage(target, message);
+            plugin.logDebug("Sending message to target: " + target + " => " + message);
+            bot.sendIRC().message(target, message);
         }
     }
 

@@ -15,7 +15,6 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import java.lang.reflect.InvocationTargetException;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -25,7 +24,7 @@ import org.pircbotx.User;
 public class NetPackets {
 
     PurpleIRC plugin;
-    private ProtocolManager protocolManager;
+    private final ProtocolManager protocolManager;
     private PacketConstructor playerListConstructor;
 
     /**
@@ -82,7 +81,9 @@ public class NetPackets {
                     protocolManager.sendServerPacket(reciever, packet);
                 }
             }
-        } catch (Exception e) {
+        } catch (FieldAccessException e) {
+            plugin.logError(e.getMessage());
+        } catch (InvocationTargetException e) {
             plugin.logError(e.getMessage());
         }
     }
@@ -91,33 +92,17 @@ public class NetPackets {
      *
      * @param player
      * @param ircBot
-     * @param channelName
+     * @param channel
      */
-    public void updateTabList(Player player, final PurpleBot ircBot, final String channelName) {
-        final PircBotX bot = ircBot.bot;
+    public void updateTabList(Player player, final PurpleBot ircBot, final Channel channel) {
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
-                Channel channel = bot.getChannel(channelName);
-                for (User user : bot.getUsers(channel)) {
+                for (User user : channel.getUsers()) {
                     String nick = user.getNick();
-                    /*
-                     if (user.isIrcop()) {
-                     nick = "~" + nick;
-                     } else if (user.getChannelsSuperOpIn().contains(channel)) {
-                     nick = "&" + nick;
-                     } else if (user.getChannelsOpIn().contains(channel)) {
-                     nick = "@" + nick;
-                     } else if (user.getChannelsHalfOpIn().contains(channel)) {
-                     nick = "%" + nick;
-                     } else if (user.getChannelsVoiceIn().contains(channel)) {
-                     nick = "+" + nick;
-                     }
-                     if (nick.equals(bot.getNick())) {
-                     nick = ChatColor.DARK_PURPLE + nick;
-                     }*/
                     addToTabList(nick, ircBot, channel);
                 }
+
             }
         }, 5);
 
@@ -128,10 +113,12 @@ public class NetPackets {
      * @param player
      */
     public void updateTabList(Player player) {
-        if (player.hasPermission("irc.tablist")) {            
+        if (player.hasPermission("irc.tablist")) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                for (String channelName : ircBot.botChannels) {
-                    updateTabList(player, ircBot, channelName);
+                for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
+                    if (ircBot.botChannels.contains(channel.getName())) {
+                        updateTabList(player, ircBot, channel);
+                    }
                 }
             }
         }

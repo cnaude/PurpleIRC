@@ -36,30 +36,31 @@ public class NickChangeListener extends ListenerAdapter {
      */
     @Override
     public void onNickChange(NickChangeEvent event) {
-        PircBotX bot = event.getBot();
         String newNick = event.getNewNick();
         String oldNick = event.getOldNick();
         plugin.logDebug("OLD: " + oldNick);
         plugin.logDebug("NEW: " + newNick);
 
         for (String channelName : ircBot.channelNicks.keySet()) {
-            Channel channel = bot.getChannel(channelName);
-            if (ircBot.enabledMessages.get(channelName).contains("irc-nickchange")) {
-                plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircNickChange
-                        .replace("%NEWNICK%", newNick)
-                        .replace("%OLDNICK%", oldNick)
-                        .replace("%CHANNEL%", channelName)), "irc.message.nickchange");
+            Channel channel = ircBot.getChannel(channelName);
+            if (channel != null) {
+                if (ircBot.enabledMessages.get(channelName).contains("irc-nickchange")) {
+                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircNickChange
+                            .replace("%NEWNICK%", newNick)
+                            .replace("%OLDNICK%", oldNick)
+                            .replace("%CHANNEL%", channelName)), "irc.message.nickchange");
+                }
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.remFromTabList(oldNick);
+                    plugin.netPackets.addToTabList(newNick, ircBot, channel);
+                }
+                if (ircBot.channelNicks.get(channelName).contains(oldNick)) {
+                    ircBot.channelNicks.get(channelName).remove(oldNick);
+                    plugin.logDebug("Removing " + oldNick);
+                }
+                ircBot.channelNicks.get(channelName).add(newNick);
+                plugin.logDebug("Adding " + newNick);
             }
-            if (plugin.netPackets != null) {
-                plugin.netPackets.remFromTabList(oldNick);
-                plugin.netPackets.addToTabList(newNick, ircBot, channel);
-            }
-            if (ircBot.channelNicks.get(channelName).contains(oldNick)) {
-                ircBot.channelNicks.get(channelName).remove(oldNick);
-                plugin.logDebug("Removing " + oldNick);
-            }
-            ircBot.channelNicks.get(channelName).add(newNick);
-            plugin.logDebug("Adding " + newNick);
         }
 
     }

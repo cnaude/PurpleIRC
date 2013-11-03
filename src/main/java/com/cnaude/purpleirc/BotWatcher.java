@@ -24,11 +24,11 @@ public class BotWatcher {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (!plugin.botConnected.get(ircBot.botNick)) {
                         if (ircBot.autoConnect) {
-                            plugin.logInfo("IRC bot '" + ircBot.bot.getName() + "' is not connected! Attempting reconnect...");
+                            plugin.logInfo("IRC bot '" + ircBot.bot.getNick() + "' is not connected! Attempting reconnect...");
                             ircBot.asyncReConnect();
                         }
                     } else {
-                        plugin.logDebug("IRC bot '" + ircBot.bot.getName() + "' is connected!");
+                        plugin.logDebug("IRC bot '" + ircBot.bot.getNick() + "' is connected!");
                     }
                 }
             }

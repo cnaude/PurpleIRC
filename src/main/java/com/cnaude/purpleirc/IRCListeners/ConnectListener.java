@@ -40,11 +40,11 @@ public class ConnectListener extends ListenerAdapter {
         plugin.botConnected.put(ircBot.botNick, true);
         if (!ircBot.botIdentPassword.isEmpty()) {
             plugin.logInfo("Sending ident password to NickServ...");
-            bot.identify(ircBot.botIdentPassword);
+            bot.sendIRC().identify(ircBot.botIdentPassword);
         }
         if (ircBot.sendRawMessageOnConnect) {
-            plugin.logInfo("Sending raw message to server");
-            ircBot.bot.sendRawLine(ircBot.rawMessage);
+            plugin.logInfo("Sending raw message to server");            
+            event.respond(ircBot.rawMessage);            
         }
         for (String channelName : ircBot.botChannels) {
             if (ircBot.channelAutoJoin.containsKey(channelName)) {
@@ -53,9 +53,9 @@ public class ConnectListener extends ListenerAdapter {
                     plugin.logInfo(connectMessage);
                     ircBot.broadcastIRCConnect();
                     if (ircBot.channelPassword.get(channelName).isEmpty()) {
-                        bot.joinChannel(channelName);
+                        bot.sendIRC().joinChannel(channelName);
                     } else {
-                        bot.joinChannel(channelName, ircBot.channelPassword.get(channelName));
+                        bot.sendIRC().joinChannel(channelName, ircBot.channelPassword.get(channelName));
                     }
                 } else {
                     plugin.logInfo("Not automatically joining IRC channel " + channelName);

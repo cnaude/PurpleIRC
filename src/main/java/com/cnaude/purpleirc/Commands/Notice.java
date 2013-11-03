@@ -61,7 +61,7 @@ public class Notice implements IRCCommandInterface {
                 for (int i = msgIdx; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
-                ircBot.bot.sendNotice(target, msg.substring(1));
+                ircBot.bot.sendIRC().notice(target, msg.substring(1));
                 sender.sendMessage("Sent notice message \"" + msg.substring(1) + "\" to \"" + target + "\"");
             }
         } else {
