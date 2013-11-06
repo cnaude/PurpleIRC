@@ -43,6 +43,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("login",            new Login(plugin));
         commands.put("messagedelay",     new MessageDelay(plugin));
         commands.put("msg",              new Msg(plugin));
+        commands.put("motd",             new Motd(plugin));
         commands.put("mute",             new Mute(plugin));
         commands.put("nick",             new Nick(plugin));
         commands.put("notice",           new Notice(plugin));

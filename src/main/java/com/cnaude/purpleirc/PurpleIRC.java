@@ -28,7 +28,6 @@ import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import java.io.IOException;
-import java.net.BindException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
