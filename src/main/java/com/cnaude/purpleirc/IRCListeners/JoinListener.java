@@ -7,7 +7,6 @@ package com.cnaude.purpleirc.IRCListeners;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -46,6 +45,7 @@ public class JoinListener extends ListenerAdapter {
         ircBot.broadcastIRCJoin(user.getNick(), channel.getName());
         ircBot.opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
+            plugin.logInfo("Joining channel: " + channel.getName());
             plugin.logDebug("Setting channel modes: " + channel.getName() + " => "
                     + ircBot.channelModes.get(channel.getName()));
             channel.send().setMode(ircBot.channelModes.get(channel.getName()));

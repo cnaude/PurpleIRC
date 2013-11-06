@@ -159,9 +159,9 @@
         </dependency>
         
         <dependency>
-                <groupId>org.pircbotx</groupId>
-                <artifactId>pircbotx</artifactId>
-                <version>2.0</version>
+            <groupId>org.pircbotx</groupId>
+            <artifactId>pircbotx</artifactId>
+            <version>2.0</version>
         </dependency>
            
         <!-- Testing only -->
@@ -182,6 +182,11 @@
             <groupId>org.dotGaming.Endain.CleverNotch</groupId>
             <artifactId>CleverNotch</artifactId>
             <version>1.1-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.5</version>
         </dependency>
     </dependencies>
 

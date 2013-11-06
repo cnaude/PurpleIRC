@@ -38,12 +38,12 @@ public class Connect implements IRCCommandInterface {
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 1) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.asyncConnect(sender, true);
+                ircBot.asyncConnect(sender);
             }
         } else if (args.length == 2) {
             String bot = args[1];
             if (plugin.ircBots.containsKey(bot)) {
-                plugin.ircBots.get(bot).asyncConnect(sender, true);
+                plugin.ircBots.get(bot).asyncConnect(sender);
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

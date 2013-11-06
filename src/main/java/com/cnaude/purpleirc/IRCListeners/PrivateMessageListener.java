@@ -47,7 +47,7 @@ public class PrivateMessageListener extends ListenerAdapter {
             channel = ircBot.getChannel(myChannel);
             if (channel != null) {
                 if (user.getChannels().contains(channel)) {
-                    ircBot.ircMessageHandler.processMessage(user, channel, message, true);
+                    plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, true);
                     return;
                 }
                 plugin.logDebug("Private message from " + user.getNick() + " ignored because not in valid channel.");

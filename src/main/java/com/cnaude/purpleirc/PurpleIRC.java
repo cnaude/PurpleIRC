@@ -25,13 +25,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
+import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import java.io.IOException;
+import java.net.BindException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.pircbotx.IdentServer;
 
 /**
  *
@@ -46,6 +49,7 @@ public class PurpleIRC extends JavaPlugin {
     private File botsFolder;
     private File configFile;
     public static long startTime;
+    public boolean identServerEnabled;
     public String gameChat,
             gameAction,
             gameDeath,
@@ -115,7 +119,6 @@ public class PurpleIRC extends JavaPlugin {
     public boolean exactNickMatch;
     Long ircConnCheckInterval;
     Long ircChannelCheckInterval;
-    BotWatcher botWatcher;
     ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
@@ -127,6 +130,9 @@ public class PurpleIRC extends JavaPlugin {
     public FactionChatHook fcHook;
     public NetPackets netPackets = null;
     public CommandHandlers commandHandlers;
+    private BotWatcher botWatcher;
+    public IRCMessageHandler ircMessageHandler;
+    public CommandQueueWatcher commandQueue;
 
     /**
      *
@@ -141,6 +147,14 @@ public class PurpleIRC extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
+        if (identServerEnabled) {
+            logInfo("Starting Ident Server");
+            try {
+                IdentServer.startServer();
+            } catch (Exception ex) {
+                logError(ex.getMessage());
+            }
+        }
         getServer().getPluginManager().registerEvents(new GameListeners(this), this);
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
@@ -186,7 +200,6 @@ public class PurpleIRC extends JavaPlugin {
         regexGlobber = new RegexGlobber();
         loadBots();
         createSampleBot();
-        botWatcher = new BotWatcher(this);
         channelWatcher = new ChannelWatcher(this);
         setupVault();
         if (customTabList) {
@@ -200,6 +213,9 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             netPackets = null;
         }
+        botWatcher = new BotWatcher(this);
+        ircMessageHandler = new IRCMessageHandler(this);
+        commandQueue = new CommandQueueWatcher(this);
     }
 
     /**
@@ -207,11 +223,11 @@ public class PurpleIRC extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        if (botWatcher != null) {
-            botWatcher.cancel();
-        }
         if (channelWatcher != null) {
             channelWatcher.cancel();
+        }
+        if (botWatcher != null) {
+            botWatcher.cancel();
         }
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
@@ -219,9 +235,18 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Disconnecting IRC bots.");
             for (Entry entry : ircBots.entrySet()) {
                 PurpleBot ircBot = (PurpleBot) entry.getValue();
-                ircBot.commandQueue.cancel();
+                commandQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
+            }
+            ircBots.clear();
+        }
+        if (identServerEnabled) {
+            logInfo("Stopping Ident Server");
+            try {
+                IdentServer.stopServer();
+            } catch (IOException ex) {
+                logError(ex.getMessage());
             }
         }
     }
@@ -250,6 +275,7 @@ public class PurpleIRC extends JavaPlugin {
 
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
+        identServerEnabled = getConfig().getBoolean("enable-ident-server");
         logDebug("Debug enabled");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
@@ -344,11 +370,13 @@ public class PurpleIRC extends JavaPlugin {
                 if (file.getName().endsWith(".yml")) {
                     logInfo("Loading bot file: " + file.getName());
                     PurpleBot pircBot = new PurpleBot(file, this);
+                    ircBots.put(pircBot.botNick, pircBot);
+                    logInfo("Loaded bot: " + pircBot.botNick);
                 }
             }
         }
     }
-
+    
     /**
      *
      * @return

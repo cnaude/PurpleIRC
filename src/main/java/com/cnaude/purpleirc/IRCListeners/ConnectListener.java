@@ -37,30 +37,15 @@ public class ConnectListener extends ListenerAdapter {
     public void onConnect(ConnectEvent event) {
         PircBotX bot = event.getBot();
 
-        plugin.botConnected.put(ircBot.botNick, true);
+        plugin.botConnected.put(bot.getNick(), true);
         if (!ircBot.botIdentPassword.isEmpty()) {
             plugin.logInfo("Sending ident password to NickServ...");
             bot.sendIRC().identify(ircBot.botIdentPassword);
         }
         if (ircBot.sendRawMessageOnConnect) {
-            plugin.logInfo("Sending raw message to server");            
-            event.respond(ircBot.rawMessage);            
+            plugin.logInfo("Sending raw message to server");   
+            bot.sendRaw().rawLineNow(ircBot.rawMessage);           
         }
-        for (String channelName : ircBot.botChannels) {
-            if (ircBot.channelAutoJoin.containsKey(channelName)) {
-                if (ircBot.channelAutoJoin.get(channelName)) {
-                    String connectMessage = "Automatically joining IRC channel " + channelName;
-                    plugin.logInfo(connectMessage);
-                    ircBot.broadcastIRCConnect();
-                    if (ircBot.channelPassword.get(channelName).isEmpty()) {
-                        bot.sendIRC().joinChannel(channelName);
-                    } else {
-                        bot.sendIRC().joinChannel(channelName, ircBot.channelPassword.get(channelName));
-                    }
-                } else {
-                    plugin.logInfo("Not automatically joining IRC channel " + channelName);
-                }
-            }
-        }
+        ircBot.broadcastIRCConnect();
     }
 }

@@ -8,7 +8,6 @@ import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**

@@ -24,29 +24,25 @@ import org.pircbotx.User;
  */
 public class IRCMessageHandler {
 
-    PurpleIRC plugin;
-    PurpleBot ircBot;
-    PircBotX bot;
+    PurpleIRC plugin;      
 
     /**
      *
      * @param plugin
-     * @param ircBot
      */
-    public IRCMessageHandler(PurpleIRC plugin, PurpleBot ircBot) {
-        this.plugin = plugin;
-        this.ircBot = ircBot;
-        this.bot = this.ircBot.bot;
+    public IRCMessageHandler(PurpleIRC plugin) {
+        this.plugin = plugin;            
     }
 
     /**
      *
+     * @param ircBot
      * @param user
      * @param channel
      * @param message
      * @param privateMessage
      */
-    public void processMessage(User user, Channel channel, String message, boolean privateMessage) {
+    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {
         if (!ircBot.botChannels.contains(channel.getName())) {
             plugin.logDebug("Invalid IRC channel (" + channel.getName() + "). Ignoring message from " + user.getNick() + ": " + message);
             return;
@@ -116,11 +112,11 @@ public class IRCMessageHandler {
 
                 if (modeOkay) {
                     if (gameCommand.equals("@list")) {
-                        sendMessage(bot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
+                        sendMessage(ircBot.bot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@uptime")) {
-                        sendMessage(bot, target, plugin.getMCUptime(), ctcpResponse);
+                        sendMessage(ircBot.bot, target, plugin.getMCUptime(), ctcpResponse);
                     } else if (gameCommand.equals("@help")) {
-                        sendMessage(bot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
+                        sendMessage(ircBot.bot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@chat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
                     } else if (gameCommand.equals("@ochat")) {
@@ -140,18 +136,18 @@ public class IRCMessageHandler {
                             gameCommand = gameCommand.replace("%NAME%", user.getNick());
                         }
                         plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
-                        ircBot.commandQueue.add(new IRCCommand(new IRCCommandSender(bot, target, plugin, ctcpResponse), gameCommand.trim()));
+                        plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot.bot, target, plugin, ctcpResponse), gameCommand.trim()));
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
-                    bot.sendIRC().message(target, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
+                    ircBot.bot.sendIRC().message(target, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             } else {
                 if (privateMessage) {
                     target = user.getNick();
                 }
-                bot.sendIRC().message(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                ircBot.bot.sendIRC().message(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
                         .replace("%CMDPREFIX%", ircBot.commandPrefix));
             }
         } else {

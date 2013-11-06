@@ -46,6 +46,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.output.OutputIRC;
 
 /**
@@ -55,7 +56,6 @@ import org.pircbotx.output.OutputIRC;
 public final class PurpleBot {
 
     public PircBotX bot;
-    public Configuration configuration;
 
     public final PurpleIRC plugin;
     private final File file;
@@ -97,11 +97,11 @@ public final class PurpleBot {
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
     public ArrayList<CommandSender> whoisSenders;
     public ChatTokenizer tokenizer;
-    public CommandQueueWatcher commandQueue;
-    public IRCMessageHandler ircMessageHandler;
     public boolean channelCmdNotifyEnabled;
     public String channelCmdNotifyMode;
     public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
+    private String connectMessage;
+    private final ArrayList<ListenerAdapter> ircListeners = new ArrayList<ListenerAdapter>();
 
     /**
      *
@@ -110,55 +110,78 @@ public final class PurpleBot {
      */
     public PurpleBot(File file, PurpleIRC plugin) {
         this.plugin = plugin;
-        this.file = file;
-        commandQueue = new CommandQueueWatcher(this.plugin);
+        this.file = file;        
         whoisSenders = new ArrayList<CommandSender>();
         config = new YamlConfiguration();
         loadConfig();
-        buildBot();
-        asyncConnect(false);
-        ircMessageHandler = new IRCMessageHandler(this.plugin, this);
+        addListeners();
+        buildBot();        
         plugin.botConnected.put(botNick, bot.isConnected());
     }
 
-    private void buildBot() {
-        configuration = new Configuration.Builder()
+    public void buildBot() {
+        Configuration.Builder configBuilder = new Configuration.Builder()
                 .setName(botNick)
                 .setLogin(botLogin)
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
-                .addListener(new ActionListener(plugin, this))
-                .addListener(new ConnectListener(plugin, this))
-                .addListener(new DisconnectListener(plugin, this))
-                .addListener(new JoinListener(plugin, this))
-                .addListener(new KickListener(plugin, this))
-                .addListener(new MessageListener(plugin, this))
-                .addListener(new ModeListener(plugin, this))
-                .addListener(new NickChangeListener(plugin, this))
-                .addListener(new NoticeListener(plugin, this))
-                .addListener(new PartListener(plugin, this))
-                .addListener(new PrivateMessageListener(plugin, this))
-                .addListener(new QuitListener(plugin, this))
-                .addListener(new TopicListener(plugin, this))
-                .addListener(new VersionListener(plugin))
-                .addListener(new WhoisListener(plugin, this))
-                .addListener(new MotdListener(plugin, this))
-                .addListener(new ServerResponseListener(plugin, this))
-                .setServerHostname(botServer)
                 .setMessageDelay(chatDelay)
-                .setServer(botServer, botServerPort, botServerPass)
-                .buildConfiguration();
+                //.setAutoReconnect(autoConnect) // Why doesn't this work?
+                .setServer(botServer, botServerPort, botServerPass);
+        addAutoJoinChannels(configBuilder);
+        for (ListenerAdapter ll : ircListeners) {
+            configBuilder.addListener(ll);
+        }
+        Configuration configuration = configBuilder.buildConfiguration();
         bot = new PircBotX(configuration);
+        if (autoConnect) {
+            asyncConnect();
+        } else {
+            plugin.logInfo("Not automatically connecting. To connect: /irc connect " + bot.getNick());
+        }
     }
 
-    /**
-     *
-     * @param sender
-     */
+    private void addListeners() {
+        ircListeners.add(new ActionListener(plugin, this));
+        ircListeners.add(new ConnectListener(plugin, this));
+        ircListeners.add(new DisconnectListener(plugin, this));
+        ircListeners.add(new JoinListener(plugin, this));
+        ircListeners.add(new KickListener(plugin, this));
+        ircListeners.add(new MessageListener(plugin, this));
+        ircListeners.add(new ModeListener(plugin, this));
+        ircListeners.add(new NickChangeListener(plugin, this));
+        ircListeners.add(new NoticeListener(plugin, this));
+        ircListeners.add(new PartListener(plugin, this));
+        ircListeners.add(new PrivateMessageListener(plugin, this));
+        ircListeners.add(new QuitListener(plugin, this));
+        ircListeners.add(new TopicListener(plugin, this));
+        ircListeners.add(new VersionListener(plugin));
+        ircListeners.add(new WhoisListener(plugin, this));
+        ircListeners.add(new MotdListener(plugin, this));
+        ircListeners.add(new ServerResponseListener(plugin, this));
+    }
+
+    private void addAutoJoinChannels(Configuration.Builder configBuilder) {
+        for (String channelName : botChannels) {
+            if (channelAutoJoin.containsKey(channelName)) {
+                if (channelAutoJoin.get(channelName)) {
+                    if (channelPassword.get(channelName).isEmpty()) {
+                        configBuilder.addAutoJoinChannel(channelName);
+                    } else {
+                        configBuilder.addAutoJoinChannel(channelName, channelPassword.get(channelName));
+                    }
+                }
+            }
+        }
+    }
+
     public void reload(CommandSender sender) {
-        config = new YamlConfiguration();
-        loadConfig();
-        asyncReConnect();
+        sender.sendMessage("Reloading bot: " + botNick);
+        reload();
+    }
+
+    public void reload() {
+        asyncQuit(true);
     }
 
     /**
@@ -169,35 +192,6 @@ public final class PurpleBot {
         config = new YamlConfiguration();
         loadConfig();
         sender.sendMessage("[PurpleIRC] [" + botNick + "] IRC bot configuration reloaded.");
-    }
-
-    /**
-     *
-     */
-    public void asyncReConnect() {
-        // We want to void blocking the main Bukkit thread        
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    plugin.logInfo("Disconnecting from " + botServer);
-                    bot.startBot();
-                } catch (IOException ex) {
-                    plugin.logError("Problem reconnecting to " + botServer + " => "
-                            + " [Error: " + ex.getMessage() + "]");
-                } catch (IrcException ex) {
-                    plugin.logError("Problem reconnecting to " + botServer + " => "
-                            + " [Error: " + ex.getMessage() + "]");
-                }
-            }
-        });
-        // We don't want to reconnect too fast. IRC servers don't like that.
-        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                connect();
-            }
-        }, 100L);
     }
 
     /**
@@ -214,7 +208,6 @@ public final class PurpleBot {
             muteList.get(channelName).add(user);
             saveConfig();
         }
-
     }
 
     /**
@@ -233,55 +226,30 @@ public final class PurpleBot {
         }
     }
 
-    /**
-     *
-     * @param fromCommand
-     */
-    public void asyncConnect(boolean fromCommand) {
-        // We want to void blocking the main Bukkit thread
-        if (autoConnect || fromCommand) {
-            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    connect();
-                }
-            });
-        } else {
-            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + configuration.getName());
-        }
+    public void asyncConnect(CommandSender sender) {
+        sender.sendMessage(connectMessage);
+        asyncConnect();
     }
 
     /**
      *
-     * @param sender
-     * @param fromCommand
      */
-    public void asyncConnect(CommandSender sender, boolean fromCommand) {
-        // We want to void blocking the main Bukkit thread
-        if (autoConnect || fromCommand) {
-            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    connect();
+    public void asyncConnect() {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    plugin.logInfo(connectMessage);
+                    bot.startBot();
+                } catch (IOException ex) {
+                    plugin.logError("Problem connecting to " + botServer + " => "
+                            + " as " + botNick + " [Error: " + ex.getMessage() + "]");
+                } catch (IrcException ex) {
+                    plugin.logError("Problem connecting to " + botServer + " => "
+                            + " as " + botNick + " [Error: " + ex.getMessage() + "]");
                 }
-            });
-        } else {
-            this.plugin.logInfo("Autoconnect is disabled. Not connecting to " + botServer + " as " + configuration.getName());
-        }
-    }
-
-    private void connect() {
-        try {
-            plugin.logInfo("Connecting to \"" + botServer + ":" + botServerPort + "\" as \"" + configuration.getName()
-                    + "\" [SSL: " + ssl + "]" + " [TrustAllCerts: " + trustAllCerts + "]");
-            bot.startBot();
-        } catch (IOException ex) {
-            plugin.logError("Problem connecting to " + botServer + " => "
-                    + " as " + configuration.getName() + " [Error: " + ex.getMessage() + "]");
-        } catch (IrcException ex) {
-            plugin.logError("Problem connecting to " + botServer + " => "
-                    + " as " + configuration.getName() + " [Error: " + ex.getMessage() + "]");
-        }
+            }
+        });
     }
 
     /**
@@ -291,7 +259,7 @@ public final class PurpleBot {
     public void saveConfig(CommandSender sender) {
         try {
             config.save(file);
-            sender.sendMessage("Saving bot \"" + botNick + "\" to " + file.getName());
+            sender.sendMessage("[PurpleIRC] Saving bot \"" + botNick + "\" to " + file.getName());
         } catch (IOException ex) {
             plugin.logError(ex.getMessage());
             sender.sendMessage(ex.getMessage());
@@ -354,8 +322,6 @@ public final class PurpleBot {
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
-            plugin.ircBots.put(botNick, this);
-            
             botServer = config.getString("server", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
@@ -519,6 +485,10 @@ public final class PurpleBot {
                 if (map.isEmpty()) {
                     plugin.logInfo("No commands specified!");
                 }
+                connectMessage = "Connecting to \"" + botServer + ":"
+                        + botServerPort + "\" as \"" + botNick
+                        + "\" [SSL: " + ssl + "]" + " [TrustAllCerts: "
+                        + trustAllCerts + "]";
             }
         } catch (IOException ex) {
             plugin.logError(ex.getMessage());
@@ -1085,35 +1055,38 @@ public final class PurpleBot {
      */
     public void quit(CommandSender sender) {
         sender.sendMessage("Disconnecting " + bot.getNick() + " from IRC server " + botServer);
-        asyncQuit();
+        asyncQuit(false);
     }
 
     /**
      *
+     * @param reload
      */
-    public void quit() {
-        if (quitMessage.isEmpty()) {
-            bot.sendIRC().quitServer();
-        } else {
-            bot.sendIRC().quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
-        }
-    }
-
-    /**
-     *
-     */
-    public void asyncQuit() {
+    public void asyncQuit(final Boolean reload) {
         // We want to void blocking the main Bukkit thread
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if (quitMessage.isEmpty()) {
-                    bot.sendIRC().quitServer();
-                } else {
-                    bot.sendIRC().quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
+                //bot.stopBotReconnect();
+                if (bot.isConnected()) {
+                    if (quitMessage.isEmpty()) {
+                        bot.sendIRC().quitServer();
+                    } else {
+                        bot.sendIRC().quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
+                    }
+                }
+                if (reload) {
+                    buildBot();
                 }
             }
         });
+
+    }
+
+    public void quit() {
+        if (bot.isConnected()) {
+            bot.sendIRC().quitServer();
+        }
     }
 
     /**
