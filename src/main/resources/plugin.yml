@@ -90,3 +90,6 @@ permissions:
   'irc.message.notice':
     description: Player receives IRC notice messages.
     default: op     
+  'irc.motd':
+    description: Gives player access to the /irc motd command.
+    default: op    
