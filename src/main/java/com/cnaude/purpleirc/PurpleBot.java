@@ -1424,6 +1424,8 @@ public final class PurpleBot {
     public void broadcastAction(String nick, String myChannel, String message) {
         if (enabledMessages.get(myChannel).contains("irc-action")) {
             plugin.getServer().broadcast(tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.ircAction, message), "irc.message.action");
+        } else {
+            plugin.logDebug("Ignoring action due to irc-action is false");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-action")) {

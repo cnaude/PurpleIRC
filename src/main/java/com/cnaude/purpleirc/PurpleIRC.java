@@ -27,6 +27,7 @@ import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -375,7 +376,7 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
     }
-    
+
     /**
      *
      * @return
@@ -477,15 +478,16 @@ public class PurpleIRC extends JavaPlugin {
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
-            try {
-                alias = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getAlias();
-            } catch (Exception ex) {
-                logDebug("Problem getting alias name for '" + worldName + "': " + ex.getMessage());
+            MultiverseWorld world = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName);
+            if (world != null) {
+                alias = world.getAlias();
             }
         }
         if (alias == null) {
             alias = worldName;
         }
+        logDebug("getWorldAlias: worldName => " + worldName);
+        logDebug("getWorldAlias: alias => " + alias);
         return alias;
     }
 
@@ -780,19 +782,24 @@ public class PurpleIRC extends JavaPlugin {
 
     /**
      *
-     * @param worldColor
+     * @param worldName
      * @return
      */
-    public String getWorldColor(String worldColor) {
-        String color = worldColor;
+    public String getWorldColor(String worldName) {
+        String color = worldName;
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Core");
         if (plugin != null) {
             MVPlugin mvPlugin = (MVPlugin) plugin;
-            color = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldColor).getColor().toString();
+            MultiverseWorld world = mvPlugin.getCore().getMVWorldManager().getMVWorld(worldName);
+            if (world != null) {
+                color = world.getColor().toString();
+            }
         }
         if (color == null) {
-            color = worldColor;
+            color = worldName;
         }
+        logDebug("getWorldColor: worldName => " + worldName);
+        logDebug("getWorldColor: color => " + color);
         return color;
     }
 
