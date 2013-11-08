@@ -19,7 +19,7 @@ public class ListBots implements IRCCommandInterface {
     private final PurpleIRC plugin;
     private final String usage = "";
     private final String desc = "List IRC bots.";
-    private final String name = "listbots";    
+    private final String name = "listbots";
 
     /**
      *
@@ -39,9 +39,13 @@ public class ListBots implements IRCCommandInterface {
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + "IRC Bots"
                 + ChatColor.DARK_PURPLE + "   ]-----");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.bot.getNick());
-            for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
-                sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
+            sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.botNick);
+            if (ircBot.bot.isConnected()) {
+                for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
+                    sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
+                }
+            } else {
+                sender.sendMessage(ChatColor.RED + "Not connected.");
             }
         }
     }
