@@ -29,7 +29,6 @@ import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
-import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.dthielke.herochat.Herochat;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
@@ -45,6 +44,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.output.OutputIRC;
@@ -110,12 +110,12 @@ public final class PurpleBot {
      */
     public PurpleBot(File file, PurpleIRC plugin) {
         this.plugin = plugin;
-        this.file = file;        
+        this.file = file;
         whoisSenders = new ArrayList<CommandSender>();
         config = new YamlConfiguration();
         loadConfig();
         addListeners();
-        buildBot();        
+        buildBot();
         plugin.botConnected.put(botNick, bot.isConnected());
     }
 
@@ -131,6 +131,14 @@ public final class PurpleBot {
         addAutoJoinChannels(configBuilder);
         for (ListenerAdapter ll : ircListeners) {
             configBuilder.addListener(ll);
+        }
+        if (ssl) {
+            UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
+            socketFactory.disableDiffieHellman();
+            if (trustAllCerts) {
+                socketFactory.trustAllCertificates();
+            }
+            configBuilder.setSocketFactory(socketFactory);
         }
         Configuration configuration = configBuilder.buildConfiguration();
         bot = new PircBotX(configuration);
