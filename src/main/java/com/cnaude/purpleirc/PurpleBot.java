@@ -576,14 +576,14 @@ public final class PurpleBot {
                 plugin.logDebug("mcMMO is enabled");
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
-                        asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message), bot.sendIRC());
+                        asyncIRCMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
                     }
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
                         String partyName = PartyAPI.getPartyName(player);
-                        asyncSendMessage(channelName, tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName), bot.sendIRC());
+                        asyncIRCMessage(channelName, tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
                     } else {
                         plugin.logDebug("Player " + player.getName()
                                 + " is in mcMMO PartyChat but \"mcmmo-party-chat\" is disabled.");
@@ -613,7 +613,7 @@ public final class PurpleBot {
                 plugin.logDebug("Faction [Player: " + player.getName()
                         + "] [Tag: " + playerFactionName + "] [Mode: " + playerChatMode + "]");
                 if (enabledMessages.get(channelName).contains(chatName)) {
-                    asyncSendMessage(channelName, tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode), bot.sendIRC());
+                    asyncIRCMessage(channelName, tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode));
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
@@ -623,23 +623,12 @@ public final class PurpleBot {
             }
             if (enabledMessages.get(channelName).contains("game-chat")) {
                 plugin.logDebug("[game-chat] => " + channelName + " => " + message);
-                asyncSendMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameChat, message), bot.sendIRC());
+                asyncIRCMessage(channelName, tokenizer.gameChatToIRCTokenizer(player, plugin.gameChat, message));
             } else {
                 plugin.logDebug("Ignoring message due to game-chat not being listed.");
             }
         }
-    }
-
-    private void asyncSendMessage(final String channelName, final String message, final OutputIRC outputIRC) {
-        plugin.logDebug("Entering asyncSendMessage");
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                plugin.logDebug("Sending message to " + channelName);
-                outputIRC.message(channelName, message);
-            }
-        });
-    }
+    }    
 
     // Called from HeroChat listener
     /**
@@ -663,7 +652,7 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + hChannel);
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                asyncSendMessage(channelName, tokenizer.chatHeroTokenizer(player, message, hColor, hChannel, hNick), bot.sendIRC());
+                asyncIRCMessage(channelName, tokenizer.chatHeroTokenizer(player, message, hColor, hChannel, hNick));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
