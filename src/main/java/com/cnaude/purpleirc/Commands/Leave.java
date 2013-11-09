@@ -46,14 +46,18 @@ public class Leave implements IRCCommandInterface {
                 }
             }
             if (plugin.ircBots.containsKey(bot)) {
-                for (Channel channel : plugin.ircBots.get(bot).bot.getUserBot().getChannels()) {
-                    if (channel.getName().equals(channelName)) {
-                        channel.send().part(reason);
-                        sender.sendMessage(ChatColor.WHITE + "Leaving " + channelName + "...");
-                        return;
+                if (plugin.ircBots.get(bot).bot.isConnected()) {
+                    for (Channel channel : plugin.ircBots.get(bot).bot.getUserBot().getChannels()) {
+                        if (channel.getName().equals(channelName)) {
+                            channel.send().part(reason);
+                            sender.sendMessage(ChatColor.WHITE + "Leaving " + channelName + "...");
+                            return;
+                        }
                     }
+                    sender.sendMessage(ChatColor.WHITE + "Channel " + channelName + " is not valid.");
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Not connected.");
                 }
-                sender.sendMessage(ChatColor.WHITE + "Channel " + channelName + " is not valid.");
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

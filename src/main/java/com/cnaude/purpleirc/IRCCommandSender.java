@@ -16,8 +16,8 @@ import org.pircbotx.PircBotX;
  * We have to implement our own CommandSender so that we can
  * receive output from the command dispatcher.
  */
-public class IRCCommandSender implements CommandSender {
-    private final PircBotX bot;
+public class IRCCommandSender implements CommandSender {    
+    private final PurpleBot ircBot;
     private final String target;
     private final PurpleIRC plugin;
     private final boolean ctcpResponse;
@@ -29,9 +29,9 @@ public class IRCCommandSender implements CommandSender {
     @Override
     public void sendMessage(String message) {     
         if (ctcpResponse) {
-            bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));                
-        } else {
-            bot.sendIRC().message(target, plugin.colorConverter.gameColorsToIrc(message));                
+            ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
+        } else {            
+            ircBot.asyncIRCMessage(target, plugin.colorConverter.gameColorsToIrc(message));                        
         }
     }
     
@@ -43,23 +43,23 @@ public class IRCCommandSender implements CommandSender {
     public void sendMessage(String[] messages) {  
         for (String message : messages) {
             if (ctcpResponse) {
-                bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));  
+                ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
             } else {
-                bot.sendIRC().ctcpCommand(target, plugin.colorConverter.gameColorsToIrc(message));  
+                ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
             }
         }
     }
     
     /**
      *
-     * @param bot
+     * @param ircBot
      * @param target
      * @param plugin
      * @param ctcpResponse
      */
-    public IRCCommandSender(PircBotX bot, String target, PurpleIRC plugin, boolean ctcpResponse) {        
+    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse) {        
         this.target = target;
-        this.bot = bot;
+        this.ircBot = ircBot;        
         this.plugin = plugin;
         this.ctcpResponse = ctcpResponse;
     }

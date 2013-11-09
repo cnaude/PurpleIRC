@@ -26,9 +26,9 @@ public class CommandQueueWatcher {
             @Override
             public void run() {                
                 IRCCommand ircCommand = queue.poll();
-                if (ircCommand != null) {
-                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
-                    plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
+                if (ircCommand != null) {                   
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());                   
+                    plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));                    
                 }
             }
         }, 20, 20);
