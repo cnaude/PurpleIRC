@@ -1573,7 +1573,7 @@ public final class PurpleBot {
             }
         } else if (channelCmdNotifyMode.equalsIgnoreCase("ctcp")) {
             for (String recipient : channelCmdNotifyRecipients) {
-                bot.sendIRC().ctcpCommand(recipient, msg);
+                this.asyncCTCPMessage(recipient, msg);
             }
         }
     }

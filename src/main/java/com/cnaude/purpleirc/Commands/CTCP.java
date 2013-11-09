@@ -61,7 +61,7 @@ public class CTCP implements IRCCommandInterface {
                 for (int i = msgIdx; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
-                ircBot.bot.sendIRC().ctcpCommand(target, msg.substring(1));
+                ircBot.asyncCTCPCommand(target, msg.substring(1));
                 sender.sendMessage("Sent CTCP command \"" + msg.substring(1) + "\" to \"" + target + "\"");
             }
         } else {
