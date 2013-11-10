@@ -4,10 +4,10 @@
  */
 package com.cnaude.purpleirc.IRCListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
+import com.cnaude.purpleirc.PurpleIRC;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import com.cnaude.purpleirc.PurpleIRC;
-import com.cnaude.purpleirc.PurpleBot;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.pircbotx.hooks.ListenerAdapter;

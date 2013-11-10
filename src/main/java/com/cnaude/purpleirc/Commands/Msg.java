@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleBot;
@@ -10,7 +6,6 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.pircbotx.User;
 
 /**
  *
@@ -69,7 +64,7 @@ public class Msg implements IRCCommandInterface {
                     ircBot.consoleMsgPlayer(nick, msg.substring(1));
                 }
                 if (!plugin.gamePChatResponse.isEmpty()) {
-                    sender.sendMessage(ircBot.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
+                    sender.sendMessage(plugin.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
                 }
             }
         }

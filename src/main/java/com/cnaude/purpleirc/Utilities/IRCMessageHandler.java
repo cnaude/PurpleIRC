@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -32,7 +31,6 @@ public class IRCMessageHandler {
      */
     public IRCMessageHandler(PurpleIRC plugin) {
         this.plugin = plugin;
-        
     }
 
     /**

@@ -46,6 +46,6 @@ public class ConnectListener extends ListenerAdapter {
             plugin.logInfo("Sending raw message to server");   
             ircBot.asyncRawlineNow(ircBot.rawMessage);           
         }
-        ircBot.broadcastIRCConnect();
+        ircBot.broadcastIRCConnect(ircBot.botNick);
     }
 }

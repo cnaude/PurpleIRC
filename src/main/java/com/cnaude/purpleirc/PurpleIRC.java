@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
+import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -133,6 +134,7 @@ public class PurpleIRC extends JavaPlugin {
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
     public CommandQueueWatcher commandQueue;
+    public ChatTokenizer tokenizer;
 
     /**
      *
@@ -198,6 +200,7 @@ public class PurpleIRC extends JavaPlugin {
         commandHandlers = new CommandHandlers(this);
         getCommand("irc").setExecutor(commandHandlers);
         regexGlobber = new RegexGlobber();
+        tokenizer = new ChatTokenizer(this);
         loadBots();
         createSampleBot();
         channelWatcher = new ChannelWatcher(this);

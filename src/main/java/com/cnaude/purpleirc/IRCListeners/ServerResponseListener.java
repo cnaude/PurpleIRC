@@ -4,11 +4,11 @@
  */
 package com.cnaude.purpleirc.IRCListeners;
 
-import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.PurpleBot;
+import com.cnaude.purpleirc.PurpleIRC;
+import org.pircbotx.ReplyConstants;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ServerResponseEvent;
-import org.pircbotx.ReplyConstants;
 
 /**
  *
