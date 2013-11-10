@@ -39,7 +39,7 @@ public class DisconnectListener extends ListenerAdapter {
     public void onDisconnect(DisconnectEvent event) {
         final PircBotX bot = event.getBot();
         plugin.botConnected.put(bot.getNick(), false);
-        bot.sendIRC().quitServer();
+        ircBot.asyncQuit(false);
         ircBot.broadcastIRCDisconnect();
     }
 }

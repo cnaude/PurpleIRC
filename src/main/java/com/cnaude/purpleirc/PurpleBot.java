@@ -259,30 +259,30 @@ public final class PurpleBot {
             }
         });
     }
-    
+
     public void asyncIRCMessage(final String target, final String message) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                bot.sendIRC().message(target, message);                
+                bot.sendIRC().message(target, message);
             }
         });
     }
-    
+
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                bot.sendIRC().ctcpResponse(target, message);                
+                bot.sendIRC().ctcpResponse(target, message);
             }
         });
     }
-    
+
     public void asyncCTCPCommand(final String target, final String command) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                bot.sendIRC().ctcpCommand(target, command);                
+                bot.sendIRC().ctcpCommand(target, command);
             }
         });
     }
@@ -317,11 +317,53 @@ public final class PurpleBot {
      * @param sender
      * @param newNick
      */
-    public void changeNick(CommandSender sender, String newNick) {
-        bot.sendIRC().changeNick(newNick);
+    public void asyncChangeNick(final CommandSender sender, final String newNick) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendIRC().changeNick(newNick);
+                
+            }
+        });
         sender.sendMessage("Setting nickname to " + newNick);
         config.set("nick", newNick);
         saveConfig();
+    }
+    
+    public void asyncJoinChannel(final String channelName, final String password) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendIRC().joinChannel(channelName, password);
+            }
+        });        
+    }
+    
+    public void asyncNotice(final String target, final String message) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendIRC().notice(target, message);
+            }
+        });        
+    }
+    
+    public void asyncRawlineNow(final String message) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendRaw().rawLineNow(message);
+            }
+        });        
+    }
+    
+    public void asyncIdentify(final String password) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                bot.sendIRC().identify(password);
+            }
+        });        
     }
 
     /**
@@ -628,7 +670,7 @@ public final class PurpleBot {
                 plugin.logDebug("Ignoring message due to game-chat not being listed.");
             }
         }
-    }    
+    }
 
     // Called from HeroChat listener
     /**

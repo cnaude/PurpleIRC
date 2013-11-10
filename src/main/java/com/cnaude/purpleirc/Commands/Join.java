@@ -45,7 +45,7 @@ public class Join implements IRCCommandInterface {
                 }
             }
             if (plugin.ircBots.containsKey(bot)) {
-                plugin.ircBots.get(bot).bot.sendIRC().joinChannel(channelName, password);
+                plugin.ircBots.get(bot).asyncJoinChannel(channelName, password);
                 sender.sendMessage(ChatColor.WHITE + "Joining " + channelName + "...");
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));

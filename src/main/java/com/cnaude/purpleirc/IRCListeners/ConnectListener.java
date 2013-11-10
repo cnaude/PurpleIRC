@@ -40,11 +40,11 @@ public class ConnectListener extends ListenerAdapter {
         plugin.botConnected.put(bot.getNick(), true);
         if (!ircBot.botIdentPassword.isEmpty()) {
             plugin.logInfo("Sending ident password to NickServ...");
-            bot.sendIRC().identify(ircBot.botIdentPassword);
+            ircBot.asyncIdentify(ircBot.botIdentPassword);
         }
         if (ircBot.sendRawMessageOnConnect) {
             plugin.logInfo("Sending raw message to server");   
-            bot.sendRaw().rawLineNow(ircBot.rawMessage);           
+            ircBot.asyncRawlineNow(ircBot.rawMessage);           
         }
         ircBot.broadcastIRCConnect();
     }
