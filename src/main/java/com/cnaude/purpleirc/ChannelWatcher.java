@@ -24,7 +24,7 @@ public class ChannelWatcher {
             public void run() {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (plugin.botConnected.get(ircBot.botNick)) {
-                        for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
+                        for (Channel channel : ircBot.getChannels()) {
                             ircBot.updateNickList(channel);
                         }
                     }

@@ -53,7 +53,7 @@ public class SendRaw implements IRCCommandInterface {
                     msg = msg + " " + args[i];
                 }
                 plugin.logDebug("Sending raw message to the server: " + msg.substring(1));
-                ircBot.bot.sendRaw().rawLineNow(msg.substring(1));                
+                ircBot.asyncRawlineNow(msg.substring(1));                
             }
         } else {
             sender.sendMessage(fullUsage);

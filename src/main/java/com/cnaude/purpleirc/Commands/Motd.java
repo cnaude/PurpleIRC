@@ -48,7 +48,7 @@ public class Motd implements IRCCommandInterface {
         }
 
         for (PurpleBot ircBot : myBots) {
-            String motd = ircBot.bot.getServerInfo().getMotd();
+            String motd = ircBot.getMotd();
             if (motd != null) {
                 sender.sendMessage(motd);
             } else {

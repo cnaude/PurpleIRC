@@ -51,7 +51,7 @@ public class MessageDelay implements IRCCommandInterface  {
             String bot = args[1];
             if (plugin.ircBots.containsKey(bot)) {
                 sender.sendMessage(ChatColor.WHITE + "IRC message delay is currently "
-                        + plugin.ircBots.get(bot).bot.getConfiguration().getMessageDelay() + " ms.");
+                        + plugin.ircBots.get(bot).getMessageDelay() + " ms.");
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

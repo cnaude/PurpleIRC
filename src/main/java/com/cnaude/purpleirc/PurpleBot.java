@@ -28,8 +28,8 @@ import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
-import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.dthielke.herochat.Herochat;
+import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
@@ -54,7 +54,7 @@ import org.pircbotx.hooks.ListenerAdapter;
  */
 public final class PurpleBot {
 
-    public PircBotX bot;
+    private PircBotX bot;
 
     public final PurpleIRC plugin;
     private final File file;
@@ -1117,7 +1117,7 @@ public final class PurpleBot {
      *
      * @param sender
      */
-    public void quit(CommandSender sender) {
+    public void asyncQuit(CommandSender sender) {
         sender.sendMessage("Disconnecting " + bot.getNick() + " from IRC server " + botServer);
         asyncQuit(false);
     }
@@ -1692,5 +1692,21 @@ public final class PurpleBot {
         UPlayer uPlayer = UPlayer.get(player);
         Faction faction = uPlayer.getFaction();
         return faction.getName();
+    }
+    
+    public boolean isConnected() {
+        return bot.isConnected();
+    }
+    
+    public ImmutableSortedSet<Channel> getChannels() {
+        return bot.getUserBot().getChannels();
+    }
+    
+    public long getMessageDelay() {
+        return bot.getConfiguration().getMessageDelay();
+    }
+    
+    public String getMotd() {
+        return bot.getServerInfo().getMotd();
     }
 }

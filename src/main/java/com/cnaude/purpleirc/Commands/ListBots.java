@@ -40,8 +40,8 @@ public class ListBots implements IRCCommandInterface {
                 + ChatColor.DARK_PURPLE + "   ]-----");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             sender.sendMessage(ChatColor.DARK_PURPLE + "* " + ChatColor.WHITE + ircBot.botNick);
-            if (ircBot.bot.isConnected()) {
-                for (Channel channel : ircBot.bot.getUserBot().getChannels()) {
+            if (ircBot.isConnected()) {
+                for (Channel channel : ircBot.getChannels()) {
                     sender.sendMessage(ChatColor.DARK_PURPLE + "  - " + ChatColor.WHITE + channel.getName());
                 }
             } else {
