@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,9 +32,9 @@ public class CleverNotchListener implements Listener {
      */
     @EventHandler
     public void onCleverEvent(CleverEvent event) {
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).cleverChat(event.getName(),event.getMessage());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.cleverChat(event.getName(),event.getMessage());
             }
         }
     }

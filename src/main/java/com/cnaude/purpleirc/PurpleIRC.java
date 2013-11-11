@@ -123,8 +123,7 @@ public class PurpleIRC extends JavaPlugin {
     ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
-    public HashMap<String, Boolean> botConnected = new HashMap<String, Boolean>();
+    public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();    
     public HashMap<String, String> ircHeroChannelMessages = new HashMap<String, String>();
     VaultHook vaultHelpers;
     VanishHook vanishHook;

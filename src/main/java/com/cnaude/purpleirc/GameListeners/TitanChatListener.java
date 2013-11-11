@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import com.titankingdoms.dev.titanchat.event.ChannelChatEvent;
@@ -39,9 +40,9 @@ public class TitanChatListener implements Listener {
         String tChannel = event.getChannel().getName();
         String tColor = event.getChannel().getDisplayColour();
         if (player.hasPermission("irc.message.gamechat")) {
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).titanChat(participant, tChannel, tColor, event.getMessage());
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+                if (ircBot.isConnected()) {
+                    ircBot.titanChat(participant, tChannel, tColor, event.getMessage());
                 }
             }
         }

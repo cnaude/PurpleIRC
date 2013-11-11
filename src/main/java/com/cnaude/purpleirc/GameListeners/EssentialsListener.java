@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.earth2me.essentials.User;
 import net.ess3.api.events.AfkStatusChangeEvent;
@@ -34,9 +35,9 @@ public class EssentialsListener implements Listener {
     public void onAfkStatusChangeEvent(AfkStatusChangeEvent event) {
         User user = event.getAffected();     
         plugin.logDebug("AFK: " + user.getName() + ":" + user.isAfk());
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).essentialsAFK(user.getBase(),user.isAfk());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.essentialsAFK(user.getBase(),user.isAfk());
             }
         }
     }

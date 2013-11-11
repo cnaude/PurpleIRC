@@ -41,13 +41,12 @@ public class Nick implements IRCCommandInterface {
             String nick = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 if (plugin.ircBots.containsKey(nick)) {
-                    sender.sendMessage(ChatColor.RED + "There is already a bot with that nick!");
+                    sender.sendMessage(ChatColor.RED 
+                            + "There is already a bot with that nick!");
                 } else {
                     plugin.ircBots.get(bot).asyncChangeNick(sender, nick);
                     PurpleBot ircBot = plugin.ircBots.remove(bot);
                     plugin.ircBots.put(nick, ircBot);
-                    boolean isConnected = plugin.botConnected.remove(bot);
-                    plugin.botConnected.put(nick, isConnected);
                     ircBot.botNick = nick;
                 }
             } else {

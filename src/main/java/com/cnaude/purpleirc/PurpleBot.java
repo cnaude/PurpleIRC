@@ -114,7 +114,6 @@ public final class PurpleBot {
         loadConfig();
         addListeners();
         buildBot();
-        plugin.botConnected.put(botNick, bot.isConnected());
     }
 
     public void buildBot() {

@@ -45,9 +45,9 @@ public class GameListeners implements Listener {
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).gameChat(event.getPlayer(), event.getMessage());
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+                if (ircBot.isConnected()) {
+                    ircBot.gameChat(event.getPlayer(), event.getMessage());
                 }
             }
         } else {
@@ -61,9 +61,9 @@ public class GameListeners implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).gameQuit(event.getPlayer(), event.getQuitMessage());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
             }
         }
     }
@@ -74,9 +74,9 @@ public class GameListeners implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).gameJoin(event.getPlayer(), event.getJoinMessage());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());
                 if (plugin.netPackets != null) {
                     plugin.netPackets.updateTabList(event.getPlayer());
                 }
@@ -96,22 +96,21 @@ public class GameListeners implements Listener {
         String msg = event.getMessage();
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             if (msg.startsWith("/me ")) {
-                for (String botName : plugin.ircBots.keySet()) {
-                    if (plugin.botConnected.get(botName)) {
-                        plugin.ircBots.get(botName).gameAction(event.getPlayer(), msg.replace("/me", ""));
+                for (PurpleBot ircBot : plugin.ircBots.values()) {
+                    if (ircBot.isConnected()) {
+                        ircBot.gameAction(event.getPlayer(), msg.replace("/me", ""));
                     }
                 }
             } else if (msg.startsWith("/broadcast ")) {
-                for (String botName : plugin.ircBots.keySet()) {
-                    if (plugin.botConnected.get(botName)) {
-                        plugin.ircBots.get(botName).gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
+                for (PurpleBot ircBot : plugin.ircBots.values()) {
+                    if (ircBot.isConnected()) {
+                        ircBot.gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
                     }
                 }
             }
         }
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                PurpleBot ircBot = plugin.ircBots.get(botName);
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
                 if (msg.startsWith("/")) {
                     String cmd;
                     String params = "";
@@ -121,11 +120,11 @@ public class GameListeners implements Listener {
                     } else {
                         cmd = msg;
                     }
-                    
-                    cmd = cmd.substring(0);                    
-                    if (plugin.botConnected.get(botName)) {
+
+                    cmd = cmd.substring(0);
+                    if (ircBot.isConnected()) {
                         if (ircBot.channelCmdNotifyEnabled) {
-                            ircBot.commandNotify(event.getPlayer(),cmd,params);                                
+                            ircBot.commandNotify(event.getPlayer(), cmd, params);
                         }
                     }
                 }
@@ -144,16 +143,16 @@ public class GameListeners implements Listener {
         plugin.logDebug("CE: " + cmd);
         if (cmd.startsWith("say ")) {
             String msg = cmd.split(" ", 2)[1];
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).consoleChat(msg);
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+                if (ircBot.isConnected()) {
+                    ircBot.consoleChat(msg);
                 }
             }
         } else if (cmd.startsWith("broadcast ")) {
             String msg = cmd.split(" ", 2)[1];
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).consoleBroadcast(msg);
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+                if (ircBot.isConnected()) {
+                    ircBot.consoleBroadcast(msg);
                 }
             }
         } else {
@@ -167,9 +166,9 @@ public class GameListeners implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).gameDeath((Player) event.getEntity(), event.getDeathMessage());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.gameDeath((Player) event.getEntity(), event.getDeathMessage());
             }
         }
     }

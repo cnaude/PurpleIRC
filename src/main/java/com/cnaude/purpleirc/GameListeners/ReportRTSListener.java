@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.nyancraft.reportrts.event.ReportCreateEvent;
 import org.bukkit.entity.Player;
@@ -33,9 +34,9 @@ public class ReportRTSListener implements Listener {
     @EventHandler
     public void onReportCreateEvent(ReportCreateEvent event) {
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());
-        for (String botName : plugin.ircBots.keySet()) {
-            if (plugin.botConnected.get(botName)) {
-                plugin.ircBots.get(botName).reportRTSNotify(player, event.getRequest());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest());
             }
         }
     }

@@ -35,9 +35,6 @@ public class ConnectListener extends ListenerAdapter {
      */
     @Override
     public void onConnect(ConnectEvent event) {
-        PircBotX bot = event.getBot();
-
-        plugin.botConnected.put(bot.getNick(), true);
         if (!ircBot.botIdentPassword.isEmpty()) {
             plugin.logInfo("Sending ident password to NickServ...");
             ircBot.asyncIdentify(ircBot.botIdentPassword);

@@ -1,5 +1,7 @@
 package com.cnaude.purpleirc;
 
+import org.bukkit.ChatColor;
+
 /** This thread checks each bot for connectivity and reconnects when appropriate.
  *
  * @author Chris Naude
@@ -22,13 +24,13 @@ public class BotWatcher {
             public void run() {
                 plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (!plugin.botConnected.get(ircBot.botNick)) {
+                    if (ircBot.isConnected()) {
+                        plugin.logDebug("[" + ircBot.botNick + "] CONNECTED");
+                    } else {
                         if (ircBot.autoConnect) {
-                            plugin.logInfo("IRC bot '" + ircBot.botNick + "' is not connected! Attempting reconnect...");
+                            plugin.logInfo("[" + ircBot.botNick + "] NOT CONNECTED");
                             ircBot.reload();
                         }
-                    } else {
-                        plugin.logDebug("IRC bot '" + ircBot.botNick + "' is connected!");
                     }
                 }
             }

@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
@@ -40,9 +41,9 @@ public class HeroChatListener implements Listener {
         Player player = chatter.getPlayer();
         if (player.hasPermission("irc.message.gamechat")
                 && chatter.getChannels().contains(event.getChannel())) {
-            for (String botName : plugin.ircBots.keySet()) {
-                if (plugin.botConnected.get(botName)) {
-                    plugin.ircBots.get(botName).heroChat(chatter, chatColor, event.getMessage());
+            for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                    ircBot.heroChat(chatter, chatColor, event.getMessage());
                 }
             }
         }

@@ -23,7 +23,7 @@ public class ChannelWatcher {
             @Override
             public void run() {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (plugin.botConnected.get(ircBot.botNick)) {
+                    if (ircBot.isConnected()) {
                         for (Channel channel : ircBot.getChannels()) {
                             ircBot.updateNickList(channel);
                         }
