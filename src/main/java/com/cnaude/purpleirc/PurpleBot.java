@@ -142,7 +142,7 @@ public final class PurpleBot {
         if (autoConnect) {
             asyncConnect();
         } else {
-            plugin.logInfo("Not automatically connecting. To connect: /irc connect " + bot.getNick());
+            plugin.logInfo("Auto-connect is disabled. To connect: /irc connect " + bot.getNick());
         }
     }
 
@@ -291,7 +291,8 @@ public final class PurpleBot {
     public void saveConfig(CommandSender sender) {
         try {
             config.save(file);
-            sender.sendMessage("[PurpleIRC] Saving bot \"" + botNick + "\" to " + file.getName());
+            sender.sendMessage(plugin.LOG_HEADER_F +
+                    " Saving bot \"" + botNick + "\" to " + file.getName());
         } catch (IOException ex) {
             plugin.logError(ex.getMessage());
             sender.sendMessage(ex.getMessage());
@@ -386,7 +387,6 @@ public final class PurpleBot {
 
     private void loadConfig() {
         try {
-
             config.load(file);
             autoConnect = config.getBoolean("autoconnect", true);
             ssl = config.getBoolean("ssl", false);

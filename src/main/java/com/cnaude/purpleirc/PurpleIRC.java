@@ -43,7 +43,8 @@ import org.pircbotx.IdentServer;
  */
 public class PurpleIRC extends JavaPlugin {
 
-    public static String LOG_HEADER;
+    public String LOG_HEADER;
+    public String LOG_HEADER_F;
     static final Logger log = Logger.getLogger("Minecraft");
     private final String sampleFileName = "SampleBot.yml";
     private File pluginFolder;
@@ -142,6 +143,8 @@ public class PurpleIRC extends JavaPlugin {
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
+        LOG_HEADER_F = ChatColor.DARK_PURPLE + "[" + this.getName() + "]"
+                + ChatColor.WHITE;
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
@@ -500,11 +503,11 @@ public class PurpleIRC extends JavaPlugin {
      * @param sender
      */
     public void reloadMainConfig(CommandSender sender) {
-        sender.sendMessage("Reloading config.yml...");
+        sender.sendMessage(LOG_HEADER_F + "Reloading config.yml ...");
         reloadConfig();
         getConfig().options().copyDefaults(false);
         loadConfig();
-        sender.sendMessage("Done.");
+        sender.sendMessage(LOG_HEADER_F + ChatColor.WHITE + "Done.");
     }
 
     private void createConfig() {
@@ -535,27 +538,27 @@ public class PurpleIRC extends JavaPlugin {
 
     /**
      *
-     * @param _message
+     * @param message
      */
-    public void logInfo(String _message) {
-        log.log(Level.INFO, String.format("%s %s", LOG_HEADER, _message));
+    public void logInfo(String message) {
+        log.log(Level.INFO, String.format("%s %s", LOG_HEADER, message));
     }
 
     /**
      *
-     * @param _message
+     * @param message
      */
-    public void logError(String _message) {
-        log.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, _message));
+    public void logError(String message) {
+        log.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, message));
     }
 
     /**
      *
-     * @param _message
+     * @param message
      */
-    public void logDebug(String _message) {
+    public void logDebug(String message) {
         if (debugEnabled) {
-            log.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, _message));
+            log.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, message));
         }
     }
 

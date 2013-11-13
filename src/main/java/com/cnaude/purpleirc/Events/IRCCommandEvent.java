@@ -16,7 +16,7 @@ import org.bukkit.event.HandlerList;
 public class IRCCommandEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();    
-    private IRCCommand ircCommand;
+    private final IRCCommand ircCommand;
 
     /**
      *
@@ -38,6 +38,7 @@ public class IRCCommandEvent extends Event {
      *
      * @return
      */
+    @Override
     public HandlerList getHandlers() {
         return handlers;
     }
