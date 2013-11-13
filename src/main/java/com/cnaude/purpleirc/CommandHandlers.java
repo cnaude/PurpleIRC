@@ -89,6 +89,7 @@ public class CommandHandlers implements CommandExecutor {
                     return true;
                 }
                 commands.get(subCmd).dispatch(sender, args);
+                return true;
             }
         }
         commands.get("help").dispatch(sender, args);
