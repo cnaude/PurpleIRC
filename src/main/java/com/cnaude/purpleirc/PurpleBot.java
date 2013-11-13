@@ -60,20 +60,24 @@ public final class PurpleBot {
     private final File file;
     private YamlConfiguration config;
     public boolean autoConnect;
+    public boolean ssl;
+    public boolean trustAllCerts;
+    public boolean sendRawMessageOnConnect;
+    public boolean showMOTD;
+    public boolean channelCmdNotifyEnabled;
+    public boolean relayPrivateChat;
+    public int botServerPort;
+    public long chatDelay;
     public String botServer;
     public String botNick;
     public String botLogin;
     public String botServerPass;
-    public int botServerPort;
     public String commandPrefix;
     public String quitMessage;
-    public boolean showMOTD;
     public String botIdentPassword;
-    public long chatDelay;
-    public boolean ssl;
-    public boolean trustAllCerts;
-    public boolean sendRawMessageOnConnect;
     public String rawMessage;
+    public String channelCmdNotifyMode;
+    private String connectMessage;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
     public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
@@ -87,7 +91,6 @@ public final class PurpleBot {
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideListWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
-    public boolean relayPrivateChat;
     public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
@@ -95,10 +98,7 @@ public final class PurpleBot {
     public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
     public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
     public ArrayList<CommandSender> whoisSenders;
-    public boolean channelCmdNotifyEnabled;
-    public String channelCmdNotifyMode;
     public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
-    private String connectMessage;
     private final ArrayList<ListenerAdapter> ircListeners = new ArrayList<ListenerAdapter>();
 
     /**
@@ -148,22 +148,22 @@ public final class PurpleBot {
 
     private void addListeners() {
         ircListeners.add(new ActionListener(plugin, this));
-        ircListeners.add(new ConnectListener(plugin,this));
-        ircListeners.add(new DisconnectListener(plugin,this));
-        ircListeners.add(new JoinListener(plugin,this));
-        ircListeners.add(new KickListener(plugin,this));
-        ircListeners.add(new MessageListener(plugin,this));
-        ircListeners.add(new ModeListener(plugin,this));
-        ircListeners.add(new NickChangeListener(plugin,this));
-        ircListeners.add(new NoticeListener(plugin,this));
-        ircListeners.add(new PartListener(plugin,this));
-        ircListeners.add(new PrivateMessageListener(plugin,this));
-        ircListeners.add(new QuitListener(plugin,this));
-        ircListeners.add(new TopicListener(plugin,this));
+        ircListeners.add(new ConnectListener(plugin, this));
+        ircListeners.add(new DisconnectListener(plugin, this));
+        ircListeners.add(new JoinListener(plugin, this));
+        ircListeners.add(new KickListener(plugin, this));
+        ircListeners.add(new MessageListener(plugin, this));
+        ircListeners.add(new ModeListener(plugin, this));
+        ircListeners.add(new NickChangeListener(plugin, this));
+        ircListeners.add(new NoticeListener(plugin, this));
+        ircListeners.add(new PartListener(plugin, this));
+        ircListeners.add(new PrivateMessageListener(plugin, this));
+        ircListeners.add(new QuitListener(plugin, this));
+        ircListeners.add(new TopicListener(plugin, this));
         ircListeners.add(new VersionListener(plugin));
-        ircListeners.add(new WhoisListener(plugin,this));
-        ircListeners.add(new MotdListener(plugin,this));
-        ircListeners.add(new ServerResponseListener(plugin,this));
+        ircListeners.add(new WhoisListener(plugin, this));
+        ircListeners.add(new MotdListener(plugin, this));
+        ircListeners.add(new ServerResponseListener(plugin, this));
     }
 
     private void addAutoJoinChannels(Configuration.Builder configBuilder) {
@@ -615,12 +615,14 @@ public final class PurpleBot {
                 plugin.logDebug("mcMMO is enabled");
                 if (ChatAPI.isUsingAdminChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
+                        plugin.logDebug("Sending message because mcmmo-admin-chat is enabled.");
                         asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
                     } else {
                         plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
                     }
                 } else if (ChatAPI.isUsingPartyChat(player)) {
                     if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
+                        plugin.logDebug("Sending message because mcmmo-party-chat is enabled.");
                         String partyName = PartyAPI.getPartyName(player);
                         asyncIRCMessage(channelName, plugin.tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
                     } else {
@@ -847,7 +849,7 @@ public final class PurpleBot {
         if (!bot.isConnected()) {
             return;
         }
-        for (Channel channel : bot.getUserBot().getChannels()) {
+        for (Channel channel : getChannels()) {
             String channelName = channel.getName();
             if (botChannels.contains(channelName)) {
                 if (enabledMessages.get(channelName).contains("game-join")) {
@@ -955,7 +957,7 @@ public final class PurpleBot {
 
     public Channel getChannel(String channelName) {
         Channel channel = null;
-        for (Channel c : bot.getUserBot().getChannels()) {
+        for (Channel c : getChannels()) {
             if (c.getName().equals(channelName)) {
                 return c;
             }
@@ -975,16 +977,26 @@ public final class PurpleBot {
     /**
      *
      * @param sender
-     * @param botServer
-     * @param autoConnect
+     * @param server
+     * @param auto
      */
-    public void setServer(CommandSender sender, String botServer, Boolean autoConnect) {
-        this.botServer = botServer;
-        config.set("server", botServer);
-        this.autoConnect = autoConnect;
-        config.set("autoconnect", autoConnect);
+    public void setServer(CommandSender sender, String server, Boolean auto) {
+
+        if (server.contains(":")) {
+            botServerPort = Integer.parseInt(server.split(":")[1]);
+            botServer = server.split(":")[0];
+        } else {
+            botServer = server;
+        }
         sanitizeServerName();
-        sender.sendMessage("IRC server changed to \"" + botServer + "\". (AutoConnect: " + autoConnect.toString() + ")");
+        autoConnect = auto;
+        config.set("server", botServer);
+        config.set("port", botServerPort);
+        config.set("autoconnect", autoConnect);
+
+        sender.sendMessage("IRC server changed to \"" + botServer + ":"
+                + botServerPort + "\". (AutoConnect: "
+                + autoConnect + ")");
     }
 
     /**
@@ -1175,7 +1187,7 @@ public final class PurpleBot {
      */
     public void sendUserWhois(CommandSender sender, String nick) {
         User user = null;
-        for (Channel channel : bot.getUserBot().getChannels()) {
+        for (Channel channel : getChannels()) {
             for (User u : channel.getUsers()) {
                 if (u.getNick().equals(nick)) {
                     user = u;
@@ -1262,7 +1274,7 @@ public final class PurpleBot {
      * @param sender
      */
     public void sendUserList(CommandSender sender) {
-        for (Channel channel : bot.getUserBot().getChannels()) {
+        for (Channel channel : getChannels()) {
             if (botChannels.contains(channel.getName())) {
                 sendUserList(sender, channel);
             }
@@ -1554,7 +1566,6 @@ public final class PurpleBot {
         }
     }
 
-    // Broadcast join messages from IRC
     /**
      *
      * @param nick
@@ -1562,7 +1573,10 @@ public final class PurpleBot {
      */
     public void broadcastIRCJoin(String nick, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-join")) {
+            plugin.logDebug("Broadcasting join message because irc-join is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircJoin), "irc.message.join");
+        } else {
+            plugin.logDebug("NOT broadcasting join message because irc-join is false.");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-join")) {
@@ -1574,6 +1588,46 @@ public final class PurpleBot {
         }
     }
 
+    public void broadcastIRCPart(String nick, String myChannel) {
+        if (enabledMessages.get(myChannel).contains("irc-part")) {
+            plugin.logDebug("Broadcasting join message because irc-part is true.");
+            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircPart), "irc.message.part");
+        } else {
+            plugin.logDebug("NOT broadcasting join message because irc-part is false.");
+        }
+
+        if (enabledMessages.get(myChannel).contains("irc-hero-part")) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
+                                    myChannel, plugin.ircHeroPart,
+                                    Herochat.getChannelManager(),
+                                    heroChannel.get(myChannel)));
+        }
+
+    }
+
+    public void broadcastIRCQuit(String nick, String myChannel, String reason) {
+        if (enabledMessages.get(myChannel).contains("irc-quit")) {
+            plugin.logDebug("Broadcasting join message because irc-quit is true.");
+            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
+                    myChannel, plugin.ircQuit)
+                    .replace("%NAME%", nick)
+                    .replace("%REASON%", reason)
+                    .replace("%CHANNEL%", myChannel), "irc.message.quit");
+        } else {
+            plugin.logDebug("NOT broadcasting join message because irc-quit is false.");
+        }
+
+        if (enabledMessages.get(myChannel).contains("irc-hero-quit")) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
+                                    myChannel, plugin.ircHeroQuit,
+                                    Herochat.getChannelManager(),
+                                    heroChannel.get(myChannel)));
+        }
+
+    }
+    
     // Broadcast topic changes from IRC
     /**
      *
@@ -1692,19 +1746,22 @@ public final class PurpleBot {
         Faction faction = uPlayer.getFaction();
         return faction.getName();
     }
-    
+
     public boolean isConnected() {
         return bot.isConnected();
     }
-    
+
     public ImmutableSortedSet<Channel> getChannels() {
+        if (bot.getNick().isEmpty()) {
+            return ImmutableSortedSet.<Channel>naturalOrder().build();
+        }
         return bot.getUserBot().getChannels();
     }
-    
+
     public long getMessageDelay() {
         return bot.getConfiguration().getMessageDelay();
     }
-    
+
     public String getMotd() {
         return bot.getServerInfo().getMotd();
     }

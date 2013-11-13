@@ -23,7 +23,7 @@ import org.pircbotx.User;
  */
 public class IRCMessageHandler {
 
-    PurpleIRC plugin;    
+    PurpleIRC plugin;
 
     /**
      *
@@ -86,7 +86,7 @@ public class IRCMessageHandler {
                 if (privateCommand || privateMessage) {
                     target = user.getNick();
                 }
-                
+
                 plugin.logDebug("Target: " + target);
 
                 boolean modeOkay = false;
@@ -120,8 +120,10 @@ public class IRCMessageHandler {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
                     } else if (gameCommand.equals("@ochat")) {
                         ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, true);
-                    } else if (gameCommand.equals("@hchat")) {                        
+                    } else if (gameCommand.equals("@hchat")) {
                         ircBot.broadcastHeroChat(user.getNick(), myChannel, target, commandArgs);
+                    } else if (gameCommand.equals("@motd")) {
+                        sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
                     } else if (gameCommand.equals("@msg")) {
                         ircBot.playerChat(user.getNick(), myChannel, target, commandArgs);
                     } else {
@@ -169,7 +171,7 @@ public class IRCMessageHandler {
             ircBot.asyncCTCPMessage(target, message);
         } else {
             plugin.logDebug("Sending message to target: " + target + " => " + message);
-            ircBot.asyncIRCMessage(target, message);            
+            ircBot.asyncIRCMessage(target, message);
         }
     }
 

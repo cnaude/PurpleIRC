@@ -34,7 +34,7 @@ public class DisconnectListener extends ListenerAdapter {
      * @param event
      */
     @Override
-    public void onDisconnect(DisconnectEvent event) {
+    public void onDisconnect(DisconnectEvent event) {        
         ircBot.asyncQuit(false);
         ircBot.broadcastIRCDisconnect(ircBot.botNick);
     }

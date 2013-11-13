@@ -73,6 +73,7 @@ public class PurpleIRC extends JavaPlugin {
             ircHeroChat,
             ircHeroAction,
             ircHeroPart,
+            ircHeroQuit,
             ircHeroKick,
             ircHeroJoin,
             ircHeroTopic,
@@ -306,6 +307,7 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
         ircHeroJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-join", ""));
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
+        ircHeroQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-quit", ""));
         ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
 
         for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
@@ -570,6 +572,10 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
+    public String getServerMotd() {
+        return "MOTD: " + getServer().getMotd();
+    }
+            
     /**
      *
      * @param ircBot

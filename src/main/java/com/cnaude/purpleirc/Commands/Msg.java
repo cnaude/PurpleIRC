@@ -64,7 +64,7 @@ public class Msg implements IRCCommandInterface {
                     ircBot.consoleMsgPlayer(nick, msg.substring(1));
                 }
                 if (!plugin.gamePChatResponse.isEmpty()) {
-                    sender.sendMessage(plugin.tokenizer.targetChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
+                    sender.sendMessage(plugin.tokenizer.msgChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
                 }
             }
         }

@@ -35,14 +35,19 @@ public class ConnectListener extends ListenerAdapter {
      */
     @Override
     public void onConnect(ConnectEvent event) {
-        if (!ircBot.botIdentPassword.isEmpty()) {
-            plugin.logInfo("Sending ident password to NickServ...");
-            ircBot.asyncIdentify(ircBot.botIdentPassword);
+        PircBotX bot = event.getBot();
+        if (bot.getUserBot().getNick().isEmpty()) {
+            plugin.logError("Connected but bot nick is blank!");
+        } else {
+            if (!ircBot.botIdentPassword.isEmpty()) {
+                plugin.logInfo("Sending ident password to NickServ...");
+                ircBot.asyncIdentify(ircBot.botIdentPassword);
+            }
+            if (ircBot.sendRawMessageOnConnect) {
+                plugin.logInfo("Sending raw message to server");
+                ircBot.asyncRawlineNow(ircBot.rawMessage);
+            }
+            ircBot.broadcastIRCConnect(ircBot.botNick);
         }
-        if (ircBot.sendRawMessageOnConnect) {
-            plugin.logInfo("Sending raw message to server");   
-            ircBot.asyncRawlineNow(ircBot.rawMessage);           
-        }
-        ircBot.broadcastIRCConnect(ircBot.botNick);
     }
 }

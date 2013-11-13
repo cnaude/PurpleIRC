@@ -34,21 +34,17 @@ public class QuitListener extends ListenerAdapter {
      * @param event
      */
     @Override
-    public void onQuit(QuitEvent event) {
-        User user = event.getUser();
+    public void onQuit(QuitEvent event) {        
+        String nick = event.getUser().getNick();
         for (String channelName : ircBot.channelNicks.keySet()) {
-            if (ircBot.channelNicks.get(channelName).contains(user.getNick())) {
-                if (ircBot.enabledMessages.get(channelName).contains("irc-quit")) {
-                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircQuit)
-                            .replace("%NAME%", user.getNick())
-                            .replace("%REASON%", event.getReason())
-                            .replace("%CHANNEL%", channelName), "irc.message.quit");
-                    if (plugin.netPackets != null) {
-                        plugin.netPackets.remFromTabList(user.getNick());
-                    }
+            if (ircBot.channelNicks.get(channelName).contains(nick)) {
+                ircBot.broadcastIRCQuit(nick, channelName, event.getReason());
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.remFromTabList(nick);
                 }
-                ircBot.channelNicks.get(channelName).remove(user.getNick());
             }
+            ircBot.channelNicks.get(channelName).remove(nick);
         }
     }
 }
+

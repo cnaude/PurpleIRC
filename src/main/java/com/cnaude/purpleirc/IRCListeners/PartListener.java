@@ -16,7 +16,7 @@ import org.pircbotx.hooks.events.PartEvent;
  * @author cnaude
  */
 public class PartListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
@@ -29,7 +29,7 @@ public class PartListener extends ListenerAdapter {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-    
+
     /**
      *
      * @param event
@@ -37,18 +37,14 @@ public class PartListener extends ListenerAdapter {
     @Override
     public void onPart(PartEvent event) {
         Channel channel = event.getChannel();
-        User user = event.getUser();        
-        
+        User user = event.getUser();
+
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }
-        if (ircBot.enabledMessages.get(channel.getName()).contains("irc-part")) {
-            plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircPart)
-                    .replace("%NAME%", user.getNick())
-                    .replace("%CHANNEL%", channel.getName()), "irc.message.part");
-            if (plugin.netPackets != null) {
-                plugin.netPackets.remFromTabList(user.getNick());
-            }
+        ircBot.broadcastIRCPart(user.getNick(), channel.getName());
+        if (plugin.netPackets != null) {
+            plugin.netPackets.remFromTabList(user.getNick());
         }
     }
 }

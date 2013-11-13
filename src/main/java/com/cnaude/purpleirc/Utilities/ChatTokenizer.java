@@ -481,4 +481,11 @@ public class ChatTokenizer {
                 .replace("%MESSAGE%", message)
         );
     }
+    
+    public String msgChatResponseTokenizer(String target, String message, String template) {
+        return plugin.colorConverter.ircColorsToGame(template
+                .replace("%TARGET%", target)
+                .replace("%MESSAGE%", message)
+        );
+    }
 }

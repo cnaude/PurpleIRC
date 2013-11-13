@@ -82,6 +82,7 @@ message-format:
   irc-hero-join: '&f[&3IRC&f] %NAME%&f has joined %CHANNEL%.'
   irc-hero-kick: '&f[&3IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-hero-part: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
+  irc-hero-quit: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
   irc-hero-topic: '&f[&3IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
   # Message template for TitanChat to IRC messages
   titan-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
