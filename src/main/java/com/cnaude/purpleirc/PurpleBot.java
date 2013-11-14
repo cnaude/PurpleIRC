@@ -71,6 +71,7 @@ public final class PurpleBot {
     public String botServer;
     public String botNick;
     public String botLogin;
+    public String botRealName;
     public String botServerPass;
     public String commandPrefix;
     public String quitMessage;
@@ -123,6 +124,7 @@ public final class PurpleBot {
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
                 .setMessageDelay(chatDelay)
+                .setRealName(botRealName)
                 //.setAutoReconnect(autoConnect) // Why doesn't this work?
                 .setServer(botServer, botServerPort, botServerPass);
         addAutoJoinChannels(configBuilder);
@@ -291,8 +293,8 @@ public final class PurpleBot {
     public void saveConfig(CommandSender sender) {
         try {
             config.save(file);
-            sender.sendMessage(plugin.LOG_HEADER_F +
-                    " Saving bot \"" + botNick + "\" to " + file.getName());
+            sender.sendMessage(plugin.LOG_HEADER_F
+                    + " Saving bot \"" + botNick + "\" to " + file.getName());
         } catch (IOException ex) {
             plugin.logError(ex.getMessage());
             sender.sendMessage(ex.getMessage());
@@ -396,6 +398,11 @@ public final class PurpleBot {
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
+            botRealName = config.getString("realname", "PurpleBot ["
+                    + plugin.getServer().getPluginManager().getPlugin("PurpleIRC")
+                    .getDescription().getVersion() + "] ["
+                    + plugin.getServer().getPluginManager().getPlugin("PurpleIRC")
+                    .getDescription().getWebsite() + "]");
             botServer = config.getString("server", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
@@ -1627,7 +1634,7 @@ public final class PurpleBot {
         }
 
     }
-    
+
     // Broadcast topic changes from IRC
     /**
      *

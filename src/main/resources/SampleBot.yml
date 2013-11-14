@@ -6,6 +6,8 @@
 nick: AwesomeBot
 # login - Your bot's login name
 login: AwesomeName
+# realname
+realname: ''
 # server - IRC server to join
 server: irc.excample.com
 # port - IRC server port
