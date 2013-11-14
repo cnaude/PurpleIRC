@@ -398,11 +398,9 @@ public final class PurpleBot {
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
-            botRealName = config.getString("realname", "PurpleBot ["
-                    + plugin.getServer().getPluginManager().getPlugin("PurpleIRC")
-                    .getDescription().getVersion() + "] ["
-                    + plugin.getServer().getPluginManager().getPlugin("PurpleIRC")
-                    .getDescription().getWebsite() + "]");
+            botRealName = config.getString("realname", plugin.getServer()
+                    .getPluginManager().getPlugin("PurpleIRC")
+                    .getDescription().getWebsite());
             botServer = config.getString("server", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
