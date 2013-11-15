@@ -39,6 +39,7 @@ public class ConnectListener extends ListenerAdapter {
         if (bot.getUserBot().getNick().isEmpty()) {
             plugin.logError("Connected but bot nick is blank!");
         } else {
+            ircBot.broadcastIRCConnect(ircBot.botNick);
             if (!ircBot.botIdentPassword.isEmpty()) {
                 plugin.logInfo("Sending ident password to NickServ...");
                 ircBot.asyncIdentify(ircBot.botIdentPassword);
@@ -47,7 +48,6 @@ public class ConnectListener extends ListenerAdapter {
                 plugin.logInfo("Sending raw message to server");
                 ircBot.asyncRawlineNow(ircBot.rawMessage);
             }
-            ircBot.broadcastIRCConnect(ircBot.botNick);
         }
     }
 }

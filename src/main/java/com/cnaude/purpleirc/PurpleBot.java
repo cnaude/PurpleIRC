@@ -260,10 +260,13 @@ public final class PurpleBot {
     }
 
     public void asyncIRCMessage(final String target, final String message) {
+        plugin.logDebug("Entering aysncIRCMessage");
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
+                plugin.logDebug("About to send IRC message to " + target);
                 bot.sendIRC().message(target, message);
+                plugin.logDebug("Message sent to " + target);
             }
         });
     }

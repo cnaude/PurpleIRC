@@ -394,6 +394,7 @@ public class ChatTokenizer {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
         }
+        plugin.logDebug("[P]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%NAME%", pName)
                 .replace("%GROUP%", group)
@@ -441,7 +442,7 @@ public class ChatTokenizer {
             group = plugin.defaultPlayerGroup;
         }
 
-        plugin.logDebug("Raw message: " + message);
+        plugin.logDebug("[S]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", player)
                 .replace("%NAME%", player)
                 .replace("%GROUP%", group)
