@@ -45,7 +45,7 @@ public class ServerResponseListener extends ListenerAdapter {
             plugin.logInfo("Banned from the channel.");
         }
         
-        plugin.logDebug("Server response: " + event.getRawLine());
+        //plugin.logDebug("Server response: " + event.getRawLine());
         
     }
 }

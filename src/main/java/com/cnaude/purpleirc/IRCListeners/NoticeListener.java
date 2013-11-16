@@ -41,6 +41,7 @@ public class NoticeListener extends ListenerAdapter {
         String notice = event.getNotice();
         User user = event.getUser();        
 
+        plugin.logInfo("-" + user.getNick() + "-" + message);
         if (!ircBot.botChannels.contains(channel.getName())) {
             return;
         }        
