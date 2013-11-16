@@ -131,6 +131,10 @@ public final class PurpleBot {
         for (ListenerAdapter ll : ircListeners) {
             configBuilder.addListener(ll);
         }
+        if (!botIdentPassword.isEmpty()) {
+            plugin.logDebug("Setting IdentPassword...");
+            configBuilder.setNickservPassword(botIdentPassword);
+        }
         if (ssl) {
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
             socketFactory.disableDiffieHellman();
@@ -401,9 +405,12 @@ public final class PurpleBot {
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
-            botRealName = config.getString("realname", plugin.getServer()
-                    .getPluginManager().getPlugin("PurpleIRC")
-                    .getDescription().getWebsite());
+            botRealName = config.getString("realname", "");
+            if (botRealName.isEmpty()) {
+                botRealName = plugin.getServer()
+                        .getPluginManager().getPlugin("PurpleIRC")
+                        .getDescription().getWebsite();
+            }
             botServer = config.getString("server", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
@@ -709,7 +716,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     public void heroAction(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
