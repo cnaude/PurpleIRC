@@ -76,6 +76,7 @@ message-format:
   faction-enemy-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
   # Message template for Herochat to IRC messages
   hero-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
+  hero-action: '&0[&2%CHANNEL%&0] ***%NAME%&0 %MESSAGE%'
   # Message templates for IRC to Herochat messages
   irc-hero-action: '&f[&3IRC&f] ***%NAME%&f %MESSAGE%'
   irc-hero-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'  

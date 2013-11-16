@@ -701,10 +701,35 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + hChannel);
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                asyncIRCMessage(channelName, plugin.tokenizer.chatHeroTokenizer(player, message, hColor, hChannel, hNick));
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .chatHeroTokenizer(player, message, hColor, hChannel, hNick, plugin.heroChat));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
+            }
+        }
+    }
+    
+    public void heroAction(Chatter chatter, ChatColor chatColor, String message) {
+        Player player = chatter.getPlayer();
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            String hChannel = chatter.getActiveChannel().getName();
+            String hNick = chatter.getActiveChannel().getNick();
+            String hColor = chatColor.toString();
+            plugin.logDebug("HC Channel: " + hChannel);
+            if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-action")
+                    || enabledMessages.get(channelName).contains("hero-action")) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .chatHeroTokenizer(player, message, hColor, hChannel, hNick, plugin.heroAction));
+            } else {
+                plugin.logDebug("Player " + player.getName() + " is in \""
+                        + hChannel + "\" but hero-" + hChannel + "-action is disabled.");
             }
         }
     }

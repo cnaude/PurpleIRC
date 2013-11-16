@@ -32,6 +32,8 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,6 +68,7 @@ public class PurpleIRC extends JavaPlugin {
             mcMMOPartyChat,
             consoleChat,
             heroChat,
+            heroAction,
             factionPublicChat,
             factionAllyChat,
             factionEnemyChat,
@@ -125,7 +128,7 @@ public class PurpleIRC extends JavaPlugin {
     ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();    
+    public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, String> ircHeroChannelMessages = new HashMap<String, String>();
     VaultHook vaultHelpers;
     VanishHook vanishHook;
@@ -136,6 +139,9 @@ public class PurpleIRC extends JavaPlugin {
     public IRCMessageHandler ircMessageHandler;
     public CommandQueueWatcher commandQueue;
     public ChatTokenizer tokenizer;
+    private YamlConfiguration heroConfig;
+    public String heroChatEmoteFormat;
+    private File heroConfigFile;
 
     /**
      *
@@ -164,6 +170,17 @@ public class PurpleIRC extends JavaPlugin {
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
+            heroConfig = new YamlConfiguration();
+            heroConfigFile = new File(getServer().getPluginManager()
+                    .getPlugin("Herochat").getDataFolder(), "config.yml");
+            try {
+                heroConfig.load(heroConfigFile);
+            } catch (IOException ex) {
+                Logger.getLogger(PurpleIRC.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidConfigurationException ex) {
+                Logger.getLogger(PurpleIRC.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            heroChatEmoteFormat = heroConfig.getString("format.emote", "");
         } else {
             logInfo("HeroChat not detected.");
         }
@@ -305,6 +322,7 @@ public class PurpleIRC extends JavaPlugin {
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
 
         heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
+        heroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-action", ""));
         ircHeroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-action", ""));
         ircHeroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-chat", ""));
         ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
@@ -578,7 +596,7 @@ public class PurpleIRC extends JavaPlugin {
     public String getServerMotd() {
         return "MOTD: " + getServer().getMotd();
     }
-            
+
     /**
      *
      * @param ircBot

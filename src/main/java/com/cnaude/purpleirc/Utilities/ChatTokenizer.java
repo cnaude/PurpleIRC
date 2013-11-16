@@ -287,10 +287,11 @@ public class ChatTokenizer {
      * @param hColor
      * @param hChannel
      * @param hNick
+     * @param template
      * @return
      */
-    public String chatHeroTokenizer(Player player, String message, String hColor, String hChannel, String hNick) {
-        return gameChatToIRCTokenizer(player, plugin.heroChat, message)
+    public String chatHeroTokenizer(Player player, String message, String hColor, String hChannel, String hNick, String template) {
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", hNick)
                 .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))

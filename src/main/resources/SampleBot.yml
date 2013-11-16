@@ -99,10 +99,13 @@ channels:
     # Hero chat message types that are sent from game to IRC
     # Global HC channel
     - hero-Global-chat
+    - hero-Global-action
     # Any HC channel
     - hero-chat
+    - hero-action
     # Specific HC channel
     #- hero-[CHANNEL]-chat
+    #- hero-[CHANNEL]-action
     # Various IRC messages that are sent to Herochat channel. Receiving HC
     # channel name is configured per hero-channel: 'CHANNEL NAME'
     #- irc-hero-action
