@@ -135,7 +135,7 @@ public final class PurpleBot {
             plugin.logInfo("Setting IdentPassword ...");
             configBuilder.setNickservPassword(botIdentPassword);
         }
-        if (ssl) {            
+        if (ssl) {
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
             socketFactory.disableDiffieHellman();
             if (trustAllCerts) {
@@ -285,6 +285,18 @@ public final class PurpleBot {
                 bot.sendIRC().ctcpResponse(target, message);
             }
         });
+    }
+
+    public void blockingIRCMessage(final String target, final String message) {        
+        plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
+        bot.sendIRC().message(target, message);
+        plugin.logDebug("[blockingIRCMessage] Message sent to " + target);
+    }
+
+    public void blockingCTCPMessage(final String target, final String message) {        
+        plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target);
+        bot.sendIRC().ctcpResponse(target, message);
+        plugin.logDebug("[blockingCTCPMessage] Message sent to " + target);
     }
 
     public void asyncCTCPCommand(final String target, final String command) {

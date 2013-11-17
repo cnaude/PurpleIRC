@@ -138,6 +138,7 @@ public class PurpleIRC extends JavaPlugin {
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
     public CommandQueueWatcher commandQueue;
+    public IRCMessageQueueWatcher messageQueue;
     public ChatTokenizer tokenizer;
     private YamlConfiguration heroConfig;
     public String heroChatEmoteFormat;
@@ -239,6 +240,7 @@ public class PurpleIRC extends JavaPlugin {
         botWatcher = new BotWatcher(this);
         ircMessageHandler = new IRCMessageHandler(this);
         commandQueue = new CommandQueueWatcher(this);
+        messageQueue = new IRCMessageQueueWatcher(this);
     }
 
     /**

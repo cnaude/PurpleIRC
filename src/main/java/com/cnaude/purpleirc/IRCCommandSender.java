@@ -11,44 +11,40 @@ import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author Chris Naude
- * We have to implement our own CommandSender so that we can
+ * @author Chris Naude We have to implement our own CommandSender so that we can
  * receive output from the command dispatcher.
  */
-public class IRCCommandSender implements CommandSender {    
+public class IRCCommandSender implements CommandSender {
+
     private final PurpleBot ircBot;
     private final String target;
     private final PurpleIRC plugin;
     private final boolean ctcpResponse;
-    
+
     /**
      *
      * @param message
      */
     @Override
-    public void sendMessage(String message) {     
-        if (ctcpResponse) {
-            ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));                
-        } else {            
-            ircBot.asyncIRCMessage(target, plugin.colorConverter.gameColorsToIrc(message));                        
-        }
+    public void sendMessage(String message) {
+        plugin.logDebug("sendMessage[single]: " + message);
+        plugin.messageQueue.add(new IRCMessage(ircBot, plugin, target,
+                plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
-    
+
     /**
      *
      * @param messages
      */
-    @Override 
-    public void sendMessage(String[] messages) {  
+    @Override
+    public void sendMessage(String[] messages) {
         for (String message : messages) {
-            if (ctcpResponse) {
-                ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
-            } else {
-                ircBot.asyncCTCPMessage(target, plugin.colorConverter.gameColorsToIrc(message));  
-            }
+            plugin.logDebug("sendMessage[multi]: " + message);
+            plugin.messageQueue.add(new IRCMessage(ircBot, plugin, target,
+                    plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
         }
     }
-    
+
     /**
      *
      * @param ircBot
@@ -56,31 +52,31 @@ public class IRCCommandSender implements CommandSender {
      * @param plugin
      * @param ctcpResponse
      */
-    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse) {        
+    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse) {
         this.target = target;
-        this.ircBot = ircBot;        
+        this.ircBot = ircBot;
         this.plugin = plugin;
         this.ctcpResponse = ctcpResponse;
     }
-    
+
     /**
      *
      * @return
      */
-    @Override 
+    @Override
     public Server getServer() {
         return Bukkit.getServer();
     }
-    
+
     /**
      *
      * @return
      */
-    @Override 
+    @Override
     public String getName() {
         return "";
     }
-    
+
     /**
      *
      * @return
