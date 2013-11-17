@@ -132,14 +132,17 @@ public final class PurpleBot {
             configBuilder.addListener(ll);
         }
         if (!botIdentPassword.isEmpty()) {
-            plugin.logDebug("Setting IdentPassword...");
+            plugin.logInfo("Setting IdentPassword ...");
             configBuilder.setNickservPassword(botIdentPassword);
         }
-        if (ssl) {
+        if (ssl) {            
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
             socketFactory.disableDiffieHellman();
             if (trustAllCerts) {
+                plugin.logInfo("Enabling SSL and trusting all certificates ...");
                 socketFactory.trustAllCertificates();
+            } else {
+                plugin.logInfo("Enabling SSL ...");
             }
             configBuilder.setSocketFactory(socketFactory);
         }
