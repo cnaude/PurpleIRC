@@ -261,6 +261,7 @@ public class PurpleIRC extends JavaPlugin {
             for (Entry entry : ircBots.entrySet()) {
                 PurpleBot ircBot = (PurpleBot) entry.getValue();
                 commandQueue.cancel();
+                messageQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }

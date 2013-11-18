@@ -32,7 +32,7 @@ public class IRCMessageQueueWatcher {
                     }
                 }
             }
-        }, 20, 20);
+        }, 5, 5);
     }
 
     /**
@@ -48,6 +48,7 @@ public class IRCMessageQueueWatcher {
      */
     public void add(IRCMessage ircMessage) {
         queue.offer(ircMessage);
+        plugin.logDebug("[" + queue.size() + "] Adding message to queue.");
     }
 
 }
