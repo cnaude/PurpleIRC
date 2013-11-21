@@ -421,24 +421,19 @@ public class ChatTokenizer {
         if (!worldName.isEmpty()) {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
-        }  
-        plugin.logDebug("C1");
+        }          
         if (pSuffix == null) {
             pSuffix = plugin.defaultPlayerSuffix;
-        }
-        plugin.logDebug("C2");
+        }        
         if (pPrefix == null) {
             pPrefix = plugin.defaultPlayerPrefix;
-        }
-        plugin.logDebug("C3");
+        }        
         if (gSuffix == null) {
             gSuffix = plugin.defaultGroupSuffix;
         }
-        plugin.logDebug("C4");
         if (gPrefix == null) {
             gPrefix = plugin.defaultGroupPrefix;
         }
-        plugin.logDebug("C5");
         if (group == null) {
             group = plugin.defaultPlayerGroup;
         }

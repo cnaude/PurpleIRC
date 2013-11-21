@@ -1,5 +1,6 @@
 package com.cnaude.purpleirc;
 
+import org.bukkit.scheduler.BukkitTask;
 import org.pircbotx.Channel;
 
 /**
@@ -10,7 +11,7 @@ import org.pircbotx.Channel;
 public class ChannelWatcher {
     
     private final PurpleIRC plugin;
-    private final int taskID;
+    private final BukkitTask bt;
     
     /**
      *
@@ -19,7 +20,7 @@ public class ChannelWatcher {
     public ChannelWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
-        taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+        bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
             @Override
             public void run() {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
@@ -37,6 +38,6 @@ public class ChannelWatcher {
      *
      */
     public void cancel() {
-        this.plugin.getServer().getScheduler().cancelTask(taskID);        
+        bt.cancel();
     }
 }

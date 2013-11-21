@@ -287,13 +287,13 @@ public final class PurpleBot {
         });
     }
 
-    public void blockingIRCMessage(final String target, final String message) {        
+    public void blockingIRCMessage(final String target, final String message) {
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
         bot.sendIRC().message(target, message);
         plugin.logDebug("[blockingIRCMessage] Message sent to " + target);
     }
 
-    public void blockingCTCPMessage(final String target, final String message) {        
+    public void blockingCTCPMessage(final String target, final String message) {
         plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target);
         bot.sendIRC().ctcpResponse(target, message);
         plugin.logDebug("[blockingCTCPMessage] Message sent to " + target);
@@ -1193,18 +1193,10 @@ public final class PurpleBot {
      * @param reload
      */
     public void asyncQuit(final Boolean reload) {
-        // We want to void blocking the main Bukkit thread
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                //bot.stopBotReconnect();
-                if (bot.isConnected()) {
-                    if (quitMessage.isEmpty()) {
-                        bot.sendIRC().quitServer();
-                    } else {
-                        bot.sendIRC().quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
-                    }
-                }
+                quit();
                 if (reload) {
                     buildBot();
                 }
@@ -1215,7 +1207,12 @@ public final class PurpleBot {
 
     public void quit() {
         if (bot.isConnected()) {
-            bot.sendIRC().quitServer();
+            plugin.logDebug("Q: " + quitMessage);
+            if (quitMessage.isEmpty()) {
+                bot.sendIRC().quitServer();
+            } else {
+                bot.sendIRC().quitServer(plugin.colorConverter.gameColorsToIrc(quitMessage));
+            }
         }
     }
 
@@ -1658,7 +1655,6 @@ public final class PurpleBot {
                                     Herochat.getChannelManager(),
                                     heroChannel.get(myChannel)));
         }
-
     }
 
     public void broadcastIRCQuit(String nick, String myChannel, String reason) {

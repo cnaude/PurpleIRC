@@ -20,7 +20,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
@@ -106,7 +105,7 @@ public class PurpleIRC extends JavaPlugin {
             noPermForIRCCommand;
 
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
-            + ChatColor.RED + "'. Type '" + ChatColor.WHITE + "/irc listbots"
+            + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
 
     public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
@@ -133,7 +132,7 @@ public class PurpleIRC extends JavaPlugin {
     VaultHook vaultHelpers;
     VanishHook vanishHook;
     public FactionChatHook fcHook;
-    public NetPackets netPackets = null;
+    public NetPackets netPackets = null;    
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
@@ -160,7 +159,7 @@ public class PurpleIRC extends JavaPlugin {
         saveConfig();
         loadConfig();
         if (identServerEnabled) {
-            logInfo("Starting Ident Server");
+            logInfo("Starting Ident Server ...");
             try {
                 IdentServer.startServer();
             } catch (Exception ex) {
@@ -228,7 +227,7 @@ public class PurpleIRC extends JavaPlugin {
         setupVault();
         if (customTabList) {
             if (checkForProtocolLib()) {
-                logInfo("Hooked into ProtocolLib!");
+                logInfo("Hooked into ProtocolLib! Custom tab list is enabled.");
                 netPackets = new NetPackets(this);
             } else {
                 logError("ProtocolLib not found! The custom tab list is disabled.");
@@ -249,17 +248,18 @@ public class PurpleIRC extends JavaPlugin {
     @Override
     public void onDisable() {
         if (channelWatcher != null) {
+            logDebug("Disabling channelWatcher ...");
             channelWatcher.cancel();
         }
         if (botWatcher != null) {
+            logDebug("Disabling botWatcher ...");
             botWatcher.cancel();
         }
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
-            for (Entry entry : ircBots.entrySet()) {
-                PurpleBot ircBot = (PurpleBot) entry.getValue();
+            for (PurpleBot ircBot : ircBots.values()) {
                 commandQueue.cancel();
                 messageQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());

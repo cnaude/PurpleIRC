@@ -140,7 +140,6 @@ public class GameListeners implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onServerCommandEvent(ServerCommandEvent event) {
         String cmd = event.getCommand();
-        plugin.logDebug("CE: " + cmd);
         if (cmd.startsWith("say ")) {
             String msg = cmd.split(" ", 2)[1];
             for (PurpleBot ircBot : plugin.ircBots.values()) {

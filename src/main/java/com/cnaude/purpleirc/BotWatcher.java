@@ -1,5 +1,7 @@
 package com.cnaude.purpleirc;
 
+import org.bukkit.scheduler.BukkitTask;
+
 /** This thread checks each bot for connectivity and reconnects when appropriate.
  *
  * @author Chris Naude
@@ -8,7 +10,7 @@ package com.cnaude.purpleirc;
 public class BotWatcher {
     
     private final PurpleIRC plugin;
-    private final int taskID;
+    private final BukkitTask bt;
     
     /**
      *
@@ -17,7 +19,7 @@ public class BotWatcher {
     public BotWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
-        taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+        bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
             @Override
             public void run() {
                 plugin.logDebug("Checking connection status of IRC bots.");
@@ -39,7 +41,7 @@ public class BotWatcher {
      *
      */
     public void cancel() {
-        this.plugin.getServer().getScheduler().cancelTask(taskID);        
+        bt.cancel();
     }
 
 }

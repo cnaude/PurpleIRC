@@ -2,6 +2,7 @@ package com.cnaude.purpleirc;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -10,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class IRCMessageQueueWatcher {
 
     private final PurpleIRC plugin;
-    private final int taskID;
+    private final BukkitTask bt;
     private Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
 
     /**
@@ -20,7 +21,7 @@ public class IRCMessageQueueWatcher {
     public IRCMessageQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
-        taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+        bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
             @Override
             public void run() {
                 IRCMessage ircMessage = queue.poll();   
@@ -28,18 +29,18 @@ public class IRCMessageQueueWatcher {
                     if (ircMessage.ctcpResponse) {
                         ircMessage.ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
                     } else {
-                        ircMessage.ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
+                        ircMessage.ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);                        
                     }
                 }
             }
-        }, 5, 5);
+        }, 5L, 5L);
     }
 
     /**
      *
      */
     public void cancel() {
-        this.plugin.getServer().getScheduler().cancelTask(taskID);
+        bt.cancel();
     }
 
     /**
