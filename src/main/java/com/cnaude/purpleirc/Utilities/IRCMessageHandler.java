@@ -126,6 +126,9 @@ public class IRCMessageHandler {
                         sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
                     } else if (gameCommand.equals("@msg")) {
                         ircBot.playerChat(user.getNick(), myChannel, target, commandArgs);
+                    } else if (gameCommand.equals("@clearqueue")) {
+                        sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
+                        sendMessage(ircBot, target, plugin.messageQueue.clearQueue(), ctcpResponse);
                     } else {
                         if (commandArgs == null) {
                             commandArgs = "";

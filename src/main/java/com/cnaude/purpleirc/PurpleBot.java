@@ -29,12 +29,14 @@ import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.dthielke.herochat.Herochat;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -73,6 +75,7 @@ public final class PurpleBot {
     public String botLogin;
     public String botRealName;
     public String botServerPass;
+    public String charSet;
     public String commandPrefix;
     public String quitMessage;
     public String botIdentPassword;
@@ -145,6 +148,18 @@ public final class PurpleBot {
                 plugin.logInfo("Enabling SSL ...");
             }
             configBuilder.setSocketFactory(socketFactory);
+        }
+        if (charSet.isEmpty()) {
+            plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+        } else {
+            if (Charset.isSupported(charSet)) {
+                plugin.logInfo("Using character set: " + charSet);
+                configBuilder.setEncoding(Charset.forName(charSet));
+            } else {
+                plugin.logError("Invalid character set: " + charSet);
+                plugin.logInfo("Available character sets: " + Joiner.on(", ").join(Charset.availableCharsets().keySet()));
+                plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+            }
         }
         Configuration configuration = configBuilder.buildConfiguration();
         bot = new PircBotX(configuration);
@@ -427,6 +442,7 @@ public final class PurpleBot {
                         .getDescription().getWebsite();
             }
             botServer = config.getString("server", "");
+            charSet = config.getString("charset", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
             botServerPort = config.getInt("port");

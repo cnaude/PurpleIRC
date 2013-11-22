@@ -3,6 +3,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class CommandQueueWatcher {
     
     private final PurpleIRC plugin;
-    private final int taskID;
+    private final BukkitTask bt;
     private Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
     
     /**
@@ -22,7 +23,7 @@ public class CommandQueueWatcher {
     public CommandQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
-        taskID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+        bt = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new Runnable() {        
             @Override
             public void run() {                
                 IRCCommand ircCommand = queue.poll();
@@ -31,14 +32,22 @@ public class CommandQueueWatcher {
                     plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));                    
                 }
             }
-        }, 20, 20);
+        }, 0, 60);
     }
     
     /**
      *
      */
     public void cancel() {
-        this.plugin.getServer().getScheduler().cancelTask(taskID);        
+        bt.cancel();
+    }
+    
+    public String clearQueue() {
+        int size = queue.size();
+        if (!queue.isEmpty()) {          
+            queue.clear();
+        } 
+        return "Elements removed from command queue: " + size;
     }
     
     /**

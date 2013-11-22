@@ -1,8 +1,9 @@
 package com.cnaude.purpleirc;
 
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -11,8 +12,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class IRCMessageQueueWatcher {
 
     private final PurpleIRC plugin;
-    private final BukkitTask bt;
-    private Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
+    private final Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
+    Timer timer;
 
     /**
      *
@@ -20,27 +21,39 @@ public class IRCMessageQueueWatcher {
      */
     public IRCMessageQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
+        timer = new Timer();
+        timer.schedule(new WatcherTask(), 0, 1000);
+    }
 
-        bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
-            @Override
-            public void run() {
-                IRCMessage ircMessage = queue.poll();   
-                if (ircMessage != null) {
-                    if (ircMessage.ctcpResponse) {
-                        ircMessage.ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
-                    } else {
-                        ircMessage.ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);                        
-                    }
+    class WatcherTask extends TimerTask {
+
+        @Override
+        public void run() {
+            IRCMessage ircMessage = queue.poll();
+            if (ircMessage != null) {
+                if (ircMessage.ctcpResponse) {
+                    ircMessage.ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
+                } else {
+                    ircMessage.ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
                 }
             }
-        }, 5L, 5L);
+        }
+
     }
 
     /**
      *
      */
     public void cancel() {
-        bt.cancel();
+        timer.cancel();
+    }
+    
+    public String clearQueue() {
+        int size = queue.size();
+        if (!queue.isEmpty()) {          
+            queue.clear();
+        } 
+        return "Elements removed from message queue: " + size;
     }
 
     /**

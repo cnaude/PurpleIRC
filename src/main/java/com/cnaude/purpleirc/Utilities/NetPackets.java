@@ -102,7 +102,6 @@ public class NetPackets {
                     String nick = user.getNick();
                     addToTabList(nick, ircBot, channel);
                 }
-
             }
         }, 5);
 
