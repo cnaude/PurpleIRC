@@ -1,7 +1,8 @@
 PurpleIRC
 =========
 
-Minecraft Bukkit plugin that provides an IRC bridge. This plugin utilizes the PircBotX API. https://code.google.com/p/pircbotx/
+PurpleIRC is a Minecraft Bukkit plugin that connects to IRC as a bot. It will relay messages between the game and IRC. 
+It uses the PircBotX API. https://code.google.com/p/pircbotx/
 
 Latest dev build: 
 * https://dl.dropboxusercontent.com/u/30679730/dist/PurpleIRC.jar
