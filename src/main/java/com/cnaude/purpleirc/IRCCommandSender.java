@@ -28,7 +28,7 @@ public class IRCCommandSender implements CommandSender {
     @Override
     public void sendMessage(String message) {
         plugin.logDebug("sendMessage[single]: " + message);
-        plugin.messageQueue.add(new IRCMessage(ircBot, target,
+        ircBot.messageQueue.add(new IRCMessage(target,
                 plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
 
@@ -40,7 +40,7 @@ public class IRCCommandSender implements CommandSender {
     public void sendMessage(String[] messages) {
         for (String message : messages) {
             plugin.logDebug("sendMessage[multi]: " + message);
-            plugin.messageQueue.add(new IRCMessage(ircBot, target,
+            ircBot.messageQueue.add(new IRCMessage(target,
                     plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
         }
     }

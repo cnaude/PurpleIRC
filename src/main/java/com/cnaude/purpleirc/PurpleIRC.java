@@ -102,46 +102,45 @@ public class PurpleIRC extends JavaPlugin {
             playerAFK,
             playerNotAFK,
             invalidIRCCommand,
-            noPermForIRCCommand;
+            noPermForIRCCommand,
+            customTabPrefix,
+            reportRTSSend,
+            cleverSend,
+            broadcastMessage,
+            broadcastConsoleMessage,
+            heroChatEmoteFormat;
 
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
 
     public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
-
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
-    public String customTabPrefix;
-    public String reportRTSSend;
-    public String cleverSend;
-    public String broadcastMessage,
-            broadcastConsoleMessage;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
     public boolean exactNickMatch;
-    Long ircConnCheckInterval;
-    Long ircChannelCheckInterval;
-    ChannelWatcher channelWatcher;
+    public Long ircConnCheckInterval;
+    public Long ircChannelCheckInterval;
+    public ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, String> ircHeroChannelMessages = new HashMap<String, String>();
-    VaultHook vaultHelpers;
-    VanishHook vanishHook;
     public FactionChatHook fcHook;
-    public NetPackets netPackets = null;    
+    public NetPackets netPackets = null;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
+    
     public CommandQueueWatcher commandQueue;
-    public IRCMessageQueueWatcher messageQueue;
     public ChatTokenizer tokenizer;
-    private YamlConfiguration heroConfig;
-    public String heroChatEmoteFormat;
     private File heroConfigFile;
+    public VaultHook vaultHelpers;
+    public VanishHook vanishHook;
+    private YamlConfiguration heroConfig;
 
     /**
      *
@@ -239,7 +238,6 @@ public class PurpleIRC extends JavaPlugin {
         botWatcher = new BotWatcher(this);
         ircMessageHandler = new IRCMessageHandler(this);
         commandQueue = new CommandQueueWatcher(this);
-        messageQueue = new IRCMessageQueueWatcher(this);
     }
 
     /**
@@ -260,8 +258,7 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("Disconnecting IRC bots.");
             for (PurpleBot ircBot : ircBots.values()) {
-                commandQueue.cancel();
-                messageQueue.cancel();
+                commandQueue.cancel();                
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }

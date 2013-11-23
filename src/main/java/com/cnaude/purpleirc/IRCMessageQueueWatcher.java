@@ -12,17 +12,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class IRCMessageQueueWatcher {
 
     private final PurpleIRC plugin;
+    private final PurpleBot ircBot;
     private final Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
     Timer timer;
 
     /**
      *
      * @param plugin
+     * @param ircBot
      */
-    public IRCMessageQueueWatcher(final PurpleIRC plugin) {
+    public IRCMessageQueueWatcher(final PurpleBot ircBot, final PurpleIRC plugin) {
         this.plugin = plugin;
+        this.ircBot = ircBot;
         timer = new Timer();
-        timer.schedule(new WatcherTask(), 0, 1000);
+        timer.schedule(new WatcherTask(), 0, ircBot.chatDelay);
+        plugin.logDebug("Message queue initialized for bot " + ircBot.botNick
+        + ". Interval: " + ircBot.chatDelay + "ms");
     }
 
     class WatcherTask extends TimerTask {
@@ -32,9 +37,9 @@ public class IRCMessageQueueWatcher {
             IRCMessage ircMessage = queue.poll();
             if (ircMessage != null) {
                 if (ircMessage.ctcpResponse) {
-                    ircMessage.ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
+                    ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
                 } else {
-                    ircMessage.ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
+                    ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
                 }
             }
         }

@@ -104,6 +104,7 @@ public final class PurpleBot {
     public ArrayList<CommandSender> whoisSenders;
     public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
     private final ArrayList<ListenerAdapter> ircListeners = new ArrayList<ListenerAdapter>();
+    public IRCMessageQueueWatcher messageQueue;
 
     /**
      *
@@ -118,6 +119,7 @@ public final class PurpleBot {
         loadConfig();
         addListeners();
         buildBot();
+        messageQueue = new IRCMessageQueueWatcher(this, plugin);
     }
 
     public void buildBot() {
@@ -283,6 +285,8 @@ public final class PurpleBot {
 
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
+        messageQueue.add(new IRCMessage(target, message, false));
+        /*
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -291,15 +295,20 @@ public final class PurpleBot {
                 plugin.logDebug("Message sent to " + target);
             }
         });
+        */
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
+        plugin.logDebug("Entering asyncCTCPMessage");
+        messageQueue.add(new IRCMessage(target, message, true));
+        /*
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 bot.sendIRC().ctcpResponse(target, message);
             }
         });
+        */
     }
 
     public void blockingIRCMessage(final String target, final String message) {
@@ -791,8 +800,7 @@ public final class PurpleBot {
             }
             plugin.logDebug("TC Channel: " + tChannel);
             if (enabledMessages.get(channelName).contains("titan-" + tChannel + "-chat")
-                    || enabledMessages.get(channelName).contains("titan-chat")) {
-                //asyncSendMessage(channelName, plugin.tokenizer.titanChatTokenizer(player, tChannel, tColor, message));
+                    || enabledMessages.get(channelName).contains("titan-chat")) {                
                 asyncIRCMessage(channelName, plugin.tokenizer.titanChatTokenizer(player, tChannel, tColor, message));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""

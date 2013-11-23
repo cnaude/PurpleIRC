@@ -6,14 +6,11 @@ package com.cnaude.purpleirc;
  */
 public class IRCMessage {
 
-    PurpleBot ircBot;
     String target;
     String message;
     boolean ctcpResponse;
 
-    public IRCMessage(PurpleBot ircBot, String target,
-            String message, boolean ctcpResponse) {
-        this.ircBot = ircBot;
+    public IRCMessage(String target, String message, boolean ctcpResponse) {
         this.target = target;
         this.message = message;
         this.ctcpResponse = ctcpResponse;
