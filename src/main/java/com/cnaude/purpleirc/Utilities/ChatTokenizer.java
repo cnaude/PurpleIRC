@@ -274,9 +274,10 @@ public class ChatTokenizer {
         } else {
             return "";
         }
-        return gameChatToIRCTokenizer(player, template, message)
+        return plugin.colorConverter.gameColorsToIrc(
+                gameChatToIRCTokenizer(player, template, message)
                 .replace("%FACTIONTAG%", chatTag)
-                .replace("%FACTIONMODE%", chatMode);
+                .replace("%FACTIONMODE%", chatMode));
     }
 
     /**

@@ -27,6 +27,7 @@ import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
+import com.cnaude.purpleirc.Utilities.Query;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.io.IOException;
 import org.bukkit.ChatColor;
@@ -134,7 +135,7 @@ public class PurpleIRC extends JavaPlugin {
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
-    
+
     public CommandQueueWatcher commandQueue;
     public ChatTokenizer tokenizer;
     private File heroConfigFile;
@@ -258,7 +259,7 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("Disconnecting IRC bots.");
             for (PurpleBot ircBot : ircBots.values()) {
-                commandQueue.cancel();                
+                commandQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }
@@ -621,6 +622,39 @@ public class PurpleIRC extends JavaPlugin {
                 + "/" + getServer().getMaxPlayers() + "): "
                 + Joiner.on(", ").join(playerList);
         return msg;
+    }
+
+    public String getRemotePlayers(String commandArgs) {
+        if (commandArgs != null) {
+            String host;
+            int port = 25565;
+            if (commandArgs.contains(":")) {
+                host = commandArgs.split(":")[0];
+                port = Integer.parseInt(commandArgs.split(":")[1]);
+            } else {
+                host = commandArgs;
+            }
+            Query query = new Query(host, port);
+            try {
+                query.sendQuery();
+            } catch (IOException ex) {
+                return ex.getMessage();                
+            }
+            String players[] = query.getOnlineUsernames();
+            String m;
+            if (players.length == 0) {
+                m = "There are no players on " + host
+                        + ":" + port;
+            } else {
+                m = "Players on " + host + "("
+                        + players.length 
+                        + "): " + Joiner.on(", ")
+                        .join(players);
+            }
+            return m;
+        } else {
+            return "Invalid host.";
+        }
     }
 
     /**
