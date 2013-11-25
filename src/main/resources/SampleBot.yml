@@ -143,6 +143,7 @@ channels:
     #  @ochat - send message to game (overrides irc-chat)
     #  @motd - display minecraft server motd
     #  @msg - send private message to player
+    #  @query - query remote minecraft server
     # The modes can be *, o , v , h, q or s. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
