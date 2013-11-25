@@ -286,29 +286,11 @@ public final class PurpleBot {
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
         messageQueue.add(new IRCMessage(target, message, false));
-        /*
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                plugin.logDebug("About to send IRC message to " + target);
-                bot.sendIRC().message(target, message);
-                plugin.logDebug("Message sent to " + target);
-            }
-        });
-        */
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.logDebug("Entering asyncCTCPMessage");
         messageQueue.add(new IRCMessage(target, message, true));
-        /*
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                bot.sendIRC().ctcpResponse(target, message);
-            }
-        });
-        */
     }
 
     public void blockingIRCMessage(final String target, final String message) {
@@ -705,11 +687,15 @@ public final class PurpleBot {
                     playerFactionName = "unknown";
                 }
 
-                String chatName = "faction-" + playerChatMode + "-chat";
+                String chatName = "faction-" + playerChatMode.toLowerCase() + "-chat";
                 plugin.logDebug("Faction [Player: " + player.getName()
-                        + "] [Tag: " + playerFactionName + "] [Mode: " + playerChatMode + "]");
-                if (enabledMessages.get(channelName).contains(chatName)) {
-                    asyncIRCMessage(channelName, plugin.tokenizer.chatFactionTokenizer(player, message, playerFactionName, playerChatMode));
+                        + "] [Tag: " + playerFactionName + "] [Mode: "
+                        + playerChatMode + "]");
+                if (enabledMessages.get(channelName)
+                        .contains(chatName)) {
+                    asyncIRCMessage(channelName, plugin.tokenizer
+                            .chatFactionTokenizer(player, message,
+                                    playerFactionName, playerChatMode));
                 } else {
                     plugin.logDebug("Player " + player.getName() + " is in chat mode \""
                             + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
@@ -800,7 +786,7 @@ public final class PurpleBot {
             }
             plugin.logDebug("TC Channel: " + tChannel);
             if (enabledMessages.get(channelName).contains("titan-" + tChannel + "-chat")
-                    || enabledMessages.get(channelName).contains("titan-chat")) {                
+                    || enabledMessages.get(channelName).contains("titan-chat")) {
                 asyncIRCMessage(channelName, plugin.tokenizer.titanChatTokenizer(player, tChannel, tColor, message));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""

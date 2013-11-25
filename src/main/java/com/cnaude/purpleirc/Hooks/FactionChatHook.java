@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 public class FactionChatHook {
 
     private final PurpleIRC plugin;
-    FactionChatAPI api;
 
     /**
      *
@@ -23,7 +22,6 @@ public class FactionChatHook {
      */
     public FactionChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        api = new FactionChatAPI();
     }
     
     /**
@@ -53,7 +51,7 @@ public class FactionChatHook {
     public String getFactionName(Player player) {
         String factionName = null;
         try {
-            factionName = api.getFactionName(player);
+            factionName = FactionChatAPI.getFactionName(player);            
             plugin.logDebug("fcHook => [FN: " + factionName + "] [" + player.getName() + "]");
         } catch (Exception ex) {
             plugin.logError("fcHook ERROR: " + ex.getMessage());
@@ -61,6 +59,6 @@ public class FactionChatHook {
         if (factionName == null) {
             factionName = "unknown";
         }
-        return factionName.toLowerCase();
+        return factionName;
     }
 }
