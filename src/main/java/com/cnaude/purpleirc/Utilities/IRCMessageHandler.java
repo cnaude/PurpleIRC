@@ -130,7 +130,7 @@ public class IRCMessageHandler {
                         sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
                         sendMessage(ircBot, target, ircBot.messageQueue.clearQueue(), ctcpResponse);
                     } else if (gameCommand.equals("@query")) {                        
-                        sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);                        
+                        sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);
                     } else {
                         if (commandArgs == null) {
                             commandArgs = "";

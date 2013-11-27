@@ -66,7 +66,7 @@ channels:
     # topic - Channel topic
     topic: New topic
     # topic-protect - Prevent others from changing the topic
-    topic-protect: true    
+    topic-protect: false    
     # enabled-messages - These are the message types that are either sent to the game or IRC
     # config.yml. Remove or comment the messages you don't want.       
     enabled-messages:

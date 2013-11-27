@@ -624,7 +624,7 @@ public class PurpleIRC extends JavaPlugin {
         return msg;
     }
 
-    public String getRemotePlayers(String commandArgs) {
+    public String getRemotePlayers(String commandArgs) {        
         if (commandArgs != null) {
             String host;
             int port = 25565;
