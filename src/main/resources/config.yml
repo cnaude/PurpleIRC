@@ -33,68 +33,68 @@ channel-check-interval: 100
 #  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER%
 message-format:
   # Message templates for game to IRC messages
-  console-chat: '&0[&5Server&0] %MESSAGE%' 
-  game-action: '&0[&2%WORLD%&0] ***%NAME%&0 %MESSAGE%'
-  game-pchat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
+  console-chat: '&r[&5Server&r] %MESSAGE%' 
+  game-action: '&r[&2%WORLD%&r] ***%NAME%&r %MESSAGE%'
+  game-pchat: '&r[&2%WORLD%&r]<%NAME%&r> %MESSAGE%'
   # Notification to player when sending a private message to an IRC user
   game-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
-  game-chat: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%'
-  game-death: '&0[&2%WORLD%&0] %MESSAGE%'  
-  game-kick: '&0[&2%WORLD%&0] %MESSAGE%'
-  game-join: '&0[&2%WORLD%&0] %MESSAGE%'
-  game-quit: '&0[&2%WORLD%&0] %MESSAGE%'
-  game-command: '&0[&2%WORLD%&0] Command detected by %NAME%: %COMMAND% %PARAMS%'
+  game-chat: '&r[&2%WORLD%&r]<%NAME%&r> %MESSAGE%'
+  game-death: '&r[&2%WORLD%&r] %MESSAGE%'  
+  game-kick: '&r[&2%WORLD%&r] %MESSAGE%'
+  game-join: '&r[&2%WORLD%&r] %MESSAGE%'
+  game-quit: '&r[&2%WORLD%&r] %MESSAGE%'
+  game-command: '&r[&2%WORLD%&r] Command detected by %NAME%: %COMMAND% %PARAMS%'
   # Message template for "/irc send" to IRC message
-  game-send: '&0[&2%WORLD%&0]<%NAME%&0> %MESSAGE%' 
+  game-send: '&r[&2%WORLD%&r]<%NAME%&r> %MESSAGE%' 
   # Essentials messages
-  ess-player-afk: '&0[&2%WORLD%&0] %NAME% &0is now AFK' 
-  ess-player-not-afk: '&0[&2%WORLD%&0] %NAME% &0is no longer AFK' 
+  ess-player-afk: '&r[&2%WORLD%&r] %NAME% &ris now AFK' 
+  ess-player-not-afk: '&r[&2%WORLD%&r] %NAME% &ris no longer AFK' 
   # Message templates for IRC to game messages
-  irc-action: '&f[&4IRC&f] ***%NAME%&f %MESSAGE%'
-  irc-chat: '&f[&4IRC&f]<%NAME%&f> %MESSAGE%'  
-  irc-pchat: '&dPrivate message: &f[&4IRC&f]<%NAME%&f> %MESSAGE%' 
+  irc-action: '&r[&4IRC&r] ***%NAME%&r %MESSAGE%'
+  irc-chat: '&r[&4IRC&r]<%NAME%&r> %MESSAGE%'  
+  irc-pchat: '&dPrivate message: &r[&4IRC&r]<%NAME%&r> %MESSAGE%' 
   # Notification to user when sending a private message to a player
   irc-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   # Notification to user when sending a message to a specific hero channel
   irc-hchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
-  irc-join: '&f[&4IRC&f] %NAME%&f has joined %CHANNEL%.'
-  irc-kick: '&f[&4IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
-  irc-part: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%.'  
-  irc-quit: '&f[&4IRC&f] %NAME%&f has left %CHANNEL%. (Reason: %REASON%)'  
-  irc-topic: '&f[&4IRC&f] Topic changed by %NAME%&0: %TOPIC%.'  
-  irc-nickchange: '&f[&4IRC&f] %OLDNICK% is now known as %NEWNICK%.'  
-  irc-mode: '&f[&4IRC&f] %NAME%&f %MODE% on %CHANNEL%'
-  irc-notice: '&f[&4IRC&f] [notice(%CHANNEL%)] %NOTICE% '
+  irc-join: '&r[&4IRC&r] %NAME%&r has joined %CHANNEL%.'
+  irc-kick: '&r[&4IRC&r] %NAME%&r was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-part: '&r[&4IRC&r] %NAME%&r has left %CHANNEL%.'  
+  irc-quit: '&r[&4IRC&r] %NAME%&r has left %CHANNEL%. (Reason: %REASON%)'  
+  irc-topic: '&r[&4IRC&r] Topic changed by %NAME%&r: %TOPIC%.'  
+  irc-nickchange: '&r[&4IRC&r] %OLDNICK% is now known as %NEWNICK%.'  
+  irc-mode: '&r[&4IRC&r] %NAME%&r %MODE% on %CHANNEL%'
+  irc-notice: '&r[&4IRC&r] [notice(%CHANNEL%)] %NOTICE% '
   # Message template for Clevernotch bot to IRC messages
-  clever-send: '&0[&4BOT&0]<%NAME%&0> %MESSAGE%' 
+  clever-send: '&r[&4BOT&r]<%NAME%&r> %MESSAGE%' 
   # Message templates for mcMMO to IRC messages
-  mcmmo-admin-chat: '&0[admin:%WORLD%&0]<%NAME%&0> %MESSAGE%'    
-  mcmmo-party-chat: '&0[party:%PARTY%&0]<%NAME%&0> %MESSAGE%'
+  mcmmo-admin-chat: '&r[admin:%WORLD%&r]<%NAME%&r> %MESSAGE%'    
+  mcmmo-party-chat: '&r[party:%PARTY%&r]<%NAME%&r> %MESSAGE%'
   # Message templates for FactionChat to IRC messages
-  faction-public-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
-  faction-ally-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
-  faction-enemy-chat: '&0[%FACTIONMODE%] &0[%FACTIONTAG%&0]<%NAME%&0> %MESSAGE%'  
+  faction-public-chat: '&r[%FACTIONMODE%] &r[%FACTIONTAG%&r]<%NAME%&r> %MESSAGE%'  
+  faction-ally-chat: '&r[%FACTIONMODE%] &r[%FACTIONTAG%&r]<%NAME%&r> %MESSAGE%'  
+  faction-enemy-chat: '&r[%FACTIONMODE%] &r[%FACTIONTAG%&r]<%NAME%&r> %MESSAGE%'  
   # Message template for Herochat to IRC messages
-  hero-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
-  hero-action: '&0[&2%CHANNEL%&0] ***%NAME%&0 %MESSAGE%'
+  hero-chat: '&r[%CHANNEL%&r]<%NAME%&r> %MESSAGE%'
+  hero-action: '&r[&2%CHANNEL%&r] ***%NAME%&r %MESSAGE%'
   # Message templates for IRC to Herochat messages
-  irc-hero-action: '&f[&3IRC&f] ***%NAME%&f %MESSAGE%'
-  irc-hero-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'  
-  irc-hero-join: '&f[&3IRC&f] %NAME%&f has joined %CHANNEL%.'
-  irc-hero-kick: '&f[&3IRC&f] %NAME%&f was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
-  irc-hero-part: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
-  irc-hero-quit: '&f[&3IRC&f] %NAME%&f has left %CHANNEL%.'  
-  irc-hero-topic: '&f[&3IRC&f] Topic changed by %NAME%&f: %TOPIC%.'  
+  irc-hero-action: '&r[&3IRC&r] ***%NAME%&r %MESSAGE%'
+  irc-hero-chat: '&r[&3IRC&r]<%NAME%&r> %MESSAGE%'  
+  irc-hero-join: '&r[&3IRC&r] %NAME%&r has joined %CHANNEL%.'
+  irc-hero-kick: '&r[&3IRC&r] %NAME%&r was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
+  irc-hero-part: '&r[&3IRC&r] %NAME%&r has left %CHANNEL%.'  
+  irc-hero-quit: '&r[&3IRC&r] %NAME%&r has left %CHANNEL%.'  
+  irc-hero-topic: '&r[&3IRC&r] Topic changed by %NAME%&r: %TOPIC%.'  
   # Message template for TitanChat to IRC messages
-  titan-chat: '&0[%CHANNEL%&0]<%NAME%&0> %MESSAGE%'
+  titan-chat: '&r[%CHANNEL%&r]<%NAME%&r> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
-  irc-titan-chat: '&f[&3IRC&f]<%NAME%&f> %MESSAGE%'
+  irc-titan-chat: '&r[&3IRC&r]<%NAME%&r> %MESSAGE%'
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   rts-notify: '[RTS] <%NAME%> %MESSAGE%'
   irc-hero-channels:
-      Global: '&f[G]&f[IRC]%PLAYERPREFIX%%NAME%&f %MESSAGE%'
+      Global: '&r[G]&r[IRC]%PLAYERPREFIX%%NAME%&r %MESSAGE%'
   broadcast-message: '[Broadcast] <%NAME%> %MESSAGE%'
   broadcast-console-message: '[Broadcast] <Console> %MESSAGE%'
   # Defaults below take effect when user joins IRC and matching player is offline
