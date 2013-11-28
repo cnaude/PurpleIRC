@@ -68,6 +68,7 @@ public final class PurpleBot {
     public boolean showMOTD;
     public boolean channelCmdNotifyEnabled;
     public boolean relayPrivateChat;
+    public boolean partInvalidChannels;
     public int botServerPort;
     public long chatDelay;
     public String botServer;
@@ -81,6 +82,7 @@ public final class PurpleBot {
     public String botIdentPassword;
     public String rawMessage;
     public String channelCmdNotifyMode;
+    public String partInvalidChannelsMsg;
     private String connectMessage;
     public ArrayList<String> botChannels = new ArrayList<String>();
     public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
@@ -424,6 +426,8 @@ public final class PurpleBot {
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
+            partInvalidChannels = config.getBoolean("part-invalid-channels", false);
+            partInvalidChannelsMsg = config.getString("part-invalid-channels-message", "");
             botNick = config.getString("nick", "");
             botLogin = config.getString("login", "PircBot");
             botRealName = config.getString("realname", "");

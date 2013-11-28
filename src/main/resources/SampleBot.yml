@@ -47,6 +47,10 @@ command-notify:
   recipients:
     - '#minecraft-test'
     - example
+# Automatically part invalid channels
+part-invalid-channels: false
+# Message when leaving invalid channel
+part-invalid-channels-message: 'I should not be here! Bye!'
 # channels - List the channels your bot will join here
 channels:
   # Channel name must be surrounded by sing quotes to be YAML compliant.
