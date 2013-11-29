@@ -103,10 +103,10 @@ channels:
     - faction-ally-chat
     - faction-enemy-chat
     # Hero chat message types that are sent from game to IRC
-    # Global HC channel
+    # Game messages from Global HC channel
     - hero-Global-chat
     - hero-Global-action
-    # Any HC channel
+    # Game messages from any HC channel
     - hero-chat
     - hero-action
     # Specific HC channel
