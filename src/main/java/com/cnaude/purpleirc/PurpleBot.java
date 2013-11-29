@@ -738,9 +738,9 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + hChannel);
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-                
+
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatHeroTokenizer(player, message, hColor, hChannel, 
+                        .chatHeroTokenizer(player, message, hColor, hChannel,
                                 hNick, getHeroChatChannelTemplate(hChannel)));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
@@ -748,7 +748,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
             return plugin.heroChannelMessages.get(hChannel.toLowerCase());
@@ -756,9 +756,9 @@ public final class PurpleBot {
             return plugin.heroChat;
         }
     }
-    
+
     private String getHeroActionChannelTemplate(String hChannel) {
-        if (plugin.heroActionChannelMessages.containsKey(hChannel.toLowerCase())){
+        if (plugin.heroActionChannelMessages.containsKey(hChannel.toLowerCase())) {
             return plugin.heroActionChannelMessages.get(hChannel.toLowerCase());
         } else {
             return plugin.heroAction;
@@ -781,7 +781,7 @@ public final class PurpleBot {
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-action")
                     || enabledMessages.get(channelName).contains("hero-action")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatHeroTokenizer(player, message, hColor, hChannel, 
+                        .chatHeroTokenizer(player, message, hColor, hChannel,
                                 hNick, getHeroActionChannelTemplate(hChannel)));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
@@ -939,23 +939,23 @@ public final class PurpleBot {
         }
         for (Channel channel : getChannels()) {
             String channelName = channel.getName();
-            if (botChannels.contains(channelName)) {
-                if (enabledMessages.get(channelName).contains("game-join")) {
-                    if (!isPlayerInValidWorld(player, channelName)) {
-                        return;
-                    }
-                    if (hideJoinWhenVanished.get(channelName)) {
-                        plugin.logDebug("Checking if player " + player.getName() + " is vanished.");
-                        if (plugin.vanishHook.isVanished(player)) {
-                            plugin.logDebug("Not sending join message to IRC for player " + player.getName() + " due to being vanished.");
-                            continue;
-                        }
-                    }
-                    asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
-                    if (plugin.netPackets != null) {
-                        plugin.netPackets.updateTabList(player, this, channel);
+            if (enabledMessages.get(channelName).contains("game-join")) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    return;
+                }
+                if (hideJoinWhenVanished.get(channelName)) {
+                    plugin.logDebug("Checking if player " + player.getName() + " is vanished.");
+                    if (plugin.vanishHook.isVanished(player)) {
+                        plugin.logDebug("Not sending join message to IRC for player " + player.getName() + " due to being vanished.");
+                        continue;
                     }
                 }
+                asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(player, plugin.gameJoin, message));
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.updateTabList(player, this, channel);
+                }
+            } else {
+                plugin.logDebug("not sending join message due to 'game-join' being disabled");
             }
         }
     }
