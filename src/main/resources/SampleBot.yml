@@ -29,7 +29,7 @@ ident-password: ''
 # command-prefix - The bot will listen for commands that start with this. 
 command-prefix: '.'
 # quit-message - Message the bot will send when it quits the server
-quit-message: '&f[&5PurpleIRC&f] Good bye!'
+quit-message: '&r[&5PurpleIRC&r] &rGood bye!'
 # Message delay in milliseconds (be careful when changing this)
 message-delay: 1000
 # send a raw message on connect
