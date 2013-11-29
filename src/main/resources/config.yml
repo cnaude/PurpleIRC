@@ -111,6 +111,10 @@ message-format:
   default-group-prefix: ''
   default-player-world: 'world'
   default-player-group: ''  
+# Format for the @list command in IRC
+list-format: '&r[&9Minecraft&r] Online (%COUNT%/%MAX%): %PLAYERS%'
+list-separator: '&r, '
+list-player: '%GROUPPREFIX%%NAME%'
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game

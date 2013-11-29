@@ -109,7 +109,10 @@ public class PurpleIRC extends JavaPlugin {
             cleverSend,
             broadcastMessage,
             broadcastConsoleMessage,
-            heroChatEmoteFormat;
+            heroChatEmoteFormat,
+            listFormat,
+            listSeparator,
+            listPlayer;
 
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
@@ -396,6 +399,10 @@ public class PurpleIRC extends JavaPlugin {
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
         defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
 
+        listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
+        listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));
+        listPlayer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-player", ""));
+        
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
@@ -630,14 +637,17 @@ public class PurpleIRC extends JavaPlugin {
                     continue;
                 }
             }
-            playerList.add(player.getName());
+            String pName = tokenizer.playerTokenizer(player, listPlayer);
+            playerList.add(pName);
         }
         Collections.sort(playerList, Collator.getInstance());
-        String msg = "Players currently online("
-                + playerList.size()
-                + "/" + getServer().getMaxPlayers() + "): "
-                + Joiner.on(", ").join(playerList);
-        return msg;
+        String pList = Joiner.on(listSeparator).join(playerList);
+        String msg = listFormat
+                .replace("%COUNT%", Integer.toString(playerList.size()))
+                .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
+                .replace("%PLAYERS%", pList);
+        logDebug("L: " + msg);
+        return colorConverter.gameColorsToIrc(msg);
     }
 
     public String getRemotePlayers(String commandArgs) {        

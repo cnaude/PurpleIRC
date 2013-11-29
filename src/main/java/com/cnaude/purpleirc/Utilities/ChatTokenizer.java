@@ -361,7 +361,7 @@ public class ChatTokenizer {
                 .replace("%RTSWORLD%", world);
     }
 
-    private String playerTokenizer(Player player, String message) {
+    public String playerTokenizer(Player player, String message) {
         String pName = player.getName();
         plugin.logDebug("Tokenizing " + pName + "(O: " + player.isOnline() + ")");
         String pSuffix = plugin.getPlayerSuffix(player);

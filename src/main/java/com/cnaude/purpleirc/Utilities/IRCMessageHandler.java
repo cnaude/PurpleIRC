@@ -129,7 +129,7 @@ public class IRCMessageHandler {
                     } else if (gameCommand.equals("@clearqueue")) {
                         sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
                         sendMessage(ircBot, target, ircBot.messageQueue.clearQueue(), ctcpResponse);
-                    } else if (gameCommand.equals("@query")) {                        
+                    } else if (gameCommand.equals("@query")) {
                         sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);
                     } else {
                         if (commandArgs == null) {
@@ -153,6 +153,7 @@ public class IRCMessageHandler {
                 if (privateMessage) {
                     target = user.getNick();
                 }
+                plugin.logDebug("Invalid command: " + command);
                 ircBot.asyncIRCMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
                         .replace("%CMDPREFIX%", ircBot.commandPrefix));
             }
