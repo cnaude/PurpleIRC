@@ -96,6 +96,12 @@ message-format:
   # Message format per hero channel. From game to IRC. For use with @hchat.
   irc-hero-channels:
       Global: '&r[G]&r[IRC]%PLAYERPREFIX%%NAME%&r %MESSAGE%'
+  # Message format per hero channel. From game to IRC. Overrides hero-chat template.
+  hero-channels:
+      Global: '&r[%CHANNEL%&r]<%NAME%&r> %MESSAGE%'
+  # Emote message format per hero channel. From game to IRC. Overrides hero-action template.
+  hero-action-channels:
+      Global: '&r[&2%CHANNEL%&r] ***%NAME%&r %MESSAGE%'
   broadcast-message: '[Broadcast] <%NAME%> %MESSAGE%'
   broadcast-console-message: '[Broadcast] <Console> %MESSAGE%'
   # Defaults below take effect when user joins IRC and matching player is offline

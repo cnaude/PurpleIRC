@@ -130,6 +130,8 @@ public class PurpleIRC extends JavaPlugin {
     public RegexGlobber regexGlobber;
     public HashMap<String, PurpleBot> ircBots = new HashMap<String, PurpleBot>();
     public HashMap<String, String> ircHeroChannelMessages = new HashMap<String, String>();
+    public HashMap<String, String> heroChannelMessages = new HashMap<String, String>();
+    public HashMap<String, String> heroActionChannelMessages = new HashMap<String, String>();
     public FactionChatHook fcHook;
     public NetPackets netPackets = null;
     public CommandHandlers commandHandlers;
@@ -336,6 +338,20 @@ public class PurpleIRC extends JavaPlugin {
             ircHeroChannelMessages.put(hChannelName.toLowerCase(),
                     ChatColor.translateAlternateColorCodes('&', getConfig()
                             .getString("message-format.irc-hero-channels."
+                                    + hChannelName)));
+        }
+        
+        for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-channels").getKeys(false)) {
+            heroChannelMessages.put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', getConfig()
+                            .getString("message-format.hero-channels."
+                                    + hChannelName)));
+        }
+        
+        for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
+            heroActionChannelMessages.put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', getConfig()
+                            .getString("message-format.hero-action-channels."
                                     + hChannelName)));
         }
 

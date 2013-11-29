@@ -738,12 +738,30 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + hChannel);
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
+                
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatHeroTokenizer(player, message, hColor, hChannel, hNick, plugin.heroChat));
+                        .chatHeroTokenizer(player, message, hColor, hChannel, 
+                                hNick, getHeroChatChannelTemplate(hChannel)));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
             }
+        }
+    }
+    
+    private String getHeroChatChannelTemplate(String hChannel) {
+        if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
+            return plugin.heroChannelMessages.get(hChannel.toLowerCase());
+        } else {
+            return plugin.heroChat;
+        }
+    }
+    
+    private String getHeroActionChannelTemplate(String hChannel) {
+        if (plugin.heroActionChannelMessages.containsKey(hChannel.toLowerCase())){
+            return plugin.heroActionChannelMessages.get(hChannel.toLowerCase());
+        } else {
+            return plugin.heroAction;
         }
     }
 
@@ -763,7 +781,8 @@ public final class PurpleBot {
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-action")
                     || enabledMessages.get(channelName).contains("hero-action")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatHeroTokenizer(player, message, hColor, hChannel, hNick, plugin.heroAction));
+                        .chatHeroTokenizer(player, message, hColor, hChannel, 
+                                hNick, getHeroActionChannelTemplate(hChannel)));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-action is disabled.");
