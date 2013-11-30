@@ -2,7 +2,13 @@ package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.EssentialsListener;
-import com.cnaude.purpleirc.GameListeners.GameListeners;
+import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerJoinListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerKickListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
+import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
@@ -173,7 +179,13 @@ public class PurpleIRC extends JavaPlugin {
                 logError(ex.getMessage());
             }
         }
-        getServer().getPluginManager().registerEvents(new GameListeners(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerChatListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerCommandPreprocessingListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerDeathListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);        
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
