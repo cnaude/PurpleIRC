@@ -17,7 +17,7 @@ import org.pircbotx.User;
 public class AddOp implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[bot] [channel] [user mask]";
+    private final String usage = "[bot] [channel] [user|mask]";
     private final String desc = "Add IRC users to IRC auto op list.";
     private final String name = "addop";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
