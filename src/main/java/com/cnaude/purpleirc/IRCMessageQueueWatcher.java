@@ -27,23 +27,26 @@ public class IRCMessageQueueWatcher {
         timer = new Timer();
         timer.schedule(new WatcherTask(), 0, ircBot.chatDelay);
         plugin.logDebug("Message queue initialized for bot " + ircBot.botNick
-        + ". Interval: " + ircBot.chatDelay + "ms");
+                + ". Interval: " + ircBot.chatDelay + "ms");
     }
 
     class WatcherTask extends TimerTask {
 
         @Override
         public void run() {
-            IRCMessage ircMessage = queue.poll();
-            if (ircMessage != null) {
-                if (ircMessage.ctcpResponse) {
-                    ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
-                } else {
-                    ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
-                }
+            queueAndSend();
+        }
+    }
+
+    private void queueAndSend() {
+        IRCMessage ircMessage = queue.poll();
+        if (ircMessage != null) {
+            if (ircMessage.ctcpResponse) {
+                ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
+            } else {
+                ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
             }
         }
-
     }
 
     /**
@@ -52,12 +55,12 @@ public class IRCMessageQueueWatcher {
     public void cancel() {
         timer.cancel();
     }
-    
+
     public String clearQueue() {
         int size = queue.size();
-        if (!queue.isEmpty()) {          
+        if (!queue.isEmpty()) {
             queue.clear();
-        } 
+        }
         return "Elements removed from message queue: " + size;
     }
 
@@ -68,6 +71,9 @@ public class IRCMessageQueueWatcher {
     public void add(IRCMessage ircMessage) {
         queue.offer(ircMessage);
         plugin.logDebug("[" + queue.size() + "] Adding message to queue.");
+        if (queue.size() == 1) {
+            queueAndSend();
+        }
     }
 
 }

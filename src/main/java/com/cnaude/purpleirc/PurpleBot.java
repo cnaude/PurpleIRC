@@ -1879,4 +1879,8 @@ public final class PurpleBot {
         plugin.logDebug("Channel " + channelName + " is not valid.");
         return false;
     }
+    
+    public PircBotX getBot() {
+        return bot;
+    }
 }

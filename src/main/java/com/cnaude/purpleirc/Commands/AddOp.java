@@ -7,6 +7,8 @@ package com.cnaude.purpleirc.Commands;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 /**
  *
@@ -40,7 +42,17 @@ public class AddOp implements IRCCommandInterface {
             String channelName = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 // #channel, user
-                plugin.ircBots.get(bot).addOp(channelName, args[3], sender);
+                String nick = args[3];
+                String mask = nick;                
+                Channel channel = plugin.ircBots.get(bot).getChannel(channelName);
+                if (channel != null) {
+                    for (User user : channel.getUsers()) {
+                        if (user.getNick().equalsIgnoreCase(nick)) {
+                            mask = "*!*" + user.getLogin() + "@" + user.getHostmask();
+                        }
+                    }
+                }
+                plugin.ircBots.get(bot).addOp(channelName, mask, sender);
                 plugin.ircBots.get(bot).opFriends(channelName);
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
