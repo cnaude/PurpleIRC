@@ -297,12 +297,7 @@ public final class PurpleBot {
 
     public void blockingIRCMessage(final String target, final String message) {
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
-        if (target.startsWith("#")) {
-            plugin.logDebug("Sent to " + this.getChannel(target).getName());
-            this.getChannel(target).send().message(message);
-        } else {
-            bot.sendIRC().message(target, message);
-        }
+        bot.sendIRC().message(target, message);
         plugin.logDebug("[blockingIRCMessage] Message sent to " + target);
     }
 

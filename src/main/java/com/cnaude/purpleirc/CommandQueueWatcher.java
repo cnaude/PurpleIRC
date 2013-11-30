@@ -12,8 +12,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class CommandQueueWatcher {
 
     private final PurpleIRC plugin;
-    private final BukkitTask bt;
-    private Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
+    private BukkitTask bt;
+    private final Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
 
     /**
      *
@@ -21,20 +21,29 @@ public class CommandQueueWatcher {
      */
     public CommandQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
+        startWatcher();
+    }
 
+    private void startWatcher() {
+        plugin.logDebug("Starting command queue");
         bt = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new Runnable() {
             @Override
             public void run() {
-                queueAndDispatch();
+                queueAndSend();
             }
-        }, 0, 60);
+        }, 0, 5);
     }
 
-    private void queueAndDispatch() {
+    private void queueAndSend() {
         IRCCommand ircCommand = queue.poll();
         if (ircCommand != null) {
             plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
             plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
+            try {
+                Thread.sleep(60);
+            } catch (InterruptedException ex) {
+                plugin.logError(ex.getMessage());
+            }
         }
     }
 
@@ -59,10 +68,5 @@ public class CommandQueueWatcher {
      */
     public void add(IRCCommand command) {
         queue.offer(command);
-        // We'll dispatch the command immediately if the queue size is 1
-        if (queue.size() == 1) {
-            queueAndDispatch();
-        }
     }
-
 }

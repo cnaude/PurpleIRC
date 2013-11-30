@@ -1,9 +1,8 @@
 package com.cnaude.purpleirc;
 
 import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -13,8 +12,8 @@ public class IRCMessageQueueWatcher {
 
     private final PurpleIRC plugin;
     private final PurpleBot ircBot;
+    private BukkitTask bt;
     private final Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
-    Timer timer;
 
     /**
      *
@@ -24,18 +23,16 @@ public class IRCMessageQueueWatcher {
     public IRCMessageQueueWatcher(final PurpleBot ircBot, final PurpleIRC plugin) {
         this.plugin = plugin;
         this.ircBot = ircBot;
-        timer = new Timer();
-        timer.schedule(new WatcherTask(), 0, ircBot.chatDelay);
-        plugin.logDebug("Message queue initialized for bot " + ircBot.botNick
-                + ". Interval: " + ircBot.chatDelay + "ms");
+        startWatcher();
     }
 
-    class WatcherTask extends TimerTask {
-
-        @Override
-        public void run() {
-            queueAndSend();
-        }
+    private void startWatcher() {
+        bt = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new Runnable() {
+            @Override
+            public void run() {
+                queueAndSend();
+            }
+        }, 0, 5);
     }
 
     private void queueAndSend() {
@@ -46,14 +43,17 @@ public class IRCMessageQueueWatcher {
             } else {
                 ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
             }
+            try {
+                Thread.sleep(ircBot.chatDelay);
+            } catch (InterruptedException ex) {
+                plugin.logError(ex.getMessage());
+            }
         }
+
     }
 
-    /**
-     *
-     */
     public void cancel() {
-        timer.cancel();
+        bt.cancel();
     }
 
     public String clearQueue() {
@@ -70,10 +70,6 @@ public class IRCMessageQueueWatcher {
      */
     public void add(IRCMessage ircMessage) {
         queue.offer(ircMessage);
-        plugin.logDebug("[" + queue.size() + "] Adding message to queue.");
-        if (queue.size() == 1) {
-            queueAndSend();
-        }
+        queueAndSend();
     }
-
 }

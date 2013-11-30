@@ -18,7 +18,7 @@ public class DeOp implements IRCCommandInterface {
     private final String usage = "[bot] [channel] [user(s)]";
     private final String desc = "De-op IRC user(s).";
     private final String name = "deop";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
@@ -40,9 +40,11 @@ public class DeOp implements IRCCommandInterface {
             String channelName = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 for (int i = 3; i < args.length; i++) {
-                    // #channel, user
                     plugin.ircBots.get(bot).deOp(channelName, args[i]);
-                    sender.sendMessage(ChatColor.WHITE + "De-opping " + args[i] + " in " + channelName + "...");
+                    sender.sendMessage("Removing operator status from "
+                            + ChatColor.WHITE + args[i]
+                            + ChatColor.RESET + " in "
+                            + ChatColor.WHITE + channelName);
                 }
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
