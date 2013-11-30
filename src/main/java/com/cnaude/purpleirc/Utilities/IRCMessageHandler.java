@@ -44,7 +44,7 @@ public class IRCMessageHandler {
     public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {  
         plugin.logDebug("processMessage: " + message);
         String myChannel = channel.getName();
-        if (ircBot.muteList.get(myChannel.toLowerCase()).contains(user.getNick())) {
+        if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
             plugin.logDebug("User is muted. Ignoring message from " + user.getNick() + ": " + message);
             return;
         }
@@ -59,11 +59,11 @@ public class IRCMessageHandler {
 
             plugin.logDebug(message);
             String target = channel.getName();
-            if (ircBot.commandMap.get(myChannel.toLowerCase()).containsKey(command)) {
+            if (ircBot.commandMap.get(myChannel).containsKey(command)) {
                 boolean privateListen = Boolean.parseBoolean(ircBot.commandMap
-                        .get(myChannel.toLowerCase()).get(command).get("private_listen"));
+                        .get(myChannel).get(command).get("private_listen"));
                 boolean channelListen = Boolean.parseBoolean(ircBot.commandMap
-                        .get(myChannel.toLowerCase()).get(command).get("channel_listen"));
+                        .get(myChannel).get(command).get("channel_listen"));
                 plugin.logDebug("privateListen: " + privateListen);
                 plugin.logDebug("channelListen: " + channelListen);
                 if (privateMessage && !privateListen) {
@@ -75,10 +75,10 @@ public class IRCMessageHandler {
                     return;
                 }
 
-                String gameCommand = (String) ircBot.commandMap.get(myChannel.toLowerCase()).get(command).get("game_command");
-                String modes = (String) ircBot.commandMap.get(myChannel.toLowerCase()).get(command).get("modes");
-                boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel.toLowerCase()).get(command).get("private"));
-                boolean ctcpResponse = Boolean.parseBoolean(ircBot.commandMap.get(myChannel.toLowerCase()).get(command).get("ctcp"));
+                String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
+                String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
+                boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
+                boolean ctcpResponse = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("ctcp"));
 
                 plugin.logDebug(gameCommand + ":" + modes + ":" + privateCommand);
 
@@ -157,7 +157,7 @@ public class IRCMessageHandler {
                         .replace("%CMDPREFIX%", ircBot.commandPrefix));
             }
         } else {
-            if (ircBot.ignoreIRCChat.get(myChannel.toLowerCase())) {
+            if (ircBot.ignoreIRCChat.get(myChannel)) {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"ignore-irc-chat\" being true ...");
                 return;
             }
@@ -183,7 +183,7 @@ public class IRCMessageHandler {
     private String getCommands(Map<String, Map<String, Map<String, String>>> commandMap, String myChannel) {
         if (commandMap.containsKey(myChannel)) {
             List<String> sortedCommands = new ArrayList<String>();
-            for (String command : commandMap.get(myChannel.toLowerCase()).keySet()) {
+            for (String command : commandMap.get(myChannel).keySet()) {
                 sortedCommands.add(command);
             }
             Collections.sort(sortedCommands, Collator.getInstance());

@@ -48,7 +48,7 @@ public class Leave implements IRCCommandInterface {
             if (plugin.ircBots.containsKey(bot)) {
                 if (plugin.ircBots.get(bot).isConnected()) {
                     for (Channel channel : plugin.ircBots.get(bot).getChannels()) {
-                        if (channel.getName().equals(channelName)) {
+                        if (channel.getName().equalsIgnoreCase(channelName)) {
                             channel.send().part(reason);
                             sender.sendMessage(ChatColor.WHITE + "Leaving " + channelName + "...");
                             return;
