@@ -97,7 +97,7 @@ public final class PurpleBot {
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideListWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
-    public HashMap<String, String> heroChannel = new HashMap<String, String>();    
+    public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
@@ -485,8 +485,8 @@ public final class PurpleBot {
                 plugin.logInfo(" No command recipients defined.");
             }
 
-            for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {                
-                String channelName = decodeChannel(enChannelName);                
+            for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
+                String channelName = decodeChannel(enChannelName);
                 plugin.logDebug("Channel  => " + channelName);
                 botChannels.add(channelName);
 
@@ -1117,9 +1117,11 @@ public final class PurpleBot {
      */
     public void addOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
-            sender.sendMessage("User mask'" + userMask + "' is already in the ops list.");
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is already in the ops list.");
         } else {
-            sender.sendMessage("User mask'" + userMask + "' has been added to the ops list.");
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been added to the ops list.");
             opsList.get(channelName).add(userMask);
         }
         config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
@@ -1134,10 +1136,12 @@ public final class PurpleBot {
      */
     public void removeOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
-            sender.sendMessage("User mask'" + userMask + "' has been removed to the ops list.");
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been removed to the ops list.");
             opsList.get(channelName).remove(userMask);
         } else {
-            sender.sendMessage("User mask'" + userMask + "' is not in the ops list.");
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is not in the ops list.");
         }
         config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
         saveConfig();
@@ -1461,9 +1465,12 @@ public final class PurpleBot {
                 plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
                 plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
                 if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
-                    plugin.logInfo("Auto-opping " + sender + " on " + channelName);
-                    channel.send().op(user);
-                    // leave after our first match
+                    if (!channel.getOps().contains(user)) {
+                        plugin.logInfo("Giving operator status to " + sender + " on " + channelName);
+                        channel.send().op(user);                        
+                    } else {
+                        plugin.logInfo("User " + sender + " is already an operator on " + channelName);
+                    }
                     return;
                 } else {
                     plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
@@ -1879,7 +1886,7 @@ public final class PurpleBot {
         plugin.logDebug("Channel " + channelName + " is not valid.");
         return false;
     }
-    
+
     public PircBotX getBot() {
         return bot;
     }

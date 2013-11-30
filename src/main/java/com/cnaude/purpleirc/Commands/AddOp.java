@@ -15,7 +15,7 @@ import org.pircbotx.User;
  * @author cnaude
  */
 public class AddOp implements IRCCommandInterface {
-    
+
     private final PurpleIRC plugin;
     private final String usage = "[bot] [channel] [user mask]";
     private final String desc = "Add IRC users to IRC auto op list.";
@@ -43,7 +43,7 @@ public class AddOp implements IRCCommandInterface {
             if (plugin.ircBots.containsKey(bot)) {
                 // #channel, user
                 String nick = args[3];
-                String mask = nick;                
+                String mask = nick;
                 Channel channel = plugin.ircBots.get(bot).getChannel(channelName);
                 if (channel != null) {
                     for (User user : channel.getUsers()) {
@@ -52,8 +52,13 @@ public class AddOp implements IRCCommandInterface {
                         }
                     }
                 }
-                plugin.ircBots.get(bot).addOp(channelName, mask, sender);
-                plugin.ircBots.get(bot).opFriends(channelName);
+                if (mask.split("[\\!\\@]", 3).length == 3) {
+                    plugin.ircBots.get(bot).addOp(channelName, mask, sender);
+                    plugin.ircBots.get(bot).opFriends(channelName);
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Invalid user or mask: " 
+                            + ChatColor.WHITE + mask);
+                }
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
