@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>2.0.8-SNAPSHOT4</version>
+  <version>2.0.8-SNAPSHOT5</version>
   <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>

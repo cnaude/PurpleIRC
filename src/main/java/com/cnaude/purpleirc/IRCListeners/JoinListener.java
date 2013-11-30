@@ -39,7 +39,7 @@ public class JoinListener extends ListenerAdapter {
         Channel channel = event.getChannel();
         User user = event.getUser();
 
-        if (!ircBot.botChannels.contains(channel.getName())) {
+        if (!ircBot.isValidChannel(channel.getName())) {
             plugin.logDebug("Invalid channel: " + channel.getName());
             plugin.logDebug("Part if invalid: " + ircBot.partInvalidChannels);
             plugin.logDebug("Nick: " + user.getNick());

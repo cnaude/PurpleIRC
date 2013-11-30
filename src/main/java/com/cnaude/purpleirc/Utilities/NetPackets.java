@@ -116,7 +116,7 @@ public class NetPackets {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
                 if (ircBot.isConnected()) {
                     for (Channel channel : ircBot.getChannels()) {
-                        if (ircBot.botChannels.contains(channel.getName())) {
+                        if (ircBot.isValidChannel(channel.getName())) {
                             updateTabList(player, ircBot, channel);
                         }
                     }

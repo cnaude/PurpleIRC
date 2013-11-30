@@ -47,7 +47,7 @@ public class Send implements IRCCommandInterface {
                 myBots.add(plugin.ircBots.get(args[1]));
                 msgIdx = 2;
                 if (args.length >= 3) {
-                    if (plugin.ircBots.get(args[1]).botChannels.contains(args[2])) {
+                    if (plugin.ircBots.get(args[1]).isValidChannel(args[2])) {
                         channelName = args[2];
                     }
                 }

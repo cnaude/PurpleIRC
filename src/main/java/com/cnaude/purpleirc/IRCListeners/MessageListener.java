@@ -43,6 +43,8 @@ public class MessageListener extends ListenerAdapter {
 
         plugin.logDebug("Message caught <" + user.getNick() + ">: " + message);
 
-        plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, false);
+        if (ircBot.isValidChannel(channel.getName())) {
+            plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, false);
+        }
     }
 }

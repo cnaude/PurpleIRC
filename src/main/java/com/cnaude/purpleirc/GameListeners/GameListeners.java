@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
@@ -61,9 +62,37 @@ public class GameListeners implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        plugin.logDebug("QUIT: " + event.getPlayer().getName());
+        if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
+            plugin.kickedPlayers.remove(event.getPlayer().getName());
+            plugin.logDebug("Player " 
+                    + event.getPlayer().getName()
+                    + " was in the recently kicked list. Not sending quit message.");
+            return;
+        }
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {                
+                ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
+                if (plugin.netPackets != null) {
+                    plugin.netPackets.updateTabList(event.getPlayer());
+                }
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param event
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerKickEvent(PlayerKickEvent event) {        
+        plugin.logDebug("KICK: " + event.getPlayer().getName());
+        if (!plugin.kickedPlayers.contains(event.getPlayer().getName())) {
+            plugin.kickedPlayers.add(event.getPlayer().getName());
+        }
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
-                ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
+                ircBot.gameKick(event.getPlayer(), event.getLeaveMessage(), event.getReason());                
             }
         }
     }
@@ -74,6 +103,12 @@ public class GameListeners implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
+        if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
+            plugin.kickedPlayers.remove(event.getPlayer().getName());
+            plugin.logDebug("Removing player " 
+                    + event.getPlayer().getName()
+                    + " from the recently kicked list.");            
+        }
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
                 ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());

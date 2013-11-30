@@ -40,7 +40,7 @@ message-format:
   game-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   game-chat: '&r[&2%WORLD%&r]<%NAME%&r> %MESSAGE%'
   game-death: '&r[&2%WORLD%&r] %MESSAGE%'  
-  game-kick: '&r[&2%WORLD%&r] %MESSAGE%'
+  game-kick: '&r[&2%WORLD%&r] %MESSAGE%: %REASON%'
   game-join: '&r[&2%WORLD%&r] %MESSAGE%'
   game-quit: '&r[&2%WORLD%&r] %MESSAGE%'
   game-command: '&r[&2%WORLD%&r] Command detected by %NAME%: %COMMAND% %PARAMS%'

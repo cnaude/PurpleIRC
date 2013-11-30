@@ -40,12 +40,11 @@ public class KickListener extends ListenerAdapter {
         User recipient = event.getRecipient();
         User user = event.getUser();
 
-        if (!ircBot.botChannels.contains(channel.getName())) {
-            return;
-        }
-        ircBot.broadcastIRCKick(recipient.getNick(), user.getNick(), event.getReason(), channel.getName());
-        if (plugin.netPackets != null) {
-            plugin.netPackets.remFromTabList(recipient.getNick());
+        if (ircBot.isValidChannel(channel.getName())) {
+            ircBot.broadcastIRCKick(recipient.getNick(), user.getNick(), event.getReason(), channel.getName());
+            if (plugin.netPackets != null) {
+                plugin.netPackets.remFromTabList(recipient.getNick());
+            }
         }
     }
 }

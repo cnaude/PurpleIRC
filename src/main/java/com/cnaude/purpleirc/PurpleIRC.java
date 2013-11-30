@@ -113,6 +113,8 @@ public class PurpleIRC extends JavaPlugin {
             listFormat,
             listSeparator,
             listPlayer;
+    
+    public ArrayList<String> kickedPlayers = new ArrayList<String>();
 
     public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
@@ -320,6 +322,7 @@ public class PurpleIRC extends JavaPlugin {
         gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
         gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
         gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
+        gameKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-kick", ""));
         gameCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-command", ""));
 
         cleverSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.clever-send", ""));

@@ -222,7 +222,7 @@ public class ChatTokenizer {
     public String gameChatToIRCTokenizer(Player player, String template, String message) {
         if (message == null) {
             message = "";
-        }
+        }        
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
                 .replace("%MESSAGE%", message));
     }
@@ -325,6 +325,21 @@ public class ChatTokenizer {
     public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%MESSAGE%", message));
+    }
+    
+    /**
+     * Game kick message to IRC
+     *
+     * @param player
+     * @param reason
+     * @param message
+     * @return
+     */
+    public String gameKickTokenizer(Player player, String message, String reason) {
+        return plugin.colorConverter.gameColorsToIrc(
+                gameChatToIRCTokenizer(player, plugin.gameKick, message)
+                .replace("%MESSAGE%", message)
+                .replace("%REASON%", reason));
     }
 
     /**
