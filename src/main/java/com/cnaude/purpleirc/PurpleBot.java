@@ -287,23 +287,27 @@ public final class PurpleBot {
 
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
-        messageQueue.add(new IRCMessage(target, message, false));
+        messageQueue.add(new IRCMessage(target, plugin.colorConverter.
+                gameColorsToIrc(message), false));
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.logDebug("Entering asyncCTCPMessage");
-        messageQueue.add(new IRCMessage(target, message, true));
+        messageQueue.add(new IRCMessage(target, plugin.colorConverter
+                .gameColorsToIrc(message), true));
     }
 
     public void blockingIRCMessage(final String target, final String message) {
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
-        bot.sendIRC().message(target, message);
+        bot.sendIRC().message(target, plugin.colorConverter
+                .gameColorsToIrc(message));
         plugin.logDebug("[blockingIRCMessage] Message sent to " + target);
     }
 
     public void blockingCTCPMessage(final String target, final String message) {
         plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target);
-        bot.sendIRC().ctcpResponse(target, message);
+        bot.sendIRC().ctcpResponse(target, plugin.colorConverter
+                .gameColorsToIrc(message));
         plugin.logDebug("[blockingCTCPMessage] Message sent to " + target);
     }
 
