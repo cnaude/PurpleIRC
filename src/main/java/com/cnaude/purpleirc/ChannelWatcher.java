@@ -31,7 +31,7 @@ public class ChannelWatcher {
                     }
                 }
             }
-        }, 0, plugin.ircChannelCheckInterval);
+        }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
     }
     
     /**

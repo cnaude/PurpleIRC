@@ -287,12 +287,12 @@ public final class PurpleBot {
 
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
-        messageQueue.add(new IRCMessage(getChannelName(target), message, false));
+        messageQueue.add(new IRCMessage(target, message, false));
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.logDebug("Entering asyncCTCPMessage");
-        messageQueue.add(new IRCMessage(getChannelName(target), message, true));
+        messageQueue.add(new IRCMessage(target, message, true));
     }
 
     public void blockingIRCMessage(final String target, final String message) {
@@ -301,14 +301,14 @@ public final class PurpleBot {
             plugin.logDebug("Sent to " + this.getChannel(target).getName());
             this.getChannel(target).send().message(message);
         } else {
-            bot.sendIRC().message(getChannelName(target), message);
+            bot.sendIRC().message(target, message);
         }
         plugin.logDebug("[blockingIRCMessage] Message sent to " + target);
     }
 
     public void blockingCTCPMessage(final String target, final String message) {
         plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target);
-        bot.sendIRC().ctcpResponse(getChannelName(target), message);
+        bot.sendIRC().ctcpResponse(target, message);
         plugin.logDebug("[blockingCTCPMessage] Message sent to " + target);
     }
 
@@ -316,7 +316,7 @@ public final class PurpleBot {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                bot.sendIRC().ctcpCommand(getChannelName(target), command);
+                bot.sendIRC().ctcpCommand(target, command);
             }
         });
     }
@@ -378,7 +378,7 @@ public final class PurpleBot {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                bot.sendIRC().notice(getChannelName(target), message);
+                bot.sendIRC().notice(target, message);
             }
         });
     }
@@ -1073,15 +1073,6 @@ public final class PurpleBot {
             }
         }
         return channel;
-    }
-
-    public String getChannelName(String channelName) {
-        for (Channel c : getChannels()) {
-            if (c.getName().equalsIgnoreCase(channelName)) {
-                return c.getName();
-            }
-        }
-        return channelName;
     }
 
     /**
@@ -1882,7 +1873,6 @@ public final class PurpleBot {
     public boolean isValidChannel(String channelName) {
         for (String c : botChannels) {
             if (c.equals(channelName)) {
-                plugin.logDebug("Channel " + channelName + " equals " + c);
                 return true;
             }
         }

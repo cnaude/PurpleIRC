@@ -34,7 +34,7 @@ public class BotWatcher {
                     }
                 }
             }
-        }, 0, plugin.ircConnCheckInterval);
+        }, plugin.ircConnCheckInterval, plugin.ircConnCheckInterval);
     }
     
     /**
