@@ -1,6 +1,8 @@
-package com.cnaude.purpleirc;
+package com.cnaude.purpleirc.Watchers;
 
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
+import com.cnaude.purpleirc.IRCCommand;
+import com.cnaude.purpleirc.PurpleIRC;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.scheduler.BukkitTask;

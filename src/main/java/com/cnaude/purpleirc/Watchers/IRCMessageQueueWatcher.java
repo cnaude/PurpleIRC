@@ -1,5 +1,8 @@
-package com.cnaude.purpleirc;
+package com.cnaude.purpleirc.Watchers;
 
+import com.cnaude.purpleirc.IRCMessage;
+import com.cnaude.purpleirc.PurpleBot;
+import com.cnaude.purpleirc.PurpleIRC;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;

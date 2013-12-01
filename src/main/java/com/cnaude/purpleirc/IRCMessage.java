@@ -6,9 +6,9 @@ package com.cnaude.purpleirc;
  */
 public class IRCMessage {
 
-    String target;
-    String message;
-    boolean ctcpResponse;
+    public String target;
+    public String message;
+    public boolean ctcpResponse;
 
     public IRCMessage(String target, String message, boolean ctcpResponse) {
         this.target = target;

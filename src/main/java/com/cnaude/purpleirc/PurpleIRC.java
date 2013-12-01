@@ -1,5 +1,8 @@
 package com.cnaude.purpleirc;
 
+import com.cnaude.purpleirc.Watchers.CommandQueueWatcher;
+import com.cnaude.purpleirc.Watchers.ChannelWatcher;
+import com.cnaude.purpleirc.Watchers.BotWatcher;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.EssentialsListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
