@@ -1,8 +1,9 @@
 package com.cnaude.purpleirc;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.scheduler.BukkitTask;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
@@ -12,8 +13,8 @@ public class IRCMessageQueueWatcher {
 
     private final PurpleIRC plugin;
     private final PurpleBot ircBot;
-    private BukkitTask bt;
-    private final Queue<IRCMessage> queue = new ConcurrentLinkedQueue<IRCMessage>();
+    private final Timer timer;
+    private final BlockingQueue<IRCMessage> queue = new LinkedBlockingQueue<IRCMessage>();
 
     /**
      *
@@ -23,37 +24,34 @@ public class IRCMessageQueueWatcher {
     public IRCMessageQueueWatcher(final PurpleBot ircBot, final PurpleIRC plugin) {
         this.plugin = plugin;
         this.ircBot = ircBot;
+        this.timer = new Timer();
         startWatcher();
     }
 
     private void startWatcher() {
-        bt = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new Runnable() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 queueAndSend();
             }
+
         }, 0, 5);
     }
 
     private void queueAndSend() {
         IRCMessage ircMessage = queue.poll();
         if (ircMessage != null) {
+            plugin.logDebug("[" + queue.size() + "]: queueAndSend message detected");
             if (ircMessage.ctcpResponse) {
                 ircBot.blockingCTCPMessage(ircMessage.target, ircMessage.message);
             } else {
                 ircBot.blockingIRCMessage(ircMessage.target, ircMessage.message);
             }
-            try {
-                Thread.sleep(ircBot.chatDelay);
-            } catch (InterruptedException ex) {
-                plugin.logError(ex.getMessage());
-            }
         }
-
     }
 
     public void cancel() {
-        bt.cancel();
+        timer.cancel();
     }
 
     public String clearQueue() {
@@ -70,6 +68,5 @@ public class IRCMessageQueueWatcher {
      */
     public void add(IRCMessage ircMessage) {
         queue.offer(ircMessage);
-        queueAndSend();
     }
 }

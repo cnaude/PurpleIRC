@@ -728,29 +728,36 @@ public final class PurpleBot {
      * @param message
      */
     public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
+        plugin.logDebug("H1");
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
             return;
         }
+        plugin.logDebug("H2");
         for (String channelName : botChannels) {
+            plugin.logDebug("H3");
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
+            plugin.logDebug("H3.1");
             String hChannel = chatter.getActiveChannel().getName();
             String hNick = chatter.getActiveChannel().getNick();
             String hColor = chatColor.toString();
             plugin.logDebug("HC Channel: " + hChannel);
+            plugin.logDebug("H3.2");
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
                     || enabledMessages.get(channelName).contains("hero-chat")) {
-
+                plugin.logDebug("H3.3");
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .chatHeroTokenizer(player, message, hColor, hChannel,
                                 hNick, getHeroChatChannelTemplate(hChannel)));
+                plugin.logDebug("H3.4");
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-chat is disabled.");
             }
         }
+        plugin.logDebug("H4");
     }
 
     private String getHeroChatChannelTemplate(String hChannel) {
@@ -1466,7 +1473,7 @@ public final class PurpleBot {
                 if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
                     if (!channel.getOps().contains(user)) {
                         plugin.logInfo("Giving operator status to " + sender + " on " + channelName);
-                        channel.send().op(user);                        
+                        channel.send().op(user);
                     } else {
                         plugin.logInfo("User " + sender + " is already an operator on " + channelName);
                     }
