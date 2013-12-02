@@ -1,6 +1,5 @@
 package com.cnaude.purpleirc;
 
-import com.cnaude.purpleirc.Watchers.IRCMessageQueueWatcher;
 import com.dthielke.herochat.Chatter;
 import com.gmail.nossr50.api.ChatAPI;
 import com.gmail.nossr50.api.PartyAPI;

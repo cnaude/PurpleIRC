@@ -1,4 +1,4 @@
-package com.cnaude.purpleirc.Watchers;
+package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import com.cnaude.purpleirc.IRCCommand;
@@ -64,6 +64,7 @@ public class CommandQueueWatcher {
      * @param command
      */
     public void add(IRCCommand command) {
-        queue.offer(command);
+        plugin.logDebug("Adding command to queue: " + command.getGameCommand());
+        queue.offer(command);        
     }
 }

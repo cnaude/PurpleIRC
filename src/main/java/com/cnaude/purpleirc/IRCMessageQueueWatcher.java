@@ -1,4 +1,4 @@
-package com.cnaude.purpleirc.Watchers;
+package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.IRCMessage;
 import com.cnaude.purpleirc.PurpleBot;

@@ -1,15 +1,16 @@
-package com.cnaude.purpleirc.Watchers;
+package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.scheduler.BukkitTask;
+import org.pircbotx.Channel;
 
-/** This thread checks each bot for connectivity and reconnects when appropriate.
+/**
  *
  * @author Chris Naude
- * 
+ * This thread checks each for users and updates the internal lists.
  */
-public class BotWatcher {
+public class ChannelWatcher {
     
     private final PurpleIRC plugin;
     private final BukkitTask bt;
@@ -18,25 +19,21 @@ public class BotWatcher {
      *
      * @param plugin
      */
-    public BotWatcher(final PurpleIRC plugin) {
+    public ChannelWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
 
         bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (ircBot.isConnected()) {
-                        plugin.logDebug("[" + ircBot.botNick + "] CONNECTED");
-                    } else {
-                        if (ircBot.autoConnect) {
-                            plugin.logInfo("[" + ircBot.botNick + "] NOT CONNECTED");
-                            ircBot.reload();
+                        for (Channel channel : ircBot.getChannels()) {
+                            ircBot.updateNickList(channel);
                         }
                     }
                 }
             }
-        }, plugin.ircConnCheckInterval, plugin.ircConnCheckInterval);
+        }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
     }
     
     /**
@@ -45,5 +42,4 @@ public class BotWatcher {
     public void cancel() {
         bt.cancel();
     }
-
 }

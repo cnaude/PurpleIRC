@@ -41,7 +41,7 @@ public class IRCMessageHandler {
      * @param message
      * @param privateMessage
      */
-    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {  
+    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {
         plugin.logDebug("processMessage: " + message);
         String myChannel = channel.getName();
         if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
@@ -141,7 +141,11 @@ public class IRCMessageHandler {
                             gameCommand = gameCommand.replace("%NAME%", user.getNick());
                         }
                         plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
-                        plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
+                        try {
+                            plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
+                        } catch (Exception ex) {
+                            plugin.logError(ex.getMessage());
+                        }
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
