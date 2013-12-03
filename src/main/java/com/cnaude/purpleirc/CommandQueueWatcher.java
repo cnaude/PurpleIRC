@@ -1,10 +1,8 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
-import com.cnaude.purpleirc.IRCCommand;
-import com.cnaude.purpleirc.PurpleIRC;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -15,7 +13,7 @@ public class CommandQueueWatcher {
 
     private final PurpleIRC plugin;
     private BukkitTask bt;
-    private final BlockingQueue<IRCCommand> queue = new LinkedBlockingQueue<IRCCommand>();
+    private final Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
 
     /**
      *

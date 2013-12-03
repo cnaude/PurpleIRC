@@ -1725,7 +1725,7 @@ public final class PurpleBot {
 
     public void broadcastIRCQuit(String nick, String myChannel, String reason) {
         if (enabledMessages.get(myChannel).contains("irc-quit")) {
-            plugin.logDebug("Broadcasting join message because irc-quit is true.");
+            plugin.logDebug("Broadcasting quit message because irc-quit is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
                     myChannel, plugin.ircQuit)
                     .replace("%NAME%", nick)
