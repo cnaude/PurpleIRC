@@ -1060,9 +1060,11 @@ public final class PurpleBot {
      */
     public void changeTopic(String channelName, String topic, CommandSender sender) {
         Channel channel = this.getChannel(channelName);
+        String tTopic = tokenizedTopic(topic);
         if (channel != null) {
-            channel.send().setTopic(topic);
+            channel.send().setTopic(tTopic);
             config.set("channels." + encodeChannel(channelName) + ".topic", topic);
+            channelTopic.put(channelName, topic);
             saveConfig();
             sender.sendMessage("IRC topic for " + channelName + " changed to \"" + topic + "\"");
         } else {
@@ -1223,6 +1225,7 @@ public final class PurpleBot {
      */
     public void fixTopic(Channel channel, String topic, String setBy) {
         String channelName = channel.getName();
+        String tTopic = tokenizedTopic(topic);
         if (setBy.equals(botNick)) {
             config.set("channels." + encodeChannel(channelName) + ".topic", topic);
             saveConfig();
@@ -1230,15 +1233,23 @@ public final class PurpleBot {
         }
 
         if (channelTopic.containsKey(channelName)) {
-            if (channelTopicProtected.containsKey(channelName)) {
+            if (channelTopicProtected.containsKey(channelName)) {                
                 if (channelTopicProtected.get(channelName)) {
-                    String myTopic = channelTopic.get(channelName);
-                    if (!topic.equals(myTopic)) {
+                    plugin.logDebug("[" + channel.getName() + "] Topic protected.");
+                    String myTopic = tokenizedTopic(channelTopic.get(channelName));
+                    plugin.logDebug("tTopic: " + tTopic);
+                    plugin.logDebug("myTopic: " + myTopic);
+                    if (!tTopic.equals(myTopic)) {
                         channel.send().setTopic(myTopic);
                     }
                 }
             }
         }
+    }
+    
+    private String tokenizedTopic(String topic) {
+        return plugin.colorConverter
+                .gameColorsToIrc(topic.replace("%MOTD%", plugin.getServer().getMotd()));
     }
 
     /**

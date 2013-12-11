@@ -124,14 +124,8 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>10.0.1</version>
+      <version>15.0</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>jsr305</artifactId>
-          <groupId>com.google.code.findbugs</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.ess3</groupId>
@@ -166,7 +160,7 @@
     <dependency>
       <groupId>com.kitteh.vanish</groupId>
       <artifactId>VanishNoPacket</artifactId>
-      <version>3.18.2</version>
+      <version>3.18.7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -202,7 +196,7 @@
     <dependency>
       <groupId>com.comphenix.protocol</groupId>
       <artifactId>ProtocolLib</artifactId>
-      <version>2.7.3</version>
+      <version>3.0.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

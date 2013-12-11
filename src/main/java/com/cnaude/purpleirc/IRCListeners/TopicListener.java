@@ -38,9 +38,9 @@ public class TopicListener extends ListenerAdapter {
     public void onTopic(TopicEvent event) {
         Channel channel = event.getChannel();
         String channelName = channel.getName();
-        User user = event.getUser();
+        User user = event.getUser();               
 
-        if (!ircBot.isValidChannel(channelName)) {
+        if (ircBot.isValidChannel(channelName)) {
             ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
             if (event.isChanged()) {
                 if (ircBot.enabledMessages.get(channelName).contains("irc-topic")) {
