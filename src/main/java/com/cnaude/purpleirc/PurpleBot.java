@@ -1242,8 +1242,8 @@ public final class PurpleBot {
         String channelName = channel.getName();
         String tTopic = tokenizedTopic(topic);
         if (setBy.equals(botNick)) {
-            config.set("channels." + encodeChannel(channelName) + ".topic", topic);
-            saveConfig();
+            //config.set("channels." + encodeChannel(channelName) + ".topic", topic);
+            //saveConfig();
             return;
         }
 
