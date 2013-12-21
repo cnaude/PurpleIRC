@@ -1,7 +1,6 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
-import com.cnaude.purpleirc.GameListeners.EssentialsListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
@@ -12,6 +11,7 @@ import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
+import com.cnaude.purpleirc.GameListeners.TownyChatListener;
 import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
@@ -75,6 +75,7 @@ public class PurpleIRC extends JavaPlugin {
             consoleChat,
             heroChat,
             heroAction,
+            townyChat,
             factionPublicChat,
             factionAllyChat,
             factionEnemyChat,
@@ -209,6 +210,12 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("TitanChat not detected.");
         }
+        if (isTownyChatEnabled()) {
+            logInfo("Enabling TownyChat support.");
+            getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
+        } else {
+            logInfo("TownyChat not detected.");
+        }
         if (isCleverNotchEnabled()) {
             logInfo("Enabling CleverNotch support.");
             getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
@@ -223,12 +230,14 @@ public class PurpleIRC extends JavaPlugin {
                 logInfo("FactionChat not detected.");
             }
         }
+        /*
         if (isEssentialsEnabled()) {
             logInfo("Enabling Essentials support.");
             getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
         } else {
             logInfo("Essentials not detected.");
         }
+        */
         vanishHook = new VanishHook(this);
         if (isReportRTSEnabled()) {
             logInfo("Enabling ReportRTS support.");
@@ -375,6 +384,8 @@ public class PurpleIRC extends JavaPlugin {
 
         titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
         ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
+        
+        townyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.towny-chat", ""));
 
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
@@ -504,6 +515,10 @@ public class PurpleIRC extends JavaPlugin {
      */
     public boolean isTitanChatEnabled() {
         return (getServer().getPluginManager().getPlugin("TitanChat") != null);
+    }
+    
+    public boolean isTownyChatEnabled() {
+        return (getServer().getPluginManager().getPlugin("TownyChat") != null);
     }
 
     /**

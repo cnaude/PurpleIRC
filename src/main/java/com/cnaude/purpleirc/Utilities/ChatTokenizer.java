@@ -7,6 +7,8 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Resident;
 import org.bukkit.entity.Player;
 
 /**
@@ -298,6 +300,29 @@ public class ChatTokenizer {
                 .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))
                 .replace("%CHANNEL%", hChannel);
     }
+    
+    public String chatTownyTokenizer(Player player, Resident resident, String message) {
+        String town;
+        String nation;
+        String title;
+        try {
+            town = resident.getTown().getName();
+        } catch (NotRegisteredException ex) {
+            town = "NA";
+        }
+        try {
+            nation = resident.getTown().getNation().getName();
+        } catch (NotRegisteredException ex) {
+            nation = "NA";
+        }
+        title = resident.getTitle();
+        
+        return gameChatToIRCTokenizer(player, plugin.townyChat, message)
+                .replace("%TOWN%", town)
+                .replace("%NATION%", nation)
+                .replace("%TITLE%", title);
+    }  
+    
 
     /**
      * TitanChat to IRC

@@ -31,6 +31,9 @@ channel-check-interval: 100
 #  %TITANCOLOR% - TitanChat channel color
 #  %WORLDALIAS% - World alias name
 #  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER%
+#  %TOWN% - Towny resident town
+#  %NATION% - Towny resident town
+#  %TITLE% - Towny resident town
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&r[&5Server&r] %MESSAGE%' 
@@ -89,6 +92,8 @@ message-format:
   titan-chat: '&r[%CHANNEL%&r]<%NAME%&r> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
   irc-titan-chat: '&r[&3IRC&r]<%NAME%&r> %MESSAGE%'
+  # Message templates for Towny to IRC messages
+  towny-chat: '&r[%NATION%][%TOWN%][%TITLE%]<%NAME%&r> %MESSAGE%'
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."

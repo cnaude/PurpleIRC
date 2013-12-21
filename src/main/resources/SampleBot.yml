@@ -124,6 +124,7 @@ channels:
     # CleverNotch bot messages will be sent to the IRC channel
     - clever-chat
     - titan-chat
+    - towny-chat
     # Specific TitanChat channel
     #- titan-[CHANNEL]-chat
     # ReportRTS ticket notifications to irc

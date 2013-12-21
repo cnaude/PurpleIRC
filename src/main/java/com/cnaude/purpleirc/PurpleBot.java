@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -759,6 +760,21 @@ public final class PurpleBot {
         }
         plugin.logDebug("H4");
     }
+    
+    public void townyChat(Player player, Resident resident, String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            if (enabledMessages.get(channelName).contains("towny-chat")) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .chatTownyTokenizer(player, resident, message));
+            } 
+        }
+    }
 
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
@@ -1070,7 +1086,6 @@ public final class PurpleBot {
         } else {
             sender.sendMessage("Invalid channel: " + channelName);
         }
-
     }
 
     public Channel getChannel(String channelName) {
@@ -1237,10 +1252,14 @@ public final class PurpleBot {
                 if (channelTopicProtected.get(channelName)) {
                     plugin.logDebug("[" + channel.getName() + "] Topic protected.");
                     String myTopic = tokenizedTopic(channelTopic.get(channelName));
+                    plugin.logDebug("rTopic: " + channelTopic.get(channelName));
                     plugin.logDebug("tTopic: " + tTopic);
                     plugin.logDebug("myTopic: " + myTopic);
                     if (!tTopic.equals(myTopic)) {
+                        plugin.logDebug("Topic is not correct. Fixing it.");
                         channel.send().setTopic(myTopic);
+                    } else {
+                        plugin.logDebug("Topic is correct.");
                     }
                 }
             }
@@ -1300,7 +1319,9 @@ public final class PurpleBot {
                         + botNick + ChatColor.WHITE + "]" + ChatColor.RESET
                         + " IRC topic for " + ChatColor.WHITE + channelName
                         + ChatColor.RESET + ": \""
-                        + ChatColor.WHITE + activeTopic.get(channelName) + ChatColor.RESET + "\"");
+                        + ChatColor.WHITE + plugin.colorConverter
+                                .ircColorsToGame(activeTopic.get(channelName)) 
+                        + ChatColor.RESET + "\"");
             }
         }
     }
