@@ -781,6 +781,22 @@ public final class PurpleBot {
             }
         }
     }
+    
+    public void townyChat(Player player, Resident resident, String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            plugin.logDebug("townyChat: Checking for towny-chat");
+            if (enabledMessages.get(channelName).contains("towny-chat")) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .chatTownyTokenizer(player, resident, message));
+            }
+        }
+    }
 
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {

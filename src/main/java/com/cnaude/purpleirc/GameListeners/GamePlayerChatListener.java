@@ -37,8 +37,8 @@ public class GamePlayerChatListener implements Listener {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;
         }
-        if (event.isCancelled() && !plugin.isTownyChatEnabled()) {
-            plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
+        if (event.isCancelled() && plugin.isTownyChatEnabled()) {
+            plugin.logDebug("Ignore chat message due to event cancellation and townychat: " + event.getMessage());
             return;
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {

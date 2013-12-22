@@ -14,6 +14,7 @@ softdepend:
 - TitanChat
 - ReportRTS
 - Essentials
+- TownyChat
 commands:
     irc:
         description: Various irc commands

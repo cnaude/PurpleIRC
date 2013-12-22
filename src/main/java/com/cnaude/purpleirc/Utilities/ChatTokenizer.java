@@ -334,6 +334,30 @@ public class ChatTokenizer {
                 .replace("%NATION%", nation)
                 .replace("%TITLE%", title);
     }
+    
+    public String chatTownyTokenizer(Player player, Resident resident, String message) {
+        String town = "";
+        String nation = "";
+        String title = "";
+        if (resident != null) {
+            try {
+                town = resident.getTown().getName();
+            } catch (NotRegisteredException ex) {
+                town = "";
+            }
+            try {
+                nation = resident.getTown().getNation().getName();
+            } catch (NotRegisteredException ex) {
+                nation = "";
+            }
+            title = resident.getTitle();
+        }
+
+        return gameChatToIRCTokenizer(player, plugin.townyChat, message)
+                .replace("%TOWN%", town)
+                .replace("%NATION%", nation)
+                .replace("%TITLE%", title);
+    }
 
     /**
      * TitanChat to IRC
