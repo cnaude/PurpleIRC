@@ -9,6 +9,7 @@ import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
  */
 public class ChatTokenizer {
 
-    PurpleIRC plugin;    
+    PurpleIRC plugin;
 
     /**
      * Class initializer
@@ -26,7 +27,7 @@ public class ChatTokenizer {
      * @param plugin
      */
     public ChatTokenizer(PurpleIRC plugin) {
-        this.plugin = plugin;        
+        this.plugin = plugin;
     }
 
     /**
@@ -202,7 +203,7 @@ public class ChatTokenizer {
      *
      * @param pName
      * @param template
-
+     *
      * @param message
      * @return
      */
@@ -217,14 +218,14 @@ public class ChatTokenizer {
      *
      * @param player
      * @param template
-
+     *
      * @param message
      * @return
      */
     public String gameChatToIRCTokenizer(Player player, String template, String message) {
         if (message == null) {
             message = "";
-        }        
+        }
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
                 .replace("%MESSAGE%", message));
     }
@@ -234,7 +235,7 @@ public class ChatTokenizer {
      *
      * @param player
      * @param template
-
+     *
      * @return
      */
     public String gamePlayerAFKTokenizer(Player player, String template) {
@@ -246,7 +247,7 @@ public class ChatTokenizer {
      *
      * @param player
      * @param template
-
+     *
      * @param message
      * @param partyName
      * @return
@@ -300,29 +301,39 @@ public class ChatTokenizer {
                 .replace("%HEROCOLOR%", plugin.colorConverter.gameColorsToIrc(hColor))
                 .replace("%CHANNEL%", hChannel);
     }
-    
-    public String chatTownyTokenizer(Player player, Resident resident, String message) {
-        String town;
-        String nation;
-        String title;
+
+    public String chatTownyTokenizer(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
+        Resident resident;
+        String town = "";
+        String nation = "";
+        String title = "";
         try {
-            town = resident.getTown().getName();
+            resident = TownyUniverse.getDataSource().getResident(player.getName());
         } catch (NotRegisteredException ex) {
-            town = "NA";
+            resident = null;
         }
-        try {
-            nation = resident.getTown().getNation().getName();
-        } catch (NotRegisteredException ex) {
-            nation = "NA";
+        if (resident != null) {
+            try {
+                town = resident.getTown().getName();
+            } catch (NotRegisteredException ex) {
+                town = "";
+            }
+            try {
+                nation = resident.getTown().getNation().getName();
+            } catch (NotRegisteredException ex) {
+                nation = "";
+            }
+            title = resident.getTitle();
         }
-        title = resident.getTitle();
-        
+
         return gameChatToIRCTokenizer(player, plugin.townyChat, message)
+                .replace("%TOWNYCHANNEL%", townyChannel.getName())
+                .replace("%TOWNYCHANNELTAG%", townyChannel.getChannelTag())
+                .replace("%TOWNYMSGCOLOR%", townyChannel.getMessageColour())
                 .replace("%TOWN%", town)
                 .replace("%NATION%", nation)
                 .replace("%TITLE%", title);
-    }  
-    
+    }
 
     /**
      * TitanChat to IRC
@@ -351,7 +362,7 @@ public class ChatTokenizer {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%MESSAGE%", message));
     }
-    
+
     /**
      * Game kick message to IRC
      *
@@ -451,24 +462,24 @@ public class ChatTokenizer {
 
     private String playerTokenizer(String player, String message) {
         plugin.logDebug("Tokenizing " + player);
-        String worldName = plugin.defaultPlayerWorld;        
+        String worldName = plugin.defaultPlayerWorld;
         String pSuffix = plugin.getPlayerSuffix(worldName, player);
         String pPrefix = plugin.getPlayerPrefix(worldName, player);
         String gPrefix = plugin.getGroupPrefix(worldName, player);
         String gSuffix = plugin.getGroupSuffix(worldName, player);
-        String group = plugin.getPlayerGroup(worldName, player);        
+        String group = plugin.getPlayerGroup(worldName, player);
         String worldAlias = "";
         String worldColor = "";
         if (!worldName.isEmpty()) {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
-        }          
+        }
         if (pSuffix == null) {
             pSuffix = plugin.defaultPlayerSuffix;
-        }        
+        }
         if (pPrefix == null) {
             pPrefix = plugin.defaultPlayerPrefix;
-        }        
+        }
         if (gSuffix == null) {
             gSuffix = plugin.defaultGroupSuffix;
         }
@@ -517,14 +528,14 @@ public class ChatTokenizer {
                 .replace("%COMMAND%", cmd)
                 .replace("%PARAMS%", params));
     }
-    
+
     public String targetChatResponseTokenizer(String target, String message, String template) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%TARGET%", target)
                 .replace("%MESSAGE%", message)
         );
     }
-    
+
     public String msgChatResponseTokenizer(String target, String message, String template) {
         return plugin.colorConverter.ircColorsToGame(template
                 .replace("%TARGET%", target)

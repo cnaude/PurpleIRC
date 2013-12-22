@@ -31,6 +31,9 @@ channel-check-interval: 100
 #  %TITANCOLOR% - TitanChat channel color
 #  %WORLDALIAS% - World alias name
 #  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER%
+#  %TOWNYCHANNEL% - Towny channel name
+#  %TOWNYCHANNELTAG% - Towny channel tag name
+#  %TOWNYMSGCOLOR% - Towny message color
 #  %TOWN% - Towny resident town
 #  %NATION% - Towny resident town
 #  %TITLE% - Towny resident town

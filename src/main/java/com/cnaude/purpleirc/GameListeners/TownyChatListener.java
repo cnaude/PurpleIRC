@@ -6,8 +6,8 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.palmergames.bukkit.TownyChat.event.TownyChatEvent;
-import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.TownyChat.channels.Channel;
+import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,16 +34,16 @@ public class TownyChatListener implements Listener {
      * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-    public void onTownyChatEvent(TownyChatEvent event) {
-        Resident resident = event.getResident();
+    public void onAsyncChatHookEvent(AsyncChatHookEvent event) {
+        Channel townyChannel = event.getChannel();
 
         plugin.logDebug("TC Format: " + event.getFormat());
 
-        Player player = event.getEvent().getPlayer();
+        Player player = event.getPlayer();
         if (player.hasPermission("irc.message.gamechat")) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
                 if (ircBot.isConnected()) {
-                    ircBot.townyChat(player, resident, event.getMessage());
+                    ircBot.townyChat(player, townyChannel, event.getMessage());
                 }
             }
         }

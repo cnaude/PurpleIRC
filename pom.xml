@@ -156,13 +156,13 @@
         <dependency>
             <groupId>com.palmergames.bukkit.TownyChat</groupId>
             <artifactId>TownyChat</artifactId>
-            <version>0.9</version>
+            <version>0.40</version>
         </dependency>
         
         <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.9</version>
+            <version>0.84.0.0</version>
         </dependency>
         
         <dependency>

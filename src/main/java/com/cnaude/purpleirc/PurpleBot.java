@@ -760,8 +760,8 @@ public final class PurpleBot {
         }
         plugin.logDebug("H4");
     }
-    
-    public void townyChat(Player player, Resident resident, String message) {
+
+    public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -769,10 +769,16 @@ public final class PurpleBot {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
-            if (enabledMessages.get(channelName).contains("towny-chat")) {
+            plugin.logDebug("townyChat: Checking for towny-"
+                    + townyChannel.getName() + "-chat"
+                    + " or " + "towny-" + townyChannel.getChannelTag() + "-chat"
+                    + " or towny-chat");
+            if (enabledMessages.get(channelName).contains("towny-" + townyChannel.getName() + "-chat")
+                    || enabledMessages.get(channelName).contains("towny-" + townyChannel.getChannelTag() + "-chat")
+                    || enabledMessages.get(channelName).contains("towny-chat")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatTownyTokenizer(player, resident, message));
-            } 
+                        .chatTownyTokenizer(player, townyChannel, message));
+            }
         }
     }
 
@@ -1248,7 +1254,7 @@ public final class PurpleBot {
         }
 
         if (channelTopic.containsKey(channelName)) {
-            if (channelTopicProtected.containsKey(channelName)) {                
+            if (channelTopicProtected.containsKey(channelName)) {
                 if (channelTopicProtected.get(channelName)) {
                     plugin.logDebug("[" + channel.getName() + "] Topic protected.");
                     String myTopic = tokenizedTopic(channelTopic.get(channelName));
@@ -1265,7 +1271,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     private String tokenizedTopic(String topic) {
         return plugin.colorConverter
                 .gameColorsToIrc(topic.replace("%MOTD%", plugin.getServer().getMotd()));
@@ -1320,7 +1326,7 @@ public final class PurpleBot {
                         + " IRC topic for " + ChatColor.WHITE + channelName
                         + ChatColor.RESET + ": \""
                         + ChatColor.WHITE + plugin.colorConverter
-                                .ircColorsToGame(activeTopic.get(channelName)) 
+                        .ircColorsToGame(activeTopic.get(channelName))
                         + ChatColor.RESET + "\"");
             }
         }
