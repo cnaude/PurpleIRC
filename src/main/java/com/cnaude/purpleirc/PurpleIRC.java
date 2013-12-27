@@ -210,12 +210,13 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("TitanChat not detected.");
         }
+        /*
         if (isTownyChatEnabled()) {
             logInfo("Enabling TownyChat support.");
             getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
         } else {
             logInfo("TownyChat not detected.");
-        }
+        }*/
         if (isCleverNotchEnabled()) {
             logInfo("Enabling CleverNotch support.");
             getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);

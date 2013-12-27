@@ -7,6 +7,7 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
@@ -302,57 +303,15 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", hChannel);
     }
 
-    public String chatTownyTokenizer(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
-        Resident resident;
-        String town = "";
-        String nation = "";
-        String title = "";
-        try {
-            resident = TownyUniverse.getDataSource().getResident(player.getName());
-        } catch (NotRegisteredException ex) {
-            resident = null;
-        }
-        if (resident != null) {
-            try {
-                town = resident.getTown().getName();
-            } catch (NotRegisteredException ex) {
-                town = "";
-            }
-            try {
-                nation = resident.getTown().getNation().getName();
-            } catch (NotRegisteredException ex) {
-                nation = "";
-            }
-            title = resident.getTitle();
-        }
-
+    public String chatTownyTokenizer(Player player, Channel townyChannel, String message) {
         return gameChatToIRCTokenizer(player, plugin.townyChat, message)
                 .replace("%TOWNYCHANNEL%", townyChannel.getName())
                 .replace("%TOWNYCHANNELTAG%", townyChannel.getChannelTag())
-                .replace("%TOWNYMSGCOLOR%", townyChannel.getMessageColour())
-                .replace("%TOWN%", town)
-                .replace("%NATION%", nation)
-                .replace("%TITLE%", title);
+                .replace("%TOWNYMSGCOLOR%", townyChannel.getMessageColour());
     }
-    
-    public String chatTownyTokenizer(Player player, Resident resident, String message) {
-        String town = "";
-        String nation = "";
-        String title = "";
-        if (resident != null) {
-            try {
-                town = resident.getTown().getName();
-            } catch (NotRegisteredException ex) {
-                town = "";
-            }
-            try {
-                nation = resident.getTown().getNation().getName();
-            } catch (NotRegisteredException ex) {
-                nation = "";
-            }
-            title = resident.getTitle();
-        }
 
+    public String chatTownyTokenizer(Player player, String town, String nation,
+            String title, String message) {
         return gameChatToIRCTokenizer(player, plugin.townyChat, message)
                 .replace("%TOWN%", town)
                 .replace("%NATION%", nation)

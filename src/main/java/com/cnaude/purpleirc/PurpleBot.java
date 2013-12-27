@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
@@ -761,6 +762,7 @@ public final class PurpleBot {
         plugin.logDebug("H4");
     }
 
+    /*
     public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!bot.isConnected()) {
             return;
@@ -781,7 +783,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     public void townyChat(Player player, Resident resident, String message) {
         if (!bot.isConnected()) {
             return;
@@ -792,12 +794,29 @@ public final class PurpleBot {
             }
             plugin.logDebug("townyChat: Checking for towny-chat");
             if (enabledMessages.get(channelName).contains("towny-chat")) {
+                String town = "";
+                String nation = "";
+                String title = "";
+                if (resident != null) {
+                    try {
+                        town = resident.getTown().getName();
+                    } catch (NotRegisteredException ex) {
+                        town = "";
+                    }
+                    try {
+                        nation = resident.getTown().getNation().getName();
+                    } catch (NotRegisteredException ex) {
+                        nation = "";
+                    }
+                    title = resident.getTitle();
+                }
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatTownyTokenizer(player, resident, message));
+                        .chatTownyTokenizer(player, town, nation, title, message));
             }
         }
     }
-
+    */
+    
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
             return plugin.heroChannelMessages.get(hChannel.toLowerCase());
@@ -1745,10 +1764,10 @@ public final class PurpleBot {
      */
     public void broadcastIRCJoin(String nick, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-join")) {
-            plugin.logDebug("Broadcasting join message because irc-join is true.");
+            plugin.logDebug("[broadcastIRCJoin] Broadcasting join message because irc-join is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircJoin), "irc.message.join");
         } else {
-            plugin.logDebug("NOT broadcasting join message because irc-join is false.");
+            plugin.logDebug("[broadcastIRCJoin] NOT broadcasting join message because irc-join is false.");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-join")) {
@@ -1762,10 +1781,10 @@ public final class PurpleBot {
 
     public void broadcastIRCPart(String nick, String myChannel) {
         if (enabledMessages.get(myChannel).contains("irc-part")) {
-            plugin.logDebug("Broadcasting join message because irc-part is true.");
+            plugin.logDebug("[broadcastIRCPart]  Broadcasting join message because irc-part is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick, myChannel, plugin.ircPart), "irc.message.part");
         } else {
-            plugin.logDebug("NOT broadcasting join message because irc-part is false.");
+            plugin.logDebug("[broadcastIRCPart] NOT broadcasting join message because irc-part is false.");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-part")) {
@@ -1779,14 +1798,14 @@ public final class PurpleBot {
 
     public void broadcastIRCQuit(String nick, String myChannel, String reason) {
         if (enabledMessages.get(myChannel).contains("irc-quit")) {
-            plugin.logDebug("Broadcasting quit message because irc-quit is true.");
+            plugin.logDebug("[broadcastIRCQuit] Broadcasting quit message because irc-quit is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
                     myChannel, plugin.ircQuit)
                     .replace("%NAME%", nick)
                     .replace("%REASON%", reason)
                     .replace("%CHANNEL%", myChannel), "irc.message.quit");
         } else {
-            plugin.logDebug("NOT broadcasting join message because irc-quit is false.");
+            plugin.logDebug("[broadcastIRCQuit] NOT broadcasting quit message because irc-quit is false.");
         }
 
         if (enabledMessages.get(myChannel).contains("irc-hero-quit")) {
