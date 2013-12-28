@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
+import com.cnaude.purpleirc.Hooks.TownyChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
@@ -145,6 +146,7 @@ public class PurpleIRC extends JavaPlugin {
     public HashMap<String, String> heroChannelMessages = new HashMap<String, String>();
     public HashMap<String, String> heroActionChannelMessages = new HashMap<String, String>();
     public FactionChatHook fcHook;
+    public TownyChatHook tcHook;
     public NetPackets netPackets = null;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
@@ -209,14 +211,14 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
         } else {
             logInfo("TitanChat not detected.");
-        }
-        /*
+        }        
         if (isTownyChatEnabled()) {
             logInfo("Enabling TownyChat support.");
             getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
+            tcHook = new TownyChatHook(this);
         } else {
             logInfo("TownyChat not detected.");
-        }*/
+        }
         if (isCleverNotchEnabled()) {
             logInfo("Enabling CleverNotch support.");
             getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);

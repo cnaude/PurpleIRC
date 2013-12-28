@@ -36,7 +36,7 @@ public class TownyChatListener implements Listener {
         if (player.hasPermission("irc.message.gamechat")) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
                 if (ircBot.isConnected()) {                    
-                    //ircBot.townyChat(player, townyChannel, event.getMessage());
+                    ircBot.townyChat(player, townyChannel, event.getMessage());
                 }
             }
         }
@@ -52,7 +52,7 @@ public class TownyChatListener implements Listener {
         if (player.hasPermission("irc.message.gamechat")) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
                 if (ircBot.isConnected()) {
-                    //ircBot.townyChat(player, resident, event.getMessage());
+                    ircBot.townyChat(player, resident, event.getMessage());
                 }
             }
         }

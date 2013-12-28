@@ -762,24 +762,25 @@ public final class PurpleBot {
         plugin.logDebug("H4");
     }
 
-    /*
     public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!bot.isConnected()) {
             return;
         }
-        for (String channelName : botChannels) {
-            if (!isPlayerInValidWorld(player, channelName)) {
-                continue;
-            }
-            plugin.logDebug("townyChat: Checking for towny-"
-                    + townyChannel.getName() + "-chat"
-                    + " or " + "towny-" + townyChannel.getChannelTag() + "-chat"
-                    + " or towny-chat");
-            if (enabledMessages.get(channelName).contains("towny-" + townyChannel.getName() + "-chat")
-                    || enabledMessages.get(channelName).contains("towny-" + townyChannel.getChannelTag() + "-chat")
-                    || enabledMessages.get(channelName).contains("towny-chat")) {
-                asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatTownyTokenizer(player, townyChannel, message));
+        if (plugin.tcHook != null) {
+            for (String channelName : botChannels) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    continue;
+                }
+                plugin.logDebug("townyChat: Checking for towny-"
+                        + townyChannel.getName() + "-chat"
+                        + " or " + "towny-" + townyChannel.getChannelTag() + "-chat"
+                        + " or towny-chat");
+                if (enabledMessages.get(channelName).contains("towny-" + townyChannel.getName() + "-chat")
+                        || enabledMessages.get(channelName).contains("towny-" + townyChannel.getChannelTag() + "-chat")
+                        || enabledMessages.get(channelName).contains("towny-chat")) {
+                    asyncIRCMessage(channelName, plugin.tokenizer
+                            .chatTownyTokenizer(player, townyChannel, message));
+                }
             }
         }
     }
@@ -788,35 +789,25 @@ public final class PurpleBot {
         if (!bot.isConnected()) {
             return;
         }
-        for (String channelName : botChannels) {
-            if (!isPlayerInValidWorld(player, channelName)) {
-                continue;
-            }
-            plugin.logDebug("townyChat: Checking for towny-chat");
-            if (enabledMessages.get(channelName).contains("towny-chat")) {
-                String town = "";
-                String nation = "";
-                String title = "";
-                if (resident != null) {
-                    try {
-                        town = resident.getTown().getName();
-                    } catch (NotRegisteredException ex) {
-                        town = "";
-                    }
-                    try {
-                        nation = resident.getTown().getNation().getName();
-                    } catch (NotRegisteredException ex) {
-                        nation = "";
-                    }
-                    title = resident.getTitle();
+        if (plugin.tcHook != null) {
+            String town = plugin.tcHook.getTown(resident);
+            String nation = plugin.tcHook.getNation(resident);
+            String title = plugin.tcHook.getTitle(resident);
+            for (String channelName : botChannels) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    continue;
                 }
-                asyncIRCMessage(channelName, plugin.tokenizer
-                        .chatTownyTokenizer(player, town, nation, title, message));
+                plugin.logDebug("townyChat: Checking for towny-chat");
+                if (enabledMessages.get(channelName).contains("towny-chat")) {
+                    asyncIRCMessage(channelName, plugin.tokenizer
+                            .chatTownyTokenizer(player, town, nation, title, message));
+                }
             }
         }
     }
-    */
     
+    
+
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
             return plugin.heroChannelMessages.get(hChannel.toLowerCase());
