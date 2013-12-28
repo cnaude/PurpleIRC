@@ -34,7 +34,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
@@ -658,29 +657,6 @@ public final class PurpleBot {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
-            if (plugin.isMcMMOEnabled()) {
-                plugin.logDebug("mcMMO is enabled");
-                if (ChatAPI.isUsingAdminChat(player)) {
-                    if (enabledMessages.get(channelName).contains("mcmmo-admin-chat")) {
-                        plugin.logDebug("Sending message because mcmmo-admin-chat is enabled.");
-                        asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
-                    } else {
-                        plugin.logDebug("Player " + player.getName() + " is in mcMMO AdminChat but mcmmo-admin-chat is disabled.");
-                    }
-                } else if (ChatAPI.isUsingPartyChat(player)) {
-                    if (enabledMessages.get(channelName).contains("mcmmo-party-chat")) {
-                        plugin.logDebug("Sending message because mcmmo-party-chat is enabled.");
-                        String partyName = PartyAPI.getPartyName(player);
-                        asyncIRCMessage(channelName, plugin.tokenizer.mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
-                    } else {
-                        plugin.logDebug("Player " + player.getName()
-                                + " is in mcMMO PartyChat but \"mcmmo-party-chat\" is disabled.");
-                    }
-                }
-            } else {
-                plugin.logDebug("mcMMO is not enabled");
-            }
-
             if (plugin.fcHook != null) {
                 String playerChatMode;
                 String playerFactionName;
@@ -762,6 +738,57 @@ public final class PurpleBot {
         plugin.logDebug("H4");
     }
 
+    public void mcMMOAdminChat(Player player, String message) {
+        String messageType = "mcmmo-admin-chat";
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            if (enabledMessages.get(channelName).contains(messageType)) {
+                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin.mcMMOAdminChat, message));
+            } else {
+                plugin.logDebug("Player " + player.getName()
+                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+            }
+        }
+    }
+
+    public void mcMMOPartyChat(Player player, String partyName, String message) {
+        String messageType = "mcmmo-party-chat";
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            if (enabledMessages.get(channelName).contains(messageType)) {
+                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .mcMMOChatToIRCTokenizer(player, plugin.mcMMOPartyChat, message, partyName));
+            } else {
+                plugin.logDebug("Player " + player.getName()
+                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+            }
+        }
+    }
+
+    public void mcMMOChat(Player player, String message) {
+        String messageType = "mcmmo-chat";
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            if (enabledMessages.get(channelName).contains(messageType)) {
+                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin.mcMMOChat, message));
+            } else {
+                plugin.logDebug("Player " + player.getName()
+                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+            }
+        }
+    }
+
     public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!bot.isConnected()) {
             return;
@@ -805,8 +832,6 @@ public final class PurpleBot {
             }
         }
     }
-    
-    
 
     private String getHeroChatChannelTemplate(String hChannel) {
         if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {

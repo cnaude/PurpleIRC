@@ -9,6 +9,7 @@ import com.cnaude.purpleirc.GameListeners.GamePlayerKickListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
 import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
+import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
@@ -73,6 +74,7 @@ public class PurpleIRC extends JavaPlugin {
             gamePChatResponse,
             mcMMOAdminChat,
             mcMMOPartyChat,
+            mcMMOChat,
             consoleChat,
             heroChat,
             heroAction,
@@ -225,6 +227,12 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("CleverNotch not detected.");
         }
+        if (isMcMMOEnabled()) {
+            logInfo("Enabling mcMMO support.");
+            getServer().getPluginManager().registerEvents(new McMMOChatListener(this), this);
+        } else {
+            logInfo("mcMMO not detected.");
+        }        
         if (isFactionsEnabled()) {
             if (isFactionChatEnabled()) {
                 logInfo("Enabling FactionChat support.");
@@ -353,6 +361,7 @@ public class PurpleIRC extends JavaPlugin {
 
         mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
         mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
+        mcMMOChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-chat", ""));
 
         heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
         heroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-action", ""));

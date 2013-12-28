@@ -33,16 +33,10 @@ public class GamePlayerChatListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled() 
-                && (!plugin.isFactionChatEnabled() 
-                || !plugin.isMcMMOEnabled())) {
+        if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;
-        }
-        if (event.isCancelled() && plugin.isTownyChatEnabled()) {
-            plugin.logDebug("Ignore chat message due to event cancellation and townychat: " + event.getMessage());
-            return;
-        }
+        }        
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (PurpleBot ircBot : plugin.ircBots.values()) {

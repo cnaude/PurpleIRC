@@ -76,6 +76,7 @@ message-format:
   # Message templates for mcMMO to IRC messages
   mcmmo-admin-chat: '&r[admin:%WORLD%&r]<%NAME%&r> %MESSAGE%'    
   mcmmo-party-chat: '&r[party:%PARTY%&r]<%NAME%&r> %MESSAGE%'
+  mcmmo-chat: '&r[mcMMO]<%NAME%&r> %MESSAGE%'
   # Message templates for FactionChat to IRC messages
   faction-public-chat: '&r[%FACTIONMODE%] &r[%FACTIONTAG%&r]<%NAME%&r> %MESSAGE%'  
   faction-ally-chat: '&r[%FACTIONMODE%] &r[%FACTIONTAG%&r]<%NAME%&r> %MESSAGE%'  
