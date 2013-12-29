@@ -803,30 +803,10 @@ public final class PurpleBot {
                         + " or towny-chat");
                 if (enabledMessages.get(channelName).contains("towny-" + townyChannel.getName() + "-chat")
                         || enabledMessages.get(channelName).contains("towny-" + townyChannel.getChannelTag() + "-chat")
-                        || enabledMessages.get(channelName).contains("towny-chat")) {
+                        || enabledMessages.get(channelName).contains("towny-chat")
+                        || enabledMessages.get(channelName).contains("towny-channel-chat")) {
                     asyncIRCMessage(channelName, plugin.tokenizer
                             .chatTownyChannelTokenizer(player, townyChannel, message));
-                }
-            }
-        }
-    }
-
-    public void townyChat(Player player, Resident resident, String message) {
-        if (!bot.isConnected()) {
-            return;
-        }
-        if (plugin.tcHook != null) {
-            String town = plugin.tcHook.getTown(resident);
-            String nation = plugin.tcHook.getNation(resident);
-            String title = plugin.tcHook.getTitle(resident);
-            for (String channelName : botChannels) {
-                if (!isPlayerInValidWorld(player, channelName)) {
-                    continue;
-                }
-                plugin.logDebug("townyChat: Checking for towny-chat");
-                if (enabledMessages.get(channelName).contains("towny-chat")) {
-                    asyncIRCMessage(channelName, plugin.tokenizer
-                            .chatTownyTokenizer(player, town, nation, title, message));
                 }
             }
         }
@@ -939,14 +919,16 @@ public final class PurpleBot {
      *
      * @param player
      * @param request
+     * @param template
+     * @param messageType
      */
-    public void reportRTSNotify(Player player, HelpRequest request) {
+    public void reportRTSNotify(Player player, HelpRequest request, String template, String messageType) {
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
-            if (enabledMessages.get(channelName).contains("rts-notify")) {
-                asyncIRCMessage(channelName, plugin.tokenizer.reportRTSTokenizer(player, plugin.reportRTSSend, request));
+            if (enabledMessages.get(channelName).contains(messageType)) {
+                asyncIRCMessage(channelName, plugin.tokenizer.reportRTSTokenizer(player, template, request));
             }
         }
     }

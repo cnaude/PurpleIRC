@@ -7,6 +7,7 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.TownyChat.TownyChatFormatter;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -302,6 +303,7 @@ public class ChatTokenizer {
     }
 
     public String chatTownyChannelTokenizer(Player player, Channel townyChannel, String message) {
+        
         return gameChatToIRCTokenizer(player, plugin.townyChannelChat, message)
                 .replace("%TOWNYCHANNEL%", ChatColor.translateAlternateColorCodes('&',townyChannel.getName()))
                 .replace("%TOWNYCHANNELTAG%", ChatColor.translateAlternateColorCodes('&',townyChannel.getChannelTag()))

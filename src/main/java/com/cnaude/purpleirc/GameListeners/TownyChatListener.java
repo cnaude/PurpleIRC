@@ -36,5 +36,6 @@ public class TownyChatListener implements Listener {
                 ircBot.townyChat(player, townyChannel, event.getMessage());
             }
         }
+        event.getAsyncPlayerChatEvent().setMessage("[[townytag]]" + event.getMessage());
     }
 }

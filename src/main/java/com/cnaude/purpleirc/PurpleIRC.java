@@ -117,6 +117,7 @@ public class PurpleIRC extends JavaPlugin {
             noPermForIRCCommand,
             customTabPrefix,
             reportRTSSend,
+            reportRTSComplete,
             cleverSend,
             broadcastMessage,
             broadcastConsoleMessage,
@@ -431,6 +432,7 @@ public class PurpleIRC extends JavaPlugin {
         broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
 
         reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
+        reportRTSComplete = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-complete", ""));
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));

@@ -33,7 +33,13 @@ public class GamePlayerChatListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+        String message = event.getMessage();
         plugin.logDebug("ChatFormat [" + event.isCancelled() + "]: " + event.getFormat());
+        if (message.startsWith("[[townytag]]")) {
+            event.setMessage(message.replace("[[townytag]]", ""));
+            plugin.logDebug("Ignoring due to townytag");
+            return;
+        }
         if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;

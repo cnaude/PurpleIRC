@@ -8,13 +8,15 @@ package com.cnaude.purpleirc.Hooks;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author cnaude
  */
 public class TownyChatHook {
-    
+
     private final PurpleIRC plugin;
 
     /**
@@ -25,8 +27,15 @@ public class TownyChatHook {
         this.plugin = plugin;
     }
 
-    public String getTown(Resident resident) {
+    public String getTown(Player player) {
         String town = "";
+        Resident resident;
+        try {
+            resident = TownyUniverse.getDataSource().getResident(player.getName());
+        } catch (NotRegisteredException ex) {
+            resident = null;
+        }
+
         if (resident != null) {
             try {
                 town = resident.getTown().getName();
@@ -36,9 +45,15 @@ public class TownyChatHook {
         }
         return town;
     }
-    
-    public String getNation(Resident resident) {
+
+    public String getNation(Player player) {
         String nation = "";
+        Resident resident;
+        try {
+            resident = TownyUniverse.getDataSource().getResident(player.getName());
+        } catch (NotRegisteredException ex) {
+            resident = null;
+        }
         if (resident != null) {
             try {
                 nation = resident.getTown().getNation().getName();
@@ -48,8 +63,14 @@ public class TownyChatHook {
         }
         return nation;
     }
-    
-    public String getTitle(Resident resident) {
+
+    public String getTitle(Player player) {
+        Resident resident;
+        try {
+            resident = TownyUniverse.getDataSource().getResident(player.getName());
+        } catch (NotRegisteredException ex) {
+            resident = null;
+        }
         String title = "";
         if (resident != null) {
             title = resident.getTitle();
