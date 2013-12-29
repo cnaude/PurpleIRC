@@ -100,6 +100,9 @@ message-format:
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   rts-notify: '[RTS:New] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-complete: '[RTS:Complete] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-claim: '[RTS:Claim] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-unclaim: '[RTS:Unclaim] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-held: '[RTS:Held] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   # Message format per hero channel. From game to IRC. For use with @hchat.
   irc-hero-channels:
       Global: '&r[G]&r[IRC]%PLAYERPREFIX%%NAME%&r %MESSAGE%'

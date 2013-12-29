@@ -6,8 +6,11 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.nyancraft.reportrts.event.ReportClaimEvent;
 import com.nyancraft.reportrts.event.ReportCompleteEvent;
 import com.nyancraft.reportrts.event.ReportCreateEvent;
+import com.nyancraft.reportrts.event.ReportHoldEvent;
+import com.nyancraft.reportrts.event.ReportUnclaimEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,6 +51,36 @@ public class ReportRTSListener implements Listener {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
                 ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSComplete, "rts-complete");
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onReportCompleteEvent(ReportClaimEvent event) {        
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSClaim, "rts-claim");
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onReportCompleteEvent(ReportUnclaimEvent event) {        
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSUnClaim, "rts-unclaim");
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onReportCompleteEvent(ReportHoldEvent event) {        
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSHeld, "rts-held");
             }
         }
     }
