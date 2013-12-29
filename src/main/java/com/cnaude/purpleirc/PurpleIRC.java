@@ -79,6 +79,7 @@ public class PurpleIRC extends JavaPlugin {
             heroChat,
             heroAction,
             townyChat,
+            townyChannelChat,
             factionPublicChat,
             factionAllyChat,
             factionEnemyChat,
@@ -398,6 +399,7 @@ public class PurpleIRC extends JavaPlugin {
         ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
         
         townyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.towny-chat", ""));
+        townyChannelChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.towny-channel-chat", ""));
 
         factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
         factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));

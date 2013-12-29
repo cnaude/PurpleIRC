@@ -8,9 +8,7 @@ import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -303,19 +301,19 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", hChannel);
     }
 
-    public String chatTownyTokenizer(Player player, Channel townyChannel, String message) {
-        return gameChatToIRCTokenizer(player, plugin.townyChat, message)
-                .replace("%TOWNYCHANNEL%", townyChannel.getName())
-                .replace("%TOWNYCHANNELTAG%", townyChannel.getChannelTag())
-                .replace("%TOWNYMSGCOLOR%", townyChannel.getMessageColour());
+    public String chatTownyChannelTokenizer(Player player, Channel townyChannel, String message) {
+        return gameChatToIRCTokenizer(player, plugin.townyChannelChat, message)
+                .replace("%TOWNYCHANNEL%", ChatColor.translateAlternateColorCodes('&',townyChannel.getName()))
+                .replace("%TOWNYCHANNELTAG%", ChatColor.translateAlternateColorCodes('&',townyChannel.getChannelTag()))
+                .replace("%TOWNYMSGCOLOR%", ChatColor.translateAlternateColorCodes('&',townyChannel.getMessageColour()));
     }
 
     public String chatTownyTokenizer(Player player, String town, String nation,
             String title, String message) {
         return gameChatToIRCTokenizer(player, plugin.townyChat, message)
-                .replace("%TOWN%", town)
-                .replace("%NATION%", nation)
-                .replace("%TITLE%", title);
+                .replace("%TOWN%", ChatColor.translateAlternateColorCodes('&',town))
+                .replace("%NATION%", ChatColor.translateAlternateColorCodes('&',nation))
+                .replace("%TITLE%", ChatColor.translateAlternateColorCodes('&',title));
     }
 
     /**

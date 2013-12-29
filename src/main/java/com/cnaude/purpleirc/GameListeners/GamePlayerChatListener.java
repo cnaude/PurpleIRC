@@ -33,10 +33,11 @@ public class GamePlayerChatListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+        plugin.logDebug("ChatFormat [" + event.isCancelled() + "]: " + event.getFormat());
         if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;
-        }        
+        }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (PurpleBot ircBot : plugin.ircBots.values()) {

@@ -27,6 +27,7 @@ public class McMMOChatListener implements Listener {
 
     @EventHandler
     public void onMcMMOChatEvent(McMMOChatEvent event) {
+        plugin.logDebug("McMMOChatEvent caught");
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         if (player != null) {
@@ -42,6 +43,7 @@ public class McMMOChatListener implements Listener {
     
     @EventHandler
     public void onMcMMOAdminChatEvent(McMMOAdminChatEvent event) {
+        plugin.logDebug("McMMOAdminChatEvent caught");
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         if (player != null) {
@@ -57,6 +59,7 @@ public class McMMOChatListener implements Listener {
     
     @EventHandler
     public void onMcMMOPartyChatEvent(McMMOPartyChatEvent event) {
+        plugin.logDebug("onMcMMOPartyChatEvent caught");
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         String party = event.getParty();

@@ -1,8 +1,6 @@
 package com.cnaude.purpleirc;
 
 import com.dthielke.herochat.Chatter;
-import com.gmail.nossr50.api.ChatAPI;
-import com.gmail.nossr50.api.PartyAPI;
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -789,7 +787,8 @@ public final class PurpleBot {
         }
     }
 
-    public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
+    public void townyChat(Player player, 
+            com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!bot.isConnected()) {
             return;
         }
@@ -806,7 +805,7 @@ public final class PurpleBot {
                         || enabledMessages.get(channelName).contains("towny-" + townyChannel.getChannelTag() + "-chat")
                         || enabledMessages.get(channelName).contains("towny-chat")) {
                     asyncIRCMessage(channelName, plugin.tokenizer
-                            .chatTownyTokenizer(player, townyChannel, message));
+                            .chatTownyChannelTokenizer(player, townyChannel, message));
                 }
             }
         }
