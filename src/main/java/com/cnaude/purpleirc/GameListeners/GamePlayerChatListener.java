@@ -40,6 +40,7 @@ public class GamePlayerChatListener implements Listener {
             plugin.logDebug("Ignoring due to townytag");
             return;
         }
+        event.setMessage(message.replace("[[townytag]]", ""));
         if (event.isCancelled() && !plugin.isFactionChatEnabled()) {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;

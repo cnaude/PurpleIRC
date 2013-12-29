@@ -7,7 +7,6 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
-import com.palmergames.bukkit.TownyChat.TownyChatFormatter;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -303,19 +302,19 @@ public class ChatTokenizer {
     }
 
     public String chatTownyChannelTokenizer(Player player, Channel townyChannel, String message) {
-        
+
         return gameChatToIRCTokenizer(player, plugin.townyChannelChat, message)
-                .replace("%TOWNYCHANNEL%", ChatColor.translateAlternateColorCodes('&',townyChannel.getName()))
-                .replace("%TOWNYCHANNELTAG%", ChatColor.translateAlternateColorCodes('&',townyChannel.getChannelTag()))
-                .replace("%TOWNYMSGCOLOR%", ChatColor.translateAlternateColorCodes('&',townyChannel.getMessageColour()));
+                .replace("%TOWNYCHANNEL%", ChatColor.translateAlternateColorCodes('&', townyChannel.getName()))
+                .replace("%TOWNYCHANNELTAG%", ChatColor.translateAlternateColorCodes('&', townyChannel.getChannelTag()))
+                .replace("%TOWNYMSGCOLOR%", ChatColor.translateAlternateColorCodes('&', townyChannel.getMessageColour()));
     }
 
     public String chatTownyTokenizer(Player player, String town, String nation,
             String title, String message) {
         return gameChatToIRCTokenizer(player, plugin.townyChat, message)
-                .replace("%TOWN%", ChatColor.translateAlternateColorCodes('&',town))
-                .replace("%NATION%", ChatColor.translateAlternateColorCodes('&',nation))
-                .replace("%TITLE%", ChatColor.translateAlternateColorCodes('&',title));
+                .replace("%TOWN%", ChatColor.translateAlternateColorCodes('&', town))
+                .replace("%NATION%", ChatColor.translateAlternateColorCodes('&', nation))
+                .replace("%TITLE%", ChatColor.translateAlternateColorCodes('&', title));
     }
 
     /**
@@ -407,6 +406,8 @@ public class ChatTokenizer {
         String worldName = "";
         String worldAlias = "";
         String worldColor = "";
+        String jobShort = "";
+        String job = "";
         if (pSuffix == null) {
             pSuffix = "";
         }
@@ -430,8 +431,14 @@ public class ChatTokenizer {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
         }
+        if (plugin.jobsHook != null) {
+            job = plugin.jobsHook.getPlayerJob(player,false);
+            jobShort = plugin.jobsHook.getPlayerJob(player, true);
+        }
         plugin.logDebug("[P]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
+                .replace(("%JOBS%"), job)
+                .replace(("%JOBSSHORT%"), jobShort)
                 .replace("%NAME%", pName)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
@@ -453,6 +460,8 @@ public class ChatTokenizer {
         String group = plugin.getPlayerGroup(worldName, player);
         String worldAlias = "";
         String worldColor = "";
+        String jobShort = "";
+        String job = "";
         if (!worldName.isEmpty()) {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
@@ -472,9 +481,14 @@ public class ChatTokenizer {
         if (group == null) {
             group = plugin.defaultPlayerGroup;
         }
-
+        if (plugin.jobsHook != null) {
+            job = plugin.jobsHook.getPlayerJob(player, false);
+            jobShort = plugin.jobsHook.getPlayerJob(player, true);
+        }
         plugin.logDebug("[S]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", player)
+                .replace(("%JOBS%"), job)
+                .replace(("%JOBSSHORT%"), jobShort)
                 .replace("%NAME%", player)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)

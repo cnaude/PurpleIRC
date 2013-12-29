@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
+import com.cnaude.purpleirc.Hooks.JobsHook;
 import com.cnaude.purpleirc.Hooks.TownyChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
@@ -78,6 +79,7 @@ public class PurpleIRC extends JavaPlugin {
             consoleChat,
             heroChat,
             heroAction,
+            jobsSeperator,
             townyChat,
             townyChannelChat,
             factionPublicChat,
@@ -121,6 +123,7 @@ public class PurpleIRC extends JavaPlugin {
             reportRTSClaim,
             reportRTSUnClaim,
             reportRTSHeld,
+            reportRTSAssign,
             cleverSend,
             broadcastMessage,
             broadcastConsoleMessage,
@@ -154,6 +157,7 @@ public class PurpleIRC extends JavaPlugin {
     public HashMap<String, String> heroActionChannelMessages = new HashMap<String, String>();
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
+    public JobsHook jobsHook;
     public NetPackets netPackets = null;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
@@ -245,6 +249,12 @@ public class PurpleIRC extends JavaPlugin {
             } else {
                 logInfo("FactionChat not detected.");
             }
+        }
+        if (isJobsEnabled()) {
+            logInfo("Enabling Jobs support.");
+            jobsHook = new JobsHook(this);
+        } else {
+            logInfo("Jobs not detected.");
         }
         /*
         if (isEssentialsEnabled()) {
@@ -377,6 +387,7 @@ public class PurpleIRC extends JavaPlugin {
         ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
         ircHeroQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-quit", ""));
         ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
+        jobsSeperator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.jobs-separator", ""));
 
         for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
             ircHeroChannelMessages.put(hChannelName.toLowerCase(),
@@ -439,6 +450,7 @@ public class PurpleIRC extends JavaPlugin {
         reportRTSClaim = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-claim", ""));
         reportRTSUnClaim = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-unclaim", ""));
         reportRTSHeld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-held", ""));
+        reportRTSAssign = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-assign", ""));
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
@@ -481,6 +493,10 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isMcMMOEnabled() {
         return (getServer().getPluginManager().getPlugin("mcMMO") != null);
     }
+    
+    public boolean isJobsEnabled() {
+        return (getServer().getPluginManager().getPlugin("Jobs") != null);
+    }    
 
     /**
      *

@@ -10,6 +10,7 @@ import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -26,6 +27,10 @@ public class TownyChatListener implements Listener {
 
     @EventHandler
     public void onAsyncChatHookEvent(AsyncChatHookEvent event) {
+        if (event.getAsyncPlayerChatEvent().isCancelled()) {
+            plugin.logDebug("Ignore TC chat due to event is cancelled.");
+            return;
+        }
         Channel townyChannel = event.getChannel();
 
         plugin.logDebug("TC Format[1]: " + event.getFormat());

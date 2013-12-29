@@ -6,6 +6,7 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.nyancraft.reportrts.event.ReportAssignEvent;
 import com.nyancraft.reportrts.event.ReportClaimEvent;
 import com.nyancraft.reportrts.event.ReportCompleteEvent;
 import com.nyancraft.reportrts.event.ReportCreateEvent;
@@ -46,7 +47,7 @@ public class ReportRTSListener implements Listener {
     }
     
     @EventHandler
-    public void onReportCompleteEvent(ReportCompleteEvent event) {
+    public void onReportCompleteEvent(ReportCompleteEvent event) {        
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
@@ -56,7 +57,7 @@ public class ReportRTSListener implements Listener {
     }
     
     @EventHandler
-    public void onReportCompleteEvent(ReportClaimEvent event) {        
+    public void onReportClaimEvent(ReportClaimEvent event) {           
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
@@ -66,7 +67,7 @@ public class ReportRTSListener implements Listener {
     }
     
     @EventHandler
-    public void onReportCompleteEvent(ReportUnclaimEvent event) {        
+    public void onReportUnclaimEvent(ReportUnclaimEvent event) {        
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
@@ -76,11 +77,21 @@ public class ReportRTSListener implements Listener {
     }
     
     @EventHandler
-    public void onReportCompleteEvent(ReportHoldEvent event) {        
+    public void onReportHoldEvent(ReportHoldEvent event) {        
         Player player = plugin.getServer().getPlayer(event.getRequest().getName());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
                 ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSHeld, "rts-held");
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onReportAssignEvent(ReportAssignEvent event) {          
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSAssign, "rts-assign");
             }
         }
     }

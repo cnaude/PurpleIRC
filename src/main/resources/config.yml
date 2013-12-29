@@ -34,6 +34,8 @@ channel-check-interval: 100
 #  %TOWNYCHANNEL% - Towny channel name
 #  %TOWNYCHANNELTAG% - Towny channel tag name
 #  %TOWNYMSGCOLOR% - Towny message color
+#  %JOBS% - Player jobs
+#  %JOBS% - Player jobs shortened
 message-format:
   # Message templates for game to IRC messages
   console-chat: '&r[&5Server&r] %MESSAGE%' 
@@ -103,6 +105,9 @@ message-format:
   rts-claim: '[RTS:Claim] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-unclaim: '[RTS:Unclaim] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-held: '[RTS:Held] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-assign: '[RTS:Assign] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  # Jobs seperator
+  jobs-separator: ', '
   # Message format per hero channel. From game to IRC. For use with @hchat.
   irc-hero-channels:
       Global: '&r[G]&r[IRC]%PLAYERPREFIX%%NAME%&r %MESSAGE%'

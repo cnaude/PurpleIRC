@@ -11,6 +11,7 @@ import com.gmail.nossr50.events.chat.McMMOChatEvent;
 import com.gmail.nossr50.events.chat.McMMOPartyChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -28,6 +29,7 @@ public class McMMOChatListener implements Listener {
     @EventHandler
     public void onMcMMOChatEvent(McMMOChatEvent event) {
         plugin.logDebug("McMMOChatEvent caught");
+        event.setMessage(event.getMessage().replace("[[townytag]]", ""));
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         if (player != null) {
@@ -40,10 +42,11 @@ public class McMMOChatListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onMcMMOAdminChatEvent(McMMOAdminChatEvent event) {
         plugin.logDebug("McMMOAdminChatEvent caught");
+        event.setMessage(event.getMessage().replace("[[townytag]]", ""));
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         if (player != null) {
@@ -56,10 +59,11 @@ public class McMMOChatListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onMcMMOPartyChatEvent(McMMOPartyChatEvent event) {
         plugin.logDebug("onMcMMOPartyChatEvent caught");
+        event.setMessage(event.getMessage().replace("[[townytag]]", ""));
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
         String party = event.getParty();
