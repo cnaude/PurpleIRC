@@ -30,7 +30,7 @@ channel-check-interval: 100
 #  %TITANCHANNEL% - TitanChat channel name
 #  %TITANCOLOR% - TitanChat channel color
 #  %WORLDALIAS% - World alias name
-#  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER%
+#  ReportRTS ticket: %MESSAGE%, %MODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER% %MODCOMMENT%
 #  %TOWNYCHANNEL% - Towny channel name
 #  %TOWNYCHANNELTAG% - Towny channel tag name
 #  %TOWNYMSGCOLOR% - Towny message color
@@ -106,6 +106,7 @@ message-format:
   rts-unclaim: '[RTS:Unclaim] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-held: '[RTS:Held] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-assign: '[RTS:Assign] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-reopen: '[RTS:Reopen] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From game to IRC. For use with @hchat.

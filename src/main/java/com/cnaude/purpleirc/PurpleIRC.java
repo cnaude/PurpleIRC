@@ -124,6 +124,7 @@ public class PurpleIRC extends JavaPlugin {
             reportRTSUnClaim,
             reportRTSHeld,
             reportRTSAssign,
+            reportRTSReopen,
             cleverSend,
             broadcastMessage,
             broadcastConsoleMessage,
@@ -451,6 +452,7 @@ public class PurpleIRC extends JavaPlugin {
         reportRTSUnClaim = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-unclaim", ""));
         reportRTSHeld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-held", ""));
         reportRTSAssign = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-assign", ""));
+        reportRTSReopen = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-reopen", ""));
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));

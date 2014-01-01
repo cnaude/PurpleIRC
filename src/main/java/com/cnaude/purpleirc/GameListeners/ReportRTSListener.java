@@ -11,6 +11,7 @@ import com.nyancraft.reportrts.event.ReportClaimEvent;
 import com.nyancraft.reportrts.event.ReportCompleteEvent;
 import com.nyancraft.reportrts.event.ReportCreateEvent;
 import com.nyancraft.reportrts.event.ReportHoldEvent;
+import com.nyancraft.reportrts.event.ReportReopenEvent;
 import com.nyancraft.reportrts.event.ReportUnclaimEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -95,4 +96,15 @@ public class ReportRTSListener implements Listener {
             }
         }
     }
+    
+    @EventHandler
+    public void onReportReopenEvent(ReportReopenEvent event) {          
+        Player player = plugin.getServer().getPlayer(event.getRequest().getName());
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSReopen, "rts-reopen");
+            }
+        }
+    }
+    
 }
