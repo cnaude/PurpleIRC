@@ -9,6 +9,7 @@ import com.dthielke.herochat.ChannelManager;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -397,6 +398,10 @@ public class ChatTokenizer {
                 .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
                 .replace("%RTSWORLD%", world);
+    }
+    
+    public String reportRTSTokenizer(CommandSender sender, String message, String template) {      
+        return gameChatToIRCTokenizer(sender.getName(), template, message);
     }
 
     public String playerTokenizer(Player player, String message) {

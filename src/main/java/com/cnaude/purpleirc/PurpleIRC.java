@@ -125,6 +125,7 @@ public class PurpleIRC extends JavaPlugin {
             reportRTSHeld,
             reportRTSAssign,
             reportRTSReopen,
+            reportRTSBroadcast,
             cleverSend,
             broadcastMessage,
             broadcastConsoleMessage,
@@ -257,6 +258,12 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("Jobs not detected.");
         }
+        /*
+        if (isPrismEnabled()) {
+            logInfo("Enabling Prism support.");            
+        } else {
+            logInfo("Prism not detected.");
+        }*/
         /*
         if (isEssentialsEnabled()) {
             logInfo("Enabling Essentials support.");
@@ -453,6 +460,7 @@ public class PurpleIRC extends JavaPlugin {
         reportRTSHeld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-held", ""));
         reportRTSAssign = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-assign", ""));
         reportRTSReopen = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-reopen", ""));
+        reportRTSBroadcast = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-modbroadcast", ""));
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
@@ -1023,5 +1031,9 @@ public class PurpleIRC extends JavaPlugin {
      */
     public boolean checkForProtocolLib() {
         return (getServer().getPluginManager().getPlugin("ProtocolLib") != null);
+    }
+    
+    public boolean isPrismEnabled() {
+        return (getServer().getPluginManager().getPlugin("Prism") != null);
     }
 }

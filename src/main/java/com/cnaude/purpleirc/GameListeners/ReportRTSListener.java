@@ -6,6 +6,7 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.nyancraft.reportrts.event.ModBroadcastEvent;
 import com.nyancraft.reportrts.event.ReportAssignEvent;
 import com.nyancraft.reportrts.event.ReportClaimEvent;
 import com.nyancraft.reportrts.event.ReportCompleteEvent;
@@ -103,6 +104,15 @@ public class ReportRTSListener implements Listener {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
                 ircBot.reportRTSNotify(player, event.getRequest(), plugin.reportRTSReopen, "rts-reopen");
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onModBroadcastEvent(ModBroadcastEvent event) {          
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (ircBot.isConnected()) {
+                ircBot.reportRTSNotify(event.getSender(), event.getMessage(), plugin.reportRTSBroadcast, "rts-modbroadcast");
             }
         }
     }

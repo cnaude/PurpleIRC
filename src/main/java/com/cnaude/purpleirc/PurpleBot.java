@@ -931,6 +931,17 @@ public final class PurpleBot {
             }
         }
     }
+    
+    public void reportRTSNotify(CommandSender sender, String message, String template, String messageType) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains(messageType)) {
+                asyncIRCMessage(channelName, plugin.tokenizer.reportRTSTokenizer(sender, message, template));
+            }
+        }
+    }
 
     /**
      *

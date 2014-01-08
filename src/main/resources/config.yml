@@ -107,6 +107,7 @@ message-format:
   rts-held: '[RTS:Held] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-assign: '[RTS:Assign] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-reopen: '[RTS:Reopen] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
+  rts-modbroadcast: '[RTS:ModBroadcast] <%NAME%> %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From game to IRC. For use with @hchat.
