@@ -364,12 +364,12 @@ public class ChatTokenizer {
     /**
      * ReportRTS notifications to IRC
      *
-     * @param player
+     * @param pName
      * @param template
      * @param request
      * @return
      */
-    public String reportRTSTokenizer(Player player, String template, HelpRequest request) {
+    public String reportRTSTokenizer(String pName, String template, HelpRequest request) {
         String message = request.getMessage();
         String modName = request.getModName();
         String name = request.getName();
@@ -391,7 +391,7 @@ public class ChatTokenizer {
         if (modComment == null) {
             modComment = "";
         }
-        return gameChatToIRCTokenizer(player, template, message)
+        return gameChatToIRCTokenizer(pName, template, message)
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
                 .replace("%MODCOMMENT%", modComment)

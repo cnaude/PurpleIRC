@@ -916,18 +916,20 @@ public final class PurpleBot {
     // Called from ReportRTS event
     /**
      *
-     * @param player
+     * @param pName
      * @param request
      * @param template
      * @param messageType
      */
-    public void reportRTSNotify(Player player, HelpRequest request, String template, String messageType) {
+    public void reportRTSNotify(String pName, HelpRequest request, 
+            String template, String messageType) {
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains(messageType)) {
-                asyncIRCMessage(channelName, plugin.tokenizer.reportRTSTokenizer(player, template, request));
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .reportRTSTokenizer(pName, template, request));
             }
         }
     }
