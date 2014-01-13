@@ -136,11 +136,16 @@ public class PurpleIRC extends JavaPlugin {
     
     public ArrayList<String> kickedPlayers = new ArrayList<String>();
 
-    public final String invalidBotName = ChatColor.RED + "Invalid bot name: " + ChatColor.WHITE + "%BOT%"
+    public final String invalidBotName = ChatColor.RED + "Invalid bot name: " 
+            + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
+    
+    public final String invalidChannelName = ChatColor.RED + "Invalid channel name: " 
+            + ChatColor.WHITE + "%CHANNEL%";
 
-    public final String invalidChannel = ChatColor.RED + "Invalid channel: " + ChatColor.WHITE + "%CHANNEL%";
+    public final String invalidChannel = ChatColor.RED + "Invalid channel: " 
+            + ChatColor.WHITE + "%CHANNEL%";
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
     private boolean debugEnabled;

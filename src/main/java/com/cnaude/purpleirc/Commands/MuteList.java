@@ -4,8 +4,8 @@
  */
 package com.cnaude.purpleirc.Commands;
 
-import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.Utilities.BotsAndChannels;
+import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -13,19 +13,19 @@ import org.bukkit.command.CommandSender;
  *
  * @author cnaude
  */
-public class Mute implements IRCCommandInterface {
+public class MuteList implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot]) ([channel]) [user(s)]";
-    private final String desc = "Mute IRC user(s) in a channel.";
-    private final String name = "mute";
+    private final String usage = "([bot]) ([channel])";
+    private final String desc = "List muted IRC user(s) for a channel.";
+    private final String name = "mutelist";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
      * @param plugin
      */
-    public Mute(PurpleIRC plugin) {
+    public MuteList(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -37,14 +37,11 @@ public class Mute implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         BotsAndChannels bac;
-        int idx;
 
-        if (args.length >= 4) {
+        if (args.length >= 3) {
             bac = new BotsAndChannels(plugin, sender, args[1], args[2]);
-            idx = 3;
-        } else if (args.length == 2) {
+        } else if (args.length == 1) {
             bac = new BotsAndChannels(plugin, sender);
-            idx = 1;
         } else {
             sender.sendMessage(fullUsage);
             return;
@@ -52,9 +49,7 @@ public class Mute implements IRCCommandInterface {
         if (bac.bot.size() > 0 && bac.channel.size() > 0) {
             for (String botName : bac.bot) {
                 for (String channelName : plugin.ircBots.get(botName).botChannels) {
-                    for (int i = idx; i < args.length; i++) {
-                        plugin.ircBots.get(botName).mute(channelName, sender, args[i]);
-                    }
+                    plugin.ircBots.get(botName).muteList(channelName, sender);
                 }
             }
         }

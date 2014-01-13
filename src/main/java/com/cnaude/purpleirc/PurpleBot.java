@@ -240,7 +240,22 @@ public final class PurpleBot {
             saveConfig();
         }
     }
-
+    
+    /**
+     *
+     * @param channelName
+     * @param sender     
+     */
+    public void muteList(String channelName, CommandSender sender) {
+        if (muteList.isEmpty()) {
+            sender.sendMessage("There are no users muted.");
+        } else {
+            sender.sendMessage("Muted users: " + Joiner.on(", ")
+                    .join(muteList.values()));            
+            saveConfig();
+        }
+    }
+    
     /**
      *
      * @param channelName

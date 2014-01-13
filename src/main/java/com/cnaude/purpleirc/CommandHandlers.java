@@ -45,6 +45,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("msg", new Msg(plugin));
         commands.put("motd", new Motd(plugin));
         commands.put("mute", new Mute(plugin));
+        commands.put("mutelist", new MuteList(plugin));
         commands.put("nick", new Nick(plugin));
         commands.put("notice", new Notice(plugin));
         commands.put("op", new Op(plugin));
@@ -61,6 +62,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("sendraw", new SendRaw(plugin));
         commands.put("server", new Server(plugin));
         commands.put("topic", new Topic(plugin));
+        commands.put("unmute", new UnMute(plugin));
         commands.put("whois", new Whois(plugin));
         commands.put("help", new Help(plugin));
 

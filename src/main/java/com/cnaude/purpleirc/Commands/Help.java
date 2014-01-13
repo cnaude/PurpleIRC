@@ -35,7 +35,7 @@ public class Help implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 2) {
-            String s = args[1];
+            String s = args[0];
             if (plugin.commandHandlers.commands.containsKey(s)) {
                 sender.sendMessage(helpStringBuilder(
                         plugin.commandHandlers.commands.get(s).name(),
