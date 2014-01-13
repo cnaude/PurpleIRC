@@ -51,7 +51,7 @@ public class UnMute implements IRCCommandInterface {
         }
         if (bac.bot.size() > 0 && bac.channel.size() > 0) {
             for (String botName : bac.bot) {
-                for (String channelName : plugin.ircBots.get(botName).botChannels) {
+                for (String channelName : bac.channel) {
                     for (int i = idx; i < args.length; i++) {                        
                         plugin.ircBots.get(botName).unMute(channelName, sender, args[i]);
                     }

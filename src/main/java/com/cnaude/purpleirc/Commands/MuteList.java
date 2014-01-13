@@ -48,7 +48,7 @@ public class MuteList implements IRCCommandInterface {
         }
         if (bac.bot.size() > 0 && bac.channel.size() > 0) {
             for (String botName : bac.bot) {
-                for (String channelName : plugin.ircBots.get(botName).botChannels) {
+                for (String channelName : bac.channel) {
                     plugin.ircBots.get(botName).muteList(channelName, sender);
                 }
             }
