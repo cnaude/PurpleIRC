@@ -5,6 +5,7 @@
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -15,7 +16,7 @@ import org.bukkit.command.CommandSender;
 public class DeOp implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[bot] [channel] [user(s)]";
+    private final String usage = "([bot]) ([channel]) [user(s)]";
     private final String desc = "De-op IRC user(s).";
     private final String name = "deop";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
@@ -35,23 +36,32 @@ public class DeOp implements IRCCommandInterface {
      */
     @Override
     public void dispatch(CommandSender sender, String[] args) {
+        BotsAndChannels bac;
+        int idx;
+
         if (args.length >= 4) {
-            String bot = args[1];
-            String channelName = args[2];
-            if (plugin.ircBots.containsKey(bot)) {
-                for (int i = 3; i < args.length; i++) {
-                    plugin.ircBots.get(bot).deOp(channelName, args[i]);
-                    sender.sendMessage("Removing operator status from "
-                            + ChatColor.WHITE + args[i]
-                            + ChatColor.RESET + " in "
-                            + ChatColor.WHITE + channelName);
-                }
-            } else {
-                sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
-            }
+            bac = new BotsAndChannels(plugin, sender, args[1], args[2]);
+            idx = 3;
+        } else if (args.length == 2) {
+            bac = new BotsAndChannels(plugin, sender);
+            idx = 1;
         } else {
             sender.sendMessage(fullUsage);
+            return;
         }
+        if (bac.bot.size() > 0 && bac.channel.size() > 0) {
+            for (String botName : bac.bot) {
+                for (String channelName : bac.channel) {
+                    for (int i = idx; i < args.length; i++) {
+                        plugin.ircBots.get(botName).deOp(channelName, args[i]);
+                        sender.sendMessage("Removing operator status from "
+                                + ChatColor.WHITE + args[i]
+                                + ChatColor.RESET + " in "
+                                + ChatColor.WHITE + channelName);
+                    }
+                }
+            }
+        }    
     }
 
     @Override

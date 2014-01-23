@@ -166,6 +166,10 @@ channels:
     hide-join-when-vanished: true
     # Hide quit message when player is invisible (VanishNoPacket)
     hide-quit-when-vanished: true
+    # How to respond to an invalid command
+    invalid-command:
+        private: false
+        ctcp: false
     commands:
       chat:
         modes: '*'

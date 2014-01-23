@@ -153,12 +153,17 @@ public class IRCMessageHandler {
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             } else {
-                if (privateMessage) {
+                if (privateMessage || ircBot.invalidCommandPrivate.get(myChannel)) {
                     target = user.getNick();
                 }
                 plugin.logDebug("Invalid command: " + command);
-                ircBot.asyncIRCMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
-                        .replace("%CMDPREFIX%", ircBot.commandPrefix));
+                if (ircBot.invalidCommandCTCP.get(myChannel)) {
+                    ircBot.blockingCTCPMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                            .replace("%CMDPREFIX%", ircBot.commandPrefix));
+                } else {
+                    ircBot.asyncIRCMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                            .replace("%CMDPREFIX%", ircBot.commandPrefix));
+                }
             }
         } else {
             if (ircBot.ignoreIRCChat.get(myChannel)) {

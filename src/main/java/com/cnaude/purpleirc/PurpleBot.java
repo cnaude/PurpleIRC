@@ -95,6 +95,8 @@ public final class PurpleBot {
     public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideListWhenVanished = new HashMap<String, Boolean>();
     public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> invalidCommandPrivate = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> invalidCommandCTCP = new HashMap<String, Boolean>();
     public HashMap<String, String> heroChannel = new HashMap<String, String>();
     public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
     public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
@@ -530,6 +532,12 @@ public final class PurpleBot {
 
                 hideQuitWhenVanished.put(channelName, config.getBoolean("channels." + enChannelName + ".hide-quit-when-vanished", true));
                 plugin.logDebug("  HideQuitWhenVanished => " + hideQuitWhenVanished.get(channelName));
+                
+                invalidCommandPrivate.put(channelName, config.getBoolean("channels." + enChannelName + ".invalid-command.private", false));
+                plugin.logDebug("  InvalidCommandPrivate => " + invalidCommandPrivate.get(channelName));
+                
+                invalidCommandCTCP.put(channelName, config.getBoolean("channels." + enChannelName + ".invalid-command.ctcp", false));
+                plugin.logDebug("  InvalidCommandCTCP => " + invalidCommandCTCP.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
@@ -1592,7 +1600,7 @@ public final class PurpleBot {
      * @param message
      * @param override
      */
-    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
+     public void broadcastChat(String nick, String myChannel, String message, boolean override) {
         plugin.logDebug("Check if irc-chat is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains("irc-chat") || override) {
             plugin.logDebug("Yup we can broadcast due to irc-chat enabled");

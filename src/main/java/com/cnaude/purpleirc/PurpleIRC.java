@@ -285,7 +285,7 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("ReportRTS not detected.");
         }
         commandHandlers = new CommandHandlers(this);
-        getCommand("irc").setExecutor(commandHandlers);
+        getCommand("irc").setExecutor(commandHandlers);        
         regexGlobber = new RegexGlobber();
         tokenizer = new ChatTokenizer(this);
         loadBots();

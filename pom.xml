@@ -5,7 +5,7 @@
 
     <groupId>com.cnaude</groupId>
     <artifactId>PurpleIRC</artifactId>
-    <version>2.1.6</version>
+    <version>2.1.7-SNAPSHOT</version>
     <name>PurpleIRC</name>
     <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
@@ -292,8 +292,8 @@
                         <configuration>
                             <tasks>                                                                              
                                 <copy file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../${project.name}/target/${project.name}.jar"/>
-                                <exec dir="../${project.name}/target" executable="${scp}">
-                                    <arg line="${arg} ${project.name}.jar cnaude@cn.revisited.us:minetest/plugins/"/>
+                                <exec dir="../${project.name}/target" executable="scp">
+                                    <arg line="-o 'StrictHostKeyChecking no' ${project.name}.jar cnaude@cn.revisited.us:minetest/plugins/"/>
                                 </exec>
                             </tasks>
                         </configuration>
