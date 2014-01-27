@@ -391,7 +391,7 @@ public class ChatTokenizer {
         if (modComment == null) {
             modComment = "";
         }
-        return gameChatToIRCTokenizer(pName, template, message)
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(pName, template))
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
                 .replace("%MODCOMMENT%", modComment)
