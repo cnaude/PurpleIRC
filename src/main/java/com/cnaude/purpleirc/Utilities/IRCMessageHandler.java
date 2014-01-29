@@ -189,7 +189,7 @@ public class IRCMessageHandler {
         }
     }
 
-    private String getCommands(Map<String, Map<String, Map<String, String>>> commandMap, String myChannel) {
+    private String getCommands(CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>> commandMap, String myChannel) {
         if (commandMap.containsKey(myChannel)) {
             List<String> sortedCommands = new ArrayList<String>();
             for (String command : commandMap.get(myChannel).keySet()) {

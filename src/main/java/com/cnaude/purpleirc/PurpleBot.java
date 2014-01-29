@@ -103,7 +103,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Collection<String>> worldList;
     public CaseInsensitiveMap<Collection<String>> muteList;
     public CaseInsensitiveMap<Collection<String>> enabledMessages;
-    public CaseInsensitiveMap<Map<String, Map<String, String>>> commandMap;
+    public CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>> commandMap;
     public ArrayList<CommandSender> whoisSenders;
     public List<String> channelCmdNotifyRecipients;
     private final ArrayList<ListenerAdapter> ircListeners;
@@ -118,7 +118,7 @@ public final class PurpleBot {
         this.botChannels = new ArrayList<String>();
         this.ircListeners = new ArrayList<ListenerAdapter>();
         this.channelCmdNotifyRecipients = new ArrayList<String>();
-        this.commandMap = new CaseInsensitiveMap<Map<String, Map<String, String>>>();
+        this.commandMap = new CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>>();
         this.enabledMessages = new CaseInsensitiveMap<Collection<String>>();
         this.muteList = new CaseInsensitiveMap<Collection<String>>();
         this.worldList = new CaseInsensitiveMap<Collection<String>>();
@@ -631,10 +631,11 @@ public final class PurpleBot {
                 }
 
                 // build command map
-                Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
+                CaseInsensitiveMap<CaseInsensitiveMap<String>> map 
+                        = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
                 for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
                     plugin.logDebug("  Command => " + command);
-                    Map<String, String> optionPair = new HashMap<String, String>();
+                    CaseInsensitiveMap<String> optionPair = new CaseInsensitiveMap<String>();
                     String commandKey = "channels." + enChannelName + ".commands." + command + ".";
                     optionPair.put("modes", config.getString(commandKey + "modes", "*"));
                     optionPair.put("private", config.getString(commandKey + "private", "false"));
