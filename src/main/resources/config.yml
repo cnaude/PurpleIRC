@@ -109,7 +109,7 @@ message-format:
   rts-reopen: '[RTS:Reopen] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
-  # Message format per hero channel. From game to IRC. For use with @hchat.
+  # Message format per hero channel. From IRC to game. For use with @hchat.
   irc-hero-channels:
       Global: '&r[G]&r[IRC]%PLAYERPREFIX%%NAME%&r %MESSAGE%'
   # Message format per hero channel. From game to IRC. Overrides hero-chat template.
