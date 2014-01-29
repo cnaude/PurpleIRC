@@ -391,13 +391,13 @@ public class ChatTokenizer {
         if (modComment == null) {
             modComment = "";
         }
-        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(pName, template))
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(pName, template)
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
                 .replace("%MODCOMMENT%", modComment)
                 .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
-                .replace("%RTSWORLD%", world);
+                .replace("%RTSWORLD%", world));
     }
     
     public String reportRTSTokenizer(CommandSender sender, String message, String template) {      

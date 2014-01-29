@@ -26,6 +26,7 @@ import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
+import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
 import com.dthielke.herochat.Herochat;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
@@ -82,30 +83,30 @@ public final class PurpleBot {
     public String channelCmdNotifyMode;
     public String partInvalidChannelsMsg;
     private String connectMessage;
-    public ArrayList<String> botChannels = new ArrayList<String>();
-    public HashMap<String, Collection<String>> channelNicks = new HashMap<String, Collection<String>>();
-    public HashMap<String, Collection<String>> tabIgnoreNicks = new HashMap<String, Collection<String>>();
-    public HashMap<String, String> channelPassword = new HashMap<String, String>();
-    public HashMap<String, String> channelTopic = new HashMap<String, String>();
-    public HashMap<String, String> activeTopic = new HashMap<String, String>();
-    public HashMap<String, String> channelModes = new HashMap<String, String>();
-    public HashMap<String, Boolean> channelTopicProtected = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> channelAutoJoin = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> ignoreIRCChat = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> hideJoinWhenVanished = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> hideListWhenVanished = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> hideQuitWhenVanished = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> invalidCommandPrivate = new HashMap<String, Boolean>();
-    public HashMap<String, Boolean> invalidCommandCTCP = new HashMap<String, Boolean>();
-    public HashMap<String, String> heroChannel = new HashMap<String, String>();
-    public Map<String, Collection<String>> opsList = new HashMap<String, Collection<String>>();
-    public Map<String, Collection<String>> worldList = new HashMap<String, Collection<String>>();
-    public Map<String, Collection<String>> muteList = new HashMap<String, Collection<String>>();
-    public Map<String, Collection<String>> enabledMessages = new HashMap<String, Collection<String>>();
-    public Map<String, Map<String, Map<String, String>>> commandMap = new HashMap<String, Map<String, Map<String, String>>>();
+    public ArrayList<String> botChannels;
+    public CaseInsensitiveMap<Collection<String>> channelNicks;
+    public CaseInsensitiveMap<Collection<String>> tabIgnoreNicks;
+    public CaseInsensitiveMap<String> channelPassword;
+    public CaseInsensitiveMap<String> channelTopic;
+    public CaseInsensitiveMap<String> activeTopic;
+    public CaseInsensitiveMap<String> channelModes;
+    public CaseInsensitiveMap<Boolean> channelTopicProtected;
+    public CaseInsensitiveMap<Boolean> channelAutoJoin;
+    public CaseInsensitiveMap<Boolean> ignoreIRCChat;
+    public CaseInsensitiveMap<Boolean> hideJoinWhenVanished;
+    public CaseInsensitiveMap<Boolean> hideListWhenVanished;
+    public CaseInsensitiveMap<Boolean> hideQuitWhenVanished;
+    public CaseInsensitiveMap<Boolean> invalidCommandPrivate;
+    public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
+    public CaseInsensitiveMap<String> heroChannel;
+    public CaseInsensitiveMap<Collection<String>> opsList;
+    public CaseInsensitiveMap<Collection<String>> worldList;
+    public CaseInsensitiveMap<Collection<String>> muteList;
+    public CaseInsensitiveMap<Collection<String>> enabledMessages;
+    public CaseInsensitiveMap<Map<String, Map<String, String>>> commandMap;
     public ArrayList<CommandSender> whoisSenders;
-    public List<String> channelCmdNotifyRecipients = new ArrayList<String>();
-    private final ArrayList<ListenerAdapter> ircListeners = new ArrayList<ListenerAdapter>();
+    public List<String> channelCmdNotifyRecipients;
+    private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
 
     /**
@@ -114,6 +115,29 @@ public final class PurpleBot {
      * @param plugin
      */
     public PurpleBot(File file, PurpleIRC plugin) {
+        this.botChannels = new ArrayList<String>();
+        this.ircListeners = new ArrayList<ListenerAdapter>();
+        this.channelCmdNotifyRecipients = new ArrayList<String>();
+        this.commandMap = new CaseInsensitiveMap<Map<String, Map<String, String>>>();
+        this.enabledMessages = new CaseInsensitiveMap<Collection<String>>();
+        this.muteList = new CaseInsensitiveMap<Collection<String>>();
+        this.worldList = new CaseInsensitiveMap<Collection<String>>();
+        this.opsList = new CaseInsensitiveMap<Collection<String>>();
+        this.heroChannel = new CaseInsensitiveMap<String>();
+        this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
+        this.invalidCommandPrivate = new CaseInsensitiveMap<Boolean>();
+        this.hideQuitWhenVanished = new CaseInsensitiveMap<Boolean>();
+        this.hideListWhenVanished = new CaseInsensitiveMap<Boolean>();
+        this.hideJoinWhenVanished = new CaseInsensitiveMap<Boolean>();
+        this.ignoreIRCChat = new CaseInsensitiveMap<Boolean>();
+        this.channelAutoJoin = new CaseInsensitiveMap<Boolean>();
+        this.channelTopicProtected = new CaseInsensitiveMap<Boolean>();
+        this.channelModes = new CaseInsensitiveMap<String>();
+        this.activeTopic = new CaseInsensitiveMap<String>();
+        this.channelTopic = new CaseInsensitiveMap<String>();
+        this.channelPassword = new CaseInsensitiveMap<String>();
+        this.tabIgnoreNicks = new CaseInsensitiveMap<Collection<String>>();
+        this.channelNicks = new CaseInsensitiveMap<Collection<String>>();
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<CommandSender>();
@@ -199,9 +223,11 @@ public final class PurpleBot {
             if (channelAutoJoin.containsKey(channelName)) {
                 if (channelAutoJoin.get(channelName)) {
                     if (channelPassword.get(channelName).isEmpty()) {
-                        configBuilder.addAutoJoinChannel(channelName);
+                        configBuilder.addAutoJoinChannel(channelName
+                                .toLowerCase());
                     } else {
-                        configBuilder.addAutoJoinChannel(channelName, channelPassword.get(channelName));
+                        configBuilder.addAutoJoinChannel(channelName
+                                .toLowerCase(), channelPassword.get(channelName));
                     }
                 }
             }
@@ -502,7 +528,7 @@ public final class PurpleBot {
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
                 String channelName = decodeChannel(enChannelName);
                 plugin.logDebug("Channel  => " + channelName);
-                botChannels.add(channelName);
+                botChannels.add(channelName.toLowerCase());
 
                 channelAutoJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".autojoin", true));
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
@@ -835,7 +861,7 @@ public final class PurpleBot {
     }
 
     private String getHeroChatChannelTemplate(String hChannel) {
-        if (plugin.heroChannelMessages.containsKey(hChannel.toLowerCase())) {
+        if (plugin.heroChannelMessages.containsKey(hChannel)) {
             return plugin.heroChannelMessages.get(hChannel.toLowerCase());
         } else {
             return plugin.heroChat;
@@ -1989,11 +2015,9 @@ public final class PurpleBot {
     }
 
     public boolean isValidChannel(String channelName) {
-        for (String c : botChannels) {
-            if (c.equals(channelName)) {
-                return true;
-            }
-        }
+        if (botChannels.contains(channelName.toLowerCase())) {
+            return true;
+        }         
         plugin.logDebug("Channel " + channelName + " is not valid.");
         return false;
     }

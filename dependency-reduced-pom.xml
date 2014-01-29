@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>2.1.7-SNAPSHOT</version>
+  <version>2.1.7-SNAPSHOT3</version>
   <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -105,9 +105,7 @@
       <url>http://repo.comphenix.net/content/groups/public</url>
     </repository>
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
+      <releases />
       <snapshots />
       <id>sonatype-nexus-public</id>
       <name>SonaType public snapshots and releases repository</name>

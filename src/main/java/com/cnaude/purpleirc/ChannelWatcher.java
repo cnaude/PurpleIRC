@@ -1,7 +1,5 @@
 package com.cnaude.purpleirc;
 
-import com.cnaude.purpleirc.PurpleBot;
-import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.scheduler.BukkitTask;
 import org.pircbotx.Channel;
 
