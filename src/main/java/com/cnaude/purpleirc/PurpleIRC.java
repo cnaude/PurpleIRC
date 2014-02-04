@@ -26,6 +26,8 @@ import java.lang.management.ManagementFactory;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
@@ -711,7 +713,7 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getMCPlayers(PurpleBot ircBot, String channelName) {
-        ArrayList<String> playerList = new ArrayList<String>();
+        Map<String,String> playerList = new TreeMap<String,String>();
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
                 logDebug("List: Checking if player " + player.getName() + " is vanished.");
@@ -721,10 +723,9 @@ public class PurpleIRC extends JavaPlugin {
                 }
             }
             String pName = tokenizer.playerTokenizer(player, listPlayer);
-            playerList.add(pName);
+            playerList.put(player.getName(), pName);
         }
-        Collections.sort(playerList, Collator.getInstance());
-        String pList = Joiner.on(listSeparator).join(playerList);
+        String pList = Joiner.on(listSeparator).join(playerList.values());
         String msg = listFormat
                 .replace("%COUNT%", Integer.toString(playerList.size()))
                 .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
