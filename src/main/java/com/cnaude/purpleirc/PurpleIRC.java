@@ -729,7 +729,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         
         String pList;
-        if(!listSortByName){ // TODO dwi!
+        if(!listSortByName){
         	// sort as before
         	ArrayList<String> tmp = new ArrayList<String>(playerList.values());
         	Collections.sort(tmp, Collator.getInstance());
