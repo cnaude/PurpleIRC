@@ -154,6 +154,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
+    private boolean listSortByName;
     public boolean exactNickMatch;
     public Long ircConnCheckInterval;
     public Long ircChannelCheckInterval;
@@ -479,6 +480,7 @@ public class PurpleIRC extends JavaPlugin {
         listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
         listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));
         listPlayer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-player", ""));
+        listSortByName = getConfig().getBoolean("list-sort-by-name", true);
         
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
