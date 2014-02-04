@@ -725,7 +725,17 @@ public class PurpleIRC extends JavaPlugin {
             String pName = tokenizer.playerTokenizer(player, listPlayer);
             playerList.put(player.getName(), pName);
         }
-        String pList = Joiner.on(listSeparator).join(playerList.values());
+        
+        String pList;
+        if(!listSortByName){ // TODO dwi!
+        	// sort as before
+        	ArrayList<String> tmp = new ArrayList<String>(playerList.values());
+        	Collections.sort(tmp, Collator.getInstance());
+        	pList = Joiner.on(listSeparator).join(tmp);
+        }       	
+        else // sort without nick prefixes
+        	pList = Joiner.on(listSeparator).join(playerList.values());
+        
         String msg = listFormat
                 .replace("%COUNT%", Integer.toString(playerList.size()))
                 .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
