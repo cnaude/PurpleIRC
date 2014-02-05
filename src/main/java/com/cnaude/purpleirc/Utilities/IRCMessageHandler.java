@@ -6,6 +6,7 @@ package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.IRCCommand;
 import com.cnaude.purpleirc.IRCCommandSender;
+import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.google.common.base.Joiner;
@@ -13,7 +14,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 
@@ -149,7 +149,9 @@ public class IRCMessageHandler {
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
-                    ircBot.asyncIRCMessage(target, plugin.noPermForIRCCommand.replace("%NICK%", user.getNick())
+                    ircBot.asyncIRCMessage(target, plugin.getMsgTemplate(
+                            ircBot.botNick, TemplateName.NO_PERM_FOR_IRC_COMMAND)
+                            .replace("%NICK%", user.getNick())
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             } else {
@@ -158,10 +160,14 @@ public class IRCMessageHandler {
                 }
                 plugin.logDebug("Invalid command: " + command);
                 if (ircBot.invalidCommandCTCP.get(myChannel)) {
-                    ircBot.blockingCTCPMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                    ircBot.blockingCTCPMessage(target, plugin.getMsgTemplate(
+                            ircBot.botNick, TemplateName.INVALID_IRC_COMMAND)
+                            .replace("%NICK%", user.getNick())
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 } else {
-                    ircBot.asyncIRCMessage(target, plugin.invalidIRCCommand.replace("%NICK%", user.getNick())
+                    ircBot.asyncIRCMessage(target, plugin.getMsgTemplate(
+                            ircBot.botNick, TemplateName.INVALID_IRC_COMMAND)
+                            .replace("%NICK%", user.getNick())
                             .replace("%CMDPREFIX%", ircBot.commandPrefix));
                 }
             }

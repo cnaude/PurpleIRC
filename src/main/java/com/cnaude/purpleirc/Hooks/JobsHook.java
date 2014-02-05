@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.Hooks;
 
+import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class JobsHook {
                 }
             }
             if (!j.isEmpty()) {
-                return Joiner.on(plugin.jobsSeperator).join(j);
+                return Joiner.on(plugin.getMsgTemplate(TemplateName.JOBS_SEPARATOR)).join(j);
             }
         }
         return "";

@@ -55,6 +55,7 @@ public class Msg implements IRCCommandInterface {
 
             for (PurpleBot ircBot : myBots) {
                 String msg = "";
+                final String template = plugin.getMsgTemplate(ircBot.botNick, "game-pchat-response");
                 for (int i = msgIdx; i < args.length; i++) {
                     msg = msg + " " + args[i];
                 }
@@ -62,9 +63,9 @@ public class Msg implements IRCCommandInterface {
                     ircBot.msgPlayer((Player) sender, nick, msg.substring(1));
                 } else {
                     ircBot.consoleMsgPlayer(nick, msg.substring(1));
-                }
-                if (!plugin.gamePChatResponse.isEmpty()) {
-                    sender.sendMessage(plugin.tokenizer.msgChatResponseTokenizer(nick, msg.substring(1), plugin.gamePChatResponse));
+                }                
+                if (!template.isEmpty()) {
+                    sender.sendMessage(plugin.tokenizer.msgChatResponseTokenizer(nick, msg.substring(1), template));
                 }
             }
         }

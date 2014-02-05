@@ -39,6 +39,7 @@ import com.cnaude.purpleirc.Utilities.NetPackets;
 import com.cnaude.purpleirc.Utilities.Query;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.io.IOException;
+import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -58,93 +59,40 @@ public class PurpleIRC extends JavaPlugin {
     public String LOG_HEADER_F;
     static final Logger log = Logger.getLogger("Minecraft");
     private final String sampleFileName = "SampleBot.yml";
+    private final String MAINCONFIG = "MAIN-CONFIG";
     private File pluginFolder;
     private File botsFolder;
     private File configFile;
     public static long startTime;
     public boolean identServerEnabled;
-    public String gameChat,
-            gameAction,
-            gameDeath,
-            gameQuit,
-            gameJoin,
-            gameKick,
-            gameSend,
-            gameCommand,
-            gamePChat,
-            gamePChatResponse,
-            mcMMOAdminChat,
-            mcMMOPartyChat,
-            mcMMOChat,
-            consoleChat,
-            heroChat,
-            heroAction,
-            jobsSeperator,
-            townyChat,
-            townyChannelChat,
-            factionPublicChat,
-            factionAllyChat,
-            factionEnemyChat,
-            titanChat,
-            ircTitanChat,
-            ircHeroChat,
-            ircHeroAction,
-            ircHeroPart,
-            ircHeroQuit,
-            ircHeroKick,
-            ircHeroJoin,
-            ircHeroTopic,
-            ircChat,
-            ircHChatResponse,
-            ircPChat,
-            ircPChatResponse,
-            ircAction,
-            ircPart,
-            ircKick,
-            ircJoin,
-            ircTopic,
-            ircQuit,
-            ircMode,
-            ircNickChange,
-            ircNotice,
+    private CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
+    private CaseInsensitiveMap<HashMap<String, String>> ircHeroChannelMessages;
+    private CaseInsensitiveMap<HashMap<String, String>> heroChannelMessages;
+    private CaseInsensitiveMap<HashMap<String, String>> heroActionChannelMessages;
+    public String 
             defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
             defaultGroupPrefix,
             defaultPlayerWorld,
-            defaultGroupSuffix,
-            playerAFK,
-            playerNotAFK,
-            invalidIRCCommand,
-            noPermForIRCCommand,
-            customTabPrefix,
-            reportRTSSend,
-            reportRTSComplete,
-            reportRTSClaim,
-            reportRTSUnClaim,
-            reportRTSHeld,
-            reportRTSAssign,
-            reportRTSReopen,
-            reportRTSBroadcast,
-            cleverSend,
-            broadcastMessage,
-            broadcastConsoleMessage,
+            defaultGroupSuffix,            
+            customTabPrefix,            
             heroChatEmoteFormat,
             listFormat,
             listSeparator,
             listPlayer;
-    
+
     public ArrayList<String> kickedPlayers = new ArrayList<String>();
 
-    public final String invalidBotName = ChatColor.RED + "Invalid bot name: " 
+    public final String invalidBotName = ChatColor.RED + "Invalid bot name: "
             + ChatColor.WHITE + "%BOT%"
             + ChatColor.RED + ". Type '" + ChatColor.WHITE + "/irc listbots"
             + ChatColor.RED + "' to see valid bots.";
-    
-    public final String invalidChannelName = ChatColor.RED + "Invalid channel name: " 
+
+    public final String invalidChannelName = ChatColor.RED + "Invalid channel name: "
             + ChatColor.WHITE + "%CHANNEL%";
 
-    public final String invalidChannel = ChatColor.RED + "Invalid channel: " 
+    public final String invalidChannel = ChatColor.RED + "Invalid channel: "
             + ChatColor.WHITE + "%CHANNEL%";
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
@@ -158,10 +106,7 @@ public class PurpleIRC extends JavaPlugin {
     public ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public CaseInsensitiveMap<PurpleBot> ircBots = new CaseInsensitiveMap<PurpleBot>();
-    public CaseInsensitiveMap<String> ircHeroChannelMessages = new CaseInsensitiveMap<String>();
-    public CaseInsensitiveMap<String> heroChannelMessages = new CaseInsensitiveMap<String>();
-    public CaseInsensitiveMap<String> heroActionChannelMessages = new CaseInsensitiveMap<String>();
+    public CaseInsensitiveMap<PurpleBot> ircBots = new CaseInsensitiveMap<PurpleBot>();    
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
     public JobsHook jobsHook;
@@ -176,6 +121,10 @@ public class PurpleIRC extends JavaPlugin {
     public VaultHook vaultHelpers;
     public VanishHook vanishHook;
     private YamlConfiguration heroConfig;
+
+    public PurpleIRC() {
+        this.messageTmpl = new CaseInsensitiveMap<HashMap<String, String>>();
+    }
 
     /**
      *
@@ -206,7 +155,7 @@ public class PurpleIRC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GamePlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);        
+        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);
         if (isHeroChatEnabled()) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
@@ -229,7 +178,7 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
         } else {
             logInfo("TitanChat not detected.");
-        }        
+        }
         if (isTownyChatEnabled()) {
             logInfo("Enabling TownyChat support.");
             getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
@@ -248,7 +197,7 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new McMMOChatListener(this), this);
         } else {
             logInfo("mcMMO not detected.");
-        }        
+        }
         if (isFactionsEnabled()) {
             if (isFactionChatEnabled()) {
                 logInfo("Enabling FactionChat support.");
@@ -264,19 +213,19 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Jobs not detected.");
         }
         /*
-        if (isPrismEnabled()) {
-            logInfo("Enabling Prism support.");            
-        } else {
-            logInfo("Prism not detected.");
-        }*/
+         if (isPrismEnabled()) {
+         logInfo("Enabling Prism support.");            
+         } else {
+         logInfo("Prism not detected.");
+         }*/
         /*
-        if (isEssentialsEnabled()) {
-            logInfo("Enabling Essentials support.");
-            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
-        } else {
-            logInfo("Essentials not detected.");
-        }
-        */
+         if (isEssentialsEnabled()) {
+         logInfo("Enabling Essentials support.");
+         getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
+         } else {
+         logInfo("Essentials not detected.");
+         }
+         */
         vanishHook = new VanishHook(this);
         if (isReportRTSEnabled()) {
             logInfo("Enabling ReportRTS support.");
@@ -285,7 +234,7 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("ReportRTS not detected.");
         }
         commandHandlers = new CommandHandlers(this);
-        getCommand("irc").setExecutor(commandHandlers);        
+        getCommand("irc").setExecutor(commandHandlers);
         regexGlobber = new RegexGlobber();
         tokenizer = new ChatTokenizer(this);
         loadBots();
@@ -364,6 +313,34 @@ public class PurpleIRC extends JavaPlugin {
         return debugEnabled;
     }
 
+    public String getHeroMsgTemplate(String botName, String tmpl) {
+        if (messageTmpl.containsKey(botName)) {
+            if (messageTmpl.get(botName).containsKey(tmpl)) {
+                return messageTmpl.get(botName).get(tmpl);
+            }
+        }
+        if (messageTmpl.get(MAINCONFIG).containsKey(tmpl)) {
+            return messageTmpl.get(MAINCONFIG).get(tmpl);
+        }
+        return "INVALID TEMPLATE";
+    }
+    
+    public String getMsgTemplate(String botName, String tmpl) {
+        if (messageTmpl.containsKey(botName)) {
+            if (messageTmpl.get(botName).containsKey(tmpl)) {
+                return messageTmpl.get(botName).get(tmpl);
+            }
+        }
+        if (messageTmpl.get(MAINCONFIG).containsKey(tmpl)) {
+            return messageTmpl.get(MAINCONFIG).get(tmpl);
+        }
+        return "INVALID TEMPLATE";
+    }
+    
+    public String getMsgTemplate(String tmpl) {
+        return getMsgTemplate(MAINCONFIG, tmpl);
+    }
+
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
         identServerEnabled = getConfig().getBoolean("enable-ident-server");
@@ -374,110 +351,50 @@ public class PurpleIRC extends JavaPlugin {
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
-        gameAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-action", ""));
-        gameChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-chat", ""));
-        gamePChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-pchat", ""));
-        gamePChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-pchat-response", ""));
-        gameSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-send", ""));
-        gameDeath = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-death", ""));
-        gameJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-join", ""));
-        gameQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-quit", ""));
-        gameKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-kick", ""));
-        gameCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.game-command", ""));
-
-        cleverSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.clever-send", ""));
-
-        mcMMOAdminChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-admin-chat", ""));
-        mcMMOPartyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-party-chat", ""));
-        mcMMOChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.mcmmo-chat", ""));
-
-        heroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-chat", ""));
-        heroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.hero-action", ""));
-        ircHeroAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-action", ""));
-        ircHeroChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-chat", ""));
-        ircHeroKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-kick", ""));
-        ircHeroJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-join", ""));
-        ircHeroPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-part", ""));
-        ircHeroQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-quit", ""));
-        ircHeroTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hero-topic", ""));
-        jobsSeperator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.jobs-separator", ""));
-
+        
+        messageTmpl.put(MAINCONFIG, new HashMap<String, String>());
+        ircHeroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
+        heroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
+        heroActionChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
+        
+        for (String t : getConfig().getConfigurationSection("message-format").getKeys(false)) {
+            messageTmpl.get(MAINCONFIG).put(t, ChatColor.translateAlternateColorCodes('&', getConfig()
+                    .getString("message-format." + t, "")));
+            logDebug("message-format: " + t + " => " + messageTmpl.get(MAINCONFIG).get(t));
+        }
+        
         for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
-            ircHeroChannelMessages.put(hChannelName.toLowerCase(),
+            ircHeroChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
                     ChatColor.translateAlternateColorCodes('&', getConfig()
                             .getString("message-format.irc-hero-channels."
                                     + hChannelName)));
         }
-        
+
         for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-channels").getKeys(false)) {
-            heroChannelMessages.put(hChannelName.toLowerCase(),
+            heroChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
                     ChatColor.translateAlternateColorCodes('&', getConfig()
                             .getString("message-format.hero-channels."
                                     + hChannelName)));
         }
-        
+
         for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
-            heroActionChannelMessages.put(hChannelName.toLowerCase(),
+            heroActionChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
                     ChatColor.translateAlternateColorCodes('&', getConfig()
                             .getString("message-format.hero-action-channels."
                                     + hChannelName)));
         }
-
-        titanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.titan-chat", ""));
-        ircTitanChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-titan-chat", ""));
-        
-        townyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.towny-chat", ""));
-        townyChannelChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.towny-channel-chat", ""));
-
-        factionPublicChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-public-chat", ""));
-        factionAllyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-ally-chat", ""));
-        factionEnemyChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.faction-enemy-chat", ""));
-
-        consoleChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.console-chat", ""));
-
-        ircAction = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-action", ""));
-        ircChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-chat", ""));
-        ircHChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-hchat-response", ""));
-        ircPChat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat", ""));
-        ircPChatResponse = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-pchat-response", ""));
-        ircKick = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-kick", ""));
-        ircJoin = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-join", ""));
-        ircPart = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-part", ""));
-        ircQuit = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-quit", ""));
-        ircTopic = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-topic", ""));
-        ircNickChange = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-nickchange", ""));
-        ircMode = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-mode", ""));
-        ircNotice = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.irc-notice", ""));
-
-        playerAFK = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.player-afk", ""));
-        playerNotAFK = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.player-not-afk", ""));
-
-        invalidIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.invalid-irc-command", ""));
-        noPermForIRCCommand = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.no-perm-for-irc-command", ""));
-
-        broadcastMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-message", ""));
-        broadcastConsoleMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.broadcast-console-message", ""));
-
-        reportRTSSend = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-notify", ""));
-        reportRTSComplete = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-complete", ""));
-        reportRTSClaim = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-claim", ""));
-        reportRTSUnClaim = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-unclaim", ""));
-        reportRTSHeld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-held", ""));
-        reportRTSAssign = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-assign", ""));
-        reportRTSReopen = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-reopen", ""));
-        reportRTSBroadcast = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.rts-modbroadcast", ""));
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
         defaultPlayerGroup = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-group", ""));
         defaultGroupSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-suffix", ""));
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
-        defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
-
+        defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));        
+        
         listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
         listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));
         listPlayer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-player", ""));
-        
+
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
@@ -508,10 +425,10 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isMcMMOEnabled() {
         return (getServer().getPluginManager().getPlugin("mcMMO") != null);
     }
-    
+
     public boolean isJobsEnabled() {
         return (getServer().getPluginManager().getPlugin("Jobs") != null);
-    }    
+    }
 
     /**
      *
@@ -569,7 +486,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isTitanChatEnabled() {
         return (getServer().getPluginManager().getPlugin("TitanChat") != null);
     }
-    
+
     public boolean isTownyChatEnabled() {
         return (getServer().getPluginManager().getPlugin("TownyChat") != null);
     }
@@ -733,7 +650,7 @@ public class PurpleIRC extends JavaPlugin {
         return colorConverter.gameColorsToIrc(msg);
     }
 
-    public String getRemotePlayers(String commandArgs) {        
+    public String getRemotePlayers(String commandArgs) {
         if (commandArgs != null) {
             String host;
             int port = 25565;
@@ -747,7 +664,7 @@ public class PurpleIRC extends JavaPlugin {
             try {
                 query.sendQuery();
             } catch (IOException ex) {
-                return ex.getMessage();                
+                return ex.getMessage();
             }
             String players[] = query.getOnlineUsernames();
             String m;
@@ -756,7 +673,7 @@ public class PurpleIRC extends JavaPlugin {
                         + ":" + port;
             } else {
                 m = "Players on " + host + "("
-                        + players.length 
+                        + players.length
                         + "): " + Joiner.on(", ")
                         .join(players);
             }
@@ -1037,7 +954,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean checkForProtocolLib() {
         return (getServer().getPluginManager().getPlugin("ProtocolLib") != null);
     }
-    
+
     public boolean isPrismEnabled() {
         return (getServer().getPluginManager().getPlugin("Prism") != null);
     }
