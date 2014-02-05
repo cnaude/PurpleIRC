@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.IRCListeners;
 
+import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.pircbotx.Channel;
@@ -43,8 +44,9 @@ public class NickChangeListener extends ListenerAdapter {
         for (String channelName : ircBot.channelNicks.keySet()) {
             Channel channel = ircBot.getChannel(channelName);
             if (channel != null) {
-                if (ircBot.enabledMessages.get(channelName).contains("irc-nickchange")) {
-                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircNickChange
+                if (ircBot.enabledMessages.get(channelName).contains(TemplateName.IRC_NICK_CHANGE)) {
+                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(
+                            plugin.getMsgTemplate(ircBot.botNick, TemplateName.IRC_NICK_CHANGE)                            
                             .replace("%NEWNICK%", newNick)
                             .replace("%OLDNICK%", oldNick)
                             .replace("%CHANNEL%", channelName)), "irc.message.nickchange");

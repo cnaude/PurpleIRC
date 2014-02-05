@@ -261,19 +261,20 @@ public class ChatTokenizer {
      * FactionChat to IRC
      *
      * @param player
+     * @param botNick
      * @param message
      * @param chatTag
      * @param chatMode
      * @return
      */
-    public String chatFactionTokenizer(Player player, String message, String chatTag, String chatMode) {
+    public String chatFactionTokenizer(Player player, String botNick, String message, String chatTag, String chatMode) {
         String template;
         if (chatMode.equals("public")) {
-            template = plugin.factionPublicChat;
+            template = plugin.getMsgTemplate(botNick, "faction-public-chat");
         } else if (chatMode.equals("ally")) {
-            template = plugin.factionAllyChat;
+            template = plugin.getMsgTemplate(botNick, "faction-ally-chat");
         } else if (chatMode.equals("enemy")) {
-            template = plugin.factionEnemyChat;
+            template = plugin.getMsgTemplate(botNick, "faction-enemy-chat");
         } else {
             return "";
         }
@@ -302,20 +303,12 @@ public class ChatTokenizer {
                 .replace("%CHANNEL%", hChannel);
     }
 
-    public String chatTownyChannelTokenizer(Player player, Channel townyChannel, String message) {
+    public String chatTownyChannelTokenizer(Player player, Channel townyChannel, String message, String template) {
 
-        return gameChatToIRCTokenizer(player, plugin.townyChannelChat, message)
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%TOWNYCHANNEL%", ChatColor.translateAlternateColorCodes('&', townyChannel.getName()))
                 .replace("%TOWNYCHANNELTAG%", ChatColor.translateAlternateColorCodes('&', townyChannel.getChannelTag()))
                 .replace("%TOWNYMSGCOLOR%", ChatColor.translateAlternateColorCodes('&', townyChannel.getMessageColour()));
-    }
-
-    public String chatTownyTokenizer(Player player, String town, String nation,
-            String title, String message) {
-        return gameChatToIRCTokenizer(player, plugin.townyChat, message)
-                .replace("%TOWN%", ChatColor.translateAlternateColorCodes('&', town))
-                .replace("%NATION%", ChatColor.translateAlternateColorCodes('&', nation))
-                .replace("%TITLE%", ChatColor.translateAlternateColorCodes('&', title));
     }
 
     /**
@@ -325,10 +318,11 @@ public class ChatTokenizer {
      * @param tChannel
      * @param tColor
      * @param message
+     * @param template
      * @return
      */
-    public String titanChatTokenizer(Player player, String tChannel, String tColor, String message) {
-        return gameChatToIRCTokenizer(player, plugin.titanChat, message)
+    public String titanChatTokenizer(Player player, String tChannel, String tColor, String message, String template) {
+        return gameChatToIRCTokenizer(player, template, message)
                 .replace("%TITANCHANNEL%", tChannel)
                 .replace("%TITANCOLOR%", plugin.colorConverter.gameColorsToIrc(tColor))
                 .replace("%CHANNEL%", tChannel);
@@ -350,13 +344,14 @@ public class ChatTokenizer {
      * Game kick message to IRC
      *
      * @param player
+     * @param template
      * @param reason
      * @param message
      * @return
      */
-    public String gameKickTokenizer(Player player, String message, String reason) {
+    public String gameKickTokenizer(Player player, String template, String message, String reason) {
         return plugin.colorConverter.gameColorsToIrc(
-                gameChatToIRCTokenizer(player, plugin.gameKick, message)
+                gameChatToIRCTokenizer(player, template, message)
                 .replace("%MESSAGE%", message)
                 .replace("%REASON%", reason));
     }
@@ -399,8 +394,8 @@ public class ChatTokenizer {
                 .replace("%RTSNAME%", name)
                 .replace("%RTSWORLD%", world));
     }
-    
-    public String reportRTSTokenizer(CommandSender sender, String message, String template) {      
+
+    public String reportRTSTokenizer(CommandSender sender, String message, String template) {
         return gameChatToIRCTokenizer(sender.getName(), template, message);
     }
 
@@ -442,7 +437,7 @@ public class ChatTokenizer {
             worldColor = plugin.getWorldColor(worldName);
         }
         if (plugin.jobsHook != null) {
-            job = plugin.jobsHook.getPlayerJob(player,false);
+            job = plugin.jobsHook.getPlayerJob(player, false);
             jobShort = plugin.jobsHook.getPlayerJob(player, true);
         }
         plugin.logDebug("[P]Raw message: " + message);

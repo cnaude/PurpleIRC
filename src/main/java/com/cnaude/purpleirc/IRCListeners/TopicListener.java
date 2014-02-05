@@ -4,6 +4,7 @@
  */
 package com.cnaude.purpleirc.IRCListeners;
 
+import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.pircbotx.Channel;
@@ -43,8 +44,9 @@ public class TopicListener extends ListenerAdapter {
         if (ircBot.isValidChannel(channelName)) {
             ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
             if (event.isChanged()) {
-                if (ircBot.enabledMessages.get(channelName).contains("irc-topic")) {
-                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(plugin.ircTopic)
+                if (ircBot.enabledMessages.get(channelName).contains(TemplateName.IRC_TOPIC)) {
+                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(                            
+                            plugin.getMsgTemplate(ircBot.botNick, TemplateName.IRC_TOPIC))
                             .replace("%NAME%", user.getNick()
                                     .replace("%TOPIC%", event.getTopic())
                                     .replace("%CHANNEL%", channel.getName())), "irc.message.topic");
