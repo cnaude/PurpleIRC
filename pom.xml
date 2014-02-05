@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -13,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Bukkit API Version, change if out dated -->
-        <bukkit.version>1.7.2-R0.2</bukkit.version>
+        <bukkit.version>1.7.2-R0.3-SNAPSHOT</bukkit.version>
     </properties>
 
     <repositories>
@@ -22,18 +23,43 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
+
+        <repository>
+            <id>escapecraft-repo</id>
+            <url>http://dev.escapecraft.com/maven/</url>
+        </repository>
        
         <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
             <url>http://repo.comphenix.net/content/groups/public</url>
         </repository>
+	
+	<repository>
+	    <id>ess-repo</id>
+	    <url>http://repo.ess3.net/content/groups/essentials</url>
+	</repository>
 
-        <!-- Vault
+        <!-- Vault -->
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-        </repository>-->
+            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+        </repository>
+        
+        <repository>
+    	    <id>sk89</id>
+    	    <url>http://maven.sk89q.com/repo/</url>
+    	</repository>
+    	
+    	<repository>
+    	    <id>craftminecraft-dev</id>
+    	    <url>http://repo.craftminecraft.net/content/groups/public/</url>
+    	</repository>
+    	
+    	<repository>
+    	    <id>regularbox-rep</id>
+    	    <url>http://repo.regularbox.com/artifactory/repo</url>
+    	</repository>
     
         <!-- For anything else without its own repo
         <repository>
@@ -75,8 +101,8 @@
         
         <dependency>
             <groupId>net.ess3</groupId>
-            <artifactId>essentials</artifactId>
-            <version>2.12.1</version>
+            <artifactId>Essentials</artifactId>
+            <version>Pre2.13.1.2</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -85,29 +111,29 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.25</version>
+            <version>1.2.30</version>
             <scope>provided</scope>
         </dependency>
         
         <!-- ReportRTS -->
         <dependency>
-            <groupId>com.nyancraft</groupId>
+            <groupId>com.nyancraft.reportrts</groupId>
             <artifactId>ReportRTS</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.4-b156</version>
         </dependency>
         
         <!-- Herochat -->
         <dependency>
             <groupId>com.dthielke</groupId>
             <artifactId>Herochat</artifactId>
-            <version>5.6.7</version>
+            <version>5.6.7-SNAPSHOT</version>
         </dependency>
         
         <!-- Herochat -->
         <dependency>
-            <groupId>me.zford.jobs</groupId>
+            <groupId>me.zford.jobs.bukkit.JobsPlugin</groupId>
             <artifactId>Jobs</artifactId>
-            <version>2.1.3</version>
+            <version>2.11.3</version>
         </dependency>
         
         <!-- Factions -->
@@ -121,26 +147,26 @@
         <dependency>
             <groupId>com.kitteh.vanish</groupId>
             <artifactId>VanishNoPacket</artifactId>
-            <version>3.18.7</version>
+            <version>3.18.9</version>
         </dependency>
         
         <!-- mcore -->
         <dependency>
             <groupId>com.massivecraft</groupId>
             <artifactId>mcore</artifactId>
-            <version>6.7.0</version>
+            <version>7.0.1</version>
         </dependency>
         
         <!-- FactionChat -->
         <dependency>
             <groupId>nz.co.lolnet.james137137</groupId>
             <artifactId>FactionChat</artifactId>
-            <version>1.722</version>
+            <version>1.742</version>
         </dependency>
 
         <!-- TitanChat -->
         <dependency>
-            <groupId>com.titankingdoms</groupId>
+            <groupId>com.titankingdoms.dev.titanchat</groupId>
             <artifactId>TitanChat</artifactId>
             <version>4.1</version>
         </dependency>
@@ -149,33 +175,33 @@
         <dependency>
             <groupId>com.gmail.nossr50</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>1.4.08-dev1-b3426</version>
+            <version>1.4.07-b3337</version>
         </dependency>
         
         <!-- Mulitverse-Core -->
         <dependency>
-            <groupId>com.onarandombox</groupId>
+            <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
-            <version>2.5-670</version>
+            <version>2.5</version>
         </dependency>
         
         <!-- Towny -->
         <dependency>
-            <groupId>com.palmergames.bukkit.TownyChat</groupId>
+            <groupId>com.palmergames.bukkit</groupId>
             <artifactId>TownyChat</artifactId>
             <version>0.40</version>
         </dependency>
         
         <dependency>
-            <groupId>com.palmergames</groupId>
+            <groupId>com.palmergames.bukkit</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.84.0.0</version>
+            <version>0.84.0.9</version>
         </dependency>
         
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.2</version>
         </dependency>
         
         <dependency>
@@ -188,7 +214,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -233,7 +259,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.1</version>
                 <configuration>
                     <!-- Minimum Minecraft requirement -->
                     <source>1.6</source>
@@ -244,7 +270,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -291,10 +317,7 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>                                                                              
-                                <copy file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../${project.name}/target/${project.name}.jar"/>
-                                <exec dir="../${project.name}/target" executable="scp">
-                                    <arg line="-o 'StrictHostKeyChecking no' ${project.name}.jar cnaude@cn.revisited.us:minetest/plugins/"/>
-                                </exec>
+                                <move file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../${project.name}/target/${project.name}.jar"/>
                             </tasks>
                         </configuration>
                         <goals>
