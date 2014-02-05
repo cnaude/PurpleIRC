@@ -26,6 +26,8 @@ import java.lang.management.ManagementFactory;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
@@ -152,6 +154,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean customTabList;
+    private boolean listSortByName;
     public boolean exactNickMatch;
     public Long ircConnCheckInterval;
     public Long ircChannelCheckInterval;
@@ -477,6 +480,7 @@ public class PurpleIRC extends JavaPlugin {
         listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
         listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));
         listPlayer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-player", ""));
+        listSortByName = getConfig().getBoolean("list-sort-by-name", true);
         
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
@@ -711,7 +715,7 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getMCPlayers(PurpleBot ircBot, String channelName) {
-        ArrayList<String> playerList = new ArrayList<String>();
+        Map<String,String> playerList = new TreeMap<String,String>();
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
                 logDebug("List: Checking if player " + player.getName() + " is vanished.");
@@ -721,10 +725,19 @@ public class PurpleIRC extends JavaPlugin {
                 }
             }
             String pName = tokenizer.playerTokenizer(player, listPlayer);
-            playerList.add(pName);
+            playerList.put(player.getName(), pName);
         }
-        Collections.sort(playerList, Collator.getInstance());
-        String pList = Joiner.on(listSeparator).join(playerList);
+        
+        String pList;
+        if(!listSortByName){
+        	// sort as before
+        	ArrayList<String> tmp = new ArrayList<String>(playerList.values());
+        	Collections.sort(tmp, Collator.getInstance());
+        	pList = Joiner.on(listSeparator).join(tmp);
+        }       	
+        else // sort without nick prefixes
+        	pList = Joiner.on(listSeparator).join(playerList.values());
+        
         String msg = listFormat
                 .replace("%COUNT%", Integer.toString(playerList.size()))
                 .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
