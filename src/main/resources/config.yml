@@ -131,6 +131,8 @@ message-format:
 list-format: '&r[&9Minecraft&r] Online (%COUNT%/%MAX%): %PLAYERS%'
 list-separator: '&r, '
 list-player: '%GROUPPREFIX%%NAME%'
+# Sort playerlist by %NAME% and not by list-player format
+list-sort-by-name: true
 # Prevent game colors from appearing in IRC
 strip-game-colors: false
 # Prevent IRC colors from appearing in game
