@@ -778,7 +778,7 @@ public final class PurpleBot {
                 plugin.logDebug("H3.3");
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .chatHeroTokenizer(player, message, hColor, hChannel,
-                                hNick, getHeroChatChannelTemplate(hChannel)));
+                                hNick, plugin.getHeroChatChannelTemplate(botNick, hChannel)));
                 plugin.logDebug("H3.4");
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
@@ -865,22 +865,6 @@ public final class PurpleBot {
         }
     }
 
-    private String getHeroChatChannelTemplate(String hChannel) {
-        if (plugin.heroChannelMessages.containsKey(hChannel)) {
-            return plugin.heroChannelMessages.get(hChannel.toLowerCase());
-        } else {
-            return plugin.getMsgTemplate(botNick, "hero-chat");
-        }
-    }
-
-    private String getHeroActionChannelTemplate(String hChannel) {
-        if (plugin.heroActionChannelMessages.containsKey(hChannel.toLowerCase())) {
-            return plugin.heroActionChannelMessages.get(hChannel.toLowerCase());
-        } else {
-            return plugin.getMsgTemplate(botNick, "hero-action");
-        }
-    }
-
     public void heroAction(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
         if (!bot.isConnected()) {
@@ -898,7 +882,7 @@ public final class PurpleBot {
                     || enabledMessages.get(channelName).contains("hero-action")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .chatHeroTokenizer(player, message, hColor, hChannel,
-                                hNick, getHeroActionChannelTemplate(hChannel)));
+                                hNick, plugin.getHeroActionChannelTemplate(botNick, hChannel)));
             } else {
                 plugin.logDebug("Player " + player.getName() + " is in \""
                         + hChannel + "\" but hero-" + hChannel + "-action is disabled.");
@@ -1695,17 +1679,12 @@ public final class PurpleBot {
             String msg;
             hChannel = message.split(" ", 2)[0];
             msg = message.split(" ", 2)[1];
-            String messageType = "irc-hero-chat";
-            String responseMessageType = "irc-hchat-response";
-            plugin.logDebug("Check if " + messageType + " is enabled before broadcasting chat from IRC");
-            if (enabledMessages.get(ircChannel).contains(messageType)) {
+            plugin.logDebug("Check if " + TemplateName.IRC_HERO_CHAT + " is enabled before broadcasting chat from IRC");
+            if (enabledMessages.get(ircChannel).contains(TemplateName.IRC_HERO_CHAT)) {
                 plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
                 if (Herochat.getChannelManager().hasChannel(hChannel)) {
                     hChannel = Herochat.getChannelManager().getChannel(hChannel).getName();
-                    String template = plugin.getMsgTemplate(botNick, messageType);
-                    if (plugin.ircHeroChannelMessages.containsKey(hChannel.toLowerCase())) {
-                        template = plugin.ircHeroChannelMessages.get(hChannel.toLowerCase());
-                    }
+                    String template = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel.toLowerCase());
                     plugin.logDebug("T: " + template);
                     String t = plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
                             ircChannel, template, msg,
@@ -1715,7 +1694,7 @@ public final class PurpleBot {
                             .sendRawMessage(t);
                     plugin.logDebug("Channel format: " + Herochat.getChannelManager().getChannel(hChannel).getFormat());
                     // Let the sender know the message was sent
-                    String responseTemplate = plugin.getMsgTemplate(botNick, responseMessageType);
+                    String responseTemplate = plugin.getMsgTemplate(botNick, TemplateName.IRC_HCHAT_RESPONSE);
                     if (!responseTemplate.isEmpty()) {
                         asyncIRCMessage(target, plugin.tokenizer
                                 .targetChatResponseTokenizer(hChannel, msg, responseTemplate));
@@ -1798,7 +1777,7 @@ public final class PurpleBot {
                     nick, myChannel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_ACTION), message), "irc.message.action");
         } else {
-            plugin.logDebug("Ignoring action due to " 
+            plugin.logDebug("Ignoring action due to "
                     + TemplateName.IRC_ACTION + " is false");
         }
 

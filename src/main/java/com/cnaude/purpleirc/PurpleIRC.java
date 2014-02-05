@@ -67,18 +67,17 @@ public class PurpleIRC extends JavaPlugin {
     private File configFile;
     public static long startTime;
     public boolean identServerEnabled;
-    private CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
+    private final CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
     private CaseInsensitiveMap<HashMap<String, String>> ircHeroChannelMessages;
     private CaseInsensitiveMap<HashMap<String, String>> heroChannelMessages;
     private CaseInsensitiveMap<HashMap<String, String>> heroActionChannelMessages;
-    public String 
-            defaultPlayerSuffix,
+    public String defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
             defaultGroupPrefix,
             defaultPlayerWorld,
-            defaultGroupSuffix,            
-            customTabPrefix,            
+            defaultGroupSuffix,
+            customTabPrefix,
             heroChatEmoteFormat,
             listFormat,
             listSeparator,
@@ -109,7 +108,7 @@ public class PurpleIRC extends JavaPlugin {
     public ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public CaseInsensitiveMap<PurpleBot> ircBots = new CaseInsensitiveMap<PurpleBot>();    
+    public CaseInsensitiveMap<PurpleBot> ircBots = new CaseInsensitiveMap<PurpleBot>();
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
     public JobsHook jobsHook;
@@ -327,7 +326,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return "INVALID TEMPLATE";
     }
-    
+
     public String getMsgTemplate(String botName, String tmpl) {
         if (messageTmpl.containsKey(botName)) {
             if (messageTmpl.get(botName).containsKey(tmpl)) {
@@ -339,9 +338,57 @@ public class PurpleIRC extends JavaPlugin {
         }
         return "INVALID TEMPLATE";
     }
-    
+
     public String getMsgTemplate(String tmpl) {
         return getMsgTemplate(MAINCONFIG, tmpl);
+    }
+
+    public String getHeroChatChannelTemplate(String botName, String hChannel) {
+        if (heroChannelMessages.containsKey(botName)) {
+            if (heroChannelMessages.get(botName).containsKey(hChannel)) {
+                return heroChannelMessages.get(botName).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.HERO_CHAT);
+            }
+        } else {
+            if (heroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
+                return heroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.HERO_CHAT);
+            }
+        }
+    }
+
+    public String getHeroActionChannelTemplate(String botName, String hChannel) {
+        if (heroChannelMessages.containsKey(botName)) {
+            if (heroChannelMessages.get(botName).containsKey(hChannel)) {
+                return heroChannelMessages.get(botName).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.HERO_ACTION);
+            }
+        } else {
+            if (heroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
+                return heroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.HERO_ACTION);
+            }
+        }
+    }
+    
+    public String getIRCHeroChatChannelTemplate(String botName, String hChannel) {
+        if (ircHeroChannelMessages.containsKey(botName)) {
+            if (ircHeroChannelMessages.get(botName).containsKey(hChannel)) {
+                return ircHeroChannelMessages.get(botName).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.IRC_HERO_CHAT);
+            }
+        } else {
+            if (ircHeroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
+                return ircHeroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
+            } else {
+                return getMsgTemplate(botName, TemplateName.IRC_HERO_CHAT);
+            }
+        }
     }
 
     private void loadConfig() {
@@ -354,18 +401,18 @@ public class PurpleIRC extends JavaPlugin {
         colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
-        
+
         messageTmpl.put(MAINCONFIG, new HashMap<String, String>());
         ircHeroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
         heroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
         heroActionChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
-        
+
         for (String t : getConfig().getConfigurationSection("message-format").getKeys(false)) {
             messageTmpl.get(MAINCONFIG).put(t, ChatColor.translateAlternateColorCodes('&', getConfig()
                     .getString("message-format." + t, "")));
             logDebug("message-format: " + t + " => " + messageTmpl.get(MAINCONFIG).get(t));
         }
-        
+
         for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
             ircHeroChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
                     ChatColor.translateAlternateColorCodes('&', getConfig()
@@ -392,13 +439,13 @@ public class PurpleIRC extends JavaPlugin {
         defaultPlayerGroup = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-group", ""));
         defaultGroupSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-suffix", ""));
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
-        defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));        
-        
+        defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
+
         listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
         listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));
         listPlayer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-player", ""));
         listSortByName = getConfig().getBoolean("list-sort-by-name", true);
-        
+
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
@@ -632,7 +679,7 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getMCPlayers(PurpleBot ircBot, String channelName) {
-        Map<String,String> playerList = new TreeMap<String,String>();
+        Map<String, String> playerList = new TreeMap<String, String>();
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
                 logDebug("List: Checking if player " + player.getName() + " is vanished.");
@@ -644,17 +691,18 @@ public class PurpleIRC extends JavaPlugin {
             String pName = tokenizer.playerTokenizer(player, listPlayer);
             playerList.put(player.getName(), pName);
         }
-        
+
         String pList;
-        if(!listSortByName){
-        	// sort as before
-        	ArrayList<String> tmp = new ArrayList<String>(playerList.values());
-        	Collections.sort(tmp, Collator.getInstance());
-        	pList = Joiner.on(listSeparator).join(tmp);
-        }       	
-        else // sort without nick prefixes
-        	pList = Joiner.on(listSeparator).join(playerList.values());
-        
+        if (!listSortByName) {
+            // sort as before
+            ArrayList<String> tmp = new ArrayList<String>(playerList.values());
+            Collections.sort(tmp, Collator.getInstance());
+            pList = Joiner.on(listSeparator).join(tmp);
+        } else // sort without nick prefixes
+        {
+            pList = Joiner.on(listSeparator).join(playerList.values());
+        }
+
         String msg = listFormat
                 .replace("%COUNT%", Integer.toString(playerList.size()))
                 .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
