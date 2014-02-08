@@ -126,6 +126,9 @@ public class PurpleIRC extends JavaPlugin {
 
     public PurpleIRC() {
         this.messageTmpl = new CaseInsensitiveMap<HashMap<String, String>>();
+        this.ircHeroChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
+        this.heroChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
+        this.heroActionChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
     }
 
     /**
@@ -374,7 +377,7 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
     }
-    
+
     public String getIRCHeroChatChannelTemplate(String botName, String hChannel) {
         if (ircHeroChannelMessages.containsKey(botName)) {
             if (ircHeroChannelMessages.get(botName).containsKey(hChannel)) {
@@ -391,6 +394,42 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
+    public void loadTemplates(YamlConfiguration config, String configName) {
+        messageTmpl.put(configName, new HashMap<String, String>());
+        ircHeroChannelMessages.put(configName, new HashMap<String, String>());
+        heroChannelMessages.put(configName, new HashMap<String, String>());
+        heroActionChannelMessages.put(configName, new HashMap<String, String>());
+
+        for (String t : config.getConfigurationSection("message-format").getKeys(false)) {
+            if (!t.startsWith("MemorySection")) {
+                messageTmpl.get(configName).put(t, ChatColor.translateAlternateColorCodes('&', 
+                        config.getString("message-format." + t, "")));
+                logDebug("message-format: " + t + " => " + messageTmpl.get(configName).get(t));
+            }
+        }
+
+        for (String hChannelName : config.getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
+            ircHeroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', 
+                            config.getString("message-format.irc-hero-channels."
+                                    + hChannelName)));
+        }
+
+        for (String hChannelName : config.getConfigurationSection("message-format.hero-channels").getKeys(false)) {
+            heroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', 
+                            config.getString("message-format.hero-channels."
+                                    + hChannelName)));
+        }
+
+        for (String hChannelName : config.getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
+            heroActionChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    ChatColor.translateAlternateColorCodes('&', 
+                            config.getString("message-format.hero-action-channels."
+                                    + hChannelName)));
+        }
+    }
+
     private void loadConfig() {
         debugEnabled = getConfig().getBoolean("Debug");
         identServerEnabled = getConfig().getBoolean("enable-ident-server");
@@ -402,37 +441,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
 
-        messageTmpl.put(MAINCONFIG, new HashMap<String, String>());
-        ircHeroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
-        heroChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
-        heroActionChannelMessages.put(MAINCONFIG, new HashMap<String, String>());
-
-        for (String t : getConfig().getConfigurationSection("message-format").getKeys(false)) {
-            messageTmpl.get(MAINCONFIG).put(t, ChatColor.translateAlternateColorCodes('&', getConfig()
-                    .getString("message-format." + t, "")));
-            logDebug("message-format: " + t + " => " + messageTmpl.get(MAINCONFIG).get(t));
-        }
-
-        for (String hChannelName : getConfig().getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
-            ircHeroChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', getConfig()
-                            .getString("message-format.irc-hero-channels."
-                                    + hChannelName)));
-        }
-
-        for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-channels").getKeys(false)) {
-            heroChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', getConfig()
-                            .getString("message-format.hero-channels."
-                                    + hChannelName)));
-        }
-
-        for (String hChannelName : getConfig().getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
-            heroActionChannelMessages.get(MAINCONFIG).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', getConfig()
-                            .getString("message-format.hero-action-channels."
-                                    + hChannelName)));
-        }
+        loadTemplates((YamlConfiguration) this.getConfig(), MAINCONFIG);
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
