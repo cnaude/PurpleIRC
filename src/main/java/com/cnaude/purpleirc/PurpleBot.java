@@ -6,9 +6,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.cnaude.purpleirc.IRCListeners.ActionListener;
 import com.cnaude.purpleirc.IRCListeners.ConnectListener;
 import com.cnaude.purpleirc.IRCListeners.DisconnectListener;
@@ -464,7 +462,7 @@ public final class PurpleBot {
 
     private void loadConfig() {
         try {
-            config.load(file);
+            config.load(file);            
             autoConnect = config.getBoolean("autoconnect", true);
             ssl = config.getBoolean("ssl", false);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
@@ -474,6 +472,7 @@ public final class PurpleBot {
             partInvalidChannels = config.getBoolean("part-invalid-channels", false);
             partInvalidChannelsMsg = config.getString("part-invalid-channels-message", "");
             botNick = config.getString("nick", "");
+            plugin.loadTemplates(config, botNick);
             botLogin = config.getString("login", "PircBot");
             botRealName = config.getString("realname", "");
             if (botRealName.isEmpty()) {
