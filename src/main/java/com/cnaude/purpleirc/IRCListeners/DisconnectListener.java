@@ -6,7 +6,6 @@ package com.cnaude.purpleirc.IRCListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
 
@@ -37,5 +36,6 @@ public class DisconnectListener extends ListenerAdapter {
     public void onDisconnect(DisconnectEvent event) {        
         ircBot.asyncQuit(false);
         ircBot.broadcastIRCDisconnect(ircBot.botNick);
+        ircBot.setConnected(false);
     }
 }
