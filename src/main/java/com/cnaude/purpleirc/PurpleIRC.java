@@ -353,7 +353,7 @@ public class PurpleIRC extends JavaPlugin {
         return getMsgTemplate(MAINCONFIG, tmpl);
     }
 
-    public String getHeroTemplate(CaseInsensitiveMap<CaseInsensitiveMap<String>> hc, 
+    public String getHeroTemplate(CaseInsensitiveMap<CaseInsensitiveMap<String>> hc,
             String botName, String hChannel) {
         if (hc.containsKey(botName)) {
             logDebug("HC1 => " + hChannel);
@@ -361,7 +361,7 @@ public class PurpleIRC extends JavaPlugin {
                 logDebug("HC2 => " + hChannel);
                 return hc.get(botName).get(hChannel);
             }
-        } 
+        }
         if (hc.containsKey(MAINCONFIG)) {
             logDebug("HC3 => " + hChannel);
             if (hc.get(MAINCONFIG).containsKey(hChannel)) {
@@ -372,7 +372,7 @@ public class PurpleIRC extends JavaPlugin {
         if (hc.containsKey(botName)) {
             logDebug("HC5 => " + hChannel);
             return getMsgTemplate(botName, TemplateName.HERO_CHAT);
-        } 
+        }
         if (hc.containsKey(MAINCONFIG)) {
             logDebug("HC6 => " + hChannel);
             return getMsgTemplate(MAINCONFIG, TemplateName.HERO_CHAT);
@@ -724,8 +724,8 @@ public class PurpleIRC extends JavaPlugin {
             ArrayList<String> tmp = new ArrayList<String>(playerList.values());
             Collections.sort(tmp, Collator.getInstance());
             pList = Joiner.on(listSeparator).join(tmp);
-        } else // sort without nick prefixes
-        {
+        } else {
+            // sort without nick prefixes 
             pList = Joiner.on(listSeparator).join(playerList.values());
         }
 
