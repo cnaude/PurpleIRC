@@ -69,9 +69,9 @@ public class PurpleIRC extends JavaPlugin {
     public static long startTime;
     public boolean identServerEnabled;
     private final CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
-    private CaseInsensitiveMap<HashMap<String, String>> ircHeroChannelMessages;
-    private CaseInsensitiveMap<HashMap<String, String>> heroChannelMessages;
-    private CaseInsensitiveMap<HashMap<String, String>> heroActionChannelMessages;
+    private CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroChannelMessages;
+    private CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
+    private CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
     public String defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
@@ -127,9 +127,9 @@ public class PurpleIRC extends JavaPlugin {
 
     public PurpleIRC() {
         this.messageTmpl = new CaseInsensitiveMap<HashMap<String, String>>();
-        this.ircHeroChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
-        this.heroChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
-        this.heroActionChannelMessages = new CaseInsensitiveMap<HashMap<String, String>>();
+        this.ircHeroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
+        this.heroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
+        this.heroActionChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
     }
 
     /**
@@ -353,59 +353,50 @@ public class PurpleIRC extends JavaPlugin {
         return getMsgTemplate(MAINCONFIG, tmpl);
     }
 
-    public String getHeroChatChannelTemplate(String botName, String hChannel) {
-        if (heroChannelMessages.containsKey(botName)) {
-            if (heroChannelMessages.get(botName).containsKey(hChannel)) {
-                return heroChannelMessages.get(botName).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.HERO_CHAT);
+    public String getHeroTemplate(CaseInsensitiveMap<CaseInsensitiveMap<String>> hc, 
+            String botName, String hChannel) {
+        if (hc.containsKey(botName)) {
+            logDebug("HC1 => " + hChannel);
+            if (hc.get(botName).containsKey(hChannel)) {
+                logDebug("HC2 => " + hChannel);
+                return hc.get(botName).get(hChannel);
             }
-        } else {
-            if (heroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
-                return heroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.HERO_CHAT);
+        } 
+        if (hc.containsKey(MAINCONFIG)) {
+            logDebug("HC3 => " + hChannel);
+            if (hc.get(MAINCONFIG).containsKey(hChannel)) {
+                logDebug("HC4 => " + hChannel);
+                return hc.get(MAINCONFIG).get(hChannel);
             }
         }
+        if (hc.containsKey(botName)) {
+            logDebug("HC5 => " + hChannel);
+            return getMsgTemplate(botName, TemplateName.HERO_CHAT);
+        } 
+        if (hc.containsKey(MAINCONFIG)) {
+            logDebug("HC6 => " + hChannel);
+            return getMsgTemplate(MAINCONFIG, TemplateName.HERO_CHAT);
+        }
+        return "";
+    }
+
+    public String getHeroChatChannelTemplate(String botName, String hChannel) {
+        return getHeroTemplate(heroChannelMessages, botName, hChannel);
     }
 
     public String getHeroActionChannelTemplate(String botName, String hChannel) {
-        if (heroChannelMessages.containsKey(botName)) {
-            if (heroChannelMessages.get(botName).containsKey(hChannel)) {
-                return heroChannelMessages.get(botName).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.HERO_ACTION);
-            }
-        } else {
-            if (heroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
-                return heroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.HERO_ACTION);
-            }
-        }
+        return getHeroTemplate(heroActionChannelMessages, botName, hChannel);
     }
 
     public String getIRCHeroChatChannelTemplate(String botName, String hChannel) {
-        if (ircHeroChannelMessages.containsKey(botName)) {
-            if (ircHeroChannelMessages.get(botName).containsKey(hChannel)) {
-                return ircHeroChannelMessages.get(botName).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.IRC_HERO_CHAT);
-            }
-        } else {
-            if (ircHeroChannelMessages.get(MAINCONFIG).containsKey(hChannel)) {
-                return ircHeroChannelMessages.get(MAINCONFIG).get(hChannel.toLowerCase());
-            } else {
-                return getMsgTemplate(botName, TemplateName.IRC_HERO_CHAT);
-            }
-        }
+        return getHeroTemplate(ircHeroChannelMessages, botName, hChannel);
     }
 
     public void loadTemplates(YamlConfiguration config, String configName) {
         messageTmpl.put(configName, new HashMap<String, String>());
-        ircHeroChannelMessages.put(configName, new HashMap<String, String>());
-        heroChannelMessages.put(configName, new HashMap<String, String>());
-        heroActionChannelMessages.put(configName, new HashMap<String, String>());
+        ircHeroChannelMessages.put(configName, new CaseInsensitiveMap<String>());
+        heroChannelMessages.put(configName, new CaseInsensitiveMap<String>());
+        heroActionChannelMessages.put(configName, new CaseInsensitiveMap<String>());
 
         if (config.contains("message-format")) {
             for (String t : config.getConfigurationSection("message-format").getKeys(false)) {
@@ -418,27 +409,33 @@ public class PurpleIRC extends JavaPlugin {
 
             if (config.contains("message-format.irc-hero-channels")) {
                 for (String hChannelName : config.getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
-                    ircHeroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    ircHeroChannelMessages.get(configName).put(hChannelName,
                             ChatColor.translateAlternateColorCodes('&',
                                     config.getString("message-format.irc-hero-channels."
                                             + hChannelName)));
+                    logDebug("message-format.irc-hero-channels: " + hChannelName
+                            + " => " + ircHeroChannelMessages.get(configName).get(hChannelName));
                 }
             }
 
             if (config.contains("message-format.hero-channels")) {
                 for (String hChannelName : config.getConfigurationSection("message-format.hero-channels").getKeys(false)) {
-                    heroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    heroChannelMessages.get(configName).put(hChannelName,
                             ChatColor.translateAlternateColorCodes('&',
                                     config.getString("message-format.hero-channels."
                                             + hChannelName)));
+                    logDebug("message-format.hero-channels: " + hChannelName
+                            + " => " + heroChannelMessages.get(configName).get(hChannelName));
                 }
             }
             if (config.contains("message-format.hero-action-channels")) {
                 for (String hChannelName : config.getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
-                    heroActionChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                    heroActionChannelMessages.get(configName).put(hChannelName,
                             ChatColor.translateAlternateColorCodes('&',
                                     config.getString("message-format.hero-action-channels."
                                             + hChannelName)));
+                    logDebug("message-format.hero-action-channels: " + hChannelName
+                            + " => " + heroActionChannelMessages.get(configName).get(hChannelName));
                 }
             }
         } else {
@@ -505,7 +502,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean isJobsEnabled() {
         return (getServer().getPluginManager().getPlugin("Jobs") != null);
     }
-    
+
     public boolean isDeathMessagesEnabled() {
         return (getServer().getPluginManager().getPlugin("DeathMessages") != null);
     }

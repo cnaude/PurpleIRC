@@ -66,9 +66,7 @@ public class Topic implements IRCCommandInterface {
                 for (String channelName : bac.channel) {
                     String topic = "";
                     for (int i = idx; i < args.length; i++) {
-                        topic = topic + " " + args[i];
-                        plugin.ircBots.get(botName).unMute(channelName,
-                                sender, args[i]);
+                        topic = topic + " " + args[i];                        
                     }
                     plugin.ircBots.get(botName).changeTopic(channelName,
                             topic.substring(1), sender);

@@ -1822,6 +1822,14 @@ public final class PurpleBot {
                     );
         }
     }
+    
+    /**
+     *
+     * @return
+     */
+    public boolean isConnectedBlocking() {
+        return bot.isConnected();
+    }
 
     /**
      *
