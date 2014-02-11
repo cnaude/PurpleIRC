@@ -367,6 +367,7 @@ public class ChatTokenizer {
     public String reportRTSTokenizer(String pName, String template, HelpRequest request) {
         String message = request.getMessage();
         String modName = request.getModName();
+        String displayModName = "";
         String name = request.getName();
         String world = request.getWorld();
         String modComment = request.getModComment();
@@ -376,6 +377,8 @@ public class ChatTokenizer {
         }
         if (modName == null) {
             modName = "";
+        } else {
+            displayModName = this.getPlayer(modName).getDisplayName();
         }
         if (name == null) {
             name = "";
@@ -389,6 +392,7 @@ public class ChatTokenizer {
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(pName, template)
                 .replace("%MESSAGE%", message)
                 .replace("%MODNAME%", modName)
+                .replace("%DISPLAYMODNAME%", displayModName)
                 .replace("%MODCOMMENT%", modComment)
                 .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
