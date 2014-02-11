@@ -80,4 +80,7 @@ public class TemplateName {
     
     public final static String JOBS_SEPARATOR = "jobs-separator";
     
+    /* http://dev.bukkit.org/bukkit-plugins/death-messages */
+    public final static String DEATH_MESSAGES = "death-messages";
+        
 }

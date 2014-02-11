@@ -50,5 +50,6 @@ public class ConnectListener extends ListenerAdapter {
                 ircBot.asyncRawlineNow(ircBot.rawMessage);
             }
         }
+        ircBot.setConnected(true);
     }
 }

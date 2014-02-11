@@ -58,6 +58,7 @@ public final class PurpleBot {
     public final PurpleIRC plugin;
     private final File file;
     private YamlConfiguration config;
+    private boolean connected;
     public boolean autoConnect;
     public boolean ssl;
     public boolean trustAllCerts;
@@ -113,6 +114,7 @@ public final class PurpleBot {
      * @param plugin
      */
     public PurpleBot(File file, PurpleIRC plugin) {
+        this.connected = false;
         this.botChannels = new ArrayList<String>();
         this.ircListeners = new ArrayList<ListenerAdapter>();
         this.channelCmdNotifyRecipients = new ArrayList<String>();
@@ -1163,19 +1165,20 @@ public final class PurpleBot {
      *
      * @param player
      * @param message
+     * @param templateName
      */
-    public void gameDeath(Player player, String message) {
+    public void gameDeath(Player player, String message, String templateName) {
         if (!bot.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
-            if (enabledMessages.get(channelName).contains(TemplateName.GAME_DEATH)) {
+            if (enabledMessages.get(channelName).contains(templateName)) {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
                 }
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, TemplateName.GAME_DEATH), message));
+                                        botNick, templateName), message));
             }
         }
     }
@@ -2042,7 +2045,7 @@ public final class PurpleBot {
     }
 
     public boolean isConnected() {
-        return bot.isConnected();
+        return connected;
     }
 
     public ImmutableSortedSet<Channel> getChannels() {
@@ -2070,5 +2073,13 @@ public final class PurpleBot {
 
     public PircBotX getBot() {
         return bot;
+    }
+    
+    /**
+     *
+     * @param connected
+     */
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 }

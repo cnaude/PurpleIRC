@@ -1,6 +1,7 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
+import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
@@ -217,6 +218,12 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("Jobs not detected.");
         }
+        if (isDeathMessagesEnabled()) {
+            logInfo("Enabling DeathMessages support.");
+            getServer().getPluginManager().registerEvents(new DeathMessagesListener(this), this);
+        } else {
+            logInfo("DeathMessages not detected.");
+        }
         /*
          if (isPrismEnabled()) {
          logInfo("Enabling Prism support.");            
@@ -400,33 +407,42 @@ public class PurpleIRC extends JavaPlugin {
         heroChannelMessages.put(configName, new HashMap<String, String>());
         heroActionChannelMessages.put(configName, new HashMap<String, String>());
 
-        for (String t : config.getConfigurationSection("message-format").getKeys(false)) {
-            if (!t.startsWith("MemorySection")) {
-                messageTmpl.get(configName).put(t, ChatColor.translateAlternateColorCodes('&', 
-                        config.getString("message-format." + t, "")));
-                logDebug("message-format: " + t + " => " + messageTmpl.get(configName).get(t));
+        if (config.contains("message-format")) {
+            for (String t : config.getConfigurationSection("message-format").getKeys(false)) {
+                if (!t.startsWith("MemorySection")) {
+                    messageTmpl.get(configName).put(t, ChatColor.translateAlternateColorCodes('&',
+                            config.getString("message-format." + t, "")));
+                    logDebug("message-format: " + t + " => " + messageTmpl.get(configName).get(t));
+                }
             }
-        }
 
-        for (String hChannelName : config.getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
-            ircHeroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', 
-                            config.getString("message-format.irc-hero-channels."
-                                    + hChannelName)));
-        }
+            if (config.contains("message-format.irc-hero-channels")) {
+                for (String hChannelName : config.getConfigurationSection("message-format.irc-hero-channels").getKeys(false)) {
+                    ircHeroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    config.getString("message-format.irc-hero-channels."
+                                            + hChannelName)));
+                }
+            }
 
-        for (String hChannelName : config.getConfigurationSection("message-format.hero-channels").getKeys(false)) {
-            heroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', 
-                            config.getString("message-format.hero-channels."
-                                    + hChannelName)));
-        }
-
-        for (String hChannelName : config.getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
-            heroActionChannelMessages.get(configName).put(hChannelName.toLowerCase(),
-                    ChatColor.translateAlternateColorCodes('&', 
-                            config.getString("message-format.hero-action-channels."
-                                    + hChannelName)));
+            if (config.contains("message-format.hero-channels")) {
+                for (String hChannelName : config.getConfigurationSection("message-format.hero-channels").getKeys(false)) {
+                    heroChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    config.getString("message-format.hero-channels."
+                                            + hChannelName)));
+                }
+            }
+            if (config.contains("message-format.hero-action-channels")) {
+                for (String hChannelName : config.getConfigurationSection("message-format.hero-action-channels").getKeys(false)) {
+                    heroActionChannelMessages.get(configName).put(hChannelName.toLowerCase(),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    config.getString("message-format.hero-action-channels."
+                                            + hChannelName)));
+                }
+            }
+        } else {
+            logDebug("No message-format section found for " + configName);
         }
     }
 
@@ -488,6 +504,10 @@ public class PurpleIRC extends JavaPlugin {
 
     public boolean isJobsEnabled() {
         return (getServer().getPluginManager().getPlugin("Jobs") != null);
+    }
+    
+    public boolean isDeathMessagesEnabled() {
+        return (getServer().getPluginManager().getPlugin("DeathMessages") != null);
     }
 
     /**

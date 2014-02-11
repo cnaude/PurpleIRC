@@ -7,17 +7,15 @@ package com.cnaude.purpleirc.GameListeners;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.TemplateName;
-import org.bukkit.entity.Player;
+import com.gmail.josemanuelgassin.DeathMessages.DeathMessageEvent;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 
 /**
  *
  * @author cnaude
  */
-public class GamePlayerDeathListener implements Listener {
+public class DeathMessagesListener implements Listener {
 
     private final PurpleIRC plugin;
 
@@ -25,7 +23,7 @@ public class GamePlayerDeathListener implements Listener {
      *
      * @param plugin
      */
-    public GamePlayerDeathListener(PurpleIRC plugin) {
+    public DeathMessagesListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -33,12 +31,12 @@ public class GamePlayerDeathListener implements Listener {
      *
      * @param event
      */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerDeathEvent(PlayerDeathEvent event) {
+    @EventHandler
+    public void onDeathMessageEvent(DeathMessageEvent event) {
+        plugin.logDebug("onDeathMessageEvent caught");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             if (ircBot.isConnected()) {
-                ircBot.gameDeath((Player) event.getEntity(), 
-                        event.getDeathMessage(), TemplateName.GAME_DEATH);
+                ircBot.gameDeath(event.getPlayer(), event.getDeathMessage(), TemplateName.DEATH_MESSAGES);
             }
         }
     }
