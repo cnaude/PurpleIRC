@@ -705,7 +705,7 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getMCPlayers(PurpleBot ircBot, String channelName) {
-        Map<String, String> playerList = new TreeMap<String, String>();
+        Map<String, String> playerList = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
                 logDebug("List: Checking if player " + player.getName() + " is vanished.");
