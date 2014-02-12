@@ -118,7 +118,7 @@
         <dependency>
             <groupId>com.nyancraft.reportrts</groupId>
             <artifactId>ReportRTS</artifactId>
-            <version>1.1.4-b156</version>
+            <version>1.2.0</version>
         </dependency>
         
         <!-- Herochat -->
