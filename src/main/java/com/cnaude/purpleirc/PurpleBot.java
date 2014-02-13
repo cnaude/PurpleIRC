@@ -1655,6 +1655,14 @@ public final class PurpleBot {
                     + " disabled");
         }
         
+        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CONSOLE_CHAT)) {                        
+            String tmpl = plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT);         
+            plugin.logDebug("broadcastChat [Console]: " + tmpl);
+            plugin.logInfo(plugin.tokenizer.ircChatToGameTokenizer(
+                    nick, myChannel, plugin.getMsgTemplate(botNick, 
+                            TemplateName.IRC_CONSOLE_CHAT), message));
+        }
+        
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_CHAT)) {            
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);         

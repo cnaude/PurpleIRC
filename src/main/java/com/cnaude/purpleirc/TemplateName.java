@@ -32,7 +32,7 @@ public class TemplateName {
     public final static String IRC_HERO_JOIN = "irc-hero-join";
     public final static String IRC_HERO_PART = "irc-hero-part";
     public final static String IRC_HERO_QUIT = "irc-hero-quit";
-    public final static String IRC_HERO_TOPIC = "irc-hero-topic";
+    public final static String IRC_HERO_TOPIC = "irc-hero-topic";    
     
     public final static String IRC_HERO_CHANNELS = "irc-hero-channels";
     public final static String HERO_CHANNELS = "hero-channels";
@@ -63,6 +63,7 @@ public class TemplateName {
     public final static String IRC_NICK_CHANGE = "irc-nickchange";
     public final static String IRC_MODE = "irc-mode";
     public final static String IRC_NOTICE = "irc-notice";
+    public final static String IRC_CONSOLE_CHAT = "irc-console-chat";
     
     public final static String PLAYER_AFK = "player-afk";
     public final static String PLAYER_NOT_AFK = "player-not-afk";

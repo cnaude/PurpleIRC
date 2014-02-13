@@ -95,6 +95,7 @@ channels:
     - irc-nickchange
     - irc-mode
     - irc-notice
+    #- irc-console-chat
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat
