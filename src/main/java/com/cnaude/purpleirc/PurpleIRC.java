@@ -61,17 +61,17 @@ public class PurpleIRC extends JavaPlugin {
     public String LOG_HEADER;
     public String LOG_HEADER_F;
     static final Logger log = Logger.getLogger("Minecraft");
-    private final String sampleFileName = "SampleBot.yml";
-    private final String MAINCONFIG = "MAIN-CONFIG";
+    private final String sampleFileName;
+    private final String MAINCONFIG;
     private File pluginFolder;
     private File botsFolder;
     private File configFile;
     public static long startTime;
     public boolean identServerEnabled;
     private final CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
-    private CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroChannelMessages;
-    private CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
-    private CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
+    private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroChannelMessages;
+    private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
+    private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
     public String defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
@@ -109,11 +109,11 @@ public class PurpleIRC extends JavaPlugin {
     public ChannelWatcher channelWatcher;
     public ColorConverter colorConverter;
     public RegexGlobber regexGlobber;
-    public CaseInsensitiveMap<PurpleBot> ircBots = new CaseInsensitiveMap<PurpleBot>();
+    public CaseInsensitiveMap<PurpleBot> ircBots;
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
     public JobsHook jobsHook;
-    public NetPackets netPackets = null;
+    public NetPackets netPackets;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
@@ -126,6 +126,10 @@ public class PurpleIRC extends JavaPlugin {
     private YamlConfiguration heroConfig;
 
     public PurpleIRC() {
+        this.MAINCONFIG = "MAIN-CONFIG";
+        this.sampleFileName = "SampleBot.yml";
+        this.netPackets = null;
+        this.ircBots = new CaseInsensitiveMap<PurpleBot>();
         this.messageTmpl = new CaseInsensitiveMap<HashMap<String, String>>();
         this.ircHeroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
         this.heroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
@@ -162,7 +166,7 @@ public class PurpleIRC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);
-        if (isHeroChatEnabled()) {
+        if (isPluginEnabled("Herochat")) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
             heroConfig = new YamlConfiguration();
@@ -179,67 +183,53 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("HeroChat not detected.");
         }
-        if (isTitanChatEnabled()) {
+        if (isPluginEnabled("TitanChat")) {
             logInfo("Enabling TitanChat support.");
             getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
         } else {
             logInfo("TitanChat not detected.");
         }
-        if (isTownyChatEnabled()) {
+        if (isPluginEnabled("TownyChat")) {
             logInfo("Enabling TownyChat support.");
             getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
             tcHook = new TownyChatHook(this);
         } else {
             logInfo("TownyChat not detected.");
         }
-        if (isCleverNotchEnabled()) {
+        if (isPluginEnabled("CleverNotch")) {
             logInfo("Enabling CleverNotch support.");
             getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
         } else {
             logInfo("CleverNotch not detected.");
         }
-        if (isMcMMOEnabled()) {
+        if (isPluginEnabled("mcMMO")) {
             logInfo("Enabling mcMMO support.");
             getServer().getPluginManager().registerEvents(new McMMOChatListener(this), this);
         } else {
             logInfo("mcMMO not detected.");
         }
         if (isFactionsEnabled()) {
-            if (isFactionChatEnabled()) {
+            if (isPluginEnabled("FactionChat")) {
                 logInfo("Enabling FactionChat support.");
                 fcHook = new FactionChatHook(this);
             } else {
                 logInfo("FactionChat not detected.");
             }
         }
-        if (isJobsEnabled()) {
+        if (isPluginEnabled("Jobs")) {
             logInfo("Enabling Jobs support.");
             jobsHook = new JobsHook(this);
         } else {
             logInfo("Jobs not detected.");
         }
-        if (isDeathMessagesEnabled()) {
+        if (isPluginEnabled("DeathMessages")) {
             logInfo("Enabling DeathMessages support.");
             getServer().getPluginManager().registerEvents(new DeathMessagesListener(this), this);
         } else {
             logInfo("DeathMessages not detected.");
         }
-        /*
-         if (isPrismEnabled()) {
-         logInfo("Enabling Prism support.");            
-         } else {
-         logInfo("Prism not detected.");
-         }*/
-        /*
-         if (isEssentialsEnabled()) {
-         logInfo("Enabling Essentials support.");
-         getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
-         } else {
-         logInfo("Essentials not detected.");
-         }
-         */
         vanishHook = new VanishHook(this);
-        if (isReportRTSEnabled()) {
+        if (isPluginEnabled("ReportRTS")) {
             logInfo("Enabling ReportRTS support.");
             getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
         } else {
@@ -505,30 +495,6 @@ public class PurpleIRC extends JavaPlugin {
      *
      * @return
      */
-    public boolean isMcMMOEnabled() {
-        return (getServer().getPluginManager().getPlugin("mcMMO") != null);
-    }
-
-    public boolean isJobsEnabled() {
-        return (getServer().getPluginManager().getPlugin("Jobs") != null);
-    }
-
-    public boolean isDeathMessagesEnabled() {
-        return (getServer().getPluginManager().getPlugin("DeathMessages") != null);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isFactionChatEnabled() {
-        return (getServer().getPluginManager().getPlugin("FactionChat") != null);
-    }
-
-    /**
-     *
-     * @return
-     */
     public boolean isFactionsEnabled() {
         if (getServer().getPluginManager().getPlugin("Factions") != null) {
             String v = getServer().getPluginManager().getPlugin("Factions").getDescription().getVersion();
@@ -542,55 +508,15 @@ public class PurpleIRC extends JavaPlugin {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean isEssentialsEnabled() {
-        return getServer().getPluginManager().getPlugin("Essentials") != null;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isReportRTSEnabled() {
-        return (getServer().getPluginManager().getPlugin("ReportRTS") != null);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isHeroChatEnabled() {
-        return (getServer().getPluginManager().getPlugin("Herochat") != null);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isTitanChatEnabled() {
-        return (getServer().getPluginManager().getPlugin("TitanChat") != null);
-    }
-
-    public boolean isTownyChatEnabled() {
-        return (getServer().getPluginManager().getPlugin("TownyChat") != null);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isCleverNotchEnabled() {
-        return (getServer().getPluginManager().getPlugin("CleverNotch") != null);
+    public boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
     }
 
     private void createSampleBot() {
         File file = new File(pluginFolder + "/" + sampleFileName);
         try {
             InputStream in = PurpleIRC.class.getResourceAsStream("/" + sampleFileName);
-            logDebug("in: " + in.available());
+            logDebug("BotSize: " + in.available());
             byte[] buf = new byte[1024];
             int len;
             OutputStream out = new FileOutputStream(file);
