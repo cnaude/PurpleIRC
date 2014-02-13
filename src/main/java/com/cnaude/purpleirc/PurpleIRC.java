@@ -516,7 +516,6 @@ public class PurpleIRC extends JavaPlugin {
         File file = new File(pluginFolder + "/" + sampleFileName);
         try {
             InputStream in = PurpleIRC.class.getResourceAsStream("/" + sampleFileName);
-            logDebug("BotSize: " + in.available());
             byte[] buf = new byte[1024];
             int len;
             OutputStream out = new FileOutputStream(file);
