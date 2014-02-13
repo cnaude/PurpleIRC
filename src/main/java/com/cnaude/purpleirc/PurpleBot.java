@@ -546,7 +546,7 @@ public final class PurpleBot {
                 plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channelName).toString());
 
                 heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
-                plugin.logDebug("  Topic => " + heroChannel.get(channelName));
+                plugin.logDebug("  HeroChannel => " + heroChannel.get(channelName));
 
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
@@ -775,7 +775,7 @@ public final class PurpleBot {
             plugin.logDebug("HC Channel: " + hChannel);
             plugin.logDebug("H3.2");
             if (enabledMessages.get(channelName).contains("hero-" + hChannel + "-chat")
-                    || enabledMessages.get(channelName).contains("hero-chat")) {
+                    || enabledMessages.get(channelName).contains(TemplateName.HERO_CHAT)) {
                 plugin.logDebug("H3.3");
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .chatHeroTokenizer(player, message, hColor, hChannel,
@@ -789,53 +789,53 @@ public final class PurpleBot {
         plugin.logDebug("H4");
     }
 
-    public void mcMMOAdminChat(Player player, String message) {
-        String messageType = "mcmmo-admin-chat";
+    public void mcMMOAdminChat(Player player, String message) {        
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
-            if (enabledMessages.get(channelName).contains(messageType)) {
-                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+            if (enabledMessages.get(channelName).contains(TemplateName.MCMMO_ADMIN_CHAT)) {
+                plugin.logDebug("Sending message because " + TemplateName.MCMMO_ADMIN_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, messageType), message));
+                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                                botNick, TemplateName.MCMMO_ADMIN_CHAT), message));
             } else {
                 plugin.logDebug("Player " + player.getName()
-                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+                        + " is in mcMMO PartyChat but " + TemplateName.MCMMO_ADMIN_CHAT + " is disabled.");
             }
         }
     }
 
-    public void mcMMOPartyChat(Player player, String partyName, String message) {
-        String messageType = "mcmmo-party-chat";
+    public void mcMMOPartyChat(Player player, String partyName, String message) {        
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
-            if (enabledMessages.get(channelName).contains(messageType)) {
-                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+            if (enabledMessages.get(channelName).contains(TemplateName.MCMMO_PARTY_CHAT)) {
+                plugin.logDebug("Sending message because " + TemplateName.MCMMO_PARTY_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, messageType), message, partyName));
+                        .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                                botNick, TemplateName.MCMMO_PARTY_CHAT), message, partyName));
             } else {
                 plugin.logDebug("Player " + player.getName()
-                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+                        + " is in mcMMO PartyChat but " + TemplateName.MCMMO_PARTY_CHAT + " is disabled.");
             }
         }
     }
 
-    public void mcMMOChat(Player player, String message) {
-        String messageType = "mcmmo-chat";
+    public void mcMMOChat(Player player, String message) {        
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
             }
-            if (enabledMessages.get(channelName).contains(messageType)) {
-                plugin.logDebug("Sending message because " + messageType + " is enabled.");
+            if (enabledMessages.get(channelName).contains(TemplateName.MCMMO_CHAT)) {
+                plugin.logDebug("Sending message because " + TemplateName.MCMMO_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, messageType), message));
+                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                                botNick, TemplateName.MCMMO_CHAT), message));
             } else {
                 plugin.logDebug("Player " + player.getName()
-                        + " is in mcMMO PartyChat but " + messageType + " is disabled.");
+                        + " is in mcMMO Chat but " + TemplateName.MCMMO_CHAT + " is disabled.");
             }
         }
     }
@@ -1642,23 +1642,26 @@ public final class PurpleBot {
      * @param message
      * @param override
      */
-    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
-        String messageType = "irc-chat";
-        plugin.logDebug("Check if irc-chat is enabled before broadcasting chat from IRC");
-        if (enabledMessages.get(myChannel).contains(messageType) || override) {
-            plugin.logDebug("Yup we can broadcast due to " + messageType + " enabled");
-            plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(nick, myChannel, plugin.getMsgTemplate(botNick, messageType), message), "irc.message.chat");
+    public void broadcastChat(String nick, String myChannel, String message, boolean override) {        
+        plugin.logDebug("Check if " + TemplateName.IRC_CHAT 
+                + " is enabled before broadcasting chat from IRC");
+        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
+            plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
+            plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(
+                    nick, myChannel, plugin.getMsgTemplate(botNick, 
+                            TemplateName.IRC_CHAT), message), "irc.message.chat");
         } else {
-            plugin.logDebug("NOPE we can't broadcast due to irc-chat disabled");
+            plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT
+                    + " disabled");
         }
-
-        messageType = "irc-hero-chat";
-        if (enabledMessages.get(myChannel).contains(messageType)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick, myChannel,
-                                    plugin.getMsgTemplate(botNick, messageType), message,
-                                    Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)));
+        
+        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_CHAT)) {            
+            String hChannel = heroChannel.get(myChannel);
+            String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);         
+            plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
+            Herochat.getChannelManager().getChannel(hChannel)
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel));
         }
     }
 
@@ -1686,7 +1689,7 @@ public final class PurpleBot {
                 plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
                 if (Herochat.getChannelManager().hasChannel(hChannel)) {
                     hChannel = Herochat.getChannelManager().getChannel(hChannel).getName();
-                    String template = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel.toLowerCase());
+                    String template = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
                     plugin.logDebug("T: " + template);
                     String t = plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
                             ircChannel, template, msg,
@@ -1705,7 +1708,8 @@ public final class PurpleBot {
                     asyncIRCMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
                 }
             } else {
-                plugin.logDebug("NOPE we can't broadcast due to irc-hero-chat disabled");
+                plugin.logDebug("NOPE we can't broadcast due to "
+                        + TemplateName.IRC_HERO_CHAT + " disabled");
             }
         } else {
             asyncIRCMessage(target, "No message specified.");
@@ -1730,22 +1734,20 @@ public final class PurpleBot {
             String pName;
             String msg;
             pName = message.split(" ", 2)[0];
-            msg = message.split(" ", 2)[1];
-            String messageType = "irc-pchat";
-            String responseMessageType = "irc-pchat-response";
-            plugin.logDebug("Check if " + messageType + " is enabled before broadcasting chat from IRC");
-            if (enabledMessages.get(myChannel).contains(messageType)) {
-                plugin.logDebug("Yup we can broadcast due to " + messageType
+            msg = message.split(" ", 2)[1];                        
+            plugin.logDebug("Check if " + TemplateName.IRC_PCHAT + " is enabled before broadcasting chat from IRC");
+            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_PCHAT)) {
+                plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_PCHAT
                         + " enabled... Checking if " + pName + " is a valid player...");
                 Player player = plugin.getServer().getPlayer(pName);
                 if (player != null) {
                     if (player.isOnline()) {
                         plugin.logDebug("Yup, " + pName + " is a valid player...");
-                        String template = plugin.getMsgTemplate(botNick, messageType);
+                        String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_PCHAT);
                         String t = plugin.tokenizer.ircChatToGameTokenizer(nick,
                                 myChannel, template, msg);
                         String responseTemplate = plugin.getMsgTemplate(botNick,
-                                responseMessageType);
+                                TemplateName.IRC_PCHAT_RESPONSE);
                         if (!responseTemplate.isEmpty()) {
                             asyncIRCMessage(target, plugin.tokenizer
                                     .targetChatResponseTokenizer(pName, msg, responseTemplate));

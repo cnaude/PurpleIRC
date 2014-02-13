@@ -334,7 +334,7 @@ public class PurpleIRC extends JavaPlugin {
         if (messageTmpl.get(MAINCONFIG).containsKey(tmpl)) {
             return messageTmpl.get(MAINCONFIG).get(tmpl);
         }
-        return "INVALID TEMPLATE";
+        return "";
     }
 
     public String getMsgTemplate(String botName, String tmpl) {
@@ -354,9 +354,12 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     public String getHeroTemplate(CaseInsensitiveMap<CaseInsensitiveMap<String>> hc,
-            String botName, String hChannel) {
+            String botName, String hChannel) {        
         if (hc.containsKey(botName)) {
             logDebug("HC1 => " + hChannel);
+            for (String s : hc.get(botName).keySet()) {
+                logDebug("HT => " + s);
+            }            
             if (hc.get(botName).containsKey(hChannel)) {
                 logDebug("HC2 => " + hChannel);
                 return hc.get(botName).get(hChannel);
@@ -364,31 +367,38 @@ public class PurpleIRC extends JavaPlugin {
         }
         if (hc.containsKey(MAINCONFIG)) {
             logDebug("HC3 => " + hChannel);
+            for (String s : hc.get(MAINCONFIG).keySet()) {
+                logDebug("HT => " + s);
+            }
             if (hc.get(MAINCONFIG).containsKey(hChannel)) {
                 logDebug("HC4 => " + hChannel);
                 return hc.get(MAINCONFIG).get(hChannel);
             }
         }
-        if (hc.containsKey(botName)) {
-            logDebug("HC5 => " + hChannel);
-            return getMsgTemplate(botName, TemplateName.HERO_CHAT);
-        }
-        if (hc.containsKey(MAINCONFIG)) {
-            logDebug("HC6 => " + hChannel);
-            return getMsgTemplate(MAINCONFIG, TemplateName.HERO_CHAT);
-        }
         return "";
     }
 
     public String getHeroChatChannelTemplate(String botName, String hChannel) {
+        String tmpl = getHeroTemplate(heroChannelMessages, botName, hChannel);
+        if (tmpl.isEmpty()) {
+            return getMsgTemplate(MAINCONFIG, TemplateName.HERO_CHAT);
+        }
         return getHeroTemplate(heroChannelMessages, botName, hChannel);
     }
 
     public String getHeroActionChannelTemplate(String botName, String hChannel) {
+        String tmpl = getHeroTemplate(heroActionChannelMessages, botName, hChannel);
+        if (tmpl.isEmpty()) {
+            return getMsgTemplate(MAINCONFIG, TemplateName.HERO_ACTION);
+        }
         return getHeroTemplate(heroActionChannelMessages, botName, hChannel);
     }
 
     public String getIRCHeroChatChannelTemplate(String botName, String hChannel) {
+        String tmpl = getHeroTemplate(ircHeroChannelMessages, botName, hChannel);
+        if (tmpl.isEmpty()) {
+            return getMsgTemplate(MAINCONFIG, TemplateName.IRC_HERO_CHAT);
+        }
         return getHeroTemplate(ircHeroChannelMessages, botName, hChannel);
     }
 

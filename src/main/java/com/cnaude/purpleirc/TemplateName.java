@@ -34,6 +34,10 @@ public class TemplateName {
     public final static String IRC_HERO_QUIT = "irc-hero-quit";
     public final static String IRC_HERO_TOPIC = "irc-hero-topic";
     
+    public final static String IRC_HERO_CHANNELS = "irc-hero-channels";
+    public final static String HERO_CHANNELS = "hero-channels";
+    public final static String IRC_ACTION_CHANNELS = "irc-action-channels";
+    
     public final static String TITAN_CHAT = "titan-chat";
     public final static String IRC_TITAN_CHAT = "irc-titan-chat";
     

@@ -91,7 +91,7 @@
         
         <!-- ReportRTS -->
         <dependency>
-            <groupId>com.nyancraft</groupId>
+            <groupId>com.nyancraft.reportrts</groupId>
             <artifactId>ReportRTS</artifactId>
             <version>1.2.0</version>
         </dependency>
