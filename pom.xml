@@ -34,8 +34,19 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
             <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        
+        <repository>
+            <id>regularbox-repo</id>
+            <url>http://repo.regularbox.com/artifactory/repo/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
        
         <repository>
