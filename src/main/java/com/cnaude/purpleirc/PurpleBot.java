@@ -1658,7 +1658,7 @@ public final class PurpleBot {
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CONSOLE_CHAT)) {                        
             String tmpl = plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT);         
             plugin.logDebug("broadcastChat [Console]: " + tmpl);
-            plugin.logInfo(plugin.tokenizer.ircChatToGameTokenizer(
+            plugin.getServer().getConsoleSender().sendMessage(plugin.tokenizer.ircChatToGameTokenizer(
                     nick, myChannel, plugin.getMsgTemplate(botNick, 
                             TemplateName.IRC_CONSOLE_CHAT), message));
         }
