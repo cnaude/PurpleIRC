@@ -71,7 +71,7 @@ message-format:
   irc-topic: '[&4IRC] Topic changed by %NAME%: %TOPIC%.'  
   irc-nickchange: '[&4IRC] %OLDNICK% is now known as %NEWNICK%.'  
   irc-mode: '[&4IRC] %NAME% %MODE% on %CHANNEL%'
-  irc-console-chat: '[&4IRC]<%NAME%> %MESSAGE%'
+  irc-console-chat: '&f[&5IRC&f]&r<%NAME%> %MESSAGE%'
   irc-notice: '[&4IRC] [notice(%CHANNEL%)] %NOTICE% '
   # Message template for Clevernotch bot to IRC messages
   clever-send: '[&4BOT]<%NAME%> %MESSAGE%' 
