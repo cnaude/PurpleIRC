@@ -3,7 +3,6 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -12,7 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class CommandQueueWatcher {
 
     private final PurpleIRC plugin;
-    private BukkitTask bt;
+    private int bt;
     private final Queue<IRCCommand> queue = new ConcurrentLinkedQueue<IRCCommand>();
 
     /**
@@ -26,7 +25,7 @@ public class CommandQueueWatcher {
 
     private void startWatcher() {
         plugin.logDebug("Starting command queue");
-        bt = this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new Runnable() {
+        bt = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
             @Override
             public void run() {
                 queueAndSend();
@@ -46,7 +45,7 @@ public class CommandQueueWatcher {
      *
      */
     public void cancel() {
-        bt.cancel();
+        this.plugin.getServer().getScheduler().cancelTask(bt);
     }
 
     public String clearQueue() {
