@@ -231,6 +231,26 @@ public class ChatTokenizer {
     }
 
     /**
+     * Game chat to IRC
+     *
+     * @param source
+     * @param name
+     * @param template
+     * @param message
+     * @return
+     */
+    public String dynmapWebChatToIRCTokenizer(String source, String name,
+            String template, String message) {
+        if (message == null) {
+            message = "";
+        }
+        return plugin.colorConverter.gameColorsToIrc(template
+                .replace("%SOURCE%", source)
+                .replace("%NAME%", name)
+                .replace("%MESSAGE%", message));
+    }
+
+    /**
      * Game player AFK to IRC
      *
      * @param player

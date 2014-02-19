@@ -2,6 +2,7 @@ package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
+import com.cnaude.purpleirc.GameListeners.DynmapListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
@@ -33,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
+import com.cnaude.purpleirc.Hooks.ShortifyHook;
 import com.cnaude.purpleirc.Hooks.TownyChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
@@ -113,6 +115,7 @@ public class PurpleIRC extends JavaPlugin {
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
     public JobsHook jobsHook;
+    public ShortifyHook shortifyHook;
     public NetPackets netPackets;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
@@ -227,6 +230,18 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new DeathMessagesListener(this), this);
         } else {
             logInfo("DeathMessages not detected.");
+        }
+        if (isPluginEnabled("Shortify")) {
+            logInfo("Enabling Shortify support.");
+            shortifyHook = new ShortifyHook(this);
+        } else {
+            logInfo("Shortify not detected.");
+        }
+        if (isPluginEnabled("dynmap")) {
+            logInfo("Enabling Dynmap support.");
+            getServer().getPluginManager().registerEvents(new DynmapListener(this), this);
+        } else {
+            logInfo("Dynmap not detected.");
         }
         vanishHook = new VanishHook(this);
         if (isPluginEnabled("ReportRTS")) {
