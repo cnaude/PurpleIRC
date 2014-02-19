@@ -42,6 +42,10 @@ public class MessageListener extends ListenerAdapter {
         User user = event.getUser();
 
         plugin.logDebug("Message caught <" + user.getNick() + ">: " + message);
+        
+        if (plugin.shortifyHook != null) {
+            message = plugin.shortifyHook.shorten(message);
+        }
 
         if (ircBot.isValidChannel(channel.getName())) {
             plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, false);

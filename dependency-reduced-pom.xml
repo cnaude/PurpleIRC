@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>2.1.8-SNAPSHOT</version>
+  <version>2.1.9-SNAPSHOT</version>
   <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -34,7 +34,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.0</version>
+        <version>2.2</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -96,15 +96,6 @@
   </build>
   <repositories>
     <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>comphenix-rep</id>
-      <name>Comphenix Repository</name>
-      <url>http://repo.comphenix.net/content/groups/public</url>
-    </repository>
-    <repository>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -113,12 +104,38 @@
       <name>SonaType public snapshots and releases repository</name>
       <url>https://oss.sonatype.org/content/groups/public</url>
     </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org/content/groups/public/</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>regularbox-repo</id>
+      <url>http://repo.regularbox.com/artifactory/repo/</url>
+    </repository>
+    <repository>
+      <id>comphenix-rep</id>
+      <name>Comphenix Repository</name>
+      <url>http://repo.comphenix.net/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>cnaude-repo</id>
+      <url>http://cnaude.freeshell.org/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.2</version>
+      <version>1.7.2-R0.3</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -138,12 +155,6 @@
       <artifactId>Vault</artifactId>
       <version>1.2.25</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.nyancraft.reportrts</groupId>
-      <artifactId>ReportRTS</artifactId>
-      <version>1.2.0</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.dthielke</groupId>
@@ -247,6 +258,24 @@
       <version>2.8-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.nyancraft.ReportRTS</groupId>
+      <artifactId>ReportRTS</artifactId>
+      <version>1.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.nullblock.vemacs</groupId>
+      <artifactId>Shortify</artifactId>
+      <version>1.6.2-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.dynmap</groupId>
+      <artifactId>DynmapAPI</artifactId>
+      <version>1.9.2</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <distributionManagement>
     <repository>
@@ -260,7 +289,7 @@
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bukkit.version>1.7.2-R0.2</bukkit.version>
+    <bukkit.version>1.7.2-R0.3</bukkit.version>
   </properties>
 </project>
 
