@@ -24,7 +24,7 @@ public class ShortifyHook {
      */
     public ShortifyHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        configuration = ShortifyUtility.loadCfg(new File("Shortify/config.yml"));
+        configuration = ShortifyUtility.loadCfg(new File("plugins/Shortify/config.yml"));
     }
 
     public String shorten(String message) {

@@ -96,6 +96,8 @@ channels:
     - irc-mode
     - irc-notice
     #- irc-console-chat
+    # Dynmap Web Chat
+    - dynmap-web-chat
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat
