@@ -66,7 +66,7 @@ public final class PurpleBot {
     public boolean showMOTD;
     public boolean channelCmdNotifyEnabled;
     public boolean relayPrivateChat;
-    public boolean partInvalidChannels;
+    public boolean partInvalidChannels;    
     public int botServerPort;
     public long chatDelay;
     public String botServer;
@@ -97,6 +97,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> hideQuitWhenVanished;
     public CaseInsensitiveMap<Boolean> invalidCommandPrivate;
     public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
+    private CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
     public CaseInsensitiveMap<Collection<String>> worldList;
@@ -125,6 +126,7 @@ public final class PurpleBot {
         this.opsList = new CaseInsensitiveMap<Collection<String>>();
         this.heroChannel = new CaseInsensitiveMap<String>();
         this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
+        this.shortify = new CaseInsensitiveMap<Boolean>();
         this.invalidCommandPrivate = new CaseInsensitiveMap<Boolean>();
         this.hideQuitWhenVanished = new CaseInsensitiveMap<Boolean>();
         this.hideListWhenVanished = new CaseInsensitiveMap<Boolean>();
@@ -304,6 +306,13 @@ public final class PurpleBot {
         sender.sendMessage(connectMessage);
         asyncConnect();
     }
+    
+    public boolean isShortifyEnabled(String channelName) {
+        if (shortify.containsKey(channelName)) {
+            return shortify.get(channelName);
+        }
+        return false;
+    }
 
     /**
      *
@@ -465,7 +474,7 @@ public final class PurpleBot {
     private void loadConfig() {
         try {
             config.load(file);
-            autoConnect = config.getBoolean("autoconnect", true);
+            autoConnect = config.getBoolean("autoconnect", true);            
             ssl = config.getBoolean("ssl", false);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
@@ -565,6 +574,9 @@ public final class PurpleBot {
 
                 invalidCommandCTCP.put(channelName, config.getBoolean("channels." + enChannelName + ".invalid-command.ctcp", false));
                 plugin.logDebug("  InvalidCommandCTCP => " + invalidCommandCTCP.get(channelName));
+                
+                shortify.put(channelName, config.getBoolean("channels." + enChannelName + ".shortify", true));
+                plugin.logDebug("  Shortify => " + shortify.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
