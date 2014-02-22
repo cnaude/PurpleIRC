@@ -66,7 +66,7 @@ public final class PurpleBot {
     public boolean showMOTD;
     public boolean channelCmdNotifyEnabled;
     public boolean relayPrivateChat;
-    public boolean partInvalidChannels;    
+    public boolean partInvalidChannels;
     public int botServerPort;
     public long chatDelay;
     public String botServer;
@@ -97,7 +97,8 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> hideQuitWhenVanished;
     public CaseInsensitiveMap<Boolean> invalidCommandPrivate;
     public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
-    private CaseInsensitiveMap<Boolean> shortify;
+    public CaseInsensitiveMap<Boolean> logIrcToHeroChat;    
+    private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
     public CaseInsensitiveMap<Collection<String>> worldList;
@@ -126,6 +127,7 @@ public final class PurpleBot {
         this.opsList = new CaseInsensitiveMap<Collection<String>>();
         this.heroChannel = new CaseInsensitiveMap<String>();
         this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
+        this.logIrcToHeroChat = new CaseInsensitiveMap<Boolean>();
         this.shortify = new CaseInsensitiveMap<Boolean>();
         this.invalidCommandPrivate = new CaseInsensitiveMap<Boolean>();
         this.hideQuitWhenVanished = new CaseInsensitiveMap<Boolean>();
@@ -306,7 +308,7 @@ public final class PurpleBot {
         sender.sendMessage(connectMessage);
         asyncConnect();
     }
-    
+
     public boolean isShortifyEnabled(String channelName) {
         if (shortify.containsKey(channelName)) {
             return shortify.get(channelName);
@@ -474,7 +476,7 @@ public final class PurpleBot {
     private void loadConfig() {
         try {
             config.load(file);
-            autoConnect = config.getBoolean("autoconnect", true);            
+            autoConnect = config.getBoolean("autoconnect", true);
             ssl = config.getBoolean("ssl", false);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
@@ -500,7 +502,7 @@ public final class PurpleBot {
             botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
             chatDelay = config.getLong("message-delay", 1000);
-            plugin.logDebug("Message Delay => " + chatDelay);
+            plugin.logDebug("Message Delay => " + chatDelay);            
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Login => " + botLogin);
@@ -557,6 +559,9 @@ public final class PurpleBot {
                 heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
                 plugin.logDebug("  HeroChannel => " + heroChannel.get(channelName));
 
+                logIrcToHeroChat.put(channelName, config.getBoolean("channels." + enChannelName + ".log-irc-to-hero-chat", false));
+                plugin.logDebug("  LogIrcToHeroChat => " + logIrcToHeroChat.get(channelName));
+                
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
 
@@ -574,7 +579,7 @@ public final class PurpleBot {
 
                 invalidCommandCTCP.put(channelName, config.getBoolean("channels." + enChannelName + ".invalid-command.ctcp", false));
                 plugin.logDebug("  InvalidCommandCTCP => " + invalidCommandCTCP.get(channelName));
-                
+
                 shortify.put(channelName, config.getBoolean("channels." + enChannelName + ".shortify", true));
                 plugin.logDebug("  Shortify => " + shortify.get(channelName));
 
@@ -1701,9 +1706,15 @@ public final class PurpleBot {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
+            String rawHCMessage = plugin.tokenizer.ircChatToHeroChatTokenizer(
+                                    nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel);
             Herochat.getChannelManager().getChannel(hChannel)
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
-                                    nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel));
+                    .sendRawMessage(rawHCMessage);
+            if (logIrcToHeroChat.containsKey(myChannel)) {
+                if (logIrcToHeroChat.get(myChannel)) {
+                    plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
+                }
+            }
         }
     }
 
