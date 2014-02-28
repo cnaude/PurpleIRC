@@ -1430,9 +1430,9 @@ public final class PurpleBot {
         String myChannel = channel.getName();
         if (channelTopicChanserv.containsKey(myChannel)) {
             if (channelTopicChanserv.get(myChannel)) {
-                String msg = String.format("MSG chanserv :TOPIC %s %s", myChannel, topic);
-                plugin.logDebug("Sending raw message: " + msg);
-                bot.sendRaw().rawLineNow(msg);
+                String msg = String.format("TOPIC %s %s", myChannel, topic);
+                plugin.logDebug("Sending chanserv rmessage: " + msg);
+                asyncIRCMessage("chanserv", msg);
                 return;
             }
         }
