@@ -109,6 +109,7 @@ public final class PurpleBot {
     public List<String> channelCmdNotifyRecipients;
     private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
+    private final String fileName;
 
     /**
      *
@@ -116,6 +117,7 @@ public final class PurpleBot {
      * @param plugin
      */
     public PurpleBot(File file, PurpleIRC plugin) {
+        fileName = file.getName();
         this.connected = false;
         this.botChannels = new ArrayList<String>();
         this.ircListeners = new ArrayList<ListenerAdapter>();
@@ -2144,5 +2146,9 @@ public final class PurpleBot {
      */
     public void setConnected(boolean connected) {
         this.connected = connected;
+    }
+    
+    public String getFileName() {
+        return fileName;
     }
 }

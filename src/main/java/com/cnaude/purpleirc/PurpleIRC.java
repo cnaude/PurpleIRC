@@ -3,6 +3,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
 import com.cnaude.purpleirc.GameListeners.DynmapListener;
+import com.cnaude.purpleirc.GameListeners.EssentialsListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
@@ -250,6 +251,14 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("ReportRTS not detected.");
         }
+        /*
+        if (isPluginEnabled("Essentials")) {
+            logInfo("Enabling Essentials support.");
+            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
+        } else {
+            logInfo("Essentials not detected.");
+        }
+        */
         commandHandlers = new CommandHandlers(this);
         getCommand("irc").setExecutor(commandHandlers);
         regexGlobber = new RegexGlobber();
