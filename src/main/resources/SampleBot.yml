@@ -70,6 +70,8 @@ channels:
     topic: New topic
     # topic-protect - Prevent others from changing the topic
     topic-protect: false    
+    # Enable chanserve mode for topic set command (/msg chanserv topic #channel <topic>
+    topic-chanserv: false
     # If the Shortify plugin is installed then shoten URLs sent from IRC
     shortify: true
     # enabled-messages - These are the message types that are either sent to the game or IRC

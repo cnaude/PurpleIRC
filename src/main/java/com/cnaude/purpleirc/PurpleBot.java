@@ -87,6 +87,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Collection<String>> tabIgnoreNicks;
     public CaseInsensitiveMap<String> channelPassword;
     public CaseInsensitiveMap<String> channelTopic;
+    public CaseInsensitiveMap<Boolean> channelTopicChanserv;
     public CaseInsensitiveMap<String> activeTopic;
     public CaseInsensitiveMap<String> channelModes;
     public CaseInsensitiveMap<Boolean> channelTopicProtected;
@@ -557,6 +558,9 @@ public final class PurpleBot {
 
                 channelTopicProtected.put(channelName, config.getBoolean("channels." + enChannelName + ".topic-protect", false));
                 plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channelName).toString());
+                
+                channelTopicChanserv.put(channelName, config.getBoolean("channels." + enChannelName + ".topic-chanserv", false));
+                plugin.logDebug("  Topic Chanserv Mode => " + channelTopicChanserv.get(channelName).toString());
 
                 heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
                 plugin.logDebug("  HeroChannel => " + heroChannel.get(channelName));
@@ -1234,7 +1238,7 @@ public final class PurpleBot {
         Channel channel = this.getChannel(channelName);
         String tTopic = tokenizedTopic(topic);
         if (channel != null) {
-            channel.send().setTopic(tTopic);
+            setTheTopic(channel,tTopic);
             config.set("channels." + encodeChannel(channelName) + ".topic", topic);
             channelTopic.put(channelName, topic);
             saveConfig();
@@ -1413,13 +1417,26 @@ public final class PurpleBot {
                     plugin.logDebug("myTopic: " + myTopic);
                     if (!tTopic.equals(myTopic)) {
                         plugin.logDebug("Topic is not correct. Fixing it.");
-                        channel.send().setTopic(myTopic);
+                        setTheTopic(channel, myTopic);                        
                     } else {
                         plugin.logDebug("Topic is correct.");
                     }
                 }
             }
         }
+    }
+    
+    private void setTheTopic(Channel channel, String topic) {
+        String myChannel = channel.getName();
+        if (channelTopicChanserv.containsKey(myChannel)) {
+            if (channelTopicChanserv.get(myChannel)) {
+                String msg = String.format("MSG chanserv :TOPIC %s %s", myChannel, topic);
+                plugin.logDebug("Sending raw message: " + msg);
+                bot.sendRaw().rawLineNow(msg);
+                return;
+            }
+        }
+        channel.send().setTopic(topic);        
     }
 
     private String tokenizedTopic(String topic) {
