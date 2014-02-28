@@ -145,6 +145,7 @@ public final class PurpleBot {
         this.channelPassword = new CaseInsensitiveMap<String>();
         this.tabIgnoreNicks = new CaseInsensitiveMap<Collection<String>>();
         this.channelNicks = new CaseInsensitiveMap<Collection<String>>();
+        this.channelTopicChanserv = new CaseInsensitiveMap<Boolean>();
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<CommandSender>();

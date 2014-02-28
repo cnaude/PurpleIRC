@@ -3,7 +3,6 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
 import com.cnaude.purpleirc.GameListeners.DynmapListener;
-import com.cnaude.purpleirc.GameListeners.EssentialsListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerChatListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
