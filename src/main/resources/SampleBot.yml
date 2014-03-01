@@ -74,6 +74,11 @@ channels:
     topic-chanserv: false
     # If the Shortify plugin is installed then shoten URLs sent from IRC
     shortify: true
+    # Enable or disable message filtering
+    enable-filtering: false
+    # Filters. These wll be removed from IRC to game messages.
+    filter-list: 
+       - AwesomeBot
     # enabled-messages - These are the message types that are either sent to the game or IRC
     # config.yml. Remove or comment the messages you don't want.       
     enabled-messages:

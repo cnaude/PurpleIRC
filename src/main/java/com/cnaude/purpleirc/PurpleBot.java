@@ -85,6 +85,7 @@ public final class PurpleBot {
     public ArrayList<String> botChannels;
     public CaseInsensitiveMap<Collection<String>> channelNicks;
     public CaseInsensitiveMap<Collection<String>> tabIgnoreNicks;
+    public CaseInsensitiveMap<Collection<String>> filters;
     public CaseInsensitiveMap<String> channelPassword;
     public CaseInsensitiveMap<String> channelTopic;
     public CaseInsensitiveMap<Boolean> channelTopicChanserv;
@@ -100,7 +101,8 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> hideQuitWhenVanished;
     public CaseInsensitiveMap<Boolean> invalidCommandPrivate;
     public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
-    public CaseInsensitiveMap<Boolean> logIrcToHeroChat;    
+    public CaseInsensitiveMap<Boolean> logIrcToHeroChat;  
+    public CaseInsensitiveMap<Boolean> enableMessageFiltering;
     private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
@@ -146,10 +148,12 @@ public final class PurpleBot {
         this.channelTopic = new CaseInsensitiveMap<String>();
         this.channelPassword = new CaseInsensitiveMap<String>();
         this.tabIgnoreNicks = new CaseInsensitiveMap<Collection<String>>();
+        this.filters = new CaseInsensitiveMap<Collection<String>>();
         this.channelNicks = new CaseInsensitiveMap<Collection<String>>();
         this.channelTopicChanserv = new CaseInsensitiveMap<Boolean>();
         this.joinMsg = new CaseInsensitiveMap<String>();
         this.msgOnJoin = new CaseInsensitiveMap<Boolean>();
+        this.enableMessageFiltering = new CaseInsensitiveMap<Boolean>();
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<CommandSender>();
@@ -599,6 +603,9 @@ public final class PurpleBot {
                 
                 msgOnJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".raw-message-on-join", false));
                 plugin.logDebug("  SendMessageOnJoin => " + msgOnJoin.get(channelName));
+                
+                enableMessageFiltering.put(channelName, config.getBoolean("channels." + enChannelName + ".enable-filtering", false));
+                plugin.logDebug("  EnableMessageFiltering => " + enableMessageFiltering.get(channelName));                
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
@@ -662,6 +669,19 @@ public final class PurpleBot {
                 }
                 tabIgnoreNicks.put(channelName, t);
                 if (tabIgnoreNicks.isEmpty()) {
+                    plugin.logInfo("World list is empty!");
+                }
+                
+                // build valid world list
+                Collection<String> f = new ArrayList<String>();
+                for (String word : config.getStringList("channels." + enChannelName + ".filter-list")) {
+                    if (!f.contains(word)) {
+                        f.add(word);
+                    }
+                    plugin.logDebug("  Filtered From IRC => " + word);
+                }
+                filters.put(channelName, f);
+                if (filters.isEmpty()) {
                     plugin.logInfo("World list is empty!");
                 }
 
