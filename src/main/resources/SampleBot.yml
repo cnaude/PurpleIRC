@@ -179,6 +179,9 @@ channels:
     invalid-command:
         private: false
         ctcp: false
+    # Raw message to send if raw-message-on-join is true
+    raw-message: ''
+    raw-message-on-join: false
     commands:
       chat:
         modes: '*'

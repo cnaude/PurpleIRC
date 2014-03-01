@@ -90,6 +90,8 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> channelTopicChanserv;
     public CaseInsensitiveMap<String> activeTopic;
     public CaseInsensitiveMap<String> channelModes;
+    public CaseInsensitiveMap<String> joinMsg;
+    public CaseInsensitiveMap<Boolean> msgOnJoin;
     public CaseInsensitiveMap<Boolean> channelTopicProtected;
     public CaseInsensitiveMap<Boolean> channelAutoJoin;
     public CaseInsensitiveMap<Boolean> ignoreIRCChat;
@@ -146,6 +148,8 @@ public final class PurpleBot {
         this.tabIgnoreNicks = new CaseInsensitiveMap<Collection<String>>();
         this.channelNicks = new CaseInsensitiveMap<Collection<String>>();
         this.channelTopicChanserv = new CaseInsensitiveMap<Boolean>();
+        this.joinMsg = new CaseInsensitiveMap<String>();
+        this.msgOnJoin = new CaseInsensitiveMap<Boolean>();
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<CommandSender>();
@@ -589,6 +593,12 @@ public final class PurpleBot {
 
                 shortify.put(channelName, config.getBoolean("channels." + enChannelName + ".shortify", true));
                 plugin.logDebug("  Shortify => " + shortify.get(channelName));
+                
+                joinMsg.put(channelName, config.getString("channels." + enChannelName + ".raw-message", ""));
+                plugin.logDebug("  JoinMessage => " + joinMsg.get(channelName));
+                
+                msgOnJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".raw-message-on-join", false));
+                plugin.logDebug("  SendMessageOnJoin => " + msgOnJoin.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
