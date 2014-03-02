@@ -1735,6 +1735,20 @@ public final class PurpleBot {
         plugin.logDebug("Check if " + TemplateName.IRC_CHAT
                 + " is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
+            if (filters.containsKey(myChannel)) {
+                if (!filters.get(myChannel).isEmpty()) {
+                    for (String filter : filters.get(myChannel)) {
+                        if (filter.startsWith("/") && filter.endsWith("/")) {
+                            filter = filter.substring(1, filter.length() - 1);
+                            plugin.logDebug("Regex filtering " + filter + " from " + message);
+                            message = message.replaceAll(filter, "");
+                        } else {
+                            plugin.logDebug("Filtering " + filter + " from " + message);
+                            message = message.replace(filter, "");
+                        }
+                    }
+                }
+            }
             plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
             plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(
                     nick, myChannel, plugin.getMsgTemplate(botNick,

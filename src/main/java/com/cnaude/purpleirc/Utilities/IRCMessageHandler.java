@@ -179,21 +179,7 @@ public class IRCMessageHandler {
             if (privateMessage && !ircBot.relayPrivateChat) {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"relay-private-chat\" being false and this is a private message ...");
                 return;
-            }
-            if (ircBot.filters.containsKey(myChannel)) {
-                if (!ircBot.filters.get(myChannel).isEmpty()) {
-                    for (String filter : ircBot.filters.get(myChannel)) {
-                        if (filter.startsWith("/") && filter.endsWith("/")) {
-                            filter = filter.substring(1, filter.length() - 1);
-                            plugin.logDebug("Regex filtering " + filter + " from " + message);
-                            message = message.replaceAll(filter, "");
-                        } else {
-                            plugin.logDebug("Filtering " + filter + " from " + message);
-                            message = message.replace(filter, "");
-                        }
-                    }
-                }
-            }
+            }            
             plugin.logDebug("Message dispatched for broadcast...");
             ircBot.broadcastChat(user.getNick(), myChannel, message, false);
         }
