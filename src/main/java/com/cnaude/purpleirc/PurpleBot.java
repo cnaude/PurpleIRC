@@ -101,7 +101,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> hideQuitWhenVanished;
     public CaseInsensitiveMap<Boolean> invalidCommandPrivate;
     public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
-    public CaseInsensitiveMap<Boolean> logIrcToHeroChat;  
+    public CaseInsensitiveMap<Boolean> logIrcToHeroChat;
     public CaseInsensitiveMap<Boolean> enableMessageFiltering;
     private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
@@ -514,7 +514,7 @@ public final class PurpleBot {
             botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
             chatDelay = config.getLong("message-delay", 1000);
-            plugin.logDebug("Message Delay => " + chatDelay);            
+            plugin.logDebug("Message Delay => " + chatDelay);
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Login => " + botLogin);
@@ -567,7 +567,7 @@ public final class PurpleBot {
 
                 channelTopicProtected.put(channelName, config.getBoolean("channels." + enChannelName + ".topic-protect", false));
                 plugin.logDebug("  Topic Protected => " + channelTopicProtected.get(channelName).toString());
-                
+
                 channelTopicChanserv.put(channelName, config.getBoolean("channels." + enChannelName + ".topic-chanserv", false));
                 plugin.logDebug("  Topic Chanserv Mode => " + channelTopicChanserv.get(channelName).toString());
 
@@ -576,7 +576,7 @@ public final class PurpleBot {
 
                 logIrcToHeroChat.put(channelName, config.getBoolean("channels." + enChannelName + ".log-irc-to-hero-chat", false));
                 plugin.logDebug("  LogIrcToHeroChat => " + logIrcToHeroChat.get(channelName));
-                
+
                 ignoreIRCChat.put(channelName, config.getBoolean("channels." + enChannelName + ".ignore-irc-chat", false));
                 plugin.logDebug("  IgnoreIRCChat => " + ignoreIRCChat.get(channelName));
 
@@ -597,15 +597,15 @@ public final class PurpleBot {
 
                 shortify.put(channelName, config.getBoolean("channels." + enChannelName + ".shortify", true));
                 plugin.logDebug("  Shortify => " + shortify.get(channelName));
-                
+
                 joinMsg.put(channelName, config.getString("channels." + enChannelName + ".raw-message", ""));
                 plugin.logDebug("  JoinMessage => " + joinMsg.get(channelName));
-                
+
                 msgOnJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".raw-message-on-join", false));
                 plugin.logDebug("  SendMessageOnJoin => " + msgOnJoin.get(channelName));
-                
+
                 enableMessageFiltering.put(channelName, config.getBoolean("channels." + enChannelName + ".enable-filtering", false));
-                plugin.logDebug("  EnableMessageFiltering => " + enableMessageFiltering.get(channelName));                
+                plugin.logDebug("  EnableMessageFiltering => " + enableMessageFiltering.get(channelName));
 
                 // build channel op list
                 Collection<String> cOps = new ArrayList<String>();
@@ -671,7 +671,7 @@ public final class PurpleBot {
                 if (tabIgnoreNicks.isEmpty()) {
                     plugin.logInfo("World list is empty!");
                 }
-                
+
                 // build valid world list
                 Collection<String> f = new ArrayList<String>();
                 for (String word : config.getStringList("channels." + enChannelName + ".filter-list")) {
@@ -1269,7 +1269,7 @@ public final class PurpleBot {
         Channel channel = this.getChannel(channelName);
         String tTopic = tokenizedTopic(topic);
         if (channel != null) {
-            setTheTopic(channel,tTopic);
+            setTheTopic(channel, tTopic);
             config.set("channels." + encodeChannel(channelName) + ".topic", topic);
             channelTopic.put(channelName, topic);
             saveConfig();
@@ -1448,7 +1448,7 @@ public final class PurpleBot {
                     plugin.logDebug("myTopic: " + myTopic);
                     if (!tTopic.equals(myTopic)) {
                         plugin.logDebug("Topic is not correct. Fixing it.");
-                        setTheTopic(channel, myTopic);                        
+                        setTheTopic(channel, myTopic);
                     } else {
                         plugin.logDebug("Topic is correct.");
                     }
@@ -1456,7 +1456,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     private void setTheTopic(Channel channel, String topic) {
         String myChannel = channel.getName();
         if (channelTopicChanserv.containsKey(myChannel)) {
@@ -1467,7 +1467,7 @@ public final class PurpleBot {
                 return;
             }
         }
-        channel.send().setTopic(topic);        
+        channel.send().setTopic(topic);
     }
 
     private String tokenizedTopic(String topic) {
@@ -1723,6 +1723,24 @@ public final class PurpleBot {
         }
     }
 
+    public String filterMessage(String message, String myChannel) {
+        if (filters.containsKey(myChannel)) {
+            if (!filters.get(myChannel).isEmpty()) {
+                for (String filter : filters.get(myChannel)) {
+                    if (filter.startsWith("/") && filter.endsWith("/")) {
+                        filter = filter.substring(1, filter.length() - 1);
+                        plugin.logDebug("Regex filtering " + filter + " from " + message);
+                        message = message.replaceAll(filter, "");
+                    } else {
+                        plugin.logDebug("Filtering " + filter + " from " + message);
+                        message = message.replace(filter, "");
+                    }
+                }
+            }
+        }
+        return message;
+    }
+
     // Broadcast chat messages from IRC
     /**
      *
@@ -1735,24 +1753,12 @@ public final class PurpleBot {
         plugin.logDebug("Check if " + TemplateName.IRC_CHAT
                 + " is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
-            if (filters.containsKey(myChannel)) {
-                if (!filters.get(myChannel).isEmpty()) {
-                    for (String filter : filters.get(myChannel)) {
-                        if (filter.startsWith("/") && filter.endsWith("/")) {
-                            filter = filter.substring(1, filter.length() - 1);
-                            plugin.logDebug("Regex filtering " + filter + " from " + message);
-                            message = message.replaceAll(filter, "");
-                        } else {
-                            plugin.logDebug("Filtering " + filter + " from " + message);
-                            message = message.replace(filter, "");
-                        }
-                    }
-                }
-            }
             plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
-            plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(
-                    nick, myChannel, plugin.getMsgTemplate(botNick,
-                            TemplateName.IRC_CHAT), message), "irc.message.chat");
+            String newMessage = filterMessage(
+                    plugin.tokenizer.ircChatToGameTokenizer(
+                            nick, myChannel, plugin.getMsgTemplate(
+                                    botNick, TemplateName.IRC_CHAT), message), myChannel);
+            plugin.getServer().broadcast(newMessage, "irc.message.chat");
         } else {
             plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT
                     + " disabled");
@@ -1771,7 +1777,7 @@ public final class PurpleBot {
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
             String rawHCMessage = plugin.tokenizer.ircChatToHeroChatTokenizer(
-                                    nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel);
+                    nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel);
             Herochat.getChannelManager().getChannel(hChannel)
                     .sendRawMessage(rawHCMessage);
             if (logIrcToHeroChat.containsKey(myChannel)) {
@@ -2209,7 +2215,7 @@ public final class PurpleBot {
     public void setConnected(boolean connected) {
         this.connected = connected;
     }
-    
+
     public String getFileName() {
         return fileName;
     }
