@@ -37,8 +37,9 @@ channel-check-interval: 100
 #  %JOBS% - Player jobs
 #  %JOBS% - Player jobs shortened
 message-format:
-  # Message templates for game to IRC messages
+  # Message templates for game to IRC messages  
   console-chat: '[&5Server] %MESSAGE%' 
+  game-achievement: '[&2%WORLD%] %NAME% has just earned the achievement [%MESSAGE%]'
   game-action: '[&2%WORLD%] ***%NAME% %MESSAGE%'
   game-pchat: '[&2%WORLD%]<%NAME%> %MESSAGE%'
   # death-messages - http://dev.bukkit.org/bukkit-plugins/death-messages

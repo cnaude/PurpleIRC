@@ -34,6 +34,7 @@ import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -1193,6 +1194,28 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     *
+     * @param player
+     * @param achievement
+     */
+    public void gameAchievement(Player player, Achievement achievement) {
+        String message = achievement.toString();
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains(TemplateName.GAME_ACHIEVEMENT)) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    return;
+                }                
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                                        botNick, TemplateName.GAME_ACHIEVEMENT), message));
+            }
+        }
+    }    
 
     /**
      *

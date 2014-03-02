@@ -8,6 +8,7 @@ import com.cnaude.purpleirc.GameListeners.GamePlayerCommandPreprocessingListener
 import com.cnaude.purpleirc.GameListeners.GamePlayerDeathListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerJoinListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerKickListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerPlayerAchievementAwardedListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
 import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
@@ -162,6 +163,7 @@ public class PurpleIRC extends JavaPlugin {
                 logError(ex.getMessage());
             }
         }
+        getServer().getPluginManager().registerEvents(new GamePlayerPlayerAchievementAwardedListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerChatListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerCommandPreprocessingListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerDeathListener(this), this);
