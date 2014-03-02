@@ -1194,7 +1194,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     /**
      *
      * @param player
@@ -1209,13 +1209,13 @@ public final class PurpleBot {
             if (enabledMessages.get(channelName).contains(TemplateName.GAME_ACHIEVEMENT)) {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     return;
-                }                
+                }
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.GAME_ACHIEVEMENT), message));
             }
         }
-    }    
+    }
 
     /**
      *
@@ -1781,7 +1781,9 @@ public final class PurpleBot {
                     plugin.tokenizer.ircChatToGameTokenizer(
                             nick, myChannel, plugin.getMsgTemplate(
                                     botNick, TemplateName.IRC_CHAT), message), myChannel);
-            plugin.getServer().broadcast(newMessage, "irc.message.chat");
+            if (!newMessage.isEmpty()) {
+                plugin.getServer().broadcast(newMessage, "irc.message.chat");
+            }
         } else {
             plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT
                     + " disabled");
@@ -1799,13 +1801,15 @@ public final class PurpleBot {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
-            String rawHCMessage = plugin.tokenizer.ircChatToHeroChatTokenizer(
-                    nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel);
-            Herochat.getChannelManager().getChannel(hChannel)
-                    .sendRawMessage(rawHCMessage);
-            if (logIrcToHeroChat.containsKey(myChannel)) {
-                if (logIrcToHeroChat.get(myChannel)) {
-                    plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
+            String rawHCMessage = filterMessage(
+                    plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel), myChannel);
+            if (!rawHCMessage.isEmpty()) {
+                Herochat.getChannelManager().getChannel(hChannel).sendRawMessage(rawHCMessage);
+                if (logIrcToHeroChat.containsKey(myChannel)) {
+                    if (logIrcToHeroChat.get(myChannel)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
+                    }
                 }
             }
         }

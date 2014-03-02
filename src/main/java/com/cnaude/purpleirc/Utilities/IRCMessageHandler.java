@@ -41,7 +41,7 @@ public class IRCMessageHandler {
      * @param message
      * @param privateMessage
      */
-    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {
+    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {                  
         plugin.logDebug("processMessage: " + message);
         String myChannel = channel.getName();
         if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
