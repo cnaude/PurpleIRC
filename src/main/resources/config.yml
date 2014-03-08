@@ -98,9 +98,7 @@ message-format:
   # Message template for TitanChat to IRC messages
   titan-chat: '[%CHANNEL%]<%NAME%> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
-  irc-titan-chat: '[&3IRC]<%NAME%> %MESSAGE%'
-  # Message templates for Towny to IRC messages
-  towny-channel-chat: '%TOWNYCHANNELTAG%[%TOWNYCHANNEL%]<%NAME%> %MESSAGE%'
+  irc-titan-chat: '[&3IRC]<%NAME%> %MESSAGE%'  
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
@@ -115,7 +113,7 @@ message-format:
   dynmap-web-chat: '[Dynmap] <%NAME%> %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
-  # Message format per hero channel. From IRC to game. For use with @hchat.
+  # Message format per hero channel. From IRC to game.
   irc-hero-channels:
       Global: '[G][IRC]%PLAYERPREFIX%%NAME% %MESSAGE%'
   # Message format per hero channel. From game to IRC. Overrides hero-chat template.
@@ -124,6 +122,13 @@ message-format:
   # Emote message format per hero channel. From game to IRC. Overrides hero-action template.
   hero-action-channels:
       Global: '[&2%CHANNEL%] ***%NAME% %MESSAGE%'
+  # Message templates for Towny to IRC messages
+  towny-channel-chat: '%TOWNYCHANNELTAG%[%TOWNYCHANNEL%]<%NAME%> %MESSAGE%'
+  # Message templates for IRC to Towny messages
+  irc-towny-chat: '[&3IRC]<%NAME%> %MESSAGE%'
+  # Message format per towny channel. From IRC to game.
+  irc-towny-channels:
+      irc: '[IRC]%PLAYERPREFIX%%NAME% %MESSAGE%'
   broadcast-message: '[Broadcast] <%NAME%> %MESSAGE%'
   broadcast-console-message: '[Broadcast] <Console> %MESSAGE%'
   # Defaults below take effect when user joins IRC and matching player is offline

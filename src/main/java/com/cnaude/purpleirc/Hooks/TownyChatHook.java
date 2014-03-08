@@ -6,9 +6,13 @@
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
+import com.palmergames.bukkit.TownyChat.Chat;
+import com.palmergames.bukkit.TownyChat.channels.channelTypes;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
+import java.util.ArrayList;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,6 +22,8 @@ import org.bukkit.entity.Player;
 public class TownyChatHook {
 
     private final PurpleIRC plugin;
+    private final Chat chat;
+    private final ArrayList<channelTypes> townyChannelTypes;
 
     /**
      *
@@ -25,6 +31,12 @@ public class TownyChatHook {
      */
     public TownyChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
+        chat = (Chat) plugin.getServer().getPluginManager().getPlugin("TownyChat");
+        townyChannelTypes = new ArrayList<channelTypes>();
+        townyChannelTypes.add(channelTypes.TOWN);
+        townyChannelTypes.add(channelTypes.GLOBAL);
+        townyChannelTypes.add(channelTypes.NATION);
+        townyChannelTypes.add(channelTypes.DEFAULT);
     }
 
     public String getTown(Player player) {
@@ -76,5 +88,24 @@ public class TownyChatHook {
             title = resident.getTitle();
         }
         return title;
+    }
+
+    public void sendMessage(String townyChannel, String message) {
+        plugin.logDebug("TownyChatHook called...");
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            plugin.logDebug("P: " + player.getName());
+            for (channelTypes ct : townyChannelTypes) {
+                plugin.logDebug("CT: " + ct.name());
+                String townyChannelName = chat.getChannelsHandler().getActiveChannel(player, ct).getName();
+                if (townyChannel.equalsIgnoreCase(townyChannelName)) {
+                    plugin.logDebug("TC ["+townyChannelName+"]: Sending message to " + player + ": " + message);
+                    player.sendMessage(message);
+                    break;
+                } else {
+                    plugin.logDebug("TC "+townyChannelName+"]: invalid TC channel name for " + player);
+                }
+                    
+            }
+        }
     }
 }

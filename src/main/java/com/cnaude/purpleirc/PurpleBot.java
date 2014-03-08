@@ -31,6 +31,8 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
+import com.palmergames.bukkit.TownyChat.Chat;
+import com.palmergames.bukkit.TownyChat.channels.channelTypes;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -106,6 +108,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> enableMessageFiltering;
     private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
+    public CaseInsensitiveMap<String> townyChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
     public CaseInsensitiveMap<Collection<String>> worldList;
     public CaseInsensitiveMap<Collection<String>> muteList;
@@ -134,6 +137,7 @@ public final class PurpleBot {
         this.worldList = new CaseInsensitiveMap<Collection<String>>();
         this.opsList = new CaseInsensitiveMap<Collection<String>>();
         this.heroChannel = new CaseInsensitiveMap<String>();
+        this.townyChannel = new CaseInsensitiveMap<String>();
         this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
         this.logIrcToHeroChat = new CaseInsensitiveMap<Boolean>();
         this.shortify = new CaseInsensitiveMap<Boolean>();
@@ -574,6 +578,9 @@ public final class PurpleBot {
 
                 heroChannel.put(channelName, config.getString("channels." + enChannelName + ".hero-channel", ""));
                 plugin.logDebug("  HeroChannel => " + heroChannel.get(channelName));
+
+                townyChannel.put(channelName, config.getString("channels." + enChannelName + ".towny-channel", ""));
+                plugin.logDebug("  TownyChannel => " + townyChannel.get(channelName));
 
                 logIrcToHeroChat.put(channelName, config.getBoolean("channels." + enChannelName + ".log-irc-to-hero-chat", false));
                 plugin.logDebug("  LogIrcToHeroChat => " + logIrcToHeroChat.get(channelName));
@@ -1773,7 +1780,27 @@ public final class PurpleBot {
      * @param override
      */
     public void broadcastChat(String nick, String myChannel, String message, boolean override) {
-        plugin.logDebug("Check if " + TemplateName.IRC_CHAT
+        if (plugin.tcHook != null) {
+            plugin.logDebug("Checking if " + TemplateName.IRC_TOWNY_CHAT + " is enabled ...");
+            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_TOWNY_CHAT)) {
+                plugin.logDebug("Yes, " + TemplateName.IRC_TOWNY_CHAT + " is enabled...");
+                if (townyChannel.containsKey(myChannel)) {
+                    String tChannel = townyChannel.get(myChannel);
+                    if (!tChannel.isEmpty()) {
+                        String tmpl = plugin.getIRCTownyChatChannelTemplate(botNick, tChannel);
+                        plugin.logDebug("broadcastChat [TC]: " + tChannel + ": " + tmpl);
+                        String rawTCMessage = filterMessage(
+                                plugin.tokenizer.ircChatToTownyChatTokenizer(
+                                        nick, myChannel, tmpl, message, tChannel), myChannel);
+                        plugin.tcHook.sendMessage(tChannel, rawTCMessage);
+                    }
+                }
+            } else {
+                plugin.logDebug("Nope, " + TemplateName.IRC_TOWNY_CHAT + " is NOT enabled...");
+            }
+        }
+
+        plugin.logDebug("Checking if " + TemplateName.IRC_CHAT
                 + " is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
             plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");

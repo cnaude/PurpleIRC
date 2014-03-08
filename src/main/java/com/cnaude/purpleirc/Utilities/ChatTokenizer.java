@@ -122,6 +122,31 @@ public class ChatTokenizer {
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", ircChannelName));
     }
+    
+    /**
+     * IRC to Hero chat channel tokenizer
+     *
+     * @param ircNick
+     * @param ircChannelName
+     * @param template
+     * @param message
+     * @param tChannel
+     * @return
+     */
+    public String ircChatToTownyChatTokenizer(String ircNick, String ircChannelName, String template, String message, String tChannel) {
+        String tmpl;
+        Player player = this.getPlayer(ircNick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(ircNick, template);
+        }
+        return plugin.colorConverter.ircColorsToGame(tmpl
+                .replace("%TOWNYCHANNEL%", tChannel)
+                .replace("%NAME%", ircNick)
+                .replace("%MESSAGE%", message)
+                .replace("%CHANNEL%", ircChannelName));
+    }
 
     /**
      * IRC kick message to game

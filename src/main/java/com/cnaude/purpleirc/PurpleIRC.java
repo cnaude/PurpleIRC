@@ -73,6 +73,7 @@ public class PurpleIRC extends JavaPlugin {
     public boolean identServerEnabled;
     private final CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroChannelMessages;
+    private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircTownyChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
     public String defaultPlayerSuffix,
@@ -136,6 +137,7 @@ public class PurpleIRC extends JavaPlugin {
         this.ircBots = new CaseInsensitiveMap<PurpleBot>();
         this.messageTmpl = new CaseInsensitiveMap<HashMap<String, String>>();
         this.ircHeroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
+        this.ircTownyChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
         this.heroChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
         this.heroActionChannelMessages = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
     }
@@ -416,10 +418,19 @@ public class PurpleIRC extends JavaPlugin {
         }
         return getHeroTemplate(ircHeroChannelMessages, botName, hChannel);
     }
+    
+    public String getIRCTownyChatChannelTemplate(String botName, String tChannel) {
+        String tmpl = getHeroTemplate(ircTownyChannelMessages, botName, tChannel);
+        if (tmpl.isEmpty()) {
+            return getMsgTemplate(MAINCONFIG, TemplateName.IRC_TOWNY_CHAT);
+        }
+        return getHeroTemplate(ircTownyChannelMessages, botName, tChannel);
+    }
 
     public void loadTemplates(YamlConfiguration config, String configName) {
         messageTmpl.put(configName, new HashMap<String, String>());
         ircHeroChannelMessages.put(configName, new CaseInsensitiveMap<String>());
+        ircTownyChannelMessages.put(configName, new CaseInsensitiveMap<String>());
         heroChannelMessages.put(configName, new CaseInsensitiveMap<String>());
         heroActionChannelMessages.put(configName, new CaseInsensitiveMap<String>());
 
@@ -440,6 +451,17 @@ public class PurpleIRC extends JavaPlugin {
                                             + hChannelName)));
                     logDebug("message-format.irc-hero-channels: " + hChannelName
                             + " => " + ircHeroChannelMessages.get(configName).get(hChannelName));
+                }
+            }
+            
+            if (config.contains("message-format.irc-towny-channels")) {
+                for (String tChannelName : config.getConfigurationSection("message-format.irc-towny-channels").getKeys(false)) {
+                    ircTownyChannelMessages.get(configName).put(tChannelName,
+                            ChatColor.translateAlternateColorCodes('&',
+                                    config.getString("message-format.irc-towny-channels."
+                                            + tChannelName)));
+                    logDebug("message-format.irc-towny-channels: " + tChannelName
+                            + " => " + ircTownyChannelMessages.get(configName).get(tChannelName));
                 }
             }
 
