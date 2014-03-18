@@ -109,8 +109,10 @@ message-format:
   rts-held: '[RTS:Held] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-assign: '[RTS:Assign] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
   rts-reopen: '[RTS:Reopen] #%TICKETNUMBER% <%NAME%> %MESSAGE%'
-  # Dynmap Web Chat
+  # Dynmap Web Chat to IRC
   dynmap-web-chat: '[Dynmap] <%NAME%> %MESSAGE%'
+  # IRC to Dynmap Chat
+  irc-dynmap-web-chat: '[&4IRC]<%NAME%> %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From IRC to game.
@@ -154,46 +156,4 @@ custom-tab-list: false
 custom-tab-prefix: '[IRC] '
 # IRC nick must be an exact match to a player name for token expanding
 nick-exact-match: true
-# IRC color map: Game Color Code => IRC Color Code
-irc-color-map:
-    AQUA: CYAN
-    BLACK: BLACK
-    BLUE: BLUE
-    BOLD: BOLD
-    DARK_AQUA: TEAL
-    DARK_BLUE: DARK_BLUE
-    DARK_GRAY: DARK_GRAY
-    DARK_GREEN: DARK_GREEN
-    DARK_PURPLE: PURPLE
-    DARK_RED: RED
-    GOLD: OLIVE
-    GRAY: LIGHT_GRAY
-    GREEN: GREEN
-    LIGHT_PURPLE: MAGENTA
-    RED: RED
-    UNDERLINE: UNDERLINE
-    YELLOW: YELLOW
-    WHITE: WHITE
-    RESET: NORMAL  
-# IRC color map: IRC Color Code => Game Color Code
-game-color-map:
-    BLACK: BLACK
-    BLUE: BLUE    
-    BOLD: BOLD
-    BROWN: GRAY
-    CYAN: AQUA            
-    DARK_BLUE: DARK_BLUE
-    DARK_GRAY: DARK_GRAY        
-    DARK_GREEN: DARK_GREEN
-    GREEN: GREEN
-    LIGHT_GRAY: GRAY
-    MAGENTA: LIGHT_PURPLE
-    NORMAL: RESET
-    OLIVE: GOLD
-    PURPLE: DARK_PURPLE
-    RED: RED
-    TEAL: DARK_AQUA
-    UNDERLINE: UNDERLINE
-    WHITE: WHITE
-    YELLOW: YELLOW
 Debug: false

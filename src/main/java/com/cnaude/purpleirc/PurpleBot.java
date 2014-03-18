@@ -1778,6 +1778,18 @@ public final class PurpleBot {
      * @param override
      */
     public void broadcastChat(String nick, String myChannel, String message, boolean override) {
+        if (plugin.dynmapHook != null) {
+            plugin.logDebug("Checking if " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled ...");
+            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_DYNMAP_WEB_CHAT)) {
+                plugin.logDebug("Yes, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled...");
+                plugin.logDebug("broadcastChat [DW]: " + message);
+                String rawMessage = filterMessage(
+                        plugin.tokenizer.ircChatToGameTokenizer(nick, myChannel, TemplateName.IRC_DYNMAP_WEB_CHAT, message), myChannel);
+                plugin.dynmapHook.sendMessage(nick, rawMessage);
+            } else {
+                plugin.logDebug("Nope, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is NOT enabled...");
+            }
+        }
         if (plugin.tcHook != null) {
             plugin.logDebug("Checking if " + TemplateName.IRC_TOWNY_CHAT + " is enabled ...");
             if (enabledMessages.get(myChannel).contains(TemplateName.IRC_TOWNY_CHAT)) {

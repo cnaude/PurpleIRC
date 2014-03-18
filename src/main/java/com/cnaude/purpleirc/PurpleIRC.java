@@ -16,6 +16,7 @@ import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
+import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
@@ -116,6 +117,7 @@ public class PurpleIRC extends JavaPlugin {
     public CaseInsensitiveMap<PurpleBot> ircBots;
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
+    public DynmapHook dynmapHook;
     public JobsHook jobsHook;
     public ShortifyHook shortifyHook;
     public NetPackets netPackets;
@@ -244,6 +246,7 @@ public class PurpleIRC extends JavaPlugin {
         if (isPluginEnabled("dynmap")) {
             logInfo("Enabling Dynmap support.");
             getServer().getPluginManager().registerEvents(new DynmapListener(this), this);
+            dynmapHook = new DynmapHook(this);
         } else {
             logInfo("Dynmap not detected.");
         }
