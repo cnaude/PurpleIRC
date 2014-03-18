@@ -112,7 +112,7 @@ message-format:
   # Dynmap Web Chat to IRC
   dynmap-web-chat: '[Dynmap] <%NAME%> %MESSAGE%'
   # IRC to Dynmap Chat
-  irc-dynmap-web-chat: '[&4IRC]<%NAME%> %MESSAGE%'
+  irc-dynmap-web-chat: '[IRC] %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From IRC to game.
