@@ -31,8 +31,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
-import com.palmergames.bukkit.TownyChat.Chat;
-import com.palmergames.bukkit.TownyChat.channels.channelTypes;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
 import java.nio.charset.Charset;

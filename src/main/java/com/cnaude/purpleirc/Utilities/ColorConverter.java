@@ -14,12 +14,12 @@ import org.pircbotx.Colors;
  * @author cnaude
  */
 public class ColorConverter {
-    
-    private final boolean stripGameColors;    
-    private final boolean stripIRCColors;    
+
+    private final boolean stripGameColors;
+    private final boolean stripIRCColors;
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
-    
+
     /**
      *
      * @param stripGameColors
@@ -30,7 +30,7 @@ public class ColorConverter {
         this.stripIRCColors = stripIRCColors;
         buildColorMaps();
     }
-    
+
     /**
      *
      * @param message
@@ -66,8 +66,29 @@ public class ColorConverter {
             return Colors.removeFormattingAndColors(newMessage);
         }
     }
-    
-    
+
+    public void addIrcColorMap(String gameColor, String ircColor) {
+        ChatColor chatColor;
+        try {
+            chatColor = ChatColor.valueOf(gameColor);
+        } catch (Exception ex) {
+            return;
+        }
+        if (chatColor != null) {
+            ircColorMap.put(chatColor, ircColor);
+        }
+    }
+
+    public void addGameColorMap(String ircColor, String gameColor) {
+        ChatColor chatColor;
+        try {
+            chatColor = ChatColor.valueOf(gameColor);
+        } catch (Exception ex) {
+            return;
+        }
+        gameColorMap.put(ircColor, chatColor);
+    }
+
     private void buildColorMaps() {
         ircColorMap.put(ChatColor.AQUA, Colors.CYAN);
         ircColorMap.put(ChatColor.BLACK, Colors.BLACK);
@@ -87,28 +108,26 @@ public class ColorConverter {
         ircColorMap.put(ChatColor.UNDERLINE, Colors.UNDERLINE);
         ircColorMap.put(ChatColor.YELLOW, Colors.YELLOW);
         ircColorMap.put(ChatColor.WHITE, Colors.WHITE);
-        ircColorMap.put(ChatColor.RESET, Colors.NORMAL);        
-        
-        gameColorMap.put(Colors.BLACK,      ChatColor.BLACK);
-        gameColorMap.put(Colors.BLUE,       ChatColor.BLUE);        
-        gameColorMap.put(Colors.BOLD,       ChatColor.BOLD);
-        gameColorMap.put(Colors.BROWN,      ChatColor.GRAY);
-        gameColorMap.put(Colors.CYAN,       ChatColor.AQUA);                        
-        gameColorMap.put(Colors.DARK_BLUE,  ChatColor.DARK_BLUE);
-        gameColorMap.put(Colors.DARK_GRAY,  ChatColor.DARK_GRAY);                
+        ircColorMap.put(ChatColor.RESET, Colors.NORMAL);
+
+        gameColorMap.put(Colors.BLACK, ChatColor.BLACK);
+        gameColorMap.put(Colors.BLUE, ChatColor.BLUE);
+        gameColorMap.put(Colors.BOLD, ChatColor.BOLD);
+        gameColorMap.put(Colors.BROWN, ChatColor.GRAY);
+        gameColorMap.put(Colors.CYAN, ChatColor.AQUA);
+        gameColorMap.put(Colors.DARK_BLUE, ChatColor.DARK_BLUE);
+        gameColorMap.put(Colors.DARK_GRAY, ChatColor.DARK_GRAY);
         gameColorMap.put(Colors.DARK_GREEN, ChatColor.DARK_GREEN);
-        gameColorMap.put(Colors.GREEN,      ChatColor.GREEN);
+        gameColorMap.put(Colors.GREEN, ChatColor.GREEN);
         gameColorMap.put(Colors.LIGHT_GRAY, ChatColor.GRAY);
-        gameColorMap.put(Colors.MAGENTA,    ChatColor.LIGHT_PURPLE);
-        gameColorMap.put(Colors.NORMAL,     ChatColor.RESET);
-        gameColorMap.put(Colors.OLIVE,      ChatColor.GOLD);
-        gameColorMap.put(Colors.PURPLE,     ChatColor.DARK_PURPLE);
-        gameColorMap.put(Colors.RED,        ChatColor.RED);
-        gameColorMap.put(Colors.TEAL,       ChatColor.DARK_AQUA);
-        gameColorMap.put(Colors.UNDERLINE,  ChatColor.UNDERLINE);
-        gameColorMap.put(Colors.WHITE,      ChatColor.WHITE);
-        gameColorMap.put(Colors.YELLOW,     ChatColor.YELLOW);
-                                                            
+        gameColorMap.put(Colors.MAGENTA, ChatColor.LIGHT_PURPLE);
+        gameColorMap.put(Colors.NORMAL, ChatColor.RESET);
+        gameColorMap.put(Colors.OLIVE, ChatColor.GOLD);
+        gameColorMap.put(Colors.PURPLE, ChatColor.DARK_PURPLE);
+        gameColorMap.put(Colors.RED, ChatColor.RED);
+        gameColorMap.put(Colors.TEAL, ChatColor.DARK_AQUA);
+        gameColorMap.put(Colors.UNDERLINE, ChatColor.UNDERLINE);
+        gameColorMap.put(Colors.WHITE, ChatColor.WHITE);
+        gameColorMap.put(Colors.YELLOW, ChatColor.YELLOW);
     }
-    
 }
