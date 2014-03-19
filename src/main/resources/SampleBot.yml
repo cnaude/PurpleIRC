@@ -1,6 +1,7 @@
 # Sample PurpleIRC bot configuration.
 # Most of these options should be self explanatory.
 # Place your bot file in the PurpleIRC/bots/ folder.
+# NOTE: If you make changes to this file while the server is running use "/irc reloadbotconfigs" to load the changes into memory.
 #
 # nick - Your bot's unique nickname
 nick: AwesomeBot
