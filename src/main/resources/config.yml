@@ -158,7 +158,7 @@ custom-tab-prefix: '[IRC] '
 nick-exact-match: true
 # See http://site.pircbotx.googlecode.com/hg/apidocs/org/pircbotx/Colors.html for IRC color names
 # See http://jd.bukkit.org/rb/doxygen/d7/dc0/enumorg_1_1bukkit_1_1ChatColor.html for game color names
-# IRC color map: Game Color Code => IRC Color Code
+# Game to IRC color map: Game Color Code => IRC Color Code
 irc-color-map:
     AQUA: CYAN
     BLACK: BLACK
@@ -179,7 +179,7 @@ irc-color-map:
     YELLOW: YELLOW
     WHITE: WHITE
     RESET: NORMAL  
-# IRC color map: IRC Color Code => Game Color Code
+# IRC to game color map: IRC Color Code => Game Color Code
 game-color-map:
     BLACK: BLACK
     BLUE: BLUE    
