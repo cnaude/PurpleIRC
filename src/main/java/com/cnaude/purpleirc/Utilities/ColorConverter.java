@@ -1,9 +1,13 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.cnaude.purpleirc.Utilities;
 
+import com.cnaude.purpleirc.PurpleIRC;
 import java.util.EnumMap;
 import java.util.HashMap;
 import org.bukkit.ChatColor;
@@ -15,6 +19,7 @@ import org.pircbotx.Colors;
  */
 public class ColorConverter {
 
+    PurpleIRC plugin;
     private final boolean stripGameColors;
     private final boolean stripIRCColors;
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
@@ -22,13 +27,15 @@ public class ColorConverter {
 
     /**
      *
+     * @param plugin
      * @param stripGameColors
      * @param stripIRCColors
      */
-    public ColorConverter(boolean stripGameColors, boolean stripIRCColors) {
+    public ColorConverter(PurpleIRC plugin, boolean stripGameColors, boolean stripIRCColors) {
         this.stripGameColors = stripGameColors;
         this.stripIRCColors = stripIRCColors;
-        buildColorMaps();
+        this.plugin = plugin;
+        buildDefaultColorMaps();
     }
 
     /**
@@ -60,7 +67,7 @@ public class ColorConverter {
         } else {
             String newMessage = message;
             for (String ircColor : gameColorMap.keySet()) {
-                newMessage = newMessage.replace(ircColor.toString(), gameColorMap.get(ircColor).toString());
+                newMessage = newMessage.replace(ircColor, gameColorMap.get(ircColor).toString());
             }
             // We return the message with the remaining IRC color codes stripped out
             return Colors.removeFormattingAndColors(newMessage);
@@ -70,26 +77,44 @@ public class ColorConverter {
     public void addIrcColorMap(String gameColor, String ircColor) {
         ChatColor chatColor;
         try {
-            chatColor = ChatColor.valueOf(gameColor);
+            chatColor = ChatColor.valueOf(gameColor.toUpperCase());
         } catch (Exception ex) {
             return;
         }
         if (chatColor != null) {
-            ircColorMap.put(chatColor, ircColor);
+            plugin.logDebug("addIrcColorMap: " + gameColor + " => " + ircColor);
+            ircColorMap.put(chatColor, getIrcColor(ircColor));
         }
     }
 
     public void addGameColorMap(String ircColor, String gameColor) {
         ChatColor chatColor;
         try {
-            chatColor = ChatColor.valueOf(gameColor);
+            chatColor = ChatColor.valueOf(gameColor.toUpperCase());
         } catch (Exception ex) {
             return;
         }
-        gameColorMap.put(ircColor, chatColor);
+        plugin.logDebug("addGameColorMap: " + ircColor + " => " + gameColor);
+        gameColorMap.put(getIrcColor(ircColor), chatColor);
+    }
+    
+    private String getIrcColor(String ircColor) {
+        String s = "";
+        try {
+            s = (String)Colors.class.getField(ircColor.toUpperCase()).get(null);
+        } catch (NoSuchFieldException ex) {
+            plugin.logError(ex.getMessage());
+        } catch (SecurityException ex) {
+            plugin.logError(ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            plugin.logError(ex.getMessage());
+        } catch (IllegalAccessException ex) {
+            plugin.logError(ex.getMessage());
+        }
+        return s;
     }
 
-    private void buildColorMaps() {
+    private void buildDefaultColorMaps() {
         ircColorMap.put(ChatColor.AQUA, Colors.CYAN);
         ircColorMap.put(ChatColor.BLACK, Colors.BLACK);
         ircColorMap.put(ChatColor.BLUE, Colors.BLUE);

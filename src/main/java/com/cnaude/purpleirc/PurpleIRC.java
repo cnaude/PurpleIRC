@@ -429,6 +429,15 @@ public class PurpleIRC extends JavaPlugin {
         }
         return getHeroTemplate(ircTownyChannelMessages, botName, tChannel);
     }
+    
+    public void loadCustomColors(YamlConfiguration config) {
+        for (String t : config.getConfigurationSection("irc-color-map").getKeys(false)) {
+            colorConverter.addIrcColorMap(t, config.getString("irc-color-map." + t));
+        }
+        for (String t : config.getConfigurationSection("game-color-map").getKeys(false)) {
+            colorConverter.addGameColorMap(t, config.getString("game-color-map." + t));
+        }
+    }
 
     public void loadTemplates(YamlConfiguration config, String configName) {
         messageTmpl.put(configName, new HashMap<String, String>());
@@ -500,11 +509,12 @@ public class PurpleIRC extends JavaPlugin {
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
         exactNickMatch = getConfig().getBoolean("nick-exact-match", true);
-        colorConverter = new ColorConverter(stripGameColors, stripIRCColors);
+        colorConverter = new ColorConverter(this, stripGameColors, stripIRCColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
 
         loadTemplates((YamlConfiguration) this.getConfig(), MAINCONFIG);
+        loadCustomColors((YamlConfiguration) this.getConfig());
 
         defaultPlayerSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-suffix", ""));
         defaultPlayerPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-prefix", ""));
