@@ -79,6 +79,7 @@ public class ColorConverter {
         try {
             chatColor = ChatColor.valueOf(gameColor.toUpperCase());
         } catch (Exception ex) {
+            plugin.logError("Invalid game color: " + gameColor);
             return;
         }
         if (chatColor != null) {
@@ -92,6 +93,7 @@ public class ColorConverter {
         try {
             chatColor = ChatColor.valueOf(gameColor.toUpperCase());
         } catch (Exception ex) {
+            plugin.logError("Invalid game color: " + gameColor);
             return;
         }
         plugin.logDebug("addGameColorMap: " + ircColor + " => " + gameColor);
@@ -110,6 +112,9 @@ public class ColorConverter {
             plugin.logError(ex.getMessage());
         } catch (IllegalAccessException ex) {
             plugin.logError(ex.getMessage());
+        }
+        if (s.isEmpty()) {
+            plugin.logError("Invalid IRC color: " + ircColor);
         }
         return s;
     }
