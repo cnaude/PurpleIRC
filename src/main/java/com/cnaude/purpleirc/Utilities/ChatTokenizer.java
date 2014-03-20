@@ -457,6 +457,7 @@ public class ChatTokenizer {
         String gSuffix = plugin.getGroupSuffix(player);
         String group = plugin.getPlayerGroup(player);
         String displayName = player.getDisplayName();
+        String playerIP = player.getAddress().getAddress().getHostAddress();
         String worldName = "";
         String worldAlias = "";
         String worldColor = "";
@@ -477,6 +478,9 @@ public class ChatTokenizer {
         if (group == null) {
             group = "";
         }
+        if (playerIP == null) {
+            playerIP = "";
+        }
         if (displayName == null) {
             displayName = "";
         }
@@ -494,6 +498,7 @@ public class ChatTokenizer {
                 .replace(("%JOBS%"), job)
                 .replace(("%JOBSSHORT%"), jobShort)
                 .replace("%NAME%", pName)
+                .replace("%PLAYERIP%", playerIP)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
