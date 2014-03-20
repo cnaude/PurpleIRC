@@ -11,6 +11,7 @@ channel-check-interval: 100
 #  %WORLD% 
 #  %NAME% 
 #  %DISPLAYNAME% 
+#  %PLAYERIP% - IP address of a player
 #  %CHANNEL% 
 #  %MESSAGE%
 #  %KICKER%
