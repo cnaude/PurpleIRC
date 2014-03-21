@@ -138,6 +138,8 @@ channels:
     #- irc-hero-topic
     # CleverNotch bot messages will be sent to the IRC channel
     - clever-chat
+    # OreBroadcast messages
+    #- ore-broadcast
     - titan-chat
     - towny-chat
     # Specific TownyChat channel or tag

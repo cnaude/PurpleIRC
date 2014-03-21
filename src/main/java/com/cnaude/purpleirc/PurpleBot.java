@@ -1099,6 +1099,23 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     *
+     * @param player
+     * @param message
+     */
+    public void gameOreBroadcast(Player player, String message) {
+        if (!bot.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (enabledMessages.get(channelName).contains(TemplateName.ORE_BROADCAST)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.ORE_BROADCAST), ChatColor.translateAlternateColorCodes('&', message)));
+            }
+        }
+    }
 
     /**
      *

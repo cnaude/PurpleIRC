@@ -48,7 +48,7 @@ message-format:
   death-messages: '[&2%WORLD%] %MESSAGE%'  
   # Notification to player when sending a private message to an IRC user
   game-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
-  game-chat: '[&2%WORLD%]<%NAME%> %MESSAGE%'
+  game-chat: '[&2%WORLD%]<%NAME%> %MESSAGE%'  
   game-death: '[&2%WORLD%] %MESSAGE%'    
   game-kick: '[&2%WORLD%] %MESSAGE%: %REASON%'
   game-join: '[&2%WORLD%] %MESSAGE%'
@@ -115,6 +115,8 @@ message-format:
   dynmap-web-chat: '[Dynmap] <%NAME%> %MESSAGE%'
   # IRC to Dynmap Chat
   irc-dynmap-web-chat: '[IRC] %MESSAGE%'
+  # OreBroadcast message
+  ore-broadcast: '[OreBroadcast] %MESSAGE%'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From IRC to game.

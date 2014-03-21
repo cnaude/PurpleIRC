@@ -126,6 +126,13 @@
             <version>2.3.0</version>
         </dependency>
         
+        <!-- OreBroadcast -->
+        <dependency>
+            <groupId>be.bendem</groupId>
+            <artifactId>OreBroadcast</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        
         <!-- VanishNoPacket -->
         <dependency>
             <groupId>com.kitteh.vanish</groupId>
@@ -241,7 +248,6 @@
             <artifactId>DynmapAPI</artifactId>
             <version>1.9.2</version>
         </dependency>
-        
     </dependencies>
 
     <build>

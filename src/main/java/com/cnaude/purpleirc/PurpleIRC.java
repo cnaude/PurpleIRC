@@ -13,6 +13,7 @@ import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
 import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
+import com.cnaude.purpleirc.GameListeners.OreBroadcastListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
@@ -249,6 +250,12 @@ public class PurpleIRC extends JavaPlugin {
             dynmapHook = new DynmapHook(this);
         } else {
             logInfo("Dynmap not detected.");
+        }
+        if (isPluginEnabled("OreBroadcast")) {
+            logInfo("Enabling OreBroadcast support.");
+            getServer().getPluginManager().registerEvents(new OreBroadcastListener(this), this);            
+        } else {
+            logInfo("OreBroadcast not detected.");
         }
         vanishHook = new VanishHook(this);
         if (isPluginEnabled("ReportRTS")) {

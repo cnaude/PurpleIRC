@@ -17,6 +17,7 @@ softdepend:
 - TownyChat
 - dynmap
 - Shortify
+- OreBroadcast
 commands:
     irc:
         description: Various irc commands

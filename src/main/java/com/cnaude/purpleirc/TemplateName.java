@@ -91,5 +91,7 @@ public class TemplateName {
     
     /* http://dev.bukkit.org/bukkit-plugins/death-messages */
     public final static String DEATH_MESSAGES = "death-messages";
+    
+    public final static String ORE_BROADCAST = "ore-broadcast";
         
 }

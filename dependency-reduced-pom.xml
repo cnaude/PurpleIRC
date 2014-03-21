@@ -175,6 +175,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>be.bendem</groupId>
+      <artifactId>OreBroadcast</artifactId>
+      <version>1.2.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.kitteh.vanish</groupId>
       <artifactId>VanishNoPacket</artifactId>
       <version>3.18.7</version>
