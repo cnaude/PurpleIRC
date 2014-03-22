@@ -758,7 +758,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameChat(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -819,7 +819,7 @@ public final class PurpleBot {
     public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
         plugin.logDebug("H1");
         Player player = chatter.getPlayer();
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         plugin.logDebug("H2");
@@ -902,7 +902,7 @@ public final class PurpleBot {
 
     public void townyChat(Player player,
             com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         if (plugin.tcHook != null) {
@@ -928,7 +928,7 @@ public final class PurpleBot {
 
     public void heroAction(Chatter chatter, ChatColor chatColor, String message) {
         Player player = chatter.getPlayer();
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -961,7 +961,7 @@ public final class PurpleBot {
      */
     public void titanChat(Participant participant, String tChannel, String tColor, String message) {
         Player player = plugin.getServer().getPlayer(participant.getName());
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -989,7 +989,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameChat(Player player, String channelName, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         if (isValidChannel(channelName)) {
@@ -1006,7 +1006,7 @@ public final class PurpleBot {
      * @param message
      */
     public void cleverChat(String cleverBotName, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1027,7 +1027,7 @@ public final class PurpleBot {
      */
     public void reportRTSNotify(String pName, HelpRequest request,
             String botNick, String messageType) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1039,7 +1039,7 @@ public final class PurpleBot {
     }
 
     public void reportRTSNotify(CommandSender sender, String message, String botNick, String messageType) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1056,7 +1056,7 @@ public final class PurpleBot {
      * @param message
      */
     public void consoleChat(String channelName, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         if (isValidChannel(channelName)) {
@@ -1071,7 +1071,7 @@ public final class PurpleBot {
      * @param message
      */
     public void consoleChat(String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1089,7 +1089,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameBroadcast(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1106,7 +1106,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameOreBroadcast(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1124,7 +1124,7 @@ public final class PurpleBot {
      * @param source
      */
     public void dynmapWebChat(String source, String name, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1142,7 +1142,7 @@ public final class PurpleBot {
      * @param message
      */
     public void consoleBroadcast(String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1160,7 +1160,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameJoin(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1193,7 +1193,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameQuit(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1224,7 +1224,7 @@ public final class PurpleBot {
      */
     public void gameAchievement(Player player, Achievement achievement) {
         String message = achievement.toString();
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1246,7 +1246,7 @@ public final class PurpleBot {
      * @param reason
      */
     public void gameKick(Player player, String message, String reason) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1267,7 +1267,7 @@ public final class PurpleBot {
      * @param message
      */
     public void gameAction(Player player, String message) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1289,7 +1289,7 @@ public final class PurpleBot {
      * @param templateName
      */
     public void gameDeath(Player player, String message, String templateName) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
@@ -1547,7 +1547,7 @@ public final class PurpleBot {
     }
 
     public void quit() {
-        if (bot.isConnected()) {
+        if (this.isConnected()) {
             plugin.logDebug("Q: " + quitMessage);
             if (quitMessage.isEmpty()) {
                 bot.sendIRC().quitServer();
@@ -1632,7 +1632,7 @@ public final class PurpleBot {
         }
         sender.sendMessage(ChatColor.DARK_PURPLE + "-----[  " + ChatColor.WHITE + channelName
                 + ChatColor.DARK_PURPLE + " - " + ChatColor.WHITE + bot.getNick() + ChatColor.DARK_PURPLE + " ]-----");
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             sender.sendMessage(ChatColor.RED + " Not connected!");
             return;
         }
@@ -2205,7 +2205,7 @@ public final class PurpleBot {
      * @param afk
      */
     public void essentialsAFK(Player player, boolean afk) {
-        if (!bot.isConnected()) {
+        if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
