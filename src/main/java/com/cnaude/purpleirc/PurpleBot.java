@@ -365,6 +365,9 @@ public final class PurpleBot {
     }
 
     public void blockingIRCMessage(final String target, final String message) {
+        if (!this.isConnected()) {
+            return;
+        }   
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
         bot.sendIRC().message(target, plugin.colorConverter
                 .gameColorsToIrc(message));
@@ -372,6 +375,9 @@ public final class PurpleBot {
     }
 
     public void blockingCTCPMessage(final String target, final String message) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target);
         bot.sendIRC().ctcpResponse(target, plugin.colorConverter
                 .gameColorsToIrc(message));
@@ -379,6 +385,9 @@ public final class PurpleBot {
     }
 
     public void asyncCTCPCommand(final String target, final String command) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -419,6 +428,9 @@ public final class PurpleBot {
      * @param newNick
      */
     public void asyncChangeNick(final CommandSender sender, final String newNick) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -432,6 +444,9 @@ public final class PurpleBot {
     }
 
     public void asyncJoinChannel(final String channelName, final String password) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -441,6 +456,9 @@ public final class PurpleBot {
     }
 
     public void asyncNotice(final String target, final String message) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -459,6 +477,9 @@ public final class PurpleBot {
     }
 
     public void asyncIdentify(final String password) {
+        if (!this.isConnected()) {
+            return;
+        }
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
