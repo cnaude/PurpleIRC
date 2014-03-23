@@ -128,7 +128,7 @@
         
         <!-- OreBroadcast -->
         <dependency>
-            <groupId>be.bendem.orebroadcast</groupId>
+            <groupId>be.bendem</groupId>
             <artifactId>OreBroadcast</artifactId>
             <version>1.2.3</version>
         </dependency>
