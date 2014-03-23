@@ -4,7 +4,7 @@
   <groupId>com.cnaude</groupId>
   <artifactId>PurpleIRC</artifactId>
   <name>PurpleIRC</name>
-  <version>2.1.12-SNAPSHOT</version>
+  <version>2.1.12</version>
   <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
   <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
   <build>
@@ -175,9 +175,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>be.bendem</groupId>
+      <groupId>be.bendem.orebroadcast</groupId>
       <artifactId>OreBroadcast</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.3</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
