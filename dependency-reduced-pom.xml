@@ -99,7 +99,9 @@
       <releases>
         <enabled>false</enabled>
       </releases>
-      <snapshots />
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
       <id>sonatype-nexus-public</id>
       <name>SonaType public snapshots and releases repository</name>
       <url>https://oss.sonatype.org/content/groups/public</url>
@@ -122,11 +124,7 @@
       <url>http://repo.regularbox.com/artifactory/repo/</url>
     </repository>
     <repository>
-      <id>comphenix-rep</id>
-      <name>Comphenix Repository</name>
-      <url>http://repo.comphenix.net/content/groups/public</url>
-    </repository>
-    <repository>
+      <snapshots />
       <id>cnaude-repo</id>
       <url>http://cnaude.freeshell.org/repo/</url>
     </repository>

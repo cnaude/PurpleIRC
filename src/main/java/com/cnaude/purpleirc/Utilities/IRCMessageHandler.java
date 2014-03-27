@@ -14,6 +14,8 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 
@@ -41,7 +43,7 @@ public class IRCMessageHandler {
      * @param message
      * @param privateMessage
      */
-    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {                  
+    public void processMessage(PurpleBot ircBot, User user, Channel channel, String message, boolean privateMessage) {
         plugin.logDebug("processMessage: " + message);
         String myChannel = channel.getName();
         if (ircBot.muteList.get(myChannel).contains(user.getNick())) {
@@ -77,6 +79,7 @@ public class IRCMessageHandler {
 
                 String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
                 String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
+                String perm = (String) ircBot.commandMap.get(myChannel).get(command).get("perm");
                 boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
                 boolean ctcpResponse = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("ctcp"));
 
@@ -89,6 +92,8 @@ public class IRCMessageHandler {
                 plugin.logDebug("Target: " + target);
 
                 boolean modeOkay = false;
+                boolean permOkay = checkPerm(perm, user.getNick());
+                
                 if (modes.equals("*")) {
                     modeOkay = true;
                 }
@@ -106,9 +111,9 @@ public class IRCMessageHandler {
                 }
                 if (modes.contains("s") && !modeOkay) {
                     modeOkay = user.getChannelsSuperOpIn().contains(channel);
-                }
+                }               
 
-                if (modeOkay) {
+                if (modeOkay && permOkay) {
                     if (gameCommand.equals("@list")) {
                         sendMessage(ircBot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@uptime")) {
@@ -179,7 +184,7 @@ public class IRCMessageHandler {
             if (privateMessage && !ircBot.relayPrivateChat) {
                 plugin.logDebug("Message NOT dispatched for broadcast due to \"relay-private-chat\" being false and this is a private message ...");
                 return;
-            }            
+            }
             plugin.logDebug("Message dispatched for broadcast...");
             ircBot.broadcastChat(user.getNick(), myChannel, message, false);
         }
@@ -206,5 +211,20 @@ public class IRCMessageHandler {
             return "Valid commands: " + Joiner.on(", ").join(sortedCommands);
         }
         return "";
+    }
+
+    private boolean checkPerm(String perm, String playerName) {
+        if (perm.isEmpty()) {
+            return true;
+        }
+        Player player = plugin.getServer().getPlayer(playerName);  
+                
+        if (player != null) {
+            plugin.logDebug("[checkPerm] Player " + playerName + " permission node " + perm + "=" + player.hasPermission(perm));
+            return player.hasPermission(perm);
+        } else {
+            plugin.logDebug("[checkPerm] Player not online: " + playerName);
+            return false;
+        }
     }
 }
