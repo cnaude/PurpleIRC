@@ -1892,21 +1892,20 @@ public final class PurpleBot {
                 }
             }
         } else {
-            plugin.logDebug("NOPE we can't broadcast to HeroChat due to " 
+            plugin.logDebug("NOPE we can't broadcast to HeroChat due to "
                     + TemplateName.IRC_HERO_CHAT + " disabled");
         }
     }
-}
 
 // Broadcast chat messages from IRC to specific hero channel
-/**
- *
- * @param nick
- * @param ircChannel
- * @param target
- * @param message
- */
-public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+    /**
+     *
+     * @param nick
+     * @param ircChannel
+     * @param target
+     * @param message
+     */
+    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             asyncIRCMessage(target, "No channel specified!");
