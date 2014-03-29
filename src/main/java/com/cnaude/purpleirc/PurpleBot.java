@@ -367,7 +367,7 @@ public final class PurpleBot {
     public void blockingIRCMessage(final String target, final String message) {
         if (!this.isConnected()) {
             return;
-        }   
+        }
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target);
         bot.sendIRC().message(target, plugin.colorConverter
                 .gameColorsToIrc(message));
@@ -1121,7 +1121,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     /**
      *
      * @param player
@@ -1874,6 +1874,8 @@ public final class PurpleBot {
                             TemplateName.IRC_CONSOLE_CHAT), message));
         }
 
+        plugin.logDebug("Checking if " + TemplateName.IRC_HERO_CHAT
+                + " is enabled before broadcasting chat from IRC to HeroChat");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_CHAT)) {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
@@ -1889,18 +1891,22 @@ public final class PurpleBot {
                     }
                 }
             }
+        } else {
+            plugin.logDebug("NOPE we can't broadcast to HeroChat due to " 
+                    + TemplateName.IRC_HERO_CHAT + " disabled");
         }
     }
+}
 
-    // Broadcast chat messages from IRC to specific hero channel
-    /**
-     *
-     * @param nick
-     * @param ircChannel
-     * @param target
-     * @param message
-     */
-    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+// Broadcast chat messages from IRC to specific hero channel
+/**
+ *
+ * @param nick
+ * @param ircChannel
+ * @param target
+ * @param message
+ */
+public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             asyncIRCMessage(target, "No channel specified!");
