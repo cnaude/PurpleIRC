@@ -74,6 +74,7 @@ public final class PurpleBot {
     public String botNick;
     public String botLogin;
     public String botRealName;
+    public int ircMaxLineLength;
     public String botServerPass;
     public String charSet;
     public String commandPrefix;
@@ -174,7 +175,8 @@ public final class PurpleBot {
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
                 .setMessageDelay(chatDelay)
-                .setRealName(botRealName)
+                .setRealName(botRealName)    
+                .setMaxLineLength(ircMaxLineLength)
                 //.setAutoReconnect(autoConnect) // Why doesn't this work?
                 .setServer(botServer, botServerPort, botServerPass);
         addAutoJoinChannels(configBuilder);
@@ -215,6 +217,7 @@ public final class PurpleBot {
         } else {
             plugin.logInfo("Auto-connect is disabled. To connect: /irc connect " + bot.getNick());
         }
+        plugin.logInfo("Max line length: " + configBuilder.getMaxLineLength());
     }
 
     private void addListeners() {
@@ -524,6 +527,7 @@ public final class PurpleBot {
             plugin.loadTemplates(config, botNick);
             botLogin = config.getString("login", "PircBot");
             botRealName = config.getString("realname", "");
+            ircMaxLineLength = config.getInt("max-line-length", 512);
             if (botRealName.isEmpty()) {
                 botRealName = plugin.getServer()
                         .getPluginManager().getPlugin("PurpleIRC")

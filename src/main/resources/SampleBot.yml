@@ -17,6 +17,8 @@ port: 6667
 ssl: false
 # Trust all SSL certs
 trust-all-certs: false
+# Auto split length for long messages
+max-line-length: 440
 # Character encoding. Leave blank for Java default.
 charset: ''
 # show irc server motd on connect
