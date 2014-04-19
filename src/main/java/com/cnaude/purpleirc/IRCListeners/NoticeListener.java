@@ -42,8 +42,10 @@ public class NoticeListener extends ListenerAdapter {
         User user = event.getUser();
 
         plugin.logInfo("-" + user.getNick() + "-" + message);
-        if (ircBot.isValidChannel(channel.getName())) {
-            ircBot.broadcastIRCNotice(user.getNick(), message, notice, channel.getName());
+        if (channel != null) {
+            if (ircBot.isValidChannel(channel.getName())) {
+                ircBot.broadcastIRCNotice(user.getNick(), message, notice, channel.getName());
+            }
         }
     }
 }

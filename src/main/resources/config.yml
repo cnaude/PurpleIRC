@@ -6,7 +6,7 @@ conn-check-interval: 1000
 enable-ident-server: false
 # How often we check the channel user list
 channel-check-interval: 100
-# Chat messages support standard Bukkit color codes using '&#'. 
+# Chat messages support standard Bukkit color codes using '&#'. See http://minecraft.gamepedia.com/Formatting_codes
 # The following macro tokens are also supported.
 #  %WORLD% 
 #  %NAME% 
