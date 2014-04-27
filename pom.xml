@@ -67,7 +67,7 @@
         <!-- For anything else without its own repo -->
         <repository>
             <id>cnaude-repo</id>
-            <url>http://cnaude.freeshell.org/repo/</url>
+            <url>http://cnaude.org/repo/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

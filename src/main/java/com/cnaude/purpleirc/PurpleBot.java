@@ -887,7 +887,7 @@ public final class PurpleBot {
                                         botNick, TemplateName.MCMMO_ADMIN_CHAT), message));
             } else {
                 plugin.logDebug("Player " + player.getName()
-                        + " is in mcMMO PartyChat but " + TemplateName.MCMMO_ADMIN_CHAT + " is disabled.");
+                        + " is in mcMMO AdminChat but " + TemplateName.MCMMO_ADMIN_CHAT + " is disabled.");
             }
         }
     }

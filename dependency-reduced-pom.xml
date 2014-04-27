@@ -126,7 +126,7 @@
     <repository>
       <snapshots />
       <id>cnaude-repo</id>
-      <url>http://cnaude.freeshell.org/repo/</url>
+      <url>http://cnaude.org/repo/</url>
     </repository>
   </repositories>
   <dependencies>
