@@ -423,7 +423,12 @@ public class ChatTokenizer {
         if (modName == null) {
             modName = "";
         } else {
-            displayModName = this.getPlayer(modName).getDisplayName();
+            Player player = this.getPlayer(modName);
+            if (player != null) {
+                displayModName = player.getDisplayName();
+            } else {
+                displayModName = modName;
+            }
         }
         if (name == null) {
             name = "";
