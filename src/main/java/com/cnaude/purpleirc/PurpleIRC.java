@@ -107,6 +107,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
+    private boolean stripIRCBackgroundColors;
     private boolean customTabList;
     private boolean listSortByName;
     public boolean exactNickMatch;
@@ -515,8 +516,9 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("Debug enabled");
         stripGameColors = getConfig().getBoolean("strip-game-colors", false);
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
+        stripIRCBackgroundColors = getConfig().getBoolean("strip-irc-bg-colors", true);
         exactNickMatch = getConfig().getBoolean("nick-exact-match", true);
-        colorConverter = new ColorConverter(this, stripGameColors, stripIRCColors);
+        colorConverter = new ColorConverter(this, stripGameColors, stripIRCColors, stripIRCBackgroundColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
 

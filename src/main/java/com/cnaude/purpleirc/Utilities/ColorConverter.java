@@ -10,6 +10,8 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleIRC;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.pircbotx.Colors;
 
@@ -22,8 +24,10 @@ public class ColorConverter {
     PurpleIRC plugin;
     private final boolean stripGameColors;
     private final boolean stripIRCColors;
+    private final boolean stripIRCBackgroundColors;
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
+    private final Pattern pattern;
 
     /**
      *
@@ -31,11 +35,13 @@ public class ColorConverter {
      * @param stripGameColors
      * @param stripIRCColors
      */
-    public ColorConverter(PurpleIRC plugin, boolean stripGameColors, boolean stripIRCColors) {
+    public ColorConverter(PurpleIRC plugin, boolean stripGameColors, boolean stripIRCColors, boolean stripIRCBackgroundColors) {
         this.stripGameColors = stripGameColors;
         this.stripIRCColors = stripIRCColors;
+        this.stripIRCBackgroundColors = stripIRCBackgroundColors;
         this.plugin = plugin;
         buildDefaultColorMaps();
+        this.pattern = Pattern.compile("((\\u0003\\d+),\\d+)");
     }
 
     /**
@@ -62,6 +68,13 @@ public class ColorConverter {
      * @return
      */
     public String ircColorsToGame(String message) {
+        if (stripIRCBackgroundColors) {
+            Matcher m = pattern.matcher(message);
+            while (m.find()) {
+                plugin.logDebug("Stripping background colors: " + m.group(1) + "=>" + m.group(2));
+                message = message.replace(m.group(1), m.group(2));
+            }
+        }
         if (stripIRCColors) {
             return Colors.removeFormattingAndColors(message);
         } else {
@@ -99,11 +112,11 @@ public class ColorConverter {
         plugin.logDebug("addGameColorMap: " + ircColor + " => " + gameColor);
         gameColorMap.put(getIrcColor(ircColor), chatColor);
     }
-    
+
     private String getIrcColor(String ircColor) {
         String s = "";
         try {
-            s = (String)Colors.class.getField(ircColor.toUpperCase()).get(null);
+            s = (String) Colors.class.getField(ircColor.toUpperCase()).get(null);
         } catch (NoSuchFieldException ex) {
             plugin.logError(ex.getMessage());
         } catch (SecurityException ex) {

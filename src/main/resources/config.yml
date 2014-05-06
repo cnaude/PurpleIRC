@@ -154,6 +154,8 @@ list-sort-by-name: true
 strip-game-colors: false
 # Prevent IRC colors from appearing in game
 strip-irc-colors: false
+# Strip IRC background colors (recommend leaving this as true)
+strip-irc-bg-colors: true
 # Add IRC names to in-game tab list
 custom-tab-list: false
 # Nothing to see here

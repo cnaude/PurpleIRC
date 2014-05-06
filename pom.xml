@@ -339,7 +339,7 @@
                             <tasks>                                                                              
                                 <copy file="../${project.name}/target/${project.name}-${project.version}.jar" tofile="../${project.name}/target/${project.name}.jar"/>
                                 <exec dir="../${project.name}/target" executable="scp">
-                                    <arg line="${project.name}.jar cnaude@cn.revisited.us:minetest/plugins/"/>
+                                    <arg line="${project.name}.jar cnaude@h.cnaude.org:minetest/plugins/"/>
                                 </exec>
                             </tasks>
                         </configuration>
