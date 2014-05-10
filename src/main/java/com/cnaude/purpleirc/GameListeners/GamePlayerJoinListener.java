@@ -31,7 +31,7 @@ public class GamePlayerJoinListener implements Listener {
      *
      * @param event
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
             plugin.kickedPlayers.remove(event.getPlayer().getName());
