@@ -4,6 +4,24 @@
  *//*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.cnaude.purpleirc.Utilities;
 
@@ -27,8 +45,8 @@ public class ColorConverter {
     private final boolean stripIRCBackgroundColors;
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
-    private final Pattern pattern;
-    private final Pattern pattern2;
+    private final Pattern bgColorPattern;
+    private final Pattern singleDigitColorPattern;
 
     /**
      *
@@ -43,8 +61,8 @@ public class ColorConverter {
         this.stripIRCBackgroundColors = stripIRCBackgroundColors;
         this.plugin = plugin;
         buildDefaultColorMaps();
-        this.pattern = Pattern.compile("((\\u0003\\d+),\\d+)");
-        this.pattern2 = Pattern.compile("((\\u0003)(\\d))\\D+");
+        this.bgColorPattern = Pattern.compile("((\\u0003\\d+),\\d+)");
+        this.singleDigitColorPattern = Pattern.compile("((\\u0003)(\\d))\\D+");
     }
 
     /**
@@ -72,17 +90,20 @@ public class ColorConverter {
      */
     public String ircColorsToGame(String message) {
         try {
-            Matcher m2 = pattern2.matcher(message);
+            Matcher m2 = singleDigitColorPattern.matcher(message);
             while (m2.find()) {
-                plugin.logDebug("Single to double: " + m2.group(2) + "0" + m2.group(3));
+                plugin.logDebug("Single to double: " + m2.group(3) + " => " 
+                        + m2.group(2) + "0" + m2.group(3));
+                // replace \u0003N with \u00030N
                 message = message.replace(m2.group(1), m2.group(2) + "0" + m2.group(3));
             }
         } catch (Exception ex) {
             plugin.logDebug(ex.getMessage());
         }
         if (stripIRCBackgroundColors) {
-            Matcher m = pattern.matcher(message);
+            Matcher m = bgColorPattern.matcher(message);
             while (m.find()) {
+                plugin.logDebug("Strip bg color: " + m.group(1) + " => " + m.group(2));
                 message = message.replace(m.group(1), m.group(2));
             }
         }
