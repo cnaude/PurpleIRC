@@ -3,19 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.cnaude</groupId>
-    <artifactId>PurpleIRC</artifactId>
-    <version>2.1.14</version>
-    <name>PurpleIRC</name>
-    <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously. (Build: ${build.number})</description>
-    <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Bukkit API Version, change if out dated -->
         <bukkit.version>1.7.9-R0.1</bukkit.version>
-        <build.version>SNAPSHOT</build.version>
+        <build.number>SNAPSHOT</build.number>
     </properties>
+
+    <groupId>com.cnaude</groupId>
+    <artifactId>PurpleIRC</artifactId>
+    <version>2.1.14-${build.number}</version>
+    <name>PurpleIRC</name>
+    <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
+    <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
+
+    
 
     <repositories>
         <repository>
