@@ -66,31 +66,29 @@ public class ColorConverter {
      * @return
      */
     public String ircColorsToGame(String message) {
+        Matcher matcher;
         if (stripIRCBackgroundColors) {
-            Matcher m = bgColorPattern.matcher(message);
-            while (m.find()) {
-                plugin.logDebug("Strip bg color: " + m.group(1) + " => " + m.group(2));
-                message = message.replace(m.group(1), m.group(2));
+            matcher = bgColorPattern.matcher(message);
+            while (matcher.find()) {
+                plugin.logDebug("Strip bg color: " + matcher.group(1) + " => " + matcher.group(2));
+                message = message.replace(matcher.group(1), matcher.group(2));
             }
         }
-        try {
-            Matcher m2 = singleDigitColorPattern.matcher(message);
-            while (m2.find()) {
-                plugin.logDebug("Single to double: " + m2.group(3) + " => "
-                        + m2.group(2) + "0" + m2.group(3));
-                // replace \u0003N with \u00030N
-                message = message.replace(m2.group(1), m2.group(2) + "0" + m2.group(3));
-            }
-            m2 = colorHack.matcher(message);
-            while (m2.find()) {
-                plugin.logDebug("Silly IRC colors: " + m2.group(1) + " => "
-                        + m2.group(2));
-                // replace \u0003N,N with \u00030N
-                message = message.replace(m2.group(1), m2.group(2));
-            }
-        } catch (Exception ex) {
-            plugin.logDebug(ex.getMessage());
+        matcher = singleDigitColorPattern.matcher(message);
+        while (matcher.find()) {
+            plugin.logDebug("Single to double: " + matcher.group(3) + " => "
+                    + matcher.group(2) + "0" + matcher.group(3));
+            // replace \u0003N with \u00030N
+            message = message.replace(matcher.group(1), matcher.group(2) + "0" + matcher.group(3));
         }
+        matcher = colorHack.matcher(message);
+        while (matcher.find()) {
+            plugin.logDebug("Silly IRC colors: " + matcher.group(1) + " => "
+                    + matcher.group(2));
+            // replace \u0003N,N with \u00030N
+            message = message.replace(matcher.group(1), matcher.group(2));
+        }
+
         if (stripIRCColors) {
             return Colors.removeFormattingAndColors(message);
         } else {
