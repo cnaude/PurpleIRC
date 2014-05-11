@@ -22,6 +22,7 @@ public class ColorConverter {
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     private final Pattern bgColorPattern;
     private final Pattern singleDigitColorPattern;
+    private final Pattern colorHack;
 
     /**
      *
@@ -38,6 +39,7 @@ public class ColorConverter {
         buildDefaultColorMaps();
         this.bgColorPattern = Pattern.compile("((\\u0003\\d+),\\d+)");
         this.singleDigitColorPattern = Pattern.compile("((\\u0003)(\\d))\\D+");
+        this.colorHack = Pattern.compile("((\\u0003\\d+)(,\\d+))\\D");
     }
 
     /**
@@ -63,7 +65,7 @@ public class ColorConverter {
      * @param message
      * @return
      */
-    public String ircColorsToGame(String message) {        
+    public String ircColorsToGame(String message) {
         if (stripIRCBackgroundColors) {
             Matcher m = bgColorPattern.matcher(message);
             while (m.find()) {
@@ -74,10 +76,17 @@ public class ColorConverter {
         try {
             Matcher m2 = singleDigitColorPattern.matcher(message);
             while (m2.find()) {
-                plugin.logDebug("Single to double: " + m2.group(3) + " => " 
+                plugin.logDebug("Single to double: " + m2.group(3) + " => "
                         + m2.group(2) + "0" + m2.group(3));
                 // replace \u0003N with \u00030N
                 message = message.replace(m2.group(1), m2.group(2) + "0" + m2.group(3));
+            }
+            m2 = colorHack.matcher(message);
+            while (m2.find()) {
+                plugin.logDebug("Silly IRC colors: " + m2.group(1) + " => "
+                        + m2.group(2));
+                // replace \u0003N,N with \u00030N
+                message = message.replace(m2.group(1), m2.group(2));
             }
         } catch (Exception ex) {
             plugin.logDebug(ex.getMessage());
