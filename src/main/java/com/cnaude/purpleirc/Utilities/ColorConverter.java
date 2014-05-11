@@ -1,28 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- *//*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleIRC;
@@ -88,7 +63,14 @@ public class ColorConverter {
      * @param message
      * @return
      */
-    public String ircColorsToGame(String message) {
+    public String ircColorsToGame(String message) {        
+        if (stripIRCBackgroundColors) {
+            Matcher m = bgColorPattern.matcher(message);
+            while (m.find()) {
+                plugin.logDebug("Strip bg color: " + m.group(1) + " => " + m.group(2));
+                message = message.replace(m.group(1), m.group(2));
+            }
+        }
         try {
             Matcher m2 = singleDigitColorPattern.matcher(message);
             while (m2.find()) {
@@ -99,13 +81,6 @@ public class ColorConverter {
             }
         } catch (Exception ex) {
             plugin.logDebug(ex.getMessage());
-        }
-        if (stripIRCBackgroundColors) {
-            Matcher m = bgColorPattern.matcher(message);
-            while (m.find()) {
-                plugin.logDebug("Strip bg color: " + m.group(1) + " => " + m.group(2));
-                message = message.replace(m.group(1), m.group(2));
-            }
         }
         if (stripIRCColors) {
             return Colors.removeFormattingAndColors(message);
