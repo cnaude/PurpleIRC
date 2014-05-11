@@ -28,6 +28,7 @@ public class ColorConverter {
     private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
     private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
     private final Pattern pattern;
+    private final Pattern pattern2;
 
     /**
      *
@@ -43,6 +44,7 @@ public class ColorConverter {
         this.plugin = plugin;
         buildDefaultColorMaps();
         this.pattern = Pattern.compile("((\\u0003\\d+),\\d+)");
+        this.pattern2 = Pattern.compile("((\\u0003)(\\d))\\D+");
     }
 
     /**
@@ -69,20 +71,19 @@ public class ColorConverter {
      * @return
      */
     public String ircColorsToGame(String message) {
+        try {
+            Matcher m2 = pattern2.matcher(message);
+            while (m2.find()) {
+                plugin.logDebug("Single to double: " + m2.group(2) + "0" + m2.group(3));
+                message = message.replace(m2.group(1), m2.group(2) + "0" + m2.group(3));
+            }
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+        }
         if (stripIRCBackgroundColors) {
             Matcher m = pattern.matcher(message);
             while (m.find()) {
-                plugin.logDebug("m2=" + m.group(2));
-                int c = Integer.parseInt(m.group(2).trim());
-                plugin.logDebug("c=" + c);
-                String c1 = String.valueOf(c);
-                plugin.logDebug("c1 before: " + c1);
-                if (c < 10) {
-                    c1 = "\u00030" + c1;
-                }
-                plugin.logDebug("c1 after: " + c1);
-                plugin.logDebug("Stripping background colors: " + m.group(1) + "=>" + c1);
-                message = message.replace(m.group(1), c1);
+                message = message.replace(m.group(1), m.group(2));
             }
         }
         if (stripIRCColors) {
