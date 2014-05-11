@@ -34,6 +34,7 @@ public class ColorConverter {
      * @param plugin
      * @param stripGameColors
      * @param stripIRCColors
+     * @param stripIRCBackgroundColors
      */
     public ColorConverter(PurpleIRC plugin, boolean stripGameColors, boolean stripIRCColors, boolean stripIRCBackgroundColors) {
         this.stripGameColors = stripGameColors;
@@ -71,8 +72,17 @@ public class ColorConverter {
         if (stripIRCBackgroundColors) {
             Matcher m = pattern.matcher(message);
             while (m.find()) {
-                plugin.logDebug("Stripping background colors: " + m.group(1) + "=>" + m.group(2));
-                message = message.replace(m.group(1), m.group(2));
+                plugin.logDebug("m2=" + m.group(2));
+                int c = Integer.parseInt(m.group(2).trim());
+                plugin.logDebug("c=" + c);
+                String c1 = String.valueOf(c);
+                plugin.logDebug("c1 before: " + c1);
+                if (c < 10) {
+                    c1 = "\u00030" + c1;
+                }
+                plugin.logDebug("c1 after: " + c1);
+                plugin.logDebug("Stripping background colors: " + m.group(1) + "=>" + c1);
+                message = message.replace(m.group(1), c1);
             }
         }
         if (stripIRCColors) {
