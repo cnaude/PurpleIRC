@@ -175,7 +175,7 @@ public final class PurpleBot {
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
                 .setMessageDelay(chatDelay)
-                .setRealName(botRealName)    
+                .setRealName(botRealName)
                 .setMaxLineLength(ircMaxLineLength)
                 //.setAutoReconnect(autoConnect) // Why doesn't this work?
                 .setServer(botServer, botServerPort, botServerPass);
@@ -719,21 +719,25 @@ public final class PurpleBot {
                 // build command map
                 CaseInsensitiveMap<CaseInsensitiveMap<String>> map
                         = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
-                for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
-                    plugin.logDebug("  Command => " + command);
-                    CaseInsensitiveMap<String> optionPair = new CaseInsensitiveMap<String>();
-                    String commandKey = "channels." + enChannelName + ".commands." + command + ".";
-                    optionPair.put("modes", config.getString(commandKey + "modes", "*"));
-                    optionPair.put("private", config.getString(commandKey + "private", "false"));
-                    optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
-                    optionPair.put("game_command", config.getString(commandKey + "game_command", "@help"));
-                    optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
-                    optionPair.put("channel_listen", config.getString(commandKey + "channel_listen", "true"));
-                    optionPair.put("perm", config.getString(commandKey + "perm", ""));
-                    for (String s : optionPair.keySet()) {
-                        config.set(commandKey + s, optionPair.get(s));
+                try {
+                    for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
+                        plugin.logDebug("  Command => " + command);
+                        CaseInsensitiveMap<String> optionPair = new CaseInsensitiveMap<String>();
+                        String commandKey = "channels." + enChannelName + ".commands." + command + ".";
+                        optionPair.put("modes", config.getString(commandKey + "modes", "*"));
+                        optionPair.put("private", config.getString(commandKey + "private", "false"));
+                        optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
+                        optionPair.put("game_command", config.getString(commandKey + "game_command", "@help"));
+                        optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
+                        optionPair.put("channel_listen", config.getString(commandKey + "channel_listen", "true"));
+                        optionPair.put("perm", config.getString(commandKey + "perm", ""));
+                        for (String s : optionPair.keySet()) {
+                            config.set(commandKey + s, optionPair.get(s));
+                        }
+                        map.put(command, optionPair);
                     }
-                    map.put(command, optionPair);
+                } catch (Exception ex) {
+                    plugin.logError("No commands found for channel " + enChannelName);
                 }
                 commandMap.put(channelName, map);
                 if (map.isEmpty()) {

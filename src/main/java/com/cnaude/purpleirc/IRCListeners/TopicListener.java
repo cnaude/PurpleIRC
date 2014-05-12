@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.IRCListeners;
 
 import com.cnaude.purpleirc.TemplateName;
@@ -39,17 +35,20 @@ public class TopicListener extends ListenerAdapter {
     public void onTopic(TopicEvent event) {
         Channel channel = event.getChannel();
         String channelName = channel.getName();
-        User user = event.getUser();               
+        User user = event.getUser();
 
         if (ircBot.isValidChannel(channelName)) {
             ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
             if (event.isChanged()) {
                 if (ircBot.enabledMessages.get(channelName).contains(TemplateName.IRC_TOPIC)) {
-                    plugin.getServer().broadcast(plugin.colorConverter.ircColorsToGame(                            
-                            plugin.getMsgTemplate(ircBot.botNick, TemplateName.IRC_TOPIC))
-                            .replace("%NAME%", user.getNick()
-                                    .replace("%TOPIC%", event.getTopic())
-                                    .replace("%CHANNEL%", channel.getName())), "irc.message.topic");
+                    String message = plugin.colorConverter.ircColorsToGame(
+                            plugin.getMsgTemplate(ircBot.botNick, TemplateName.IRC_TOPIC)
+                            .replace("%NAME%", user.getNick())
+                            .replace("%TOPIC%", event.getTopic())
+                            .replace("%CHANNEL%", channel.getName()));
+                    plugin.logDebug("Sending topic notification due to " 
+                            + TemplateName.IRC_TOPIC + " being true: " + message);
+                    plugin.getServer().broadcast(message, "irc.message.topic");
                 }
             }
             ircBot.activeTopic.put(channelName, event.getTopic());
