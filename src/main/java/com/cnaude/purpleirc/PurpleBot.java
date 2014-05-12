@@ -245,11 +245,9 @@ public final class PurpleBot {
             if (channelAutoJoin.containsKey(channelName)) {
                 if (channelAutoJoin.get(channelName)) {
                     if (channelPassword.get(channelName).isEmpty()) {
-                        configBuilder.addAutoJoinChannel(channelName
-                                .toLowerCase());
+                        configBuilder.addAutoJoinChannel(channelName);
                     } else {
-                        configBuilder.addAutoJoinChannel(channelName
-                                .toLowerCase(), channelPassword.get(channelName));
+                        configBuilder.addAutoJoinChannel(channelName, channelPassword.get(channelName));
                     }
                 }
             }
@@ -580,7 +578,7 @@ public final class PurpleBot {
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
                 String channelName = decodeChannel(enChannelName);
                 plugin.logDebug("Channel  => " + channelName);
-                botChannels.add(channelName.toLowerCase());
+                botChannels.add(channelName);
 
                 channelAutoJoin.put(channelName, config.getBoolean("channels." + enChannelName + ".autojoin", true));
                 plugin.logDebug("  Autojoin => " + channelAutoJoin.get(channelName));
@@ -1341,17 +1339,26 @@ public final class PurpleBot {
      * @param sender
      */
     public void changeTopic(String channelName, String topic, CommandSender sender) {
-        Channel channel = this.getChannel(channelName);
+        Channel channel = this.getChannel(channelName);        
         String tTopic = tokenizedTopic(topic);
         if (channel != null) {
             setTheTopic(channel, tTopic);
-            config.set("channels." + encodeChannel(channelName) + ".topic", topic);
+            config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".topic", topic);
             channelTopic.put(channelName, topic);
             saveConfig();
             sender.sendMessage("IRC topic for " + channelName + " changed to \"" + topic + "\"");
         } else {
             sender.sendMessage("Invalid channel: " + channelName);
         }
+    }
+    
+    public String getConfigChannelName(String channelName) {
+        for (String s : botChannels) {
+            if (channelName.equalsIgnoreCase(s)) {
+                return s;
+            }
+        }
+        return channelName;
     }
 
     public Channel getChannel(String channelName) {
@@ -1413,7 +1420,7 @@ public final class PurpleBot {
                     + ChatColor.RESET + " has been added to the ops list.");
             opsList.get(channelName).add(userMask);
         }
-        config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
+        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
         saveConfig();
     }
 
@@ -1432,7 +1439,7 @@ public final class PurpleBot {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
                     + ChatColor.RESET + " is not in the ops list.");
         }
-        config.set("channels." + encodeChannel(channelName) + ".ops", opsList.get(channelName));
+        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
         saveConfig();
     }
 
@@ -2314,8 +2321,10 @@ public final class PurpleBot {
     }
 
     public boolean isValidChannel(String channelName) {
-        if (botChannels.contains(channelName.toLowerCase())) {
-            return true;
+        for (String s : botChannels) {
+            if (channelName.equalsIgnoreCase(s)) {
+                return true;
+            }
         }
         plugin.logDebug("Channel " + channelName + " is not valid.");
         return false;

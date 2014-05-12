@@ -22,7 +22,7 @@ public class BotsAndChannels {
             String botName, String channelName) {
         if (plugin.ircBots.containsKey(botName)) {
             bot.add(botName);
-            if (plugin.ircBots.get(botName).botChannels.contains(channelName.toLowerCase())) {
+            if (plugin.ircBots.get(botName).isValidChannel(channelName)) {           
                 channel.add(channelName);
             } else {
                 sender.sendMessage(plugin.invalidChannelName.replace("%CHANNEL%", channelName));

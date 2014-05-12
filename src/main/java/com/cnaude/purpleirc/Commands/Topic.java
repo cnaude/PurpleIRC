@@ -4,7 +4,6 @@
  */
 package com.cnaude.purpleirc.Commands;
 
-import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
