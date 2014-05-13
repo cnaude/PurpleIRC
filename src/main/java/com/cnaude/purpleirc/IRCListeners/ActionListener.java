@@ -7,7 +7,6 @@ package com.cnaude.purpleirc.IRCListeners;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.pircbotx.Channel;
-import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 
@@ -37,9 +36,8 @@ public class ActionListener extends ListenerAdapter {
     @Override
     public void onAction(ActionEvent event) {
         Channel channel = event.getChannel();
-        User user = event.getUser();
         if (ircBot.isValidChannel(channel.getName())) {         
-            ircBot.broadcastAction(user.getNick(), channel.getName(), event.getAction());
+            ircBot.broadcastAction(event.getUser(), channel, event.getAction());
         }
     }
 }

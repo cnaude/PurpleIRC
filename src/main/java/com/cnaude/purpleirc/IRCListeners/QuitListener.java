@@ -37,7 +37,7 @@ public class QuitListener extends ListenerAdapter {
         String nick = event.getUser().getNick();
         for (String channelName : ircBot.channelNicks.keySet()) {
             if (ircBot.channelNicks.get(channelName).contains(nick)) {
-                ircBot.broadcastIRCQuit(nick, channelName, event.getReason());
+                ircBot.broadcastIRCQuit(event.getUser(), ircBot.getChannel(channelName), event.getReason());
                 if (plugin.netPackets != null) {
                     plugin.netPackets.remFromTabList(nick);
                 }

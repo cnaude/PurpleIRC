@@ -88,7 +88,12 @@ public class PurpleIRC extends JavaPlugin {
             heroChatEmoteFormat,
             listFormat,
             listSeparator,
-            listPlayer;
+            listPlayer,
+            ircNickPrefixIrcOp,
+            ircNickPrefixSuperOp,
+            ircNickPrefixOp,
+            ircNickPrefixHalfOp,
+            ircNickPrefixVoice;
 
     public ArrayList<String> kickedPlayers = new ArrayList<String>();
 
@@ -254,7 +259,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         if (isPluginEnabled("OreBroadcast")) {
             logInfo("Enabling OreBroadcast support.");
-            getServer().getPluginManager().registerEvents(new OreBroadcastListener(this), this);            
+            getServer().getPluginManager().registerEvents(new OreBroadcastListener(this), this);
         } else {
             logInfo("OreBroadcast not detected.");
         }
@@ -266,13 +271,13 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("ReportRTS not detected.");
         }
         /*
-        if (isPluginEnabled("Essentials")) {
-            logInfo("Enabling Essentials support.");
-            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
-        } else {
-            logInfo("Essentials not detected.");
-        }
-        */
+         if (isPluginEnabled("Essentials")) {
+         logInfo("Enabling Essentials support.");
+         getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
+         } else {
+         logInfo("Essentials not detected.");
+         }
+         */
         commandHandlers = new CommandHandlers(this);
         getCommand("irc").setExecutor(commandHandlers);
         regexGlobber = new RegexGlobber();
@@ -382,12 +387,12 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     public String getHeroTemplate(CaseInsensitiveMap<CaseInsensitiveMap<String>> hc,
-            String botName, String hChannel) {        
+            String botName, String hChannel) {
         if (hc.containsKey(botName)) {
             logDebug("HC1 => " + hChannel);
             for (String s : hc.get(botName).keySet()) {
                 logDebug("HT => " + s);
-            }            
+            }
             if (hc.get(botName).containsKey(hChannel)) {
                 logDebug("HC2 => " + hChannel);
                 return hc.get(botName).get(hChannel);
@@ -429,7 +434,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return getHeroTemplate(ircHeroChannelMessages, botName, hChannel);
     }
-    
+
     public String getIRCTownyChatChannelTemplate(String botName, String tChannel) {
         String tmpl = getHeroTemplate(ircTownyChannelMessages, botName, tChannel);
         if (tmpl.isEmpty()) {
@@ -437,7 +442,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return getHeroTemplate(ircTownyChannelMessages, botName, tChannel);
     }
-    
+
     public void loadCustomColors(YamlConfiguration config) {
         for (String t : config.getConfigurationSection("irc-color-map").getKeys(false)) {
             colorConverter.addIrcColorMap(t, config.getString("irc-color-map." + t));
@@ -473,7 +478,7 @@ public class PurpleIRC extends JavaPlugin {
                             + " => " + ircHeroChannelMessages.get(configName).get(hChannelName));
                 }
             }
-            
+
             if (config.contains("message-format.irc-towny-channels")) {
                 for (String tChannelName : config.getConfigurationSection("message-format.irc-towny-channels").getKeys(false)) {
                     ircTownyChannelMessages.get(configName).put(tChannelName,
@@ -531,6 +536,12 @@ public class PurpleIRC extends JavaPlugin {
         defaultGroupSuffix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-suffix", ""));
         defaultGroupPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-group-prefix", ""));
         defaultPlayerWorld = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message-format.default-player-world", ""));
+
+        ircNickPrefixIrcOp = ChatColor.translateAlternateColorCodes('&', getConfig().getString("nick-prefixes.ircop", "~"));
+        ircNickPrefixSuperOp = ChatColor.translateAlternateColorCodes('&', getConfig().getString("nick-prefixes.ircsuperop", "&&"));
+        ircNickPrefixOp = ChatColor.translateAlternateColorCodes('&', getConfig().getString("nick-prefixes.op", "@"));
+        ircNickPrefixHalfOp = ChatColor.translateAlternateColorCodes('&', getConfig().getString("nick-prefixes.halfop", "%"));
+        ircNickPrefixVoice = ChatColor.translateAlternateColorCodes('&', getConfig().getString("nick-prefixes.voice", "+"));
 
         listFormat = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-format", ""));
         listSeparator = ChatColor.translateAlternateColorCodes('&', getConfig().getString("list-separator", ""));

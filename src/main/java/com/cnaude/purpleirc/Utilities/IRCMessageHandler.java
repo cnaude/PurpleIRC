@@ -120,15 +120,15 @@ public class IRCMessageHandler {
                     } else if (gameCommand.equals("@help")) {
                         sendMessage(ircBot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
                     } else if (gameCommand.equals("@chat")) {
-                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, false);
+                        ircBot.broadcastChat(user, channel, commandArgs, false);
                     } else if (gameCommand.equals("@ochat")) {
-                        ircBot.broadcastChat(user.getNick(), myChannel, commandArgs, true);
+                        ircBot.broadcastChat(user, channel, commandArgs, true);
                     } else if (gameCommand.equals("@hchat")) {
-                        ircBot.broadcastHeroChat(user.getNick(), myChannel, target, commandArgs);
+                        ircBot.broadcastHeroChat(user, channel, target, commandArgs);
                     } else if (gameCommand.equals("@motd")) {
                         sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
                     } else if (gameCommand.equals("@msg")) {
-                        ircBot.playerChat(user.getNick(), myChannel, target, commandArgs);
+                        ircBot.playerChat(user, channel, target, commandArgs);
                     } else if (gameCommand.equals("@clearqueue")) {
                         sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
                         sendMessage(ircBot, target, ircBot.messageQueue.clearQueue(), ctcpResponse);
@@ -185,7 +185,7 @@ public class IRCMessageHandler {
                 return;
             }
             plugin.logDebug("Message dispatched for broadcast...");
-            ircBot.broadcastChat(user.getNick(), myChannel, message, false);
+            ircBot.broadcastChat(user, channel, message, false);
         }
     }
 

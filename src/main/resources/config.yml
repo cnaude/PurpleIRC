@@ -162,6 +162,13 @@ custom-tab-list: false
 custom-tab-prefix: '[IRC] '
 # IRC nick must be an exact match to a player name for token expanding
 nick-exact-match: true
+# IRC nick prefixes (can include & color codes)
+nick-prefixes:
+    ircop: '&4~'
+    ircsuperop: '&6&&'
+    op: '&c@'
+    halfop: '&3%'
+    voice: '&2+'
 # See http://site.pircbotx.googlecode.com/hg/apidocs/org/pircbotx/Colors.html for IRC color names
 # See http://jd.bukkit.org/rb/doxygen/d7/dc0/enumorg_1_1bukkit_1_1ChatColor.html for game color names
 # Game to IRC color map: Game Color Code => IRC Color Code

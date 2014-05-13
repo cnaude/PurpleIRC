@@ -37,11 +37,11 @@ public class JoinListener extends ListenerAdapter {
     @Override
     public void onJoin(JoinEvent event) {
         Channel channel = event.getChannel();
-        String myChannel = channel.getName();
+        String channelName = channel.getName();
         User user = event.getUser();
 
         if (!ircBot.isValidChannel(channel.getName())) {
-            plugin.logDebug("Invalid channel: " + myChannel);
+            plugin.logDebug("Invalid channel: " + channelName);
             plugin.logDebug("Part if invalid: " + ircBot.partInvalidChannels);
             plugin.logDebug("Nick: " + user.getNick());
             if (user.getNick().equals(ircBot.botNick)
@@ -51,19 +51,19 @@ public class JoinListener extends ListenerAdapter {
             }
             return;
         }
-        ircBot.broadcastIRCJoin(user.getNick(), myChannel);
+        ircBot.broadcastIRCJoin(user, channel);
         ircBot.opFriends(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
-            plugin.logInfo("Joining channel: " + myChannel);
-            plugin.logDebug("Setting channel modes: " + myChannel + " => "
+            plugin.logInfo("Joining channel: " + channelName);
+            plugin.logDebug("Setting channel modes: " + channelName + " => "
                     + ircBot.channelModes.get(channel.getName()));
-            channel.send().setMode(ircBot.channelModes.get(myChannel));
+            channel.send().setMode(ircBot.channelModes.get(channelName));
             ircBot.fixTopic(channel, channel.getTopic(), channel.getTopicSetter());
             ircBot.updateNickList(channel);
-            if (ircBot.msgOnJoin.containsKey(myChannel) && ircBot.joinMsg.containsKey(myChannel)) {
-                if (ircBot.msgOnJoin.get(myChannel) && !ircBot.joinMsg.get(myChannel).isEmpty()) {
-                    plugin.logDebug("Sending on join message to IRC server: " + ircBot.joinMsg.get(myChannel));
-                    ircBot.asyncRawlineNow(ircBot.joinMsg.get(myChannel));
+            if (ircBot.msgOnJoin.containsKey(channelName) && ircBot.joinMsg.containsKey(channelName)) {
+                if (ircBot.msgOnJoin.get(channelName) && !ircBot.joinMsg.get(channelName).isEmpty()) {
+                    plugin.logDebug("Sending on join message to IRC server: " + ircBot.joinMsg.get(channelName));
+                    ircBot.asyncRawlineNow(ircBot.joinMsg.get(channelName));
                 }
             }
         }

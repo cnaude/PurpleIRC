@@ -34,13 +34,12 @@ public class TopicListener extends ListenerAdapter {
     @Override
     public void onTopic(TopicEvent event) {
         Channel channel = event.getChannel();
-        String channelName = channel.getName();
         User user = event.getUser();
 
-        if (ircBot.isValidChannel(channelName)) {
+        if (ircBot.isValidChannel(channel.getName())) {
             ircBot.fixTopic(channel, event.getTopic(), event.getUser().getNick());
             if (event.isChanged()) {
-                if (ircBot.enabledMessages.get(channelName).contains(TemplateName.IRC_TOPIC)) {
+                if (ircBot.enabledMessages.get(channel.getName()).contains(TemplateName.IRC_TOPIC)) {
                     String message = plugin.colorConverter.ircColorsToGame(
                             plugin.getMsgTemplate(ircBot.botNick, TemplateName.IRC_TOPIC)
                             .replace("%NAME%", user.getNick())
@@ -51,7 +50,7 @@ public class TopicListener extends ListenerAdapter {
                     plugin.getServer().broadcast(message, "irc.message.topic");
                 }
             }
-            ircBot.activeTopic.put(channelName, event.getTopic());
+            ircBot.activeTopic.put(channel.getName(), event.getTopic());
         }
     }
 }

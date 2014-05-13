@@ -1343,7 +1343,7 @@ public final class PurpleBot {
      * @param sender
      */
     public void changeTopic(String channelName, String topic, CommandSender sender) {
-        Channel channel = this.getChannel(channelName);        
+        Channel channel = this.getChannel(channelName);
         String tTopic = tokenizedTopic(topic);
         if (channel != null) {
             setTheTopic(channel, tTopic);
@@ -1355,7 +1355,7 @@ public final class PurpleBot {
             sender.sendMessage("Invalid channel: " + channelName);
         }
     }
-    
+
     public String getConfigChannelName(String channelName) {
         for (String s : botChannels) {
             if (channelName.equalsIgnoreCase(s)) {
@@ -1680,17 +1680,7 @@ public final class PurpleBot {
         List<String> channelUsers = new ArrayList<String>();
         for (User user : channel.getUsers()) {
             String nick = user.getNick();
-            if (user.isIrcop()) {
-                nick = "~" + nick;
-            } else if (user.getChannelsSuperOpIn().contains(channel)) {
-                nick = "&" + nick;
-            } else if (user.getChannelsOpIn().contains(channel)) {
-                nick = "@" + nick;
-            } else if (user.getChannelsHalfOpIn().contains(channel)) {
-                nick = "%" + nick;
-            } else if (user.getChannelsVoiceIn().contains(channel)) {
-                nick = "+" + nick;
-            }
+            nick = getNickPrefix(user, channel) + nick;
             if (user.isAway()) {
                 nick = nick + ChatColor.GRAY + " | Away";
             }
@@ -1703,6 +1693,21 @@ public final class PurpleBot {
         for (String userName : channelUsers) {
             sender.sendMessage("  " + ChatColor.WHITE + userName);
         }
+    }
+
+    public String getNickPrefix(User user, Channel channel) {
+        if (user.isIrcop()) {
+            return plugin.ircNickPrefixIrcOp;
+        } else if (user.getChannelsSuperOpIn().contains(channel)) {
+            return plugin.ircNickPrefixSuperOp;
+        } else if (user.getChannelsOpIn().contains(channel)) {
+            return plugin.ircNickPrefixOp;
+        } else if (user.getChannelsHalfOpIn().contains(channel)) {
+            return plugin.ircNickPrefixHalfOp;
+        } else if (user.getChannelsVoiceIn().contains(channel)) {
+            return plugin.ircNickPrefixVoice;
+        }
+        return "";
     }
 
     /**
@@ -1830,12 +1835,13 @@ public final class PurpleBot {
     // Broadcast chat messages from IRC
     /**
      *
-     * @param nick
-     * @param myChannel
+     * @param user
+     * @param channel
      * @param message
      * @param override
      */
-    public void broadcastChat(String nick, String myChannel, String message, boolean override) {
+    public void broadcastChat(User user, org.pircbotx.Channel channel, String message, boolean override) {
+        String myChannel = channel.getName();
         if (plugin.dynmapHook != null) {
             plugin.logDebug("Checking if " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled ...");
             if (enabledMessages.get(myChannel).contains(TemplateName.IRC_DYNMAP_WEB_CHAT)) {
@@ -1843,8 +1849,8 @@ public final class PurpleBot {
                 plugin.logDebug("broadcastChat [DW]: " + message);
                 String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_DYNMAP_WEB_CHAT);
                 String rawDWMessage = filterMessage(
-                        plugin.tokenizer.ircChatToGameTokenizer(nick, myChannel, template, message), myChannel);
-                plugin.dynmapHook.sendMessage(nick, rawDWMessage);
+                        plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, template, message), myChannel);
+                plugin.dynmapHook.sendMessage(user.getNick(), rawDWMessage);
             } else {
                 plugin.logDebug("Nope, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is NOT enabled...");
             }
@@ -1859,8 +1865,7 @@ public final class PurpleBot {
                         String tmpl = plugin.getIRCTownyChatChannelTemplate(botNick, tChannel);
                         plugin.logDebug("broadcastChat [TC]: " + tChannel + ": " + tmpl);
                         String rawTCMessage = filterMessage(
-                                plugin.tokenizer.ircChatToTownyChatTokenizer(
-                                        nick, myChannel, tmpl, message, tChannel), myChannel);
+                                plugin.tokenizer.ircChatToTownyChatTokenizer(this, user, channel, tmpl, message, tChannel), myChannel);
                         plugin.tcHook.sendMessage(tChannel, rawTCMessage);
                     }
                 }
@@ -1874,8 +1879,7 @@ public final class PurpleBot {
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
             plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
             String newMessage = filterMessage(
-                    plugin.tokenizer.ircChatToGameTokenizer(
-                            nick, myChannel, plugin.getMsgTemplate(
+                    plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, plugin.getMsgTemplate(
                                     botNick, TemplateName.IRC_CHAT), message), myChannel);
             if (!newMessage.isEmpty()) {
                 plugin.getServer().broadcast(newMessage, "irc.message.chat");
@@ -1889,7 +1893,7 @@ public final class PurpleBot {
             String tmpl = plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT);
             plugin.logDebug("broadcastChat [Console]: " + tmpl);
             plugin.getServer().getConsoleSender().sendMessage(plugin.tokenizer.ircChatToGameTokenizer(
-                    nick, myChannel, plugin.getMsgTemplate(botNick,
+                    this, user, channel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_CONSOLE_CHAT), message));
         }
 
@@ -1900,8 +1904,7 @@ public final class PurpleBot {
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
             String rawHCMessage = filterMessage(
-                    plugin.tokenizer.ircChatToHeroChatTokenizer(
-                            nick, myChannel, tmpl, message, Herochat.getChannelManager(), hChannel), myChannel);
+                    plugin.tokenizer.ircChatToHeroChatTokenizer(this, user, channel, tmpl, message, Herochat.getChannelManager(), hChannel), myChannel);
             if (!rawHCMessage.isEmpty()) {
                 Herochat.getChannelManager().getChannel(hChannel).sendRawMessage(rawHCMessage);
                 if (logIrcToHeroChat.containsKey(myChannel)) {
@@ -1919,12 +1922,13 @@ public final class PurpleBot {
 // Broadcast chat messages from IRC to specific hero channel
     /**
      *
-     * @param nick
-     * @param ircChannel
+     * @param user
+     * @param channel
      * @param target
      * @param message
      */
-    public void broadcastHeroChat(String nick, String ircChannel, String target, String message) {
+    public void broadcastHeroChat(User user, org.pircbotx.Channel channel, String target, String message) {
+        String ircChannel = channel.getName();
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             asyncIRCMessage(target, "No channel specified!");
@@ -1942,8 +1946,8 @@ public final class PurpleBot {
                     hChannel = Herochat.getChannelManager().getChannel(hChannel).getName();
                     String template = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
                     plugin.logDebug("T: " + template);
-                    String t = plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
-                            ircChannel, template, msg,
+                    String t = plugin.tokenizer.ircChatToHeroChatTokenizer(this, user,
+                            channel, template, msg,
                             Herochat.getChannelManager(), hChannel);
                     plugin.logDebug("Sending message to" + hChannel + ":" + t);
                     Herochat.getChannelManager().getChannel(hChannel)
@@ -1970,12 +1974,13 @@ public final class PurpleBot {
     // Send chat messages from IRC to player
     /**
      *
-     * @param nick
-     * @param myChannel
+     * @param user
+     * @param channel
      * @param target
      * @param message
      */
-    public void playerChat(String nick, String myChannel, String target, String message) {
+    public void playerChat(User user, org.pircbotx.Channel channel, String target, String message) {
+        String myChannel = channel.getName();
         if (message == null) {
             plugin.logDebug("H: NULL MESSAGE");
             asyncIRCMessage(target, "No player specified!");
@@ -1995,8 +2000,8 @@ public final class PurpleBot {
                     if (player.isOnline()) {
                         plugin.logDebug("Yup, " + pName + " is a valid player...");
                         String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_PCHAT);
-                        String t = plugin.tokenizer.ircChatToGameTokenizer(nick,
-                                myChannel, template, msg);
+                        String t = plugin.tokenizer.ircChatToGameTokenizer(this, user,
+                                channel, template, msg);
                         String responseTemplate = plugin.getMsgTemplate(botNick,
                                 TemplateName.IRC_PCHAT_RESPONSE);
                         if (!responseTemplate.isEmpty()) {
@@ -2022,14 +2027,15 @@ public final class PurpleBot {
 // Broadcast action messages from IRC
     /**
      *
-     * @param nick
-     * @param myChannel
+     * @param user
+     * @param channel
      * @param message
      */
-    public void broadcastAction(String nick, String myChannel, String message) {
+    public void broadcastAction(User user, org.pircbotx.Channel channel, String message) {
+        String myChannel = channel.getName();
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION)) {
             plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(
-                    nick, myChannel, plugin.getMsgTemplate(botNick,
+                    this, user, channel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_ACTION), message), "irc.message.action");
         } else {
             plugin.logDebug("Ignoring action due to "
@@ -2038,9 +2044,9 @@ public final class PurpleBot {
 
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_ACTION)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
-                                    myChannel, plugin.getMsgTemplate(botNick,
-                                            TemplateName.IRC_HERO_ACTION), message,
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            this, user,channel, plugin.getMsgTemplate(
+                                    botNick, TemplateName.IRC_HERO_ACTION), message,
                                     Herochat.getChannelManager(),
                                     heroChannel.get(myChannel)
                             )
@@ -2053,21 +2059,23 @@ public final class PurpleBot {
      * @param recipient
      * @param kicker
      * @param reason
-     * @param myChannel
+     * @param channel
      */
-    public void broadcastIRCKick(String recipient, String kicker, String reason, String myChannel) {
+    public void broadcastIRCKick(User recipient, User kicker, String reason, org.pircbotx.Channel channel) {
+        String myChannel = channel.getName();
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_KICK)) {
-            plugin.getServer().broadcast(plugin.tokenizer.ircKickTokenizer(recipient,
-                    kicker, reason, myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_KICK)),
+            plugin.getServer().broadcast(plugin.tokenizer.ircKickTokenizer(
+                    this, recipient, kicker, reason, channel, plugin.getMsgTemplate(
+                            botNick, TemplateName.IRC_KICK)),
                     "irc.message.kick");
         }
 
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_KICK)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
                     .sendRawMessage(plugin.tokenizer
-                            .ircKickToHeroChatTokenizer(
+                            .ircKickToHeroChatTokenizer(this,
                                     recipient, kicker,
-                                    reason, myChannel,
+                                    reason, channel,
                                     plugin.getMsgTemplate(botNick, TemplateName.IRC_HERO_KICK),
                                     Herochat.getChannelManager(),
                                     heroChannel.get(myChannel)
@@ -2086,99 +2094,101 @@ public final class PurpleBot {
 
     /**
      *
-     * @param nick
+     * @param user
      * @param mode
-     * @param myChannel
+     * @param channel
      */
-    public void broadcastIRCMode(String nick, String mode, String myChannel) {
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_MODE)) {
-            plugin.getServer().broadcast(plugin.tokenizer.ircModeTokenizer(nick, mode,
-                    myChannel, plugin.getMsgTemplate(botNick,
+    public void broadcastIRCMode(User user, String mode, org.pircbotx.Channel channel) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_MODE)) {
+            plugin.getServer().broadcast(plugin.tokenizer.ircModeTokenizer(this, user, mode,
+                    channel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_MODE)), "irc.message.mode");
         }
     }
 
     /**
      *
-     * @param nick
+     * @param user
      * @param message
      * @param notice
-     * @param myChannel
+     * @param channel
      */
-    public void broadcastIRCNotice(String nick, String message, String notice, String myChannel) {
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_NOTICE)) {
-            plugin.getServer().broadcast(plugin.tokenizer.ircNoticeTokenizer(nick,
-                    message, notice, myChannel, plugin.getMsgTemplate(botNick,
+    public void broadcastIRCNotice(User user, String message, String notice, org.pircbotx.Channel channel) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_NOTICE)) {
+            plugin.getServer().broadcast(plugin.tokenizer.ircNoticeTokenizer(this, user,
+                    message, notice, channel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_NOTICE)), "irc.message.notice");
         }
     }
 
     /**
      *
-     * @param nick
-     * @param myChannel
+     * @param user
+     * @param channel
      */
-    public void broadcastIRCJoin(String nick, String myChannel) {
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_JOIN)) {
+    public void broadcastIRCJoin(User user, org.pircbotx.Channel channel) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_JOIN)) {
             plugin.logDebug("[broadcastIRCJoin] Broadcasting join message because "
                     + TemplateName.IRC_JOIN + " is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
-                    nick, myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_JOIN)), "irc.message.join");
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_JOIN)), "irc.message.join");
         } else {
             plugin.logDebug("[broadcastIRCJoin] NOT broadcasting join message because irc-join is false.");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_JOIN)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
-                                    myChannel, plugin.getMsgTemplate(botNick,
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_HERO_JOIN)) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            this, user, channel, plugin.getMsgTemplate(botNick,
                                             TemplateName.IRC_HERO_JOIN),
                                     Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)));
+                                    heroChannel.get(channel.getName())));
         }
     }
 
-    public void broadcastIRCPart(String nick, String myChannel) {
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_PART)) {
+    public void broadcastIRCPart(User user, org.pircbotx.Channel channel) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_PART)) {
             plugin.logDebug("[broadcastIRCPart]  Broadcasting join message because "
                     + TemplateName.IRC_PART + " is true.");
-            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
-                    myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_PART)), "irc.message.part");
+            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_PART)), "irc.message.part");
         } else {
             plugin.logDebug("[broadcastIRCPart] NOT broadcasting join message because "
                     + TemplateName.IRC_PART + " is false.");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_PART)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
-                                    myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_HERO_PART),
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_HERO_PART)) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            this, user, channel, plugin.getMsgTemplate(
+                                    botNick, TemplateName.IRC_HERO_PART),
                                     Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)));
+                                    heroChannel.get(channel.getName())));
         }
     }
 
-    public void broadcastIRCQuit(String nick, String myChannel, String reason) {
+    public void broadcastIRCQuit(User user, org.pircbotx.Channel channel, String reason) {
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_QUIT)) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_QUIT)) {
             plugin.logDebug("[broadcastIRCQuit] Broadcasting quit message because "
                     + TemplateName.IRC_QUIT + " is true.");
-            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
-                    myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_QUIT))
-                    .replace("%NAME%", nick)
+            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_QUIT))
+                    .replace("%NAME%", user.getNick())
                     .replace("%REASON%", reason)
-                    .replace("%CHANNEL%", myChannel), "irc.message.quit");
+                    .replace("%CHANNEL%", channel.getName()), "irc.message.quit");
         } else {
             plugin.logDebug("[broadcastIRCQuit] NOT broadcasting quit message because "
                     + TemplateName.IRC_QUIT + " is false.");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_QUIT)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick,
-                                    myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_HERO_QUIT),
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_HERO_QUIT)) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            this, user, channel, plugin.getMsgTemplate(
+                                    botNick, TemplateName.IRC_HERO_QUIT),
                                     Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)));
+                                    heroChannel.get(channel.getName())));
         }
 
     }
@@ -2186,22 +2196,22 @@ public final class PurpleBot {
     // Broadcast topic changes from IRC
     /**
      *
-     * @param nick
-     * @param myChannel
+     * @param user
+     * @param channel
      * @param message
      */
-    public void broadcastIRCTopic(String nick, String myChannel, String message) {
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_TOPIC)) {
-            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(nick,
-                    myChannel, plugin.getMsgTemplate(botNick, TemplateName.IRC_TOPIC)), "irc.message.topic");
+    public void broadcastIRCTopic(User user, org.pircbotx.Channel channel, String message) {
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_TOPIC)) {
+            plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_TOPIC)), "irc.message.topic");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_TOPIC)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(nick, myChannel,
-                                    plugin.getMsgTemplate(botNick, TemplateName.IRC_HERO_TOPIC), message,
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_HERO_TOPIC)) {
+            Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
+                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
+                            this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_HERO_TOPIC), message,
                                     Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)));
+                                    heroChannel.get(channel.getName())));
         }
     }
 
