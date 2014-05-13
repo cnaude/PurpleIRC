@@ -577,6 +577,10 @@ public final class PurpleBot {
 
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
                 String channelName = decodeChannel(enChannelName);
+                if (isValidChannel(channelName)) {
+                    plugin.logError("Ignoring duplicate channel: " + channelName);
+                    continue;
+                }
                 plugin.logDebug("Channel  => " + channelName);
                 botChannels.add(channelName);
 
