@@ -29,9 +29,11 @@ public class CommandHandlers implements CommandExecutor {
         this.plugin = plugin;
 
         commands.put("addop", new AddOp(plugin));
+        commands.put("addvoice", new AddVoice(plugin));
         commands.put("connect", new Connect(plugin));
         commands.put("ctcp", new CTCP(plugin));
         commands.put("deop", new DeOp(plugin));
+        commands.put("devoice", new DeVoice(plugin));
         commands.put("debug", new Debug(plugin));
         commands.put("disconnect", new Disconnect(plugin));
         commands.put("join", new Join(plugin));
@@ -40,6 +42,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("list", new List(plugin));
         commands.put("listbots", new ListBots(plugin));
         commands.put("listops", new ListOps(plugin));
+        commands.put("listvoices", new ListVoices(plugin));
         commands.put("login", new Login(plugin));
         commands.put("messagedelay", new MessageDelay(plugin));
         commands.put("msg", new Msg(plugin));
@@ -56,6 +59,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("reloadbots", new ReloadBots(plugin));
         commands.put("reloadconfig", new ReloadConfig(plugin));
         commands.put("removeop", new RemoveOp(plugin));
+        commands.put("removevoice", new RemoveVoice(plugin));
         commands.put("save", new Save(plugin));
         commands.put("say", new Say(plugin));
         commands.put("send", new Send(plugin));
@@ -63,6 +67,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("server", new Server(plugin));
         commands.put("topic", new Topic(plugin));
         commands.put("unmute", new UnMute(plugin));
+        commands.put("voice", new Voice(plugin));
         commands.put("whois", new Whois(plugin));
         commands.put("help", new Help(plugin));
 

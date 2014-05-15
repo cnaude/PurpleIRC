@@ -109,6 +109,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<String> townyChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
+    public CaseInsensitiveMap<Collection<String>> voicesList;
     public CaseInsensitiveMap<Collection<String>> worldList;
     public CaseInsensitiveMap<Collection<String>> muteList;
     public CaseInsensitiveMap<Collection<String>> enabledMessages;
@@ -135,6 +136,7 @@ public final class PurpleBot {
         this.muteList = new CaseInsensitiveMap<Collection<String>>();
         this.worldList = new CaseInsensitiveMap<Collection<String>>();
         this.opsList = new CaseInsensitiveMap<Collection<String>>();
+        this.voicesList = new CaseInsensitiveMap<Collection<String>>();
         this.heroChannel = new CaseInsensitiveMap<String>();
         this.townyChannel = new CaseInsensitiveMap<String>();
         this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
@@ -553,6 +555,7 @@ public final class PurpleBot {
             plugin.logDebug("Quit Message => " + quitMessage);
             botChannels.clear();
             opsList.clear();
+            voicesList.clear();
             muteList.clear();
             enabledMessages.clear();
             worldList.clear();
@@ -651,6 +654,19 @@ public final class PurpleBot {
                 opsList.put(channelName, cOps);
                 if (opsList.isEmpty()) {
                     plugin.logInfo("No channel ops defined.");
+                }
+                
+                // build channel voice list
+                Collection<String> cVoices = new ArrayList<String>();
+                for (String channelVoice : config.getStringList("channels." + enChannelName + ".voices")) {
+                    if (!cVoices.contains(channelVoice)) {
+                        cVoices.add(channelVoice);
+                    }
+                    plugin.logDebug("  Channel Voice => " + channelVoice);
+                }
+                voicesList.put(channelName, cVoices);
+                if (voicesList.isEmpty()) {
+                    plugin.logInfo("No channel voices defined.");
                 }
 
                 // build mute list
@@ -1427,6 +1443,25 @@ public final class PurpleBot {
         config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
         saveConfig();
     }
+    
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
+    public void addVoice(String channelName, String userMask, CommandSender sender) {
+        if (voicesList.get(channelName).contains(userMask)) {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is already in the voices list.");
+        } else {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been added to the voices list.");
+            voicesList.get(channelName).add(userMask);
+        }
+        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
+        saveConfig();
+    }
 
     /**
      *
@@ -1444,6 +1479,25 @@ public final class PurpleBot {
                     + ChatColor.RESET + " is not in the ops list.");
         }
         config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
+        saveConfig();
+    }
+    
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
+    public void removeVoice(String channelName, String userMask, CommandSender sender) {
+        if (voicesList.get(channelName).contains(userMask)) {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been removed to the voices list.");
+            voicesList.get(channelName).remove(userMask);
+        } else {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is not in the voices list.");
+        }
+        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
         saveConfig();
     }
 
@@ -1464,6 +1518,24 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     *
+     * @param channelName
+     * @param nick
+     */
+    public void voice(String channelName, String nick) {
+        Channel channel;
+        channel = getChannel(channelName);
+        if (channel != null) {
+            for (User user : channel.getUsers()) {
+                if (user.getNick().equals(nick)) {
+                    channel.send().voice(user);
+                    return;
+                }
+            }
+        }
+    }
 
     /**
      *
@@ -1477,6 +1549,24 @@ public final class PurpleBot {
             for (User user : channel.getUsers()) {
                 if (user.getNick().equals(nick)) {
                     channel.send().deOp(user);
+                    return;
+                }
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param channelName
+     * @param nick
+     */
+    public void deVoice(String channelName, String nick) {
+        Channel channel;
+        channel = getChannel(channelName);
+        if (channel != null) {
+            for (User user : channel.getUsers()) {
+                if (user.getNick().equals(nick)) {
+                    channel.send().deVoice(user);
                     return;
                 }
             }
@@ -1772,6 +1862,29 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     *
+     * @param channel
+     */
+    public void voiceFriends(Channel channel) {
+        for (User user : channel.getUsers()) {
+            voiceFriends(channel, user);
+        }
+    }
+
+    /**
+     *
+     * @param channelName
+     */
+    public void voiceFriends(String channelName) {
+        Channel channel = getChannel(channelName);
+        if (channel != null) {
+            for (User user : channel.getUsers()) {
+                voiceFriends(channel, user);
+            }
+        }
+    }
 
     /**
      *
@@ -1810,6 +1923,47 @@ public final class PurpleBot {
                 }
             } else {
                 plugin.logInfo("Invalid op mask: " + opsUser);
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param channel
+     * @param user
+     */
+    public void voiceFriends(Channel channel, User user) {
+        if (user.getNick().equals(botNick)) {
+            return;
+        }
+        String channelName = channel.getName();
+        for (String voicesUser : voicesList.get(channelName)) {
+            plugin.logDebug("VOICE => " + user);
+            //sender!*login@hostname            
+            String mask[] = voicesUser.split("[\\!\\@]", 3);
+            if (mask.length == 3) {
+                String gUser = plugin.regexGlobber.createRegexFromGlob(mask[0]);
+                String gLogin = plugin.regexGlobber.createRegexFromGlob(mask[1]);
+                String gHost = plugin.regexGlobber.createRegexFromGlob(mask[2]);
+                String sender = user.getNick();
+                String login = user.getLogin();
+                String hostname = user.getHostmask();
+                plugin.logDebug("Nick: " + sender + " =~ " + gUser + " = " + sender.matches(gUser));
+                plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
+                plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
+                if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
+                    if (!channel.getVoices().contains(user)) {
+                        plugin.logInfo("Giving voice status to " + sender + " on " + channelName);
+                        channel.send().voice(user);
+                    } else {
+                        plugin.logInfo("User " + sender + " is already a voice on " + channelName);
+                    }
+                    return;
+                } else {
+                    plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
+                }
+            } else {
+                plugin.logInfo("Invalid voice mask: " + voicesUser);
             }
         }
     }
