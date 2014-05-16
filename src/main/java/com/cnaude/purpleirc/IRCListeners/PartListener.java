@@ -39,7 +39,7 @@ public class PartListener extends ListenerAdapter {
         Channel channel = event.getChannel();
         User user = event.getUser();
 
-        if (!ircBot.isValidChannel(channel.getName())) {
+        if (ircBot.isValidChannel(channel.getName())) {
             ircBot.broadcastIRCPart(user, channel);
             if (plugin.netPackets != null) {
                 plugin.netPackets.remFromTabList(user.getNick());

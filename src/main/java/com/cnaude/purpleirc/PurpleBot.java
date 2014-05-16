@@ -2302,12 +2302,12 @@ public final class PurpleBot {
 
     public void broadcastIRCPart(User user, org.pircbotx.Channel channel) {
         if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_PART)) {
-            plugin.logDebug("[broadcastIRCPart]  Broadcasting join message because "
+            plugin.logDebug("[broadcastIRCPart]  Broadcasting part message because "
                     + TemplateName.IRC_PART + " is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
                     this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_PART)), "irc.message.part");
         } else {
-            plugin.logDebug("[broadcastIRCPart] NOT broadcasting join message because "
+            plugin.logDebug("[broadcastIRCPart] NOT broadcasting part message because "
                     + TemplateName.IRC_PART + " is false.");
         }
 
