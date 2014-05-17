@@ -41,9 +41,6 @@ public class CommandQueueWatcher {
         }
     }
 
-    /**
-     *
-     */
     public void cancel() {
         this.plugin.getServer().getScheduler().cancelTask(bt);
     }

@@ -191,9 +191,9 @@ public class PurpleIRC extends JavaPlugin {
             try {
                 heroConfig.load(heroConfigFile);
             } catch (IOException ex) {
-                Logger.getLogger(PurpleIRC.class.getName()).log(Level.SEVERE, null, ex);
+                logError(ex.getMessage());
             } catch (InvalidConfigurationException ex) {
-                Logger.getLogger(PurpleIRC.class.getName()).log(Level.SEVERE, null, ex);
+                logError(ex.getMessage());
             }
             heroChatEmoteFormat = heroConfig.getString("format.emote", "");
         } else {
