@@ -799,8 +799,7 @@ public final class PurpleBot {
         return false;
     }
 
-    // Called from normal game chat listener
-    /**
+    /** Called from normal game chat listener
      *
      * @param player
      * @param message
@@ -865,11 +864,11 @@ public final class PurpleBot {
      * @param message
      */
     public void heroChat(Chatter chatter, ChatColor chatColor, String message) {
-        plugin.logDebug("H1");
-        Player player = chatter.getPlayer();
         if (!this.isConnected()) {
             return;
         }
+        plugin.logDebug("H1");
+        Player player = chatter.getPlayer();
         plugin.logDebug("H2");
         for (String channelName : botChannels) {
             plugin.logDebug("H3");
@@ -898,6 +897,9 @@ public final class PurpleBot {
     }
 
     public void mcMMOAdminChat(Player player, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
@@ -915,6 +917,9 @@ public final class PurpleBot {
     }
 
     public void mcMMOPartyChat(Player player, String partyName, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
@@ -932,6 +937,9 @@ public final class PurpleBot {
     }
 
     public void mcMMOChat(Player player, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
@@ -948,8 +956,7 @@ public final class PurpleBot {
         }
     }
 
-    public void townyChat(Player player,
-            com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
+    public void townyChat(Player player, com.palmergames.bukkit.TownyChat.channels.Channel townyChannel, String message) {
         if (!this.isConnected()) {
             return;
         }
@@ -975,10 +982,10 @@ public final class PurpleBot {
     }
 
     public void heroAction(Chatter chatter, ChatColor chatColor, String message) {
-        Player player = chatter.getPlayer();
         if (!this.isConnected()) {
             return;
         }
+        Player player = chatter.getPlayer();
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
@@ -1008,10 +1015,10 @@ public final class PurpleBot {
      * @param message
      */
     public void titanChat(Participant participant, String tChannel, String tColor, String message) {
-        Player player = plugin.getServer().getPlayer(participant.getName());
         if (!this.isConnected()) {
             return;
         }
+        Player player = plugin.getServer().getPlayer(participant.getName());
         for (String channelName : botChannels) {
             if (!isPlayerInValidWorld(player, channelName)) {
                 continue;
@@ -1143,7 +1150,9 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains("broadcast-message")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, "broadcast-message"), ChatColor.translateAlternateColorCodes('&', message)));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, "broadcast-message"), 
+                                ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
@@ -1271,10 +1280,10 @@ public final class PurpleBot {
      * @param achievement
      */
     public void gameAchievement(Player player, Achievement achievement) {
-        String message = achievement.toString();
         if (!this.isConnected()) {
             return;
         }
+        String message = achievement.toString();
         for (String channelName : botChannels) {
             if (enabledMessages.get(channelName).contains(TemplateName.GAME_ACHIEVEMENT)) {
                 if (!isPlayerInValidWorld(player, channelName)) {
@@ -1785,7 +1794,7 @@ public final class PurpleBot {
         }
     }
 
-    public String getNickPrefix(User user, Channel channel) {        
+    public String getNickPrefix(User user, Channel channel) {
         try {
             if (user.getChannels() != null) {
                 if (user.isIrcop()) {
@@ -1820,9 +1829,24 @@ public final class PurpleBot {
 
     /**
      *
+     */
+    public void updateNickList() {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (Channel channel : this.getChannels()) {
+            this.updateNickList(channel);
+        }
+    }
+
+    /**
+     *
      * @param channel
      */
     public void updateNickList(Channel channel) {
+        if (!this.isConnected()) {
+            return;
+        }
         // Build current list of names in channel
         ArrayList<String> users = new ArrayList<String>();
         for (User user : channel.getUsers()) {
@@ -2406,6 +2430,9 @@ public final class PurpleBot {
      * @param params
      */
     public void commandNotify(Player player, String cmd, String params) {
+        if (!this.isConnected()) {
+            return;
+        }
         String msg = plugin.tokenizer.gameCommandToIRCTokenizer(player,
                 plugin.getMsgTemplate(botNick, TemplateName.GAME_COMMAND), cmd, params);
         if (channelCmdNotifyMode.equalsIgnoreCase("msg")) {

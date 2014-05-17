@@ -37,9 +37,7 @@ public class OreBroadcastListener implements Listener {
     public void onOreBroadcastEvent(OreBroadcastEvent event) {
         plugin.logDebug("onOreBroadcastEvent caught");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                ircBot.gameOreBroadcast(event.getPlayer(), event.getMessage());
-            }
+            ircBot.gameOreBroadcast(event.getPlayer(), event.getMessage());
         }
     }
 }

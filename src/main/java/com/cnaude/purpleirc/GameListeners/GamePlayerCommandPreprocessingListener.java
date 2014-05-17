@@ -47,36 +47,27 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             if (msg.startsWith("/me ")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.gameAction(event.getPlayer(), msg.replace("/me", ""));
-                    }
+                    ircBot.gameAction(event.getPlayer(), msg.replace("/me", ""));
                 }
             } else if (msg.startsWith("/broadcast ")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
-                    }
+                    ircBot.gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
                 }
             }
         }
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                if (msg.startsWith("/")) {
-                    String cmd;
-                    String params = "";
-                    if (msg.contains(" ")) {
-                        cmd = msg.split(" ", 2)[0];
-                        params = msg.split(" ", 2)[1];
-                    } else {
-                        cmd = msg;
-                    }
-
-                    cmd = cmd.substring(0);
-                    if (ircBot.isConnected()) {
-                        if (ircBot.channelCmdNotifyEnabled) {
-                            ircBot.commandNotify(event.getPlayer(), cmd, params);
-                        }
-                    }
+            if (msg.startsWith("/")) {
+                String cmd;
+                String params = "";
+                if (msg.contains(" ")) {
+                    cmd = msg.split(" ", 2)[0];
+                    params = msg.split(" ", 2)[1];
+                } else {
+                    cmd = msg;
+                }
+                cmd = cmd.substring(0);
+                if (ircBot.channelCmdNotifyEnabled) {
+                    ircBot.commandNotify(event.getPlayer(), cmd, params);
                 }
             }
         }

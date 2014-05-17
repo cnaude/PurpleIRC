@@ -36,10 +36,8 @@ public class GamePlayerDeathListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                ircBot.gameDeath((Player) event.getEntity(), 
-                        event.getDeathMessage(), TemplateName.GAME_DEATH);
-            }
+            ircBot.gameDeath((Player) event.getEntity(),
+                    event.getDeathMessage(), TemplateName.GAME_DEATH);
         }
     }
 }

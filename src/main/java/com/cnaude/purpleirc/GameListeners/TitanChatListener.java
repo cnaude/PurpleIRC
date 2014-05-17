@@ -41,9 +41,7 @@ public class TitanChatListener implements Listener {
         String tColor = event.getChannel().getDisplayColour();
         if (player.hasPermission("irc.message.gamechat")) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                if (ircBot.isConnected()) {
-                    ircBot.titanChat(participant, tChannel, tColor, event.getMessage());
-                }
+                ircBot.titanChat(participant, tChannel, tColor, event.getMessage());
             }
         }
     }

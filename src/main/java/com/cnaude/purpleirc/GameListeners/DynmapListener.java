@@ -37,9 +37,7 @@ public class DynmapListener implements Listener {
         String source = event.getSource();
         plugin.logDebug("DynmapWebChat: " + source + " : " + name + ":" + message);
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                ircBot.dynmapWebChat(source, name, message);
-            }
+            ircBot.dynmapWebChat(source, name, message);
         }
     }
 }

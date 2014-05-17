@@ -35,9 +35,7 @@ public class DeathMessagesListener implements Listener {
     public void onDeathMessageEvent(DeathMessageEvent event) {
         plugin.logDebug("onDeathMessageEvent caught");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                ircBot.gameDeath(event.getPlayer(), event.getDeathMessage(), TemplateName.DEATH_MESSAGES);
-            }
+            ircBot.gameDeath(event.getPlayer(), event.getDeathMessage(), TemplateName.DEATH_MESSAGES);
         }
     }
 }

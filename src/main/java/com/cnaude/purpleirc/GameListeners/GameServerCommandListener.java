@@ -37,16 +37,12 @@ public class GameServerCommandListener implements Listener {
         if (cmd.startsWith("say ")) {
             String msg = cmd.split(" ", 2)[1];
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                if (ircBot.isConnected()) {
-                    ircBot.consoleChat(msg);
-                }
+                ircBot.consoleChat(msg);
             }
         } else if (cmd.startsWith("broadcast ")) {
             String msg = cmd.split(" ", 2)[1];
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                if (ircBot.isConnected()) {
-                    ircBot.consoleBroadcast(msg);
-                }
+                ircBot.consoleBroadcast(msg);
             }
         } else {
             //plugin.logDebug("Invalid CE: " + cmd);

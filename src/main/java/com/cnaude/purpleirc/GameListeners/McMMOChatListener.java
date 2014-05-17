@@ -26,7 +26,7 @@ public class McMMOChatListener implements Listener {
     }
 
     @EventHandler
-    public void onMcMMOChatEvent(McMMOChatEvent event) {        
+    public void onMcMMOChatEvent(McMMOChatEvent event) {
         event.setMessage(event.getMessage().replace("[[townytag]]", ""));
         String sender = event.getSender();
         Player player = plugin.getServer().getPlayer(sender);
@@ -34,9 +34,7 @@ public class McMMOChatListener implements Listener {
         if (player != null && !sender.isEmpty()) {
             if (player.hasPermission("irc.message.gamechat")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.mcMMOChat(player, event.getMessage());
-                    }
+                    ircBot.mcMMOChat(player, event.getMessage());
                 }
             }
         }
@@ -51,9 +49,7 @@ public class McMMOChatListener implements Listener {
         if (player != null && !sender.isEmpty()) {
             if (player.hasPermission("irc.message.gamechat")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.mcMMOAdminChat(player, event.getMessage());
-                    }
+                    ircBot.mcMMOAdminChat(player, event.getMessage());
                 }
             }
         }
@@ -69,9 +65,7 @@ public class McMMOChatListener implements Listener {
         if (player != null && !sender.isEmpty()) {
             if (player.hasPermission("irc.message.gamechat")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.mcMMOPartyChat(player, party, event.getMessage());
-                    }
+                    ircBot.mcMMOPartyChat(player, party, event.getMessage());
                 }
             }
         }

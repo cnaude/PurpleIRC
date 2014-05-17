@@ -47,11 +47,9 @@ public class GamePlayerJoinListener implements Listener {
             @Override
             public void run() {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());
-                        if (plugin.netPackets != null) {
-                            plugin.netPackets.updateTabList(event.getPlayer());
-                        }
+                    ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());
+                    if (plugin.netPackets != null) {
+                        plugin.netPackets.updateTabList(event.getPlayer());
                     }
                 }
             }

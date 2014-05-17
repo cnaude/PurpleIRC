@@ -5,14 +5,14 @@ import org.pircbotx.Channel;
 
 /**
  *
- * @author Chris Naude
- * This thread checks each for users and updates the internal lists.
+ * @author Chris Naude This thread checks each for users and updates the
+ * internal lists.
  */
 public class ChannelWatcher {
-    
+
     private final PurpleIRC plugin;
     private final BukkitTask bt;
-    
+
     /**
      *
      * @param plugin
@@ -24,16 +24,12 @@ public class ChannelWatcher {
             @Override
             public void run() {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    if (ircBot.isConnected()) {
-                        for (Channel channel : ircBot.getChannels()) {
-                            ircBot.updateNickList(channel);
-                        }
-                    }
+                    ircBot.updateNickList();
                 }
             }
         }, plugin.ircChannelCheckInterval, plugin.ircChannelCheckInterval);
     }
-    
+
     /**
      *
      */

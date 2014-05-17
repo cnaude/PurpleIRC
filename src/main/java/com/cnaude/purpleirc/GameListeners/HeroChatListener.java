@@ -44,15 +44,12 @@ public class HeroChatListener implements Listener {
         if (player.hasPermission("irc.message.gamechat")
                 && chatter.getChannels().contains(event.getChannel())) {
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                if (ircBot.isConnected()) {
-                    if (plugin.heroChatEmoteFormat.equals(event.getFormat())) {
-                        plugin.logDebug("HC Emote: TRUE");
-                        ircBot.heroAction(chatter, chatColor, event.getMessage());
-                    } else {
-                        plugin.logDebug("HC Emote: FALSE");
-                        ircBot.heroChat(chatter, chatColor, event.getMessage());
-                    }
-
+                if (plugin.heroChatEmoteFormat.equals(event.getFormat())) {
+                    plugin.logDebug("HC Emote: TRUE");
+                    ircBot.heroAction(chatter, chatColor, event.getMessage());
+                } else {
+                    plugin.logDebug("HC Emote: FALSE");
+                    ircBot.heroChat(chatter, chatColor, event.getMessage());
                 }
             }
         }

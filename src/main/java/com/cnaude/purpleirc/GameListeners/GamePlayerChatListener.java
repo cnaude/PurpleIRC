@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
@@ -48,9 +44,7 @@ public class GamePlayerChatListener implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                if (ircBot.isConnected()) {
-                    ircBot.gameChat(event.getPlayer(), event.getMessage());
-                }
+                ircBot.gameChat(event.getPlayer(), event.getMessage());
             }
         } else {
             plugin.logDebug("Player " + event.getPlayer().getName() + " does not have irc.message.gamechat permission.");

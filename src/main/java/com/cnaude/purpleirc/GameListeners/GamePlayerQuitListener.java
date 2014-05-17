@@ -27,7 +27,7 @@ public class GamePlayerQuitListener implements Listener {
         this.plugin = plugin;
     }
 
-       /**
+    /**
      *
      * @param event
      */
@@ -36,17 +36,15 @@ public class GamePlayerQuitListener implements Listener {
         plugin.logDebug("QUIT: " + event.getPlayer().getName());
         if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
             plugin.kickedPlayers.remove(event.getPlayer().getName());
-            plugin.logDebug("Player " 
+            plugin.logDebug("Player "
                     + event.getPlayer().getName()
                     + " was in the recently kicked list. Not sending quit message.");
             return;
         }
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {                
-                ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
-                if (plugin.netPackets != null) {
-                    plugin.netPackets.updateTabList(event.getPlayer());
-                }
+            ircBot.gameQuit(event.getPlayer(), event.getQuitMessage());
+            if (plugin.netPackets != null) {
+                plugin.netPackets.updateTabList(event.getPlayer());
             }
         }
     }

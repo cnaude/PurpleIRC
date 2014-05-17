@@ -87,7 +87,7 @@ public class NetPackets {
             plugin.logError(e.getMessage());
         }
     }
-
+    
     /**
      *
      * @param player

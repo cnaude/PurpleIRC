@@ -33,9 +33,7 @@ public class CleverNotchListener implements Listener {
     @EventHandler
     public void onCleverEvent(CleverEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            if (ircBot.isConnected()) {
-                ircBot.cleverChat(event.getName(),event.getMessage());
-            }
+            ircBot.cleverChat(event.getName(), event.getMessage());
         }
     }
 }
