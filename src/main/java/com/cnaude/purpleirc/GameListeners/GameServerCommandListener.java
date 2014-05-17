@@ -49,7 +49,7 @@ public class GameServerCommandListener implements Listener {
                 }
             }
         } else {
-            plugin.logDebug("Invalid CE: " + cmd);
+            //plugin.logDebug("Invalid CE: " + cmd);
         }
     }
 }
