@@ -1801,7 +1801,7 @@ public final class PurpleBot {
                 }
             }
         } catch (Exception ex) {
-            plugin.logError(ex.getMessage());
+            plugin.logDebug(ex.getMessage());
         }
         return "";
     }
