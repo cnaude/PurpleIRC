@@ -50,7 +50,7 @@ public class AddVoice implements IRCCommandInterface {
                 }
                 if (mask.split("[\\!\\@]", 3).length == 3) {
                     plugin.ircBots.get(bot).addVoice(channelName, mask, sender);
-                    plugin.ircBots.get(bot).voiceFriends(channelName);
+                    plugin.ircBots.get(bot).voiceIrcUsers(channelName);
                 } else {
                     sender.sendMessage(ChatColor.RED + "Invalid user or mask: " 
                             + ChatColor.WHITE + mask);

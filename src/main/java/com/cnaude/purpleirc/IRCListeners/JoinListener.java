@@ -52,8 +52,8 @@ public class JoinListener extends ListenerAdapter {
             return;
         }
         ircBot.broadcastIRCJoin(user, channel);
-        ircBot.opFriends(channel, user);
-        ircBot.voiceFriends(channel, user);
+        ircBot.opIrcUser(channel, user);
+        ircBot.voiceIrcUser(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
             plugin.logInfo("Joining channel: " + channelName);
             plugin.logDebug("Setting channel modes: " + channelName + " => "

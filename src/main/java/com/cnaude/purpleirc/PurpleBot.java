@@ -799,7 +799,8 @@ public final class PurpleBot {
         return false;
     }
 
-    /** Called from normal game chat listener
+    /**
+     * Called from normal game chat listener
      *
      * @param player
      * @param message
@@ -1151,7 +1152,7 @@ public final class PurpleBot {
             if (enabledMessages.get(channelName).contains("broadcast-message")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin
-                                .getMsgTemplate(botNick, "broadcast-message"), 
+                                .getMsgTemplate(botNick, "broadcast-message"),
                                 ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
@@ -1874,9 +1875,9 @@ public final class PurpleBot {
      *
      * @param channel
      */
-    public void opFriends(Channel channel) {
+    public void opIrcUsers(Channel channel) {
         for (User user : channel.getUsers()) {
-            opFriends(channel, user);
+            opIrcUser(channel, user);
         }
     }
 
@@ -1884,11 +1885,11 @@ public final class PurpleBot {
      *
      * @param channelName
      */
-    public void opFriends(String channelName) {
+    public void opIrcUsers(String channelName) {
         Channel channel = getChannel(channelName);
         if (channel != null) {
             for (User user : channel.getUsers()) {
-                opFriends(channel, user);
+                opIrcUser(channel, user);
             }
         }
     }
@@ -1897,9 +1898,9 @@ public final class PurpleBot {
      *
      * @param channel
      */
-    public void voiceFriends(Channel channel) {
+    public void voiceIrcUsers(Channel channel) {
         for (User user : channel.getUsers()) {
-            voiceFriends(channel, user);
+            voiceIrcUser(channel, user);
         }
     }
 
@@ -1907,12 +1908,54 @@ public final class PurpleBot {
      *
      * @param channelName
      */
-    public void voiceFriends(String channelName) {
+    public void voiceIrcUsers(String channelName) {
         Channel channel = getChannel(channelName);
         if (channel != null) {
             for (User user : channel.getUsers()) {
-                voiceFriends(channel, user);
+                voiceIrcUser(channel, user);
             }
+        }
+    }
+
+    /**
+     *
+     * @param user
+     * @param userMask
+     * @return
+     */
+    public boolean checkUserMask(User user, String userMask) {
+        String mask[] = userMask.split("[\\!\\@]", 3);
+        if (mask.length == 3) {
+            String gUser = plugin.regexGlobber.createRegexFromGlob(mask[0]);
+            String gLogin = plugin.regexGlobber.createRegexFromGlob(mask[1]);
+            String gHost = plugin.regexGlobber.createRegexFromGlob(mask[2]);
+            return (user.getNick().matches(gUser)
+                    && user.getLogin().matches(gLogin)
+                    && user.getHostmask().matches(gHost));
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param channel
+     * @param user
+     */
+    public void opIrcUser(Channel channel, User user) {
+        String channelName = channel.getName();
+        if (user.getNick().equals(botNick)) {
+            return;
+        }
+        if (channel.getOps().contains(user)) {
+            plugin.logInfo("User " + user.getNick() + " is already an operator on " + channelName);
+            return;
+        }
+        for (String userMask : opsList.get(channelName)) {            
+            if (checkUserMask(user, userMask)) {
+                plugin.logInfo("Giving operator status to " + user.getNick() + " on " + channelName);
+                channel.send().op(user);
+                break;
+            }            
         }
     }
 
@@ -1921,80 +1964,21 @@ public final class PurpleBot {
      * @param channel
      * @param user
      */
-    public void opFriends(Channel channel, User user) {
+    public void voiceIrcUser(Channel channel, User user) {
+        String channelName = channel.getName();
         if (user.getNick().equals(botNick)) {
             return;
         }
-        String channelName = channel.getName();
-        for (String opsUser : opsList.get(channelName)) {
-            plugin.logDebug("OP => " + user);
-            //sender!*login@hostname            
-            String mask[] = opsUser.split("[\\!\\@]", 3);
-            if (mask.length == 3) {
-                String gUser = plugin.regexGlobber.createRegexFromGlob(mask[0]);
-                String gLogin = plugin.regexGlobber.createRegexFromGlob(mask[1]);
-                String gHost = plugin.regexGlobber.createRegexFromGlob(mask[2]);
-                String sender = user.getNick();
-                String login = user.getLogin();
-                String hostname = user.getHostmask();
-                plugin.logDebug("Nick: " + sender + " =~ " + gUser + " = " + sender.matches(gUser));
-                plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
-                plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
-                if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
-                    if (!channel.getOps().contains(user)) {
-                        plugin.logInfo("Giving operator status to " + sender + " on " + channelName);
-                        channel.send().op(user);
-                    } else {
-                        plugin.logInfo("User " + sender + " is already an operator on " + channelName);
-                    }
-                    return;
-                } else {
-                    plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
-                }
-            } else {
-                plugin.logInfo("Invalid op mask: " + opsUser);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param channel
-     * @param user
-     */
-    public void voiceFriends(Channel channel, User user) {
-        if (user.getNick().equals(botNick)) {
+        if (channel.getVoices().contains(user)) {
+            plugin.logInfo("User " + user.getNick() + " is already a voice on " + channelName);
             return;
         }
-        String channelName = channel.getName();
-        for (String voicesUser : voicesList.get(channelName)) {
-            plugin.logDebug("VOICE => " + user);
-            //sender!*login@hostname            
-            String mask[] = voicesUser.split("[\\!\\@]", 3);
-            if (mask.length == 3) {
-                String gUser = plugin.regexGlobber.createRegexFromGlob(mask[0]);
-                String gLogin = plugin.regexGlobber.createRegexFromGlob(mask[1]);
-                String gHost = plugin.regexGlobber.createRegexFromGlob(mask[2]);
-                String sender = user.getNick();
-                String login = user.getLogin();
-                String hostname = user.getHostmask();
-                plugin.logDebug("Nick: " + sender + " =~ " + gUser + " = " + sender.matches(gUser));
-                plugin.logDebug("Name: " + login + " =~ " + gLogin + " = " + login.matches(gLogin));
-                plugin.logDebug("Hostname: " + hostname + " =~ " + gHost + " = " + hostname.matches(gHost));
-                if (sender.matches(gUser) && login.matches(gLogin) && hostname.matches(gHost)) {
-                    if (!channel.getVoices().contains(user)) {
-                        plugin.logInfo("Giving voice status to " + sender + " on " + channelName);
-                        channel.send().voice(user);
-                    } else {
-                        plugin.logInfo("User " + sender + " is already a voice on " + channelName);
-                    }
-                    return;
-                } else {
-                    plugin.logDebug("No match: " + sender + "!" + login + "@" + hostname + " != " + user);
-                }
-            } else {
-                plugin.logInfo("Invalid voice mask: " + voicesUser);
-            }
+        for (String userMask : voicesList.get(channelName)) {            
+            if (checkUserMask(user, userMask)) {
+                plugin.logInfo("Giving voice status to " + user.getNick() + " on " + channelName);
+                channel.send().voice(user);
+                break;
+            }            
         }
     }
 
@@ -2330,23 +2314,17 @@ public final class PurpleBot {
         }
     }
 
-    public void broadcastIRCPart(User user, org.pircbotx.Channel channel) {
-        plugin.logDebug("[broadcastIRCPart] A");
-        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_PART)) {
-            plugin.logDebug("[broadcastIRCPart] B");
+    public void broadcastIRCPart(User user, org.pircbotx.Channel channel) {        
+        if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_PART)) {            
             String message = plugin.tokenizer.chatIRCTokenizer(
-                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_PART));
-            plugin.logDebug("[broadcastIRCPart] C");
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_PART));            
             plugin.logDebug("[broadcastIRCPart]  Broadcasting part message because "
-                    + TemplateName.IRC_PART + " is true: " + message);
-            plugin.logDebug("[broadcastIRCPart] D");
-            plugin.getServer().broadcast(message, "irc.message.part");
-            plugin.logDebug("[broadcastIRCPart] E");
+                    + TemplateName.IRC_PART + " is true: " + message);            
+            plugin.getServer().broadcast(message, "irc.message.part");            
         } else {
             plugin.logDebug("[broadcastIRCPart] NOT broadcasting part message because "
                     + TemplateName.IRC_PART + " is false.");
-        }
-        plugin.logDebug("[broadcastIRCPart] F");
+        }        
 
         if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_HERO_PART)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
@@ -2359,7 +2337,6 @@ public final class PurpleBot {
     }
 
     public void broadcastIRCQuit(User user, org.pircbotx.Channel channel, String reason) {
-
         if (enabledMessages.get(channel.getName()).contains(TemplateName.IRC_QUIT)) {
             plugin.logDebug("[broadcastIRCQuit] Broadcasting quit message because "
                     + TemplateName.IRC_QUIT + " is true.");
