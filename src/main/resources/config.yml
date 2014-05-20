@@ -214,3 +214,5 @@ game-color-map:
     WHITE: WHITE
     YELLOW: YELLOW
 Debug: false
+# Ignore chat cancellation.
+ignore-chat-cancel: false

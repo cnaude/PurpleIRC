@@ -1,17 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Utilities;
 
-/**
+/** http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
  *
  * @author cnaude
  */
-public class RegexGlobber {
-    //http://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns
+public class RegexGlobber {    
 
-    /**
+    /** 
      *
      * @param glob
      * @return

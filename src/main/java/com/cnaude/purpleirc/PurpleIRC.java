@@ -116,6 +116,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean customTabList;
     private boolean listSortByName;
     public boolean exactNickMatch;
+    public boolean ignoreChatCancel;
     public Long ircConnCheckInterval;
     public Long ircChannelCheckInterval;
     public ChannelWatcher channelWatcher;
@@ -523,6 +524,7 @@ public class PurpleIRC extends JavaPlugin {
         stripIRCColors = getConfig().getBoolean("strip-irc-colors", false);
         stripIRCBackgroundColors = getConfig().getBoolean("strip-irc-bg-colors", true);
         exactNickMatch = getConfig().getBoolean("nick-exact-match", true);
+        ignoreChatCancel = getConfig().getBoolean("ignore-chat-cancel", false);
         colorConverter = new ColorConverter(this, stripGameColors, stripIRCColors, stripIRCBackgroundColors);
         logDebug("strip-game-colors: " + stripGameColors);
         logDebug("strip-irc-colors: " + stripIRCColors);
