@@ -10,6 +10,7 @@ channel-check-interval: 100
 # The following macro tokens are also supported.
 #  %WORLD% 
 #  %NAME% 
+#  %NICKPREFIX%
 #  %DISPLAYNAME% 
 #  %PLAYERIP% - IP address of a player
 #  %CHANNEL% 
