@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleBot;
@@ -87,7 +83,7 @@ public class NetPackets {
             plugin.logError(e.getMessage());
         }
     }
-    
+
     /**
      *
      * @param player

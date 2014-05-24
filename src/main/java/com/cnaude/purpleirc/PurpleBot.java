@@ -2452,9 +2452,9 @@ public final class PurpleBot {
                 }
                 String template;
                 if (afk) {
-                    template = plugin.getMsgTemplate(botNick, TemplateName.PLAYER_AFK);
+                    template = plugin.getMsgTemplate(botNick, TemplateName.ESS_PLAYER_AFK);
                 } else {
-                    template = plugin.getMsgTemplate(botNick, TemplateName.PLAYER_NOT_AFK);
+                    template = plugin.getMsgTemplate(botNick, TemplateName.ESS_PLAYER_NOT_AFK);
                 }
                 plugin.logDebug("Sending AFK message to " + channelName);
                 asyncIRCMessage(channelName, plugin.tokenizer.gamePlayerAFKTokenizer(player, template));

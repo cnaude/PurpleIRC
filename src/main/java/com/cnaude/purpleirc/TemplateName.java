@@ -69,8 +69,8 @@ public class TemplateName {
     public final static String IRC_NOTICE = "irc-notice";
     public final static String IRC_CONSOLE_CHAT = "irc-console-chat";
     
-    public final static String PLAYER_AFK = "player-afk";
-    public final static String PLAYER_NOT_AFK = "player-not-afk";
+    public final static String ESS_PLAYER_AFK = "ess-player-afk";
+    public final static String ESS_PLAYER_NOT_AFK = "ess-player-not-afk";
     
     public final static String INVALID_IRC_COMMAND = "invalid-irc-command";
     public final static String NO_PERM_FOR_IRC_COMMAND = "no-perm-for-irc-command";
