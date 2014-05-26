@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -1285,6 +1286,28 @@ public final class PurpleBot {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.GAME_ACHIEVEMENT), message));
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param player
+     * @param gameMode
+     */
+    public void gameModeChange(Player player, GameMode gameMode) {
+        if (!this.isConnected()) {
+            return;
+        }
+        String message = gameMode.toString();
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName,TemplateName.GAME_MODE)) {
+                if (!isPlayerInValidWorld(player, channelName)) {
+                    return;
+                }
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                                        botNick, TemplateName.GAME_MODE), message));
             }
         }
     }

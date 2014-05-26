@@ -17,8 +17,6 @@
     <description>A CraftBukkit plugin for bridging game chat with IRC. Connect to any number of IRC servers and channels simultaneously.</description>
     <url>http://dev.bukkit.org/server-mods/purpleirc/</url>
 
-    
-
     <repositories>
         <repository>
             <id>sonatype-nexus-public</id>

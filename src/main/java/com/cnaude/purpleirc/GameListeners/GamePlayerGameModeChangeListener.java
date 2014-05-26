@@ -5,13 +5,13 @@ import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 /**
  *
  * @author cnaude
  */
-public class GamePlayerPlayerAchievementAwardedListener implements Listener {
+public class GamePlayerGameModeChangeListener implements Listener {
 
     private final PurpleIRC plugin;
 
@@ -19,7 +19,7 @@ public class GamePlayerPlayerAchievementAwardedListener implements Listener {
      *
      * @param plugin
      */
-    public GamePlayerPlayerAchievementAwardedListener(PurpleIRC plugin) {
+    public GamePlayerGameModeChangeListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -28,10 +28,10 @@ public class GamePlayerPlayerAchievementAwardedListener implements Listener {
      * @param event
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
-        plugin.logDebug("ACHIEVEMENT: " + event.getPlayer().getName() + " => " + event.getAchievement());
+    public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
+        plugin.logDebug("GAMEMODE: " + event.getPlayer().getName() + " => " + event.getNewGameMode());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.gameAchievement(event.getPlayer(), event.getAchievement());
+            ircBot.gameModeChange(event.getPlayer(), event.getNewGameMode());
         }
     }
 }
