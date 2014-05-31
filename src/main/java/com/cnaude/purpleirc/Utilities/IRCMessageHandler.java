@@ -96,6 +96,9 @@ public class IRCMessageHandler {
                 if (modes.equals("*")) {
                     modeOkay = true;
                 }
+                if (modes.contains("i") && !modeOkay) {
+                    modeOkay = user.isIrcop();
+                }
                 if (modes.contains("o") && !modeOkay) {
                     modeOkay = user.getChannelsOpIn().contains(channel);
                 }
