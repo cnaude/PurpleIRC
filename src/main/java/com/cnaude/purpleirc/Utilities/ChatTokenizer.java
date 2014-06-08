@@ -289,9 +289,10 @@ public class ChatTokenizer {
         if (message == null) {
             message = "";
         }
-        return plugin.colorConverter.gameColorsToIrc(template
+        
+        return plugin.colorConverter.gameColorsToIrc(
+                playerTokenizer(name, template)
                 .replace("%SOURCE%", source)
-                .replace("%NAME%", name)
                 .replace("%MESSAGE%", message));
     }
 
