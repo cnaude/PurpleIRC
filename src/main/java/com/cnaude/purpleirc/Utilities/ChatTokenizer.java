@@ -521,8 +521,8 @@ public class ChatTokenizer {
         }
         plugin.logDebug("[P]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
-                .replace(("%JOBS%"), job)
-                .replace(("%JOBSSHORT%"), jobShort)
+                .replace("%JOBS%", job)
+                .replace("%JOBSSHORT%", jobShort)
                 .replace("%NAME%", pName)
                 .replace("%PLAYERIP%", playerIP)
                 .replace("%GROUP%", group)
@@ -543,6 +543,7 @@ public class ChatTokenizer {
         String gPrefix = plugin.getGroupPrefix(worldName, player);
         String gSuffix = plugin.getGroupSuffix(worldName, player);
         String group = plugin.getPlayerGroup(worldName, player);
+        String displayName = plugin.getDisplayName(player);
         String worldAlias = "";
         String worldColor = "";
         String jobShort = "";
@@ -571,9 +572,9 @@ public class ChatTokenizer {
             jobShort = plugin.jobsHook.getPlayerJob(player, true);
         }
         plugin.logDebug("[S]Raw message: " + message);
-        return message.replace("%DISPLAYNAME%", player)
-                .replace(("%JOBS%"), job)
-                .replace(("%JOBSSHORT%"), jobShort)
+        return message.replace("%DISPLAYNAME%", displayName)
+                .replace("%JOBS%", job)
+                .replace("%JOBSSHORT%", jobShort)
                 .replace("%NAME%", player)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
