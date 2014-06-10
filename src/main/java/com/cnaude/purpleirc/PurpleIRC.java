@@ -51,6 +51,7 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.io.IOException;
 import java.util.HashMap;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -830,10 +831,15 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
+        OfflinePlayer oPlayer = this.getServer().getOfflinePlayer(player);
         if (vaultHelpers != null) {
             if (vaultHelpers.permission != null) {
                 try {
-                    groupName = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    if (oPlayer != null) {
+                        groupName = vaultHelpers.permission.getPrimaryGroup(worldName, oPlayer);
+                    } else {
+                        groupName = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    }
                 } catch (Exception ex) {
                     logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
                 }
@@ -871,9 +877,14 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
+        OfflinePlayer oPlayer = this.getServer().getOfflinePlayer(player);
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
-                prefix = vaultHelpers.chat.getPlayerPrefix(worldName, player);
+                if (oPlayer != null) {
+                    prefix = vaultHelpers.chat.getPlayerPrefix(worldName, oPlayer);
+                } else {
+                    prefix = vaultHelpers.chat.getPlayerPrefix(worldName, player);
+                }
             }
         }
         if (prefix == null) {
@@ -908,9 +919,14 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
+        OfflinePlayer oPlayer = this.getServer().getOfflinePlayer(player);
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
-                suffix = vaultHelpers.chat.getPlayerSuffix(worldName, player);
+                if (oPlayer != null) {
+                    suffix = vaultHelpers.chat.getPlayerSuffix(worldName, oPlayer);
+                } else {
+                    suffix = vaultHelpers.chat.getPlayerSuffix(worldName, player);
+                }
             }
         }
         if (suffix == null) {
@@ -954,11 +970,16 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getGroupPrefix(String worldName, String player) {
         String prefix = "";
+        OfflinePlayer oPlayer = this.getServer().getOfflinePlayer(player);
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
                 String group = "";
                 try {
-                    group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    if (oPlayer != null) {
+                        group = vaultHelpers.permission.getPrimaryGroup(worldName, oPlayer);
+                    } else {
+                        group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    }
                 } catch (Exception ex) {
                     logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
                 }
@@ -1032,11 +1053,16 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getGroupSuffix(String worldName, String player) {
         String suffix = "";
+        OfflinePlayer oPlayer = this.getServer().getOfflinePlayer(player);
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
                 String group = "";
                 try {
-                    group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    if (oPlayer != null) {
+                        group = vaultHelpers.permission.getPrimaryGroup(worldName, oPlayer);
+                    } else {
+                        group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
+                    }
                 } catch (Exception ex) {
                     logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
                 }
