@@ -48,11 +48,13 @@ import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import com.cnaude.purpleirc.Utilities.Query;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -144,6 +146,7 @@ public class PurpleIRC extends JavaPlugin {
     public VaultHook vaultHelpers;
     public VanishHook vanishHook;
     private YamlConfiguration heroConfig;
+    private File cacheFile;
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -156,6 +159,7 @@ public class PurpleIRC extends JavaPlugin {
         this.heroChannelMessages = new CaseInsensitiveMap<>();
         this.heroActionChannelMessages = new CaseInsensitiveMap<>();
         this.displayNameCache = new CaseInsensitiveMap<>();
+        this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
     }
 
     /**
@@ -173,6 +177,7 @@ public class PurpleIRC extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         loadConfig();
+        loadDisplayNameCache();
         if (identServerEnabled) {
             logInfo("Starting Ident Server ...");
             try {
@@ -338,6 +343,7 @@ public class PurpleIRC extends JavaPlugin {
                 logError(ex.getMessage());
             }
         }
+        saveDisplayNameCache();
     }
 
     /**
@@ -947,6 +953,25 @@ public class PurpleIRC extends JavaPlugin {
     /**
      *
      * @param player
+     */
+    public void updateDisplayNameCache(Player player) {
+        logDebug("Caching displayName for " + player.getName() + " = " + player.getDisplayName());
+        displayNameCache.put(player.getName(), player.getDisplayName());
+    }
+    
+    /**
+     *
+     * @param player
+     * @param displayName
+     */
+    public void updateDisplayNameCache(String player, String displayName) {
+        logDebug("Caching displayName for " + player + " = " + displayName);
+        displayNameCache.put(player, displayName);
+    }
+
+    /**
+     *
+     * @param player
      * @return
      */
     public String getGroupPrefix(Player player) {
@@ -1087,5 +1112,42 @@ public class PurpleIRC extends JavaPlugin {
 
     public boolean isPrismEnabled() {
         return (getServer().getPluginManager().getPlugin("Prism") != null);
+    }
+
+    public void saveDisplayNameCache() {
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(cacheFile));
+        } catch (IOException ex) {
+            logError(ex.getMessage());
+            return;
+        }
+
+        try {
+            for (String s : displayNameCache.keySet()) {
+                logDebug("Saving to displayName.cache: " + s + "\t" + displayNameCache.get(s));
+                writer.write(s + "\t" + displayNameCache.get(s) + "\n");
+            }
+            writer.close();
+        } catch (IOException ex) {
+            logError(ex.getMessage());
+        }
+    }
+
+    public void loadDisplayNameCache() {        
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(cacheFile));
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (line.equals("\n")) {
+                    continue;
+                }
+                String[] parts = line.split("\t", 2);
+                updateDisplayNameCache(parts[0], parts[1]);
+            }
+            in.close();
+        } catch (IOException | NumberFormatException e) {
+            logError(e.getMessage());
+        }
     }
 }

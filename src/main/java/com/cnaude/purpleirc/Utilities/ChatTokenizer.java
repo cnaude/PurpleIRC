@@ -335,14 +335,18 @@ public class ChatTokenizer {
      */
     public String chatFactionTokenizer(Player player, String botNick, String message, String chatTag, String chatMode) {
         String template;
-        if (chatMode.equals("public")) {
-            template = plugin.getMsgTemplate(botNick, "faction-public-chat");
-        } else if (chatMode.equals("ally")) {
-            template = plugin.getMsgTemplate(botNick, "faction-ally-chat");
-        } else if (chatMode.equals("enemy")) {
-            template = plugin.getMsgTemplate(botNick, "faction-enemy-chat");
-        } else {
-            return "";
+        switch (chatMode) {
+            case "public":
+                template = plugin.getMsgTemplate(botNick, "faction-public-chat");
+                break;
+            case "ally":
+                template = plugin.getMsgTemplate(botNick, "faction-ally-chat");
+                break;
+            case "enemy":
+                template = plugin.getMsgTemplate(botNick, "faction-enemy-chat");
+                break;
+            default:
+                return "";
         }
         return plugin.colorConverter.gameColorsToIrc(
                 gameChatToIRCTokenizer(player, template, message)

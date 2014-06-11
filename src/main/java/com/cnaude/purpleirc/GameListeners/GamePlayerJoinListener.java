@@ -46,8 +46,8 @@ public class GamePlayerJoinListener implements Listener {
                         plugin.netPackets.updateTabList(event.getPlayer());
                     }
                 }
+                plugin.updateDisplayNameCache(event.getPlayer());
             }
         }, 20);
-
     }
 }
