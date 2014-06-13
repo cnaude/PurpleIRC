@@ -33,7 +33,11 @@ import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -72,6 +76,7 @@ public final class PurpleBot {
     public int botServerPort;
     public long chatDelay;
     public String botServer;
+    public String bindAddress;
     public String botNick;
     public String botLogin;
     public String botRealName;
@@ -129,41 +134,41 @@ public final class PurpleBot {
     public PurpleBot(File file, PurpleIRC plugin) {
         fileName = file.getName();
         this.connected = false;
-        this.botChannels = new ArrayList<String>();
-        this.ircListeners = new ArrayList<ListenerAdapter>();
-        this.channelCmdNotifyRecipients = new ArrayList<String>();
-        this.commandMap = new CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>>();
-        this.enabledMessages = new CaseInsensitiveMap<Collection<String>>();
-        this.muteList = new CaseInsensitiveMap<Collection<String>>();
-        this.worldList = new CaseInsensitiveMap<Collection<String>>();
-        this.opsList = new CaseInsensitiveMap<Collection<String>>();
-        this.voicesList = new CaseInsensitiveMap<Collection<String>>();
-        this.heroChannel = new CaseInsensitiveMap<String>();
-        this.townyChannel = new CaseInsensitiveMap<String>();
-        this.invalidCommandCTCP = new CaseInsensitiveMap<Boolean>();
-        this.logIrcToHeroChat = new CaseInsensitiveMap<Boolean>();
-        this.shortify = new CaseInsensitiveMap<Boolean>();
-        this.invalidCommandPrivate = new CaseInsensitiveMap<Boolean>();
-        this.hideQuitWhenVanished = new CaseInsensitiveMap<Boolean>();
-        this.hideListWhenVanished = new CaseInsensitiveMap<Boolean>();
-        this.hideJoinWhenVanished = new CaseInsensitiveMap<Boolean>();
-        this.ignoreIRCChat = new CaseInsensitiveMap<Boolean>();
-        this.channelAutoJoin = new CaseInsensitiveMap<Boolean>();
-        this.channelTopicProtected = new CaseInsensitiveMap<Boolean>();
-        this.channelModes = new CaseInsensitiveMap<String>();
-        this.activeTopic = new CaseInsensitiveMap<String>();
-        this.channelTopic = new CaseInsensitiveMap<String>();
-        this.channelPassword = new CaseInsensitiveMap<String>();
-        this.tabIgnoreNicks = new CaseInsensitiveMap<Collection<String>>();
-        this.filters = new CaseInsensitiveMap<Collection<String>>();
-        this.channelNicks = new CaseInsensitiveMap<Collection<String>>();
-        this.channelTopicChanserv = new CaseInsensitiveMap<Boolean>();
-        this.joinMsg = new CaseInsensitiveMap<String>();
-        this.msgOnJoin = new CaseInsensitiveMap<Boolean>();
-        this.enableMessageFiltering = new CaseInsensitiveMap<Boolean>();
+        this.botChannels = new ArrayList<>();
+        this.ircListeners = new ArrayList<>();
+        this.channelCmdNotifyRecipients = new ArrayList<>();
+        this.commandMap = new CaseInsensitiveMap<>();
+        this.enabledMessages = new CaseInsensitiveMap<>();
+        this.muteList = new CaseInsensitiveMap<>();
+        this.worldList = new CaseInsensitiveMap<>();
+        this.opsList = new CaseInsensitiveMap<>();
+        this.voicesList = new CaseInsensitiveMap<>();
+        this.heroChannel = new CaseInsensitiveMap<>();
+        this.townyChannel = new CaseInsensitiveMap<>();
+        this.invalidCommandCTCP = new CaseInsensitiveMap<>();
+        this.logIrcToHeroChat = new CaseInsensitiveMap<>();
+        this.shortify = new CaseInsensitiveMap<>();
+        this.invalidCommandPrivate = new CaseInsensitiveMap<>();
+        this.hideQuitWhenVanished = new CaseInsensitiveMap<>();
+        this.hideListWhenVanished = new CaseInsensitiveMap<>();
+        this.hideJoinWhenVanished = new CaseInsensitiveMap<>();
+        this.ignoreIRCChat = new CaseInsensitiveMap<>();
+        this.channelAutoJoin = new CaseInsensitiveMap<>();
+        this.channelTopicProtected = new CaseInsensitiveMap<>();
+        this.channelModes = new CaseInsensitiveMap<>();
+        this.activeTopic = new CaseInsensitiveMap<>();
+        this.channelTopic = new CaseInsensitiveMap<>();
+        this.channelPassword = new CaseInsensitiveMap<>();
+        this.tabIgnoreNicks = new CaseInsensitiveMap<>();
+        this.filters = new CaseInsensitiveMap<>();
+        this.channelNicks = new CaseInsensitiveMap<>();
+        this.channelTopicChanserv = new CaseInsensitiveMap<>();
+        this.joinMsg = new CaseInsensitiveMap<>();
+        this.msgOnJoin = new CaseInsensitiveMap<>();
+        this.enableMessageFiltering = new CaseInsensitiveMap<>();
         this.plugin = plugin;
         this.file = file;
-        whoisSenders = new ArrayList<CommandSender>();
+        whoisSenders = new ArrayList<>();
         config = new YamlConfiguration();
         loadConfig();
         addListeners();
@@ -211,6 +216,14 @@ public final class PurpleBot {
                 plugin.logError("Invalid character set: " + charSet);
                 plugin.logInfo("Available character sets: " + Joiner.on(", ").join(Charset.availableCharsets().keySet()));
                 plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+            }
+        }
+        if (!bindAddress.isEmpty()) {
+            plugin.logInfo("Binding to " + bindAddress);
+            try {
+                configBuilder.setLocalAddress(InetAddress.getByName(bindAddress));
+            } catch (UnknownHostException ex) {
+                plugin.logError(ex.getMessage());
             }
         }
         Configuration configuration = configBuilder.buildConfiguration();
@@ -345,10 +358,7 @@ public final class PurpleBot {
                 try {
                     plugin.logInfo(connectMessage);
                     bot.startBot();
-                } catch (IOException ex) {
-                    plugin.logError("Problem connecting to " + botServer + " => "
-                            + " as " + botNick + " [Error: " + ex.getMessage() + "]");
-                } catch (IrcException ex) {
+                } catch (IOException | IrcException ex) {
                     plugin.logError("Problem connecting to " + botServer + " => "
                             + " as " + botNick + " [Error: " + ex.getMessage() + "]");
                 }
@@ -535,6 +545,7 @@ public final class PurpleBot {
                         .getDescription().getWebsite();
             }
             botServer = config.getString("server", "");
+            bindAddress = config.getString("bind", "");
             charSet = config.getString("charset", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
@@ -548,6 +559,7 @@ public final class PurpleBot {
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Login => " + botLogin);
             plugin.logDebug("Server => " + botServer);
+            plugin.logDebug(("Bind => ") + bindAddress);
             plugin.logDebug("SSL => " + ssl);
             plugin.logDebug("Trust All Certs => " + trustAllCerts);
             plugin.logDebug("Port => " + botServerPort);
@@ -645,7 +657,7 @@ public final class PurpleBot {
                 plugin.logDebug("  EnableMessageFiltering => " + enableMessageFiltering.get(channelName));
 
                 // build channel op list
-                Collection<String> cOps = new ArrayList<String>();
+                Collection<String> cOps = new ArrayList<>();
                 for (String channelOper : config.getStringList("channels." + enChannelName + ".ops")) {
                     if (!cOps.contains(channelOper)) {
                         cOps.add(channelOper);
@@ -658,7 +670,7 @@ public final class PurpleBot {
                 }
 
                 // build channel voice list
-                Collection<String> cVoices = new ArrayList<String>();
+                Collection<String> cVoices = new ArrayList<>();
                 for (String channelVoice : config.getStringList("channels." + enChannelName + ".voices")) {
                     if (!cVoices.contains(channelVoice)) {
                         cVoices.add(channelVoice);
@@ -671,7 +683,7 @@ public final class PurpleBot {
                 }
 
                 // build mute list
-                Collection<String> m = new ArrayList<String>();
+                Collection<String> m = new ArrayList<>();
                 for (String mutedUser : config.getStringList("channels." + enChannelName + ".muted")) {
                     if (!m.contains(mutedUser)) {
                         m.add(mutedUser);
@@ -684,7 +696,7 @@ public final class PurpleBot {
                 }
 
                 // build valid chat list
-                Collection<String> c = new ArrayList<String>();
+                Collection<String> c = new ArrayList<>();
                 for (String validChat : config.getStringList("channels." + enChannelName + ".enabled-messages")) {
                     if (!c.contains(validChat)) {
                         c.add(validChat);
@@ -697,7 +709,7 @@ public final class PurpleBot {
                 }
 
                 // build valid world list
-                Collection<String> w = new ArrayList<String>();
+                Collection<String> w = new ArrayList<>();
                 for (String validWorld : config.getStringList("channels." + enChannelName + ".worlds")) {
                     if (!w.contains(validWorld)) {
                         w.add(validWorld);
@@ -710,7 +722,7 @@ public final class PurpleBot {
                 }
 
                 // build valid world list
-                Collection<String> t = new ArrayList<String>();
+                Collection<String> t = new ArrayList<>();
                 for (String name : config.getStringList("channels." + enChannelName + ".custom-tab-ignore-list")) {
                     if (!t.contains(name)) {
                         t.add(name);
@@ -723,7 +735,7 @@ public final class PurpleBot {
                 }
 
                 // build valid world list
-                Collection<String> f = new ArrayList<String>();
+                Collection<String> f = new ArrayList<>();
                 for (String word : config.getStringList("channels." + enChannelName + ".filter-list")) {
                     if (!f.contains(word)) {
                         f.add(word);
@@ -736,12 +748,11 @@ public final class PurpleBot {
                 }
 
                 // build command map
-                CaseInsensitiveMap<CaseInsensitiveMap<String>> map
-                        = new CaseInsensitiveMap<CaseInsensitiveMap<String>>();
+                CaseInsensitiveMap<CaseInsensitiveMap<String>> map = new CaseInsensitiveMap<>();
                 try {
                     for (String command : config.getConfigurationSection("channels." + enChannelName + ".commands").getKeys(false)) {
                         plugin.logDebug("  Command => " + command);
-                        CaseInsensitiveMap<String> optionPair = new CaseInsensitiveMap<String>();
+                        CaseInsensitiveMap<String> optionPair = new CaseInsensitiveMap<>();
                         String commandKey = "channels." + enChannelName + ".commands." + command + ".";
                         optionPair.put("modes", config.getString(commandKey + "modes", "*"));
                         optionPair.put("private", config.getString(commandKey + "private", "false"));
@@ -767,9 +778,7 @@ public final class PurpleBot {
                         + "\" [SSL: " + ssl + "]" + " [TrustAllCerts: "
                         + trustAllCerts + "]";
             }
-        } catch (IOException ex) {
-            plugin.logError(ex.getMessage());
-        } catch (InvalidConfigurationException ex) {
+        } catch (IOException | InvalidConfigurationException ex) {
             plugin.logError(ex.getMessage());
         }
     }
@@ -1792,7 +1801,7 @@ public final class PurpleBot {
             sender.sendMessage(ChatColor.RED + " Not connected!");
             return;
         }
-        List<String> channelUsers = new ArrayList<String>();
+        List<String> channelUsers = new ArrayList<>();
         for (User user : channel.getUsers()) {
             String nick = user.getNick();
             nick = getNickPrefix(user, channel) + nick;
@@ -1864,7 +1873,7 @@ public final class PurpleBot {
             return;
         }
         // Build current list of names in channel
-        ArrayList<String> users = new ArrayList<String>();
+        ArrayList<String> users = new ArrayList<>();
         for (User user : channel.getUsers()) {
             //plugin.logDebug("N: " + user.getNick());
             users.add(user.getNick());

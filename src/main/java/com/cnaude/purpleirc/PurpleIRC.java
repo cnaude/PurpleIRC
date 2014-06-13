@@ -1136,16 +1136,16 @@ public class PurpleIRC extends JavaPlugin {
 
     public void loadDisplayNameCache() {        
         try {
-            BufferedReader in = new BufferedReader(new FileReader(cacheFile));
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (line.equals("\n")) {
-                    continue;
+            try (BufferedReader in = new BufferedReader(new FileReader(cacheFile))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    if (line.equals("\n")) {
+                        continue;
+                    }
+                    String[] parts = line.split("\t", 2);
+                    updateDisplayNameCache(parts[0], parts[1]);
                 }
-                String[] parts = line.split("\t", 2);
-                updateDisplayNameCache(parts[0], parts[1]);
             }
-            in.close();
         } catch (IOException | NumberFormatException e) {
             logError(e.getMessage());
         }
