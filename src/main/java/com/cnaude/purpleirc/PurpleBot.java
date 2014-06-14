@@ -1151,12 +1151,31 @@ public final class PurpleBot {
             return;
         }
         for (String channelName : botChannels) {
-            if (isMessageEnabled(channelName,"broadcast-message")) {
+            if (isMessageEnabled(channelName,TemplateName.BROADCAST_MESSAGE)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin
-                                .getMsgTemplate(botNick, "broadcast-message"),
+                                .getMsgTemplate(botNick, TemplateName.BROADCAST_MESSAGE),
                                 ChatColor.translateAlternateColorCodes('&', message)));
             }
+        }
+    }
+    
+    /**
+     *
+     * @param player
+     * @param message
+     */
+    public void essHelpOp(Player player, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {            
+            if (isMessageEnabled(channelName,TemplateName.ESS_HELPOP)) {                
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, TemplateName.ESS_HELPOP),
+                                ChatColor.translateAlternateColorCodes('&', message)));
+            } 
         }
     }
 

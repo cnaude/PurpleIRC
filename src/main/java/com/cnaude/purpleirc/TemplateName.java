@@ -72,6 +72,7 @@ public class TemplateName {
     
     public final static String ESS_PLAYER_AFK = "ess-player-afk";
     public final static String ESS_PLAYER_NOT_AFK = "ess-player-not-afk";
+    public final static String ESS_HELPOP = "ess-helpop";
     
     public final static String INVALID_IRC_COMMAND = "invalid-irc-command";
     public final static String NO_PERM_FOR_IRC_COMMAND = "no-perm-for-irc-command";

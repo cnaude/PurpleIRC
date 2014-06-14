@@ -61,6 +61,7 @@ message-format:
   # Essentials messages
   ess-player-afk: '[&2%WORLD%&r] %NAME% is now AFK' 
   ess-player-not-afk: '[&2%WORLD%&r] %NAME% is no longer AFK' 
+  ess-helpop: '&4[HelpOp] %DISPLAYNAME%&r: %MESSAGE%'
   # Message templates for IRC to game messages
   irc-action: '[&4IRC&r] ***%NAME% %MESSAGE%'
   irc-chat: '[&4IRC]<%NAME%> %MESSAGE%'  

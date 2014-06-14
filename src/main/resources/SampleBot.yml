@@ -96,6 +96,8 @@ channels:
     - game-join
     - game-quit
     - game-mode
+    # Essentials helpop messages (/helpop /amsg /ac)   
+    - ess-helpop
     # The game-afk message type is not functional yet.
     #- game-afk
     # These messages are sent from IRC to game (see permissions)
