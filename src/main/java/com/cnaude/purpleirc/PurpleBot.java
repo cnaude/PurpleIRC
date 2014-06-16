@@ -2612,19 +2612,51 @@ public final class PurpleBot {
         if (!this.isConnected()) {
             return;
         }
+        String keyword = queryParams.getKeyword();
+        String sortDirection = queryParams.getSortDirection();
+        String worldName = queryParams.getWorld();
+        String id = String.valueOf(queryParams.getId());
+        String radius = String.valueOf(queryParams.getRadius());
+        String X = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX());
+        String Y = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY());
+        String Z = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ());
+        if (keyword == null) {
+            keyword = "";            
+        }
+        if (sortDirection == null) {
+            sortDirection = "";
+        }
+        if (worldName == null) {
+            worldName = "";
+        }
+        if (id == null) {
+            id = "";
+        }
+        if (radius == null) {
+            radius = "";
+        }
+        if (X == null) {
+            X = "";
+        }
+        if (Y == null) {
+            Y = "";
+        }
+        if (Z == null) {
+            Z = "";
+        }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.PRISM_ROLLBACK)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .playerTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.PRISM_ROLLBACK))
                         .replace("%COMMAND%", queryParams.getOriginalCommand())
-                        .replace("%KEYWORD%", queryParams.getKeyword())
-                        .replace("%SORTDIRECTION%", queryParams.getSortDirection())
-                        .replace("%PARAMWORLD%", queryParams.getWorld())
-                        .replace("%ID%", String.valueOf(queryParams.getId()))
-                        .replace("%RADIUS%", String.valueOf(queryParams.getRadius()))
-                        .replace("%X%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX()))
-                        .replace("%Y%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY()))
-                        .replace("%Z%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ()))
+                        .replace("%KEYWORD%", keyword)
+                        .replace("%SORTDIRECTION%", sortDirection)
+                        .replace("%PARAMWORLD%", worldName)
+                        .replace("%ID%", id)
+                        .replace("%RADIUS%", radius)
+                        .replace("%X%", X)
+                        .replace("%Y%", Y)
+                        .replace("%Z%", Z)
                 );
             }
         }
