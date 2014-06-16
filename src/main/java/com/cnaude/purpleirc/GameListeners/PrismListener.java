@@ -34,7 +34,7 @@ public class PrismListener implements Listener {
     public void onPrismBlocksRollbackEvent(PrismBlocksRollbackEvent event) {
         plugin.logDebug("onPrismBlocksRollbackEvent caught");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.gamePrismRollback(event.onBehalfOf(), event.getQueryParameters());
+            ircBot.gamePrismRollback(event.onBehalfOf(), event.getQueryParameters(), event.getResult().getBlockStateChanges());            
         }
     }
     

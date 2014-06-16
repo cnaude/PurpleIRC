@@ -2608,75 +2608,10 @@ public final class PurpleBot {
         return fileName;
     }
 
-    public void gamePrismRollback(Player player, QueryParameters queryParams) {
-        if (!this.isConnected()) {
-            return;
-        }
-        String keyword = queryParams.getKeyword();
-        String sortDirection = queryParams.getSortDirection();
-        String worldName = queryParams.getWorld();
-        String id = String.valueOf(queryParams.getId());
-        String radius = String.valueOf(queryParams.getRadius());
-        String X = "";
-        String Y = "";
-        String Z = "";
-        try {
-            X = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX());
-            Y = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY());
-            Z = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ());
-        } catch (Exception ex) {
-            plugin.logDebug(ex.getMessage());
-        }
-        if (keyword == null) {
-            keyword = "";
-        }
-        if (sortDirection == null) {
-            sortDirection = "";
-        }
-        if (worldName == null) {
-            worldName = "";
-        }
-        if (id == null) {
-            id = "";
-        }
-        if (radius == null) {
-            radius = "";
-        }
-        if (X == null) {
-            X = "";
-        }
-        if (Y == null) {
-            Y = "";
-        }
-        if (Z == null) {
-            Z = "";
-        }
-        for (String channelName : botChannels) {
-            if (isMessageEnabled(channelName, TemplateName.PRISM_ROLLBACK)) {
-                asyncIRCMessage(channelName, plugin.tokenizer
-                        .playerTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.PRISM_ROLLBACK))
-                        .replace("%COMMAND%", queryParams.getOriginalCommand())
-                        .replace("%KEYWORD%", keyword)
-                        .replace("%SORTDIRECTION%", sortDirection)
-                        .replace("%PARAMWORLD%", worldName)
-                        .replace("%ID%", id)
-                        .replace("%RADIUS%", radius)
-                        .replace("%X%", X)
-                        .replace("%Y%", Y)
-                        .replace("%Z%", Z)
-                );
-            }
-        }
-    }
-
-    public void gamePrismDrainOrExtinguish(String template, Player player, int radius, ArrayList<BlockStateChange> blockStateChange) {
-        if (!this.isConnected()) {
-            return;
-        }
+    public String prismBlockStateChangeTokens(String message, ArrayList<BlockStateChange> blockStateChange) {
         String X;
         String Y;
         String Z;
-        String radiusStr = String.valueOf(radius);
         String origBlock;
         String newBlock;
         String blockWorld;
@@ -2708,9 +2643,6 @@ public final class PurpleBot {
             Y = "";
             Z = "";
         }
-        if (radiusStr == null) {
-            radiusStr = "";
-        }
         if (X == null) {
             X = "";
         }
@@ -2729,18 +2661,69 @@ public final class PurpleBot {
         if (newBlock == null) {
             newBlock = "";
         }
+        return message
+                .replace("%ORIGINALBLOCK%", origBlock)
+                .replace("%NEWBLOCK%", newBlock)
+                .replace("%X%", X)
+                .replace("%Y%", Y)
+                .replace("%Z%", Z)
+                .replace("%BLOCKWORLD%", blockWorld);
+    }
+
+    public void gamePrismRollback(Player player, QueryParameters queryParams, ArrayList<BlockStateChange> blockStateChange) {
+        if (!this.isConnected()) {
+            return;
+        }
+        String keyword = queryParams.getKeyword();
+        String sortDirection = queryParams.getSortDirection();
+        String worldName = queryParams.getWorld();
+        String id = String.valueOf(queryParams.getId());
+        String radius = String.valueOf(queryParams.getRadius());        
+        if (keyword == null) {
+            keyword = "";
+        }
+        if (sortDirection == null) {
+            sortDirection = "";
+        }
+        if (worldName == null) {
+            worldName = "";
+        }
+        if (id == null) {
+            id = "";
+        }
+        if (radius == null) {
+            radius = "";
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.PRISM_ROLLBACK)) {
+                asyncIRCMessage(channelName, prismBlockStateChangeTokens(plugin.tokenizer
+                        .playerTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.PRISM_ROLLBACK))
+                        .replace("%COMMAND%", queryParams.getOriginalCommand())
+                        .replace("%KEYWORD%", keyword)
+                        .replace("%SORTDIRECTION%", sortDirection)
+                        .replace("%PARAMWORLD%", worldName)
+                        .replace("%ID%", id)
+                        .replace("%RADIUS%", radius), blockStateChange
+                ));
+            }
+        }
+    }
+
+    public void gamePrismDrainOrExtinguish(String template, Player player, int radius, ArrayList<BlockStateChange> blockStateChange) {
+        if (!this.isConnected()) {
+            return;
+        }
+        String radiusStr = String.valueOf(radius);
+
+        if (radiusStr == null) {
+            radiusStr = "";
+        }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, template)) {
-                asyncIRCMessage(channelName, plugin.tokenizer
+                asyncIRCMessage(channelName, prismBlockStateChangeTokens(plugin.tokenizer
                         .playerTokenizer(player, plugin.getMsgTemplate(botNick, template))
-                        .replace("%RADIUS%", radiusStr)
-                        .replace("%ORIGINALBLOCK%", origBlock)
-                        .replace("%NEWBLOCK%", newBlock)
-                        .replace("%X%", X)
-                        .replace("%Y%", Y)
-                        .replace("%Z%", Z)
-                        .replace("%BLOCKWORLD%", blockWorld)
-                );
+                        .replace("%RADIUS%", radiusStr), blockStateChange
+                ));
             }
         }
     }
