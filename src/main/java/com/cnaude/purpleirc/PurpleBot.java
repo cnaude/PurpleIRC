@@ -2617,11 +2617,18 @@ public final class PurpleBot {
         String worldName = queryParams.getWorld();
         String id = String.valueOf(queryParams.getId());
         String radius = String.valueOf(queryParams.getRadius());
-        String X = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX());
-        String Y = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY());
-        String Z = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ());
+        String X = "";
+        String Y = "";
+        String Z = "";
+        try {
+            X = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX());
+            Y = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY());
+            Z = String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ());
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+        }
         if (keyword == null) {
-            keyword = "";            
+            keyword = "";
         }
         if (sortDirection == null) {
             sortDirection = "";
@@ -2666,17 +2673,73 @@ public final class PurpleBot {
         if (!this.isConnected()) {
             return;
         }
+        String X;
+        String Y;
+        String Z;
+        String radiusStr = String.valueOf(radius);
+        String origBlock;
+        String newBlock;
+        String blockWorld;
+        try {
+            blockWorld = String.valueOf(blockStateChange.get(0).getNewBlock().getWorld().getName());
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+            blockWorld = "";
+        }
+        try {
+            origBlock = String.valueOf(blockStateChange.get(0).getOriginalBlock().getType().name());
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+            origBlock = "";
+        }
+        try {
+            newBlock = String.valueOf(blockStateChange.get(0).getNewBlock().getType().name());
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+            newBlock = "";
+        }
+        try {
+            X = String.valueOf(blockStateChange.get(0).getNewBlock().getX());
+            Y = String.valueOf(blockStateChange.get(0).getNewBlock().getY());
+            Z = String.valueOf(blockStateChange.get(0).getNewBlock().getZ());
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+            X = "";
+            Y = "";
+            Z = "";
+        }
+        if (radiusStr == null) {
+            radiusStr = "";
+        }
+        if (X == null) {
+            X = "";
+        }
+        if (Y == null) {
+            Y = "";
+        }
+        if (Z == null) {
+            Z = "";
+        }
+        if (blockWorld == null) {
+            blockWorld = null;
+        }
+        if (origBlock == null) {
+            origBlock = "";
+        }
+        if (newBlock == null) {
+            newBlock = "";
+        }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, template)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .playerTokenizer(player, plugin.getMsgTemplate(botNick, template))
-                        .replace("%RADIUS%", String.valueOf(radius))
-                        .replace("%ORIGINALBLOCK%", String.valueOf(blockStateChange.get(0).getOriginalBlock().getType().name()))
-                        .replace("%NEWBLOCK%", String.valueOf(blockStateChange.get(0).getNewBlock().getType().name()))
-                        .replace("%X%", String.valueOf(blockStateChange.get(0).getNewBlock().getX()))
-                        .replace("%Y%", String.valueOf(blockStateChange.get(0).getNewBlock().getY()))
-                        .replace("%Z%", String.valueOf(blockStateChange.get(0).getNewBlock().getZ()))
-                        .replace("%BLOCKWORLD%", String.valueOf(blockStateChange.get(0).getNewBlock().getWorld().getName()))
+                        .replace("%RADIUS%", radiusStr)
+                        .replace("%ORIGINALBLOCK%", origBlock)
+                        .replace("%NEWBLOCK%", newBlock)
+                        .replace("%X%", X)
+                        .replace("%Y%", Y)
+                        .replace("%Z%", Z)
+                        .replace("%BLOCKWORLD%", blockWorld)
                 );
             }
         }
