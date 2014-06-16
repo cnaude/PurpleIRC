@@ -16,44 +16,45 @@ import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
 import com.cnaude.purpleirc.GameListeners.OreBroadcastListener;
+import com.cnaude.purpleirc.GameListeners.PrismListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
+import com.cnaude.purpleirc.Hooks.FactionChatHook;
+import com.cnaude.purpleirc.Hooks.JobsHook;
+import com.cnaude.purpleirc.Hooks.ShortifyHook;
+import com.cnaude.purpleirc.Hooks.TownyChatHook;
+import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Hooks.VaultHook;
+import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
+import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
+import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
+import com.cnaude.purpleirc.Utilities.NetPackets;
+import com.cnaude.purpleirc.Utilities.Query;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
 import com.google.common.base.Joiner;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.cnaude.purpleirc.Hooks.FactionChatHook;
-import com.cnaude.purpleirc.Hooks.JobsHook;
-import com.cnaude.purpleirc.Hooks.ShortifyHook;
-import com.cnaude.purpleirc.Hooks.TownyChatHook;
-import com.cnaude.purpleirc.Hooks.VanishHook;
-import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
-import com.cnaude.purpleirc.Utilities.ChatTokenizer;
-import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
-import com.cnaude.purpleirc.Utilities.NetPackets;
-import com.cnaude.purpleirc.Utilities.Query;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -146,7 +147,7 @@ public class PurpleIRC extends JavaPlugin {
     public VaultHook vaultHelpers;
     public VanishHook vanishHook;
     private YamlConfiguration heroConfig;
-    private File cacheFile;
+    private final File cacheFile;
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -194,7 +195,7 @@ public class PurpleIRC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GamePlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);
+        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);        
         if (isPluginEnabled("Herochat")) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
@@ -215,6 +216,12 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
         } else {
             logInfo("TitanChat not detected.");
+        }
+        if (isPluginEnabled("Prism")) {
+            logInfo("Enabling Prism support.");
+            getServer().getPluginManager().registerEvents(new PrismListener(this), this);
+        } else {
+            logInfo("Prism not detected.");
         }
         if (isPluginEnabled("TownyChat")) {
             logInfo("Enabling TownyChat support.");

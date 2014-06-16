@@ -39,6 +39,29 @@ channel-check-interval: 100
 #  %TOWNYMSGCOLOR% - Towny message color
 #  %JOBS% - Player jobs
 #  %JOBS% - Player jobs shortened
+# Prism custom tokens:
+#   prism-rollback:
+#    %COMMAND%
+#    %KEYWORD%
+#    %SORTDIRECTION%
+#    %PARAMWORLD%
+#    %ID%
+#    %RADIUS%
+#    %X%
+#    %Y%
+#    %Z%
+#   prism-drain and prism-extinguish:
+#    %RADIUS%
+#    %ORIGINALBLOCK%
+#    %NEWBLOCK%
+#    %X%
+#    %Y%
+#    %Z%
+#    %BLOCKWORLD%
+#   prism-custom:
+#    %ACTION%
+#    %MESSAGE%
+#    %PLUGIN%   
 message-format:
   # Message templates for game to IRC messages  
   console-chat: '[&dServer&r] %MESSAGE%' 
@@ -141,6 +164,11 @@ message-format:
       irc: '[IRC]%PLAYERPREFIX%%NAME% %MESSAGE%'
   broadcast-message: '[Broadcast] <%NAME%> %MESSAGE%'
   broadcast-console-message: '[Broadcast] <Console> %MESSAGE%'
+  # Prism templates. See above for token names.
+  prism-rollback: '[PrismRollback] [Player: %NAME%] [Radius: %RADIUS%] [Command: %COMMAND%] [Keyword: %KEYWORD%] [X,Y,Z: %X%,%Y%,%Z%] [World: %PARAMWORLD%]'
+  prism-drain: '[PrismDrain] [Player: %NAME%] [Radius: %RADIUS%] [OrigBlock: %ORIGINALBLOCK%] [NewBlock: %NEWBLOCK%] [X,Y,Z: %X%,%Y%,%Z%] [World: %BLOCKWORLD%]'
+  prism-extinguish: '[PrismExtinguish] [Player: %NAME%] [Radius%: %RADIUS] [OrigBlock: %ORIGINALBLOCK%] [NewBlock: %NEWBLOCK%] [X,Y,Z: %X%,%Y%,%Z%] [World: %BLOCKWORLD%]'
+  prism-custom: '[PrismCustom] [Player: %NAME%] [Action: %ACTION%] [Message: %MESSAGE%] [Plugin: %PLUGIN%]'
   # Defaults below take effect when user joins IRC and matching player is offline
   default-player-suffix: ''
   default-player-prefix: ''

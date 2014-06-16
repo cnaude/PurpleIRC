@@ -229,7 +229,7 @@
     <dependency>
       <groupId>com.comphenix.protocol</groupId>
       <artifactId>ProtocolLib</artifactId>
-      <version>3.3.1</version>
+      <version>3.4.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -278,6 +278,12 @@
       <groupId>org.dynmap</groupId>
       <artifactId>DynmapAPI</artifactId>
       <version>1.9.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.botsko</groupId>
+      <artifactId>Prism</artifactId>
+      <version>2.0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

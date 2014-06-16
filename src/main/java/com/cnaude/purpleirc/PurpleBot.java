@@ -1,12 +1,5 @@
 package com.cnaude.purpleirc;
 
-import com.dthielke.herochat.Chatter;
-import java.io.File;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import com.cnaude.purpleirc.IRCListeners.ActionListener;
 import com.cnaude.purpleirc.IRCListeners.ConnectListener;
 import com.cnaude.purpleirc.IRCListeners.DisconnectListener;
@@ -25,6 +18,7 @@ import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
+import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
@@ -32,12 +26,18 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
 import com.nyancraft.reportrts.data.HelpRequest;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import me.botsko.prism.actionlibs.QueryParameters;
+import me.botsko.prism.events.BlockStateChange;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -2606,5 +2606,63 @@ public final class PurpleBot {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public void gamePrismRollback(Player player, QueryParameters queryParams) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.PRISM_ROLLBACK)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .playerTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.PRISM_ROLLBACK))
+                        .replace("%COMMAND%", queryParams.getOriginalCommand())
+                        .replace("%KEYWORD%", queryParams.getKeyword())
+                        .replace("%SORTDIRECTION%", queryParams.getSortDirection())
+                        .replace("%PARAMWORLD%", queryParams.getWorld())
+                        .replace("%ID%", String.valueOf(queryParams.getId()))
+                        .replace("%RADIUS%", String.valueOf(queryParams.getRadius()))
+                        .replace("%X%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getX()))
+                        .replace("%Y%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getY()))
+                        .replace("%Z%", String.valueOf(queryParams.getSpecificBlockLocations().get(0).getZ()))
+                );
+            }
+        }
+    }
+
+    public void gamePrismDrainOrExtinguish(String template, Player player, int radius, ArrayList<BlockStateChange> blockStateChange) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, template)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .playerTokenizer(player, plugin.getMsgTemplate(botNick, template))
+                        .replace("%RADIUS%", String.valueOf(radius))
+                        .replace("%ORIGINALBLOCK%", String.valueOf(blockStateChange.get(0).getOriginalBlock().getType().name()))
+                        .replace("%NEWBLOCK%", String.valueOf(blockStateChange.get(0).getNewBlock().getType().name()))
+                        .replace("%X%", String.valueOf(blockStateChange.get(0).getNewBlock().getX()))
+                        .replace("%Y%", String.valueOf(blockStateChange.get(0).getNewBlock().getY()))
+                        .replace("%Z%", String.valueOf(blockStateChange.get(0).getNewBlock().getZ()))
+                        .replace("%BLOCKWORLD%", String.valueOf(blockStateChange.get(0).getNewBlock().getWorld().getName()))
+                );
+            }
+        }
+    }
+
+    public void gamePrismCustom(Player player, String actionName, String message, String pluginName) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.PRISM_CUSTOM)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .playerTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.PRISM_CUSTOM))
+                        .replace("%ACTION%", actionName)
+                        .replace("%MESSAGE%", message)
+                        .replace("%PLUGIN%", pluginName)
+                );
+            }
+        }
     }
 }

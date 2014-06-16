@@ -98,6 +98,11 @@ channels:
     - game-mode
     # Essentials helpop messages (/helpop /amsg /ac)   
     - ess-helpop
+    # Prism
+    #- prism-rollback
+    #- prism-drain
+    #- prism-extinguish
+    #- prism-custom
     # The game-afk message type is not functional yet.
     #- game-afk
     # These messages are sent from IRC to game (see permissions)
@@ -163,7 +168,7 @@ channels:
     hero-channel: admin
     # Towny channel destination for IRC messages
     towny-channel: irc
-    # Log all messages from IRC to HeroChat
+    # Log all messages from IRC to HeroChat    
     log-irc-to-hero-chat: false
     # ops - IRC hostname mask styled ops list
     ops:    

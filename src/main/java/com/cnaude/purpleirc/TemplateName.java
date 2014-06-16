@@ -96,5 +96,10 @@ public class TemplateName {
     public final static String DEATH_MESSAGES = "death-messages";
     
     public final static String ORE_BROADCAST = "ore-broadcast";
+    
+    public final static String PRISM_ROLLBACK = "prism-rollback";
+    public final static String PRISM_DRAIN = "prism-drain";
+    public final static String PRISM_EXTINGUISH = "prism-extinguish";
+    public final static String PRISM_CUSTOM = "prism-custom";
         
 }
