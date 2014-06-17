@@ -103,6 +103,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> msgOnJoin;
     public CaseInsensitiveMap<Boolean> channelTopicProtected;
     public CaseInsensitiveMap<Boolean> channelAutoJoin;
+    public long channelAutoJoinDelay;
     public CaseInsensitiveMap<Boolean> ignoreIRCChat;
     public CaseInsensitiveMap<Boolean> hideJoinWhenVanished;
     public CaseInsensitiveMap<Boolean> hideListWhenVanished;
@@ -187,7 +188,7 @@ public final class PurpleBot {
                 .setMaxLineLength(ircMaxLineLength)
                 //.setAutoReconnect(autoConnect) // Why doesn't this work?
                 .setServer(botServer, botServerPort, botServerPass);
-        addAutoJoinChannels(configBuilder);
+        //addAutoJoinChannels(configBuilder);
         for (ListenerAdapter ll : ircListeners) {
             configBuilder.addListener(ll);
         }
@@ -256,18 +257,40 @@ public final class PurpleBot {
         ircListeners.add(new ServerResponseListener(plugin, this));
     }
 
-    private void addAutoJoinChannels(Configuration.Builder configBuilder) {
-        for (String channelName : botChannels) {
-            if (channelAutoJoin.containsKey(channelName)) {
-                if (channelAutoJoin.get(channelName)) {
-                    if (channelPassword.get(channelName).isEmpty()) {
-                        configBuilder.addAutoJoinChannel(channelName);
-                    } else {
-                        configBuilder.addAutoJoinChannel(channelName, channelPassword.get(channelName));
+    /*
+     private void addAutoJoinChannels(Configuration.Builder configBuilder) {
+     for (String channelName : botChannels) {
+     if (channelAutoJoin.containsKey(channelName)) {
+     if (channelAutoJoin.get(channelName)) {
+     if (channelPassword.get(channelName).isEmpty()) {
+     configBuilder.addAutoJoinChannel(channelName);
+     } else {
+     configBuilder.addAutoJoinChannel(channelName, channelPassword.get(channelName));
+     }
+     }
+     }
+     }
+     }
+     */
+    public void autoJoinChannels() {
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                for (String channelName : botChannels) {
+                    if (channelAutoJoin.containsKey(channelName)) {
+                        if (channelAutoJoin.get(channelName)) {
+                            if (channelPassword.get(channelName).isEmpty()) {
+                                bot.sendIRC().joinChannel(channelName);
+                            } else {
+                                bot.sendIRC().joinChannel(channelName, channelPassword.get(channelName));
+                            }
+                        }
                     }
                 }
+
             }
-        }
+        }, channelAutoJoinDelay);
+
     }
 
     public void reload(CommandSender sender) {
@@ -546,6 +569,7 @@ public final class PurpleBot {
             }
             botServer = config.getString("server", "");
             bindAddress = config.getString("bind", "");
+            channelAutoJoinDelay = config.getLong("channel-auto-join-delay", 20);
             charSet = config.getString("charset", "");
             sanitizeServerName();
             showMOTD = config.getBoolean("show-motd", false);
@@ -559,6 +583,7 @@ public final class PurpleBot {
             plugin.logDebug("Nick => " + botNick);
             plugin.logDebug("Login => " + botLogin);
             plugin.logDebug("Server => " + botServer);
+            plugin.logDebug("Channel Auto Join Delay => " + channelAutoJoinDelay);
             plugin.logDebug(("Bind => ") + bindAddress);
             plugin.logDebug("SSL => " + ssl);
             plugin.logDebug("Trust All Certs => " + trustAllCerts);
@@ -2678,7 +2703,7 @@ public final class PurpleBot {
         String sortDirection = queryParams.getSortDirection();
         String worldName = queryParams.getWorld();
         String id = String.valueOf(queryParams.getId());
-        String radius = String.valueOf(queryParams.getRadius());        
+        String radius = String.valueOf(queryParams.getRadius());
         if (keyword == null) {
             keyword = "";
         }

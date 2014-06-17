@@ -56,6 +56,8 @@ command-notify:
 part-invalid-channels: false
 # Message when leaving invalid channel
 part-invalid-channels-message: 'I should not be here! Bye!'
+# Channel auto join delay in server ticks (20 ticks = 1 second)
+channel-auto-join-delay: 20
 # channels - List the channels your bot will join here
 channels:
   # Channel name must be surrounded by sing quotes to be YAML compliant.
@@ -187,7 +189,7 @@ channels:
     #  @motd - display minecraft server motd
     #  @msg - send private message to player
     #  @query - query remote minecraft server
-    # The modes can be *, o , v , h, q or s. Mix and match as needed.
+    # The modes can be *, o , v , h, q, s, or i. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
     # Set ignore-irc-chat to true if you are using @chat and don't want regular IRC chat in your game

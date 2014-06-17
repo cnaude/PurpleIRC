@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.IRCListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
@@ -46,5 +42,6 @@ public class ConnectListener extends ListenerAdapter {
             }
         }
         ircBot.setConnected(true);
+        ircBot.autoJoinChannels();
     }
 }

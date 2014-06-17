@@ -46,10 +46,12 @@ channel-check-interval: 100
 #    %SORTDIRECTION%
 #    %PARAMWORLD%
 #    %ID%
-#    %RADIUS%
+#    %ORIGINALBLOCK%
+#    %NEWBLOCK%
 #    %X%
 #    %Y%
 #    %Z%
+#    %BLOCKWORLD%
 #   prism-drain and prism-extinguish:
 #    %RADIUS%
 #    %ORIGINALBLOCK%
