@@ -9,3 +9,6 @@ Latest dev build:
 
 Live demo and chat:
 * irc.esper.net - #PurpleIRC
+
+BukkitDev:
+* http://dev.bukkit.org/bukkit-plugins/purpleirc
