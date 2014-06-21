@@ -88,7 +88,7 @@ public class IRCMessageHandler {
 
                 boolean modeOkay = false;
                 boolean permOkay = checkPerm(perm, user.getNick());
-                
+
                 if (modes.equals("*")) {
                     modeOkay = true;
                 }
@@ -109,7 +109,7 @@ public class IRCMessageHandler {
                 }
                 if (modes.contains("s") && !modeOkay) {
                     modeOkay = user.getChannelsSuperOpIn().contains(channel);
-                }               
+                }
 
                 if (modeOkay && permOkay) {
                     switch (gameCommand) {
@@ -147,16 +147,20 @@ public class IRCMessageHandler {
                         default:
                             if (commandArgs == null) {
                                 commandArgs = "";
-                            }   if (gameCommand.contains("%ARGS%")) {
-                            gameCommand = gameCommand.replace("%ARGS%", commandArgs);
-                        }   if (gameCommand.contains("%NAME%")) {
-                            gameCommand = gameCommand.replace("%NAME%", user.getNick());
-                        }   plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
-                        try {
-                            plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
-                        } catch (Exception ex) {
-                            plugin.logError(ex.getMessage());
-                        }   break;
+                            }
+                            if (gameCommand.contains("%ARGS%")) {
+                                gameCommand = gameCommand.replace("%ARGS%", commandArgs);
+                            }
+                            if (gameCommand.contains("%NAME%")) {
+                                gameCommand = gameCommand.replace("%NAME%", user.getNick());
+                            }
+                            plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
+                            try {
+                                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
+                            } catch (Exception ex) {
+                                plugin.logError(ex.getMessage());
+                            }
+                            break;
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
@@ -170,16 +174,16 @@ public class IRCMessageHandler {
                     target = user.getNick();
                 }
                 plugin.logDebug("Invalid command: " + command);
-                if (ircBot.invalidCommandCTCP.get(myChannel)) {
-                    ircBot.blockingCTCPMessage(target, plugin.getMsgTemplate(
-                            ircBot.botNick, TemplateName.INVALID_IRC_COMMAND)
-                            .replace("%NICK%", user.getNick())
-                            .replace("%CMDPREFIX%", ircBot.commandPrefix));
-                } else {
-                    ircBot.asyncIRCMessage(target, plugin.getMsgTemplate(
-                            ircBot.botNick, TemplateName.INVALID_IRC_COMMAND)
-                            .replace("%NICK%", user.getNick())
-                            .replace("%CMDPREFIX%", ircBot.commandPrefix));
+                String invalidIrcCommand = plugin.getMsgTemplate(
+                        ircBot.botNick, TemplateName.INVALID_IRC_COMMAND)
+                        .replace("%NICK%", user.getNick())
+                        .replace("%CMDPREFIX%", ircBot.commandPrefix);
+                if (!invalidIrcCommand.isEmpty()) {
+                    if (ircBot.invalidCommandCTCP.get(myChannel)) {
+                        ircBot.blockingCTCPMessage(target, invalidIrcCommand);
+                    } else {
+                        ircBot.asyncIRCMessage(target, invalidIrcCommand);
+                    }
                 }
             }
         } else {
@@ -223,8 +227,8 @@ public class IRCMessageHandler {
         if (perm.isEmpty()) {
             return true;
         }
-        Player player = plugin.getServer().getPlayer(playerName);  
-                
+        Player player = plugin.getServer().getPlayer(playerName);
+
         if (player != null) {
             plugin.logDebug("[checkPerm] Player " + playerName + " permission node " + perm + "=" + player.hasPermission(perm));
             return player.hasPermission(perm);
