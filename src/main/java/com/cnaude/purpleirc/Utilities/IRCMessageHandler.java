@@ -2,9 +2,9 @@ package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.IRCCommand;
 import com.cnaude.purpleirc.IRCCommandSender;
-import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.TemplateName;
 import com.google.common.base.Joiner;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -86,32 +86,7 @@ public class IRCMessageHandler {
 
                 plugin.logDebug("Target: " + target);
 
-                boolean modeOkay = false;
-                boolean permOkay = checkPerm(perm, user.getNick());
-
-                if (modes.equals("*")) {
-                    modeOkay = true;
-                }
-                if (modes.contains("i") && !modeOkay) {
-                    modeOkay = user.isIrcop();
-                }
-                if (modes.contains("o") && !modeOkay) {
-                    modeOkay = user.getChannelsOpIn().contains(channel);
-                }
-                if (modes.contains("v") && !modeOkay) {
-                    modeOkay = user.getChannelsVoiceIn().contains(channel);
-                }
-                if (modes.contains("h") && !modeOkay) {
-                    modeOkay = user.getChannelsHalfOpIn().contains(channel);
-                }
-                if (modes.contains("q") && !modeOkay) {
-                    modeOkay = user.getChannelsOwnerIn().contains(channel);
-                }
-                if (modes.contains("s") && !modeOkay) {
-                    modeOkay = user.getChannelsSuperOpIn().contains(channel);
-                }
-
-                if (modeOkay && permOkay) {
+                if (isValidMode(modes, user, channel) && checkPerm(perm, user.getNick())) {
                     switch (gameCommand) {
                         case "@list":
                             sendMessage(ircBot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
@@ -184,6 +159,10 @@ public class IRCMessageHandler {
                     } else {
                         ircBot.asyncIRCMessage(target, invalidIrcCommand);
                     }
+                    if (ircBot.enabledMessages.get(myChannel).contains(TemplateName.INVALID_IRC_COMMAND)) {
+                        plugin.logDebug("Invalid IRC command dispatched for broadcast...");
+                        ircBot.broadcastChat(user, channel, message, false);
+                    }
                 }
             }
         } else {
@@ -198,6 +177,32 @@ public class IRCMessageHandler {
             plugin.logDebug("Message dispatched for broadcast...");
             ircBot.broadcastChat(user, channel, message, false);
         }
+    }
+
+    private boolean isValidMode(String modes, User user, Channel channel) {
+        boolean modeOkay = false;
+        if (modes.equals("*")) {
+            return true;
+        }
+        if (modes.contains("i") && !modeOkay) {
+            modeOkay = user.isIrcop();
+        }
+        if (modes.contains("o") && !modeOkay) {
+            modeOkay = user.getChannelsOpIn().contains(channel);
+        }
+        if (modes.contains("v") && !modeOkay) {
+            modeOkay = user.getChannelsVoiceIn().contains(channel);
+        }
+        if (modes.contains("h") && !modeOkay) {
+            modeOkay = user.getChannelsHalfOpIn().contains(channel);
+        }
+        if (modes.contains("q") && !modeOkay) {
+            modeOkay = user.getChannelsOwnerIn().contains(channel);
+        }
+        if (modes.contains("s") && !modeOkay) {
+            modeOkay = user.getChannelsSuperOpIn().contains(channel);
+        }
+        return modeOkay;
     }
 
     private void sendMessage(PurpleBot ircBot, String target, String message, boolean ctcpResponse) {

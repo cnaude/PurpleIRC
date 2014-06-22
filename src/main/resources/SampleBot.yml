@@ -119,6 +119,7 @@ channels:
     - irc-nickchange
     - irc-mode
     - irc-notice
+    #- invalid-irc-commmand
     #- irc-console-chat
     # Dynmap Web Chat to IRC
     - dynmap-web-chat
