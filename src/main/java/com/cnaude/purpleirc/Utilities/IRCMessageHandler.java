@@ -159,10 +159,10 @@ public class IRCMessageHandler {
                     } else {
                         ircBot.asyncIRCMessage(target, invalidIrcCommand);
                     }
-                    if (ircBot.enabledMessages.get(myChannel).contains(TemplateName.INVALID_IRC_COMMAND)) {
-                        plugin.logDebug("Invalid IRC command dispatched for broadcast...");
-                        ircBot.broadcastChat(user, channel, message, false);
-                    }
+                }
+                if (ircBot.enabledMessages.get(myChannel).contains(TemplateName.INVALID_IRC_COMMAND)) {
+                    plugin.logDebug("Invalid IRC command dispatched for broadcast...");
+                    ircBot.broadcastChat(user, channel, message, false);
                 }
             }
         } else {
