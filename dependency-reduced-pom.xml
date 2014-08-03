@@ -181,7 +181,7 @@
     <dependency>
       <groupId>com.kitteh.vanish</groupId>
       <artifactId>VanishNoPacket</artifactId>
-      <version>3.18.7</version>
+      <version>3.19.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -265,7 +265,7 @@
     <dependency>
       <groupId>com.nyancraft.ReportRTS</groupId>
       <artifactId>ReportRTS</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

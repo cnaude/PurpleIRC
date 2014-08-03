@@ -74,7 +74,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public String getName() {
-        return "";
+        return "CONSOLE";
     }
 
     /**
