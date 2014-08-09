@@ -90,8 +90,8 @@ message-format:
   irc-ess-helpop: '&4[HelpOp] %DISPLAYNAME%&r: %MESSAGE%'
   # Message templates for IRC to game messages
   irc-action: '[&4IRC&r] ***%NAME% %MESSAGE%'
-  irc-chat: '[&4IRC]<%NAME%> %MESSAGE%'  
-  irc-pchat: '&dPrivate message: [&4IRC]<%NAME%> %MESSAGE%' 
+  irc-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'  
+  irc-pchat: '&dPrivate message: [&4IRC&r]<%NAME%> %MESSAGE%' 
   # Notification to user when sending a private message to a player
   irc-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   # Notification to user when sending a message to a specific hero channel
@@ -120,7 +120,7 @@ message-format:
   hero-action: '[&2%CHANNEL%&r]***%NAME% %MESSAGE%'
   # Message templates for IRC to Herochat messages
   irc-hero-action: '[&3IRC&r] ***%NAME% %MESSAGE%'
-  irc-hero-chat: '[&3IRC]<%NAME%> %MESSAGE%'  
+  irc-hero-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'  
   irc-hero-join: '[&3IRC&r] %NAME% has joined %CHANNEL%.'
   irc-hero-kick: '[&3IRC&r] %NAME% was kicked from %CHANNEL% by %KICKER%. (Reason- %REASON%)'
   irc-hero-part: '[&3IRC&r] %NAME% has left %CHANNEL%.'  
@@ -129,7 +129,7 @@ message-format:
   # Message template for TitanChat to IRC messages
   titan-chat: '[%CHANNEL%]<%NAME%> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
-  irc-titan-chat: '[&3IRC]<%NAME%> %MESSAGE%'  
+  irc-titan-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'  
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
