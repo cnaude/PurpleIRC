@@ -171,6 +171,8 @@ message-format:
   prism-drain: '[PrismDrain] [Player: %NAME%] [Radius: %RADIUS%] [OrigBlock: %ORIGINALBLOCK%] [NewBlock: %NEWBLOCK%] [X,Y,Z: %X%,%Y%,%Z%] [World: %BLOCKWORLD%]'
   prism-extinguish: '[PrismExtinguish] [Player: %NAME%] [Radius%: %RADIUS] [OrigBlock: %ORIGINALBLOCK%] [NewBlock: %NEWBLOCK%] [X,Y,Z: %X%,%Y%,%Z%] [World: %BLOCKWORLD%]'
   prism-custom: '[PrismCustom] [Player: %NAME%] [Action: %ACTION%] [Message: %MESSAGE%] [Plugin: %PLUGIN%]'
+  # RedditStream
+  reddit-messages: '[R] %MESSAGE%'
   # Defaults below take effect when user joins IRC and matching player is offline
   default-player-suffix: ''
   default-player-prefix: ''

@@ -1257,6 +1257,21 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     *
+     * @param message
+     */
+    public void redditStreamBroadcast(String message) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.REDDIT_MESSAGES)) {
+                asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(plugin.getMsgTemplate(botNick, TemplateName.REDDIT_MESSAGES), message));
+            }
+        }
+    }
 
     /**
      *

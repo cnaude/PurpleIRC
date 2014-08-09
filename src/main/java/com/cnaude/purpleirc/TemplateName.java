@@ -101,5 +101,7 @@ public class TemplateName {
     public final static String PRISM_DRAIN = "prism-drain";
     public final static String PRISM_EXTINGUISH = "prism-extinguish";
     public final static String PRISM_CUSTOM = "prism-custom";
+    
+    public final static String REDDIT_MESSAGES = "reddit-messages";
         
 }

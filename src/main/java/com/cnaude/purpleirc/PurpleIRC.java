@@ -17,6 +17,7 @@ import com.cnaude.purpleirc.GameListeners.HeroChatListener;
 import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
 import com.cnaude.purpleirc.GameListeners.OreBroadcastListener;
 import com.cnaude.purpleirc.GameListeners.PrismListener;
+import com.cnaude.purpleirc.GameListeners.RedditStreamListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
@@ -222,6 +223,12 @@ public class PurpleIRC extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PrismListener(this), this);
         } else {
             logInfo("Prism not detected.");
+        }
+        if (isPluginEnabled("RedditStream")) {
+            logInfo("Enabling RedditStream support.");
+            getServer().getPluginManager().registerEvents(new RedditStreamListener(this), this);
+        } else {
+            logInfo("RedditStream not detected.");
         }
         if (isPluginEnabled("TownyChat")) {
             logInfo("Enabling TownyChat support.");

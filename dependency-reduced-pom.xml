@@ -179,9 +179,15 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.cnaude</groupId>
+      <artifactId>RedditStream</artifactId>
+      <version>0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.kitteh.vanish</groupId>
       <artifactId>VanishNoPacket</artifactId>
-      <version>3.19.1</version>
+      <version>3.18.7</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

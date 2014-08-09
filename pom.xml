@@ -142,6 +142,13 @@
             <version>1.2.3</version>
         </dependency>
         
+        <!-- RedditStream -->
+        <dependency>
+            <groupId>com.cnaude</groupId>
+            <artifactId>RedditStream</artifactId>
+            <version>0.2</version>
+        </dependency>
+        
         <!-- VanishNoPacket -->
         <dependency>
             <groupId>com.kitteh.vanish</groupId>
