@@ -65,7 +65,7 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
                     cmd = msg;
                 }
                 cmd = cmd.substring(0);
-                if (ircBot.channelCmdNotifyEnabled) {
+                if (ircBot.channelCmdNotifyEnabled && !ircBot.channelCmdNotifyIgnore.contains(cmd)) {
                     ircBot.commandNotify(event.getPlayer(), cmd, params);
                 }
             }

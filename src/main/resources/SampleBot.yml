@@ -52,6 +52,8 @@ command-notify:
   recipients:
     - '#minecraft-test'
     - example
+  ignore:
+    - /example
 # Automatically part invalid channels
 part-invalid-channels: false
 # Message when leaving invalid channel

@@ -123,6 +123,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>> commandMap;
     public ArrayList<CommandSender> whoisSenders;
     public List<String> channelCmdNotifyRecipients;
+    public List<String> channelCmdNotifyIgnore;
     private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
     private final String fileName;
@@ -138,6 +139,7 @@ public final class PurpleBot {
         this.botChannels = new ArrayList<>();
         this.ircListeners = new ArrayList<>();
         this.channelCmdNotifyRecipients = new ArrayList<>();
+        this.channelCmdNotifyIgnore = new ArrayList<>();
         this.commandMap = new CaseInsensitiveMap<>();
         this.enabledMessages = new CaseInsensitiveMap<>();
         this.muteList = new CaseInsensitiveMap<>();
@@ -614,6 +616,17 @@ public final class PurpleBot {
             }
             if (channelCmdNotifyRecipients.isEmpty()) {
                 plugin.logInfo(" No command recipients defined.");
+            }
+            
+            // build command notify ignore list            
+            for (String command : config.getStringList("command-notify.ignore")) {
+                if (!channelCmdNotifyIgnore.contains(command)) {
+                    channelCmdNotifyIgnore.add(command);
+                }
+                plugin.logDebug(" Command Notify Ignore => " + command);
+            }
+            if (channelCmdNotifyIgnore.isEmpty()) {
+                plugin.logInfo(" No command-notify ignores defined.");
             }
 
             for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
