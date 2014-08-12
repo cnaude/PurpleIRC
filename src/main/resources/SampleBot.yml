@@ -169,7 +169,9 @@ channels:
     # Catch /broadcast messages
     #- broadcast-console-message
     #- broadcast-message
-    # Hero channel destination for IRC messages
+    # RedditStream
+    #- reddit-messages
+    # Hero channel destination for IRC messages    
     hero-channel: admin
     # Towny channel destination for IRC messages
     towny-channel: irc

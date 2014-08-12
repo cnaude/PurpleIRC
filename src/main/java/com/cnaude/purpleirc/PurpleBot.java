@@ -1281,8 +1281,12 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.REDDIT_MESSAGES)) {
+                plugin.logDebug("Checking if " + TemplateName.REDDIT_MESSAGES + " is enabled... YES");
                 asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(plugin.getMsgTemplate(botNick, TemplateName.REDDIT_MESSAGES), message));
+            } else {
+                plugin.logDebug("Checking if " + TemplateName.REDDIT_MESSAGES + " is enabled... NOPE");
             }
+                
         }
     }
 
