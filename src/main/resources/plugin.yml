@@ -18,6 +18,7 @@ softdepend:
 - dynmap
 - Shortify
 - OreBroadcast
+- RedditStream
 commands:
     irc:
         description: Various irc commands
