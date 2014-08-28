@@ -3,7 +3,7 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
-import com.nyancraft.reportrts.data.HelpRequest;
+import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -431,17 +431,17 @@ public class ChatTokenizer {
      *
      * @param pName
      * @param template
-     * @param request
+     * @param ticket
      * @return
      */
-    public String reportRTSTokenizer(String pName, String template, HelpRequest request) {
-        String message = request.getMessage();
-        String modName = request.getModName();
+    public String reportRTSTokenizer(String pName, String template, Ticket ticket) {
+        String message = ticket.getMessage();
+        String modName = ticket.getModName();
         String displayModName = "";
-        String name = request.getName();
-        String world = request.getWorld();
-        String modComment = request.getModComment();
-        int id = request.getId();
+        String name = ticket.getName();
+        String world = ticket.getWorld();
+        String modComment = ticket.getModComment();
+        int id = ticket.getId();
         if (message == null) {
             message = "";
         }

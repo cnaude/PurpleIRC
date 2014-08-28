@@ -24,7 +24,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.UPlayer;
-import com.nyancraft.reportrts.data.HelpRequest;
+import com.nyancraft.reportrts.data.Ticket;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.File;
 import java.io.IOException;
@@ -1117,11 +1117,11 @@ public final class PurpleBot {
     /**
      *
      * @param pName
-     * @param request
+     * @param ticket
      * @param botNick
      * @param messageType
      */
-    public void reportRTSNotify(String pName, HelpRequest request,
+    public void reportRTSNotify(String pName, Ticket ticket,
             String botNick, String messageType) {
         if (!this.isConnected()) {
             return;
@@ -1129,7 +1129,7 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, messageType)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .reportRTSTokenizer(pName, plugin.getMsgTemplate(botNick, messageType), request));
+                        .reportRTSTokenizer(pName, plugin.getMsgTemplate(botNick, messageType), ticket));
             }
         }
     }

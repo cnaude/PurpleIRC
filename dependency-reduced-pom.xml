@@ -114,14 +114,10 @@
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+      <releases />
+      <snapshots />
       <id>regularbox-repo</id>
-      <url>http://repo.regularbox.com/artifactory/repo/</url>
+      <url>http://ci.regularbox.com/plugin/repository/everything/</url>
     </repository>
     <repository>
       <snapshots />
@@ -153,6 +149,12 @@
       <artifactId>Vault</artifactId>
       <version>1.4.1</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.nyancraft.reportrts</groupId>
+      <artifactId>ReportRTS</artifactId>
+      <version>1.2.3</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.dthielke</groupId>
@@ -266,12 +268,6 @@
       <groupId>com.gmail.josemanuelgassin</groupId>
       <artifactId>DeathMessages</artifactId>
       <version>2.8-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.nyancraft.ReportRTS</groupId>
-      <artifactId>ReportRTS</artifactId>
-      <version>1.2.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
