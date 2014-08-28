@@ -6,14 +6,15 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.nyancraft.reportrts.event.ReportAssignEvent;
-import com.nyancraft.reportrts.event.ReportClaimEvent;
-import com.nyancraft.reportrts.event.ReportCompleteEvent;
-import com.nyancraft.reportrts.event.ReportCreateEvent;
-import com.nyancraft.reportrts.event.ReportHoldEvent;
-import com.nyancraft.reportrts.event.ReportModBroadcastEvent;
-import com.nyancraft.reportrts.event.ReportReopenEvent;
-import com.nyancraft.reportrts.event.ReportUnclaimEvent;
+import com.nyancraft.reportrts.data.Ticket;
+import com.nyancraft.reportrts.event.TicketAssignEvent;
+import com.nyancraft.reportrts.event.TicketClaimEvent;
+import com.nyancraft.reportrts.event.TicketCompleteEvent;
+import com.nyancraft.reportrts.event.TicketCreateEvent;
+import com.nyancraft.reportrts.event.TicketHoldEvent;
+import com.nyancraft.reportrts.event.TicketBroadcastEvent;
+import com.nyancraft.reportrts.event.TicketReopenEvent;
+import com.nyancraft.reportrts.event.TicketUnclaimEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -38,63 +39,63 @@ public class ReportRTSListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void onReportCreateEvent(ReportCreateEvent event) {
+    public void onTicketCreateEvent(TicketCreateEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-notify");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-notify");
         }
     }
 
     @EventHandler
-    public void onReportCompleteEvent(ReportCompleteEvent event) {
+    public void onTicketCompleteEvent(TicketCompleteEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-complete");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-complete");
         }
     }
 
     @EventHandler
-    public void onReportClaimEvent(ReportClaimEvent event) {
+    public void onTicketClaimEvent(TicketClaimEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-claim");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-claim");
         }
     }
 
     @EventHandler
-    public void onReportUnclaimEvent(ReportUnclaimEvent event) {
+    public void onTicketUnclaimEvent(TicketUnclaimEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-unclaim");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-unclaim");
         }
     }
 
     @EventHandler
-    public void onReportHoldEvent(ReportHoldEvent event) {
+    public void onTicketHoldEvent(TicketHoldEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-held");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-held");
         }
     }
 
     @EventHandler
-    public void onReportAssignEvent(ReportAssignEvent event) {
+    public void onTicketAssignEvent(TicketAssignEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-assign");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-assign");
         }
     }
 
     @EventHandler
-    public void onReportReopenEvent(ReportReopenEvent event) {
+    public void onTicketReopenEvent(TicketReopenEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.reportRTSNotify(event.getRequest().getName(),
-                    event.getRequest(), ircBot.botNick, "rts-reopen");
+            ircBot.reportRTSNotify(event.getTicket().getName(),
+                    event.getTicket(), ircBot.botNick, "rts-reopen");
         }
     }
 
     @EventHandler
-    public void onModBroadcastEvent(ReportModBroadcastEvent event) {
+    public void onTicketBroadcastEvent(TicketBroadcastEvent event) {
         for (PurpleBot ircBot : plugin.ircBots.values()) {
             ircBot.reportRTSNotify(event.getSender(),
                     event.getMessage(), ircBot.botNick, "rts-modbroadcast");

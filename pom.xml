@@ -38,15 +38,16 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        
+
+        <!-- ReportRTS -->
         <repository>
             <id>regularbox-repo</id>
-            <url>http://repo.regularbox.com/artifactory/repo/</url>
+            <url>http://ci.regularbox.com/plugin/repository/everything/</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
        
@@ -111,7 +112,12 @@
         </dependency>
         
         <!-- ReportRTS -->
-        
+        <dependency>
+            <groupId>com.nyancraft.reportrts</groupId>
+            <artifactId>ReportRTS</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
         <!-- Herochat -->
         <dependency>
             <groupId>com.dthielke</groupId>
@@ -245,12 +251,7 @@
             <artifactId>DeathMessages</artifactId>
             <version>2.8-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>com.nyancraft.ReportRTS</groupId>
-            <artifactId>ReportRTS</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        
+
         <!-- Shortify -->
         <dependency>
             <groupId>com.nullblock.vemacs</groupId>
