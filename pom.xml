@@ -128,7 +128,7 @@
         
         <!-- RedditStream -->
         <dependency>
-            <groupId>com.cnaude.redditstream</groupId>
+            <groupId>com.cnaude.RedditStream</groupId>
             <artifactId>RedditStream</artifactId>
             <version>0.2</version>
         </dependency>
