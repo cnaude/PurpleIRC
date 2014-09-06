@@ -948,7 +948,7 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.MCMMO_ADMIN_CHAT)) {
                 plugin.logDebug("Sending message because " + TemplateName.MCMMO_ADMIN_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                        .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.MCMMO_ADMIN_CHAT), message));
             } else {
                 plugin.logDebug("Player " + player.getName()
@@ -968,7 +968,7 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.MCMMO_PARTY_CHAT)) {
                 plugin.logDebug("Sending message because " + TemplateName.MCMMO_PARTY_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                        .mcMMOPartyChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.MCMMO_PARTY_CHAT), message, partyName));
             } else {
                 plugin.logDebug("Player " + player.getName()
@@ -988,7 +988,7 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.MCMMO_CHAT)) {
                 plugin.logDebug("Sending message because " + TemplateName.MCMMO_CHAT + " is enabled.");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
+                        .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.MCMMO_CHAT), message));
             } else {
                 plugin.logDebug("Player " + player.getName()

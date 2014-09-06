@@ -3,6 +3,7 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.dthielke.herochat.ChannelManager;
+import com.gmail.nossr50.util.player.UserManager;
 import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import org.bukkit.ChatColor;
@@ -131,7 +132,7 @@ public class ChatTokenizer {
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", channel.getName()));
     }
-    
+
     /**
      * IRC to Hero chat channel tokenizer
      *
@@ -289,7 +290,7 @@ public class ChatTokenizer {
         if (message == null) {
             message = "";
         }
-        
+
         return plugin.colorConverter.gameColorsToIrc(
                 playerTokenizer(name, template)
                 .replace("%SOURCE%", source)
@@ -318,9 +319,23 @@ public class ChatTokenizer {
      * @param partyName
      * @return
      */
-    public String mcMMOChatToIRCTokenizer(Player player, String template, String message, String partyName) {
-        return gameChatToIRCTokenizer(player, template, message)
+    public String mcMMOPartyChatToIRCTokenizer(Player player, String template, String message, String partyName) {
+        return mcMMOChatToIRCTokenizer(player, template, message)
                 .replace("%PARTY%", partyName);
+    }
+
+    /**
+     * mcMMO chat to IRC
+     *
+     * @param player
+     * @param template
+     * @param message
+     * @return
+     */
+    public String mcMMOChatToIRCTokenizer(Player player, String template, String message) {
+        int powerLevel = UserManager.getPlayer(player).getPowerLevel();
+        return gameChatToIRCTokenizer(player, template, message)
+                .replace("%POWERLEVEL%", Integer.toString(powerLevel));
     }
 
     /**

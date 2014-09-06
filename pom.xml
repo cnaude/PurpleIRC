@@ -51,21 +51,12 @@
             </snapshots>
         </repository>
        
-        <!--<repository>
-            <id>comphenix-rep</id>
-            <name>Comphenix Repository</name>
-            <url>http://repo.comphenix.net/content/groups/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>-->
-
-        <!-- Vault
+        <!-- Vault -->
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-        </repository>-->
-    
+            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
+        </repository>
+ 
         <!-- For anything else without its own repo -->
         <repository>
             <id>cnaude-repo</id>
@@ -74,8 +65,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <!-- For JUnitBenchmarks -->
-        
+       
     </repositories>
     
     <dependencies>
@@ -96,19 +86,12 @@
             <scope>provided</scope>
         </dependency>
         
+        <!-- Essentials -->
         <dependency>
-            <groupId>net.ess3</groupId>
+            <groupId>com.cnaude.essentials</groupId>
             <artifactId>essentials</artifactId>
             <version>2.14</version>
             <type>jar</type>
-        </dependency>
-
-        <!-- Use Vault Economy API interface -->
-        <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.4.1</version>
-            <scope>provided</scope>
         </dependency>
         
         <!-- ReportRTS -->
@@ -120,105 +103,149 @@
 
         <!-- Herochat -->
         <dependency>
-            <groupId>com.dthielke</groupId>
+            <groupId>com.cnaude.herochat</groupId>
             <artifactId>Herochat</artifactId>
             <version>5.6.7</version>
         </dependency>
         
-        <!-- Herochat -->
+        <!-- Jobs -->
         <dependency>
-            <groupId>me.zford.jobs</groupId>
+            <groupId>com.cnaude.jobs</groupId>
             <artifactId>Jobs</artifactId>
             <version>2.11.4</version>
         </dependency>
         
-        <!-- Old Factions -->
-        
         <!-- Factions -->
         <dependency>
-            <groupId>com.massivecraft</groupId>
+            <groupId>com.cnaude.factions</groupId>
             <artifactId>Factions</artifactId>
-            <version>2.3.1</version>
+            <version>2.5.0</version>
         </dependency>
         
         <!-- OreBroadcast -->
         <dependency>
-            <groupId>be.bendem</groupId>
+            <groupId>com.cnaude.orebroadcast</groupId>
             <artifactId>OreBroadcast</artifactId>
             <version>1.2.3</version>
         </dependency>
         
         <!-- RedditStream -->
         <dependency>
-            <groupId>com.cnaude</groupId>
+            <groupId>com.cnaude.redditstream</groupId>
             <artifactId>RedditStream</artifactId>
             <version>0.2</version>
         </dependency>
         
         <!-- VanishNoPacket -->
         <dependency>
-            <groupId>com.kitteh.vanish</groupId>
+            <groupId>com.cnaude.vanishnopacket</groupId>
             <artifactId>VanishNoPacket</artifactId>
-            <version>3.18.7</version>
+            <version>3.19.1</version>
         </dependency>
         
         <!-- mcore -->
         <dependency>
-            <groupId>com.massivecraft</groupId>
-            <artifactId>mcore</artifactId>
-            <version>6.7.0</version>
+            <groupId>com.cnaude.mcore</groupId>
+            <artifactId>MassiveCore</artifactId>
+            <version>7.3.0</version>
         </dependency>
         
         <!-- FactionChat -->
         <dependency>
-            <groupId>nz.co.lolnet.james137137</groupId>
+            <groupId>com.cnaude.factionchat</groupId>
             <artifactId>FactionChat</artifactId>
-            <version>1.745</version>
+            <version>1.791</version>
         </dependency>
 
         <!-- TitanChat -->
         <dependency>
-            <groupId>com.titankingdoms</groupId>
+            <groupId>com.cnaude.titanchat</groupId>
             <artifactId>TitanChat</artifactId>
             <version>4.1</version>
         </dependency>
 
-        <!-- Herochat -->
+        <!-- mcMMO -->
         <dependency>
             <groupId>com.gmail.nossr50</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>1.4.08-dev1-b3426</version>
+            <version>1.5.01-SNAPSHOT-b3682</version>
         </dependency>
         
         <!-- Mulitverse-Core -->
         <dependency>
-            <groupId>com.onarandombox</groupId>
+            <groupId>com.cnaude.multiverse</groupId>
             <artifactId>Multiverse-Core</artifactId>
             <version>2.5</version>
         </dependency>
         
         <!-- Towny -->
         <dependency>
-            <groupId>com.palmergames.bukkit.TownyChat</groupId>
+            <groupId>com.cnaude.townychat</groupId>
             <artifactId>TownyChat</artifactId>
             <version>0.40</version>
         </dependency>
         
+        <!-- Towny -->
         <dependency>
-            <groupId>com.palmergames</groupId>
+            <groupId>com.cnaude.towny</groupId>
             <artifactId>Towny</artifactId>
             <version>0.84.0.0</version>
         </dependency>
         
+        <!-- ProtocolLib -->
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>com.cnaude.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>3.4.0</version>
         </dependency>
         
+        <!-- PircBotX -->
         <dependency>
             <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        
+                
+        <!-- CleverNotch -->
+        <dependency>
+            <groupId>com.cnaude.clevernotch</groupId>
+            <artifactId>CleverNotch</artifactId>
+            <version>1.1-RELEASE</version>
+        </dependency>
+        
+        <!-- slf4j (used by PircBotX) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        
+        <!-- DeathMessages -->
+        <dependency>
+            <groupId>com.cnaude.deathmessages</groupId>
+            <artifactId>DeathMessages</artifactId>
+            <version>2.9.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Shortify -->
+        <dependency>
+            <groupId>com.cnaude.shortify</groupId>
+            <artifactId>Shortify</artifactId>
+            <version>1.6.2-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- DynmapAPI -->
+        <dependency>
+            <groupId>com.cnaude.dynmap</groupId>
+            <artifactId>DynmapAPI</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+        
+        <!-- Prism -->
+        <dependency>
+            <groupId>com.cnaude.prism</groupId>
+            <artifactId>Prism</artifactId>
             <version>2.0.1</version>
         </dependency>
            
@@ -235,42 +262,6 @@
             <artifactId>junit-benchmarks</artifactId>
             <version>0.4.0</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dotGaming.Endain.CleverNotch</groupId>
-            <artifactId>CleverNotch</artifactId>
-            <version>1.1-RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gmail.josemanuelgassin</groupId>
-            <artifactId>DeathMessages</artifactId>
-            <version>2.8-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Shortify -->
-        <dependency>
-            <groupId>com.nullblock.vemacs</groupId>
-            <artifactId>Shortify</artifactId>
-            <version>1.6.2-SNAPSHOT</version>
-        </dependency>
-        
-        <!-- DynmapAPI -->
-        <dependency>
-            <groupId>org.dynmap</groupId>
-            <artifactId>DynmapAPI</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        
-        <!-- Prism -->
-        <dependency>
-            <groupId>me.botsko</groupId>
-            <artifactId>Prism</artifactId>
-            <version>2.0.1</version>
         </dependency>
     </dependencies>
 
