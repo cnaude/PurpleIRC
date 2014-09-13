@@ -91,6 +91,7 @@ message-format:
   # Message templates for IRC to game messages
   irc-action: '[&4IRC&r] ***%NAME% %MESSAGE%'
   irc-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'  
+  irc-chat-response: ' &6-> &7%TARGET%: %MESSAGE%'
   irc-pchat: '&dPrivate message: [&4IRC&r]<%NAME%> %MESSAGE%' 
   # Notification to user when sending a private message to a player
   irc-pchat-response: ' &6-> &7%TARGET%: %MESSAGE%'

@@ -617,7 +617,7 @@ public final class PurpleBot {
             if (channelCmdNotifyRecipients.isEmpty()) {
                 plugin.logInfo(" No command recipients defined.");
             }
-            
+
             // build command notify ignore list            
             for (String command : config.getStringList("command-notify.ignore")) {
                 if (!channelCmdNotifyIgnore.contains(command)) {
@@ -1270,7 +1270,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     /**
      *
      * @param message
@@ -1286,7 +1286,7 @@ public final class PurpleBot {
             } else {
                 plugin.logDebug("Checking if " + TemplateName.REDDIT_MESSAGES + " is enabled... NOPE");
             }
-                
+
         }
     }
 
@@ -2108,7 +2108,8 @@ public final class PurpleBot {
      * @param message
      * @param override
      */
-    public void broadcastChat(User user, org.pircbotx.Channel channel, String message, boolean override) {
+    public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, boolean ctcpResponse) {
+        boolean messageSent = false;
         String myChannel = channel.getName();
         if (plugin.dynmapHook != null) {
             plugin.logDebug("Checking if " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled ...");
@@ -2119,6 +2120,7 @@ public final class PurpleBot {
                 String rawDWMessage = filterMessage(
                         plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, template, message), myChannel);
                 plugin.dynmapHook.sendMessage(user.getNick(), rawDWMessage);
+                messageSent = true;
             } else {
                 plugin.logDebug("Nope, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is NOT enabled...");
             }
@@ -2135,6 +2137,7 @@ public final class PurpleBot {
                         String rawTCMessage = filterMessage(
                                 plugin.tokenizer.ircChatToTownyChatTokenizer(this, user, channel, tmpl, message, tChannel), myChannel);
                         plugin.tcHook.sendMessage(tChannel, rawTCMessage);
+                        messageSent = true;
                     }
                 }
             } else {
@@ -2142,8 +2145,7 @@ public final class PurpleBot {
             }
         }
 
-        plugin.logDebug("Checking if " + TemplateName.IRC_CHAT
-                + " is enabled before broadcasting chat from IRC");
+        plugin.logDebug("Checking if " + TemplateName.IRC_CHAT + " is enabled before broadcasting chat from IRC");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
             plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
             String newMessage = filterMessage(
@@ -2151,22 +2153,21 @@ public final class PurpleBot {
                                     botNick, TemplateName.IRC_CHAT), message), myChannel);
             if (!newMessage.isEmpty()) {
                 plugin.getServer().broadcast(newMessage, "irc.message.chat");
+                messageSent = true;
             }
         } else {
-            plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT
-                    + " disabled");
+            plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT + " disabled");
         }
 
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CONSOLE_CHAT)) {
             String tmpl = plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT);
             plugin.logDebug("broadcastChat [Console]: " + tmpl);
             plugin.getServer().getConsoleSender().sendMessage(plugin.tokenizer.ircChatToGameTokenizer(
-                    this, user, channel, plugin.getMsgTemplate(botNick,
-                            TemplateName.IRC_CONSOLE_CHAT), message));
+                    this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT), message));
+            messageSent = true;
         }
 
-        plugin.logDebug("Checking if " + TemplateName.IRC_HERO_CHAT
-                + " is enabled before broadcasting chat from IRC to HeroChat");
+        plugin.logDebug("Checking if " + TemplateName.IRC_HERO_CHAT + " is enabled before broadcasting chat from IRC to HeroChat");
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_CHAT)) {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
@@ -2175,6 +2176,7 @@ public final class PurpleBot {
                     plugin.tokenizer.ircChatToHeroChatTokenizer(this, user, channel, tmpl, message, Herochat.getChannelManager(), hChannel), myChannel);
             if (!rawHCMessage.isEmpty()) {
                 Herochat.getChannelManager().getChannel(hChannel).sendRawMessage(rawHCMessage);
+                messageSent = true;
                 if (logIrcToHeroChat.containsKey(myChannel)) {
                     if (logIrcToHeroChat.get(myChannel)) {
                         plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
@@ -2182,12 +2184,10 @@ public final class PurpleBot {
                 }
             }
         } else {
-            plugin.logDebug("NOPE we can't broadcast to HeroChat due to "
-                    + TemplateName.IRC_HERO_CHAT + " disabled");
+            plugin.logDebug("NOPE we can't broadcast to HeroChat due to " + TemplateName.IRC_HERO_CHAT + " disabled");
         }
         if (plugin.isPluginEnabled("Essentials")) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_ESS_HELPOP
-                    + " is enabled before broadcasting chat from IRC");
+            plugin.logDebug("Checking if " + TemplateName.IRC_ESS_HELPOP + " is enabled before broadcasting chat from IRC");
             if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ESS_HELPOP) || override) {
                 plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_ESS_HELPOP + " enabled");
                 String newMessage = filterMessage(
@@ -2195,10 +2195,22 @@ public final class PurpleBot {
                                         botNick, TemplateName.IRC_ESS_HELPOP), message), myChannel);
                 if (!newMessage.isEmpty()) {
                     plugin.getServer().broadcast(newMessage, "essentials.helpop.receive");
+                    messageSent = true;
                 }
             } else {
                 plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_ESS_HELPOP
                         + " disabled");
+            }
+        }
+        if (messageSent && target != null) {
+            // Let the sender know the message was sent
+            String responseTemplate = plugin.getMsgTemplate(botNick, TemplateName.IRC_CHAT_RESPONSE);
+            if (!responseTemplate.isEmpty()) {
+                if (ctcpResponse) {
+                    asyncCTCPMessage(target, plugin.tokenizer.targetChatResponseTokenizer(target, message, responseTemplate));
+                } else {
+                    asyncIRCMessage(target, plugin.tokenizer.targetChatResponseTokenizer(target, message, responseTemplate));
+                }
             }
         }
     }

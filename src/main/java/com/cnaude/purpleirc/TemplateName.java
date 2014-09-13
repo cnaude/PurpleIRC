@@ -61,6 +61,7 @@ public class TemplateName {
     public final static String IRC_HCHAT_RESPONSE = "irc-hchat-response";
     public final static String IRC_PCHAT = "irc-pchat";
     public final static String IRC_PCHAT_RESPONSE = "irc-pchat-response";
+    public final static String IRC_CHAT_RESPONSE = "irc-chat-response";
     public final static String IRC_KICK = "irc-kick";
     public final static String IRC_JOIN = "irc-join";
     public final static String IRC_PART = "irc-part";

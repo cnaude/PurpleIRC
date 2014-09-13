@@ -98,10 +98,10 @@ public class IRCMessageHandler {
                             sendMessage(ircBot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
                             break;
                         case "@chat":
-                            ircBot.broadcastChat(user, channel, commandArgs, false);
+                            ircBot.broadcastChat(user, channel, target, commandArgs, false, ctcpResponse);
                             break;
                         case "@ochat":
-                            ircBot.broadcastChat(user, channel, commandArgs, true);
+                            ircBot.broadcastChat(user, channel, target, commandArgs, true, ctcpResponse);
                             break;
                         case "@hchat":
                             ircBot.broadcastHeroChat(user, channel, target, commandArgs);
@@ -162,7 +162,7 @@ public class IRCMessageHandler {
                 }
                 if (ircBot.enabledMessages.get(myChannel).contains(TemplateName.INVALID_IRC_COMMAND)) {
                     plugin.logDebug("Invalid IRC command dispatched for broadcast...");
-                    ircBot.broadcastChat(user, channel, message, false);
+                    ircBot.broadcastChat(user, channel, null, message, false, false);
                 }
             }
         } else {
@@ -175,7 +175,7 @@ public class IRCMessageHandler {
                 return;
             }
             plugin.logDebug("Message dispatched for broadcast...");
-            ircBot.broadcastChat(user, channel, message, false);
+            ircBot.broadcastChat(user, channel, null, message, false, false);
         }
     }
 
