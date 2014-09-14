@@ -175,6 +175,7 @@ public class PurpleIRC extends JavaPlugin {
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
+        createConfigDirs();
         createConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
@@ -540,6 +541,11 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     private void loadConfig() {
+        try {
+            getConfig().load(configFile);
+        } catch (IOException | InvalidConfigurationException ex) {
+            logError(ex.getMessage());
+        }
         debugEnabled = getConfig().getBoolean("Debug");
         identServerEnabled = getConfig().getBoolean("enable-ident-server");
         logDebug("Debug enabled");
@@ -669,30 +675,36 @@ public class PurpleIRC extends JavaPlugin {
         sender.sendMessage(LOG_HEADER_F + ChatColor.WHITE + " Done.");
     }
 
-    private void createConfig() {
+    private void createConfigDirs() {
         if (!pluginFolder.exists()) {
             try {
+                logInfo("Creating " + pluginFolder.getAbsolutePath());
                 pluginFolder.mkdir();
             } catch (Exception e) {
                 logError(e.getMessage());
             }
         }
 
+        if (!botsFolder.exists()) {
+            try {
+                logInfo("Creating " + botsFolder.getAbsolutePath());
+                botsFolder.mkdir();
+            } catch (Exception e) {
+                logError(e.getMessage());
+            }
+        }
+    }
+    
+    private void createConfig() {
         if (!configFile.exists()) {
             try {
+                logInfo("Creating config.yml");
                 configFile.createNewFile();
             } catch (IOException e) {
                 logError(e.getMessage());
             }
         }
 
-        if (!botsFolder.exists()) {
-            try {
-                botsFolder.mkdir();
-            } catch (Exception e) {
-                logError(e.getMessage());
-            }
-        }
     }
 
     /**
