@@ -662,11 +662,11 @@ public class PurpleIRC extends JavaPlugin {
      * @param sender
      */
     public void reloadMainConfig(CommandSender sender) {
-        sender.sendMessage(LOG_HEADER_F + "Reloading config.yml ...");
+        sender.sendMessage(LOG_HEADER_F + " Reloading config.yml ...");
         reloadConfig();
         getConfig().options().copyDefaults(false);
         loadConfig();
-        sender.sendMessage(LOG_HEADER_F + ChatColor.WHITE + "Done.");
+        sender.sendMessage(LOG_HEADER_F + ChatColor.WHITE + " Done.");
     }
 
     private void createConfig() {

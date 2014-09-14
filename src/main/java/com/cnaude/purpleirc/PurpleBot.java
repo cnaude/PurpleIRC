@@ -2202,7 +2202,7 @@ public final class PurpleBot {
                         + " disabled");
             }
         }
-        if (messageSent && target != null) {
+        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT_RESPONSE) && messageSent && target != null) {
             // Let the sender know the message was sent
             String responseTemplate = plugin.getMsgTemplate(botNick, TemplateName.IRC_CHAT_RESPONSE);
             if (!responseTemplate.isEmpty()) {

@@ -96,6 +96,10 @@
   </build>
   <repositories>
     <repository>
+      <id>cnaude-repo</id>
+      <url>http://cnaude.org/repo/</url>
+    </repository>
+    <repository>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -122,10 +126,6 @@
     <repository>
       <id>vault-repo</id>
       <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-    </repository>
-    <repository>
-      <id>cnaude-repo</id>
-      <url>http://cnaude.org/repo/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -178,7 +178,7 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.cnaude.redditstream</groupId>
+      <groupId>com.cnaude.RedditStream</groupId>
       <artifactId>RedditStream</artifactId>
       <version>0.2</version>
       <scope>compile</scope>
