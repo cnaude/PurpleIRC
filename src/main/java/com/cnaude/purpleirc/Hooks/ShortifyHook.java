@@ -32,8 +32,7 @@ public class ShortifyHook {
         String m = message;
         try {
             m = ShortifyUtility.shortenAll(message, Integer.valueOf(
-                    configuration.getString("minlength", "20")),
-                    ShortifyUtility.getShortener(configuration), "");
+                    configuration.getString("minlength", "20")), ShortifyUtility.getShortener(configuration), "");
         } catch (ShortifyException ex) {
             plugin.logError(ex.getMessage());
         }
