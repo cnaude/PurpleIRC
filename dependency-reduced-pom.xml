@@ -252,7 +252,7 @@
     <dependency>
       <groupId>com.cnaude.shortify</groupId>
       <artifactId>Shortify</artifactId>
-      <version>1.6.2-SNAPSHOT</version>
+      <version>1.7-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

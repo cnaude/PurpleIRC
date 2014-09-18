@@ -6,6 +6,7 @@ package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
 import com.nullblock.vemacs.Shortify.common.CommonConfiguration;
+import com.nullblock.vemacs.Shortify.common.ShortifyException;
 import com.nullblock.vemacs.Shortify.util.ShortifyUtility;
 import java.io.File;
 
@@ -28,9 +29,15 @@ public class ShortifyHook {
     }
 
     public String shorten(String message) {
-        return ShortifyUtility.shortenAll(message, Integer.valueOf(
-                configuration.getString("minlength", "20")),
-                ShortifyUtility.getShortener(configuration), "");
+        String m = message;
+        try {
+            m = ShortifyUtility.shortenAll(message, Integer.valueOf(
+                    configuration.getString("minlength", "20")),
+                    ShortifyUtility.getShortener(configuration), "");
+        } catch (ShortifyException ex) {
+            plugin.logError(ex.getMessage());
+        }
+        return m;
     }
 
 }
