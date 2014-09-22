@@ -36,6 +36,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        
         <!-- Bukkit -->
         <repository>
             <id>bukkit-repo</id>

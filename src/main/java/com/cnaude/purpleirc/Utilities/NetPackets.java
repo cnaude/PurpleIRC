@@ -39,6 +39,9 @@ public class NetPackets {
      * @param channel
      */
     public void addToTabList(String name, PurpleBot ircBot, Channel channel) {
+        if (! plugin.customTabList) {
+            return;
+        }
         String channelName = channel.getName();
         if (ircBot.tabIgnoreNicks.containsKey(channelName)) {
             if (ircBot.tabIgnoreNicks.get(channelName).contains(name)) {
@@ -56,9 +59,7 @@ public class NetPackets {
                     protocolManager.sendServerPacket(reciever, packet);
                 }
             }
-        } catch (FieldAccessException e) {
-            plugin.logError(e.getMessage());
-        } catch (InvocationTargetException e) {
+        } catch (FieldAccessException | InvocationTargetException e) {
             plugin.logError(e.getMessage());
         }
     }
@@ -68,6 +69,9 @@ public class NetPackets {
      * @param name
      */
     public void remFromTabList(String name) {
+        if (! plugin.customTabList) {
+            return;
+        }
         playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
         try {
             PacketContainer packet = playerListConstructor.createPacket(
@@ -77,9 +81,7 @@ public class NetPackets {
                     protocolManager.sendServerPacket(reciever, packet);
                 }
             }
-        } catch (FieldAccessException e) {
-            plugin.logError(e.getMessage());
-        } catch (InvocationTargetException e) {
+        } catch (FieldAccessException | InvocationTargetException e) {
             plugin.logError(e.getMessage());
         }
     }

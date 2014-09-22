@@ -122,7 +122,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean stripIRCBackgroundColors;
-    private boolean customTabList;
+    public boolean customTabList;
     private boolean listSortByName;
     public boolean exactNickMatch;
     public boolean ignoreChatCancel;
