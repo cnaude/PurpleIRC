@@ -1305,8 +1305,7 @@ public final class PurpleBot {
                     return;
                 }
                 if (hideJoinWhenVanished.get(channelName)) {
-                    plugin.logDebug("Checking if player " + player.getName()
-                            + " is vanished.");
+                    plugin.logDebug("Checking if player " + player.getName() + " is vanished.");
                     if (plugin.vanishHook.isVanished(player)) {
                         plugin.logDebug("Not sending join message to IRC for player "
                                 + player.getName() + " due to being vanished.");
@@ -1317,8 +1316,7 @@ public final class PurpleBot {
                         .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.GAME_JOIN), message));
             } else {
-                plugin.logDebug("Not sending join message due to "
-                        + TemplateName.GAME_JOIN + " being disabled");
+                plugin.logDebug("Not sending join message due to " + TemplateName.GAME_JOIN + " being disabled");
             }
         }
     }

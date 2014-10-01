@@ -6,6 +6,10 @@ import com.dthielke.herochat.ChannelManager;
 import com.gmail.nossr50.util.player.UserManager;
 import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -272,8 +276,7 @@ public class ChatTokenizer {
         if (message == null) {
             message = "";
         }
-        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
-                .replace("%MESSAGE%", message));
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template).replace("%MESSAGE%", message));
     }
 
     /**
@@ -503,6 +506,16 @@ public class ChatTokenizer {
         String group = plugin.getPlayerGroup(player);
         String displayName = player.getDisplayName();
         String playerIP = player.getAddress().getAddress().getHostAddress();
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getByName(playerIP);
+        } catch (UnknownHostException ex) {
+            plugin.logError(ex.getMessage());
+        }
+        String host = "";
+        if ( addr != null ) {
+            host = addr.getHostName();
+        }
         String worldName = "";
         String worldAlias = "";
         String worldColor = "";
@@ -544,6 +557,7 @@ public class ChatTokenizer {
                 .replace("%JOBSSHORT%", jobShort)
                 .replace("%NAME%", pName)
                 .replace("%PLAYERIP%", playerIP)
+                .replace("%HOST%", host)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)

@@ -33,9 +33,7 @@ public class GamePlayerJoinListener implements Listener {
                 + ": " + event.getPlayer().getCustomName());
         if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
             plugin.kickedPlayers.remove(event.getPlayer().getName());
-            plugin.logDebug("Removing player "
-                    + event.getPlayer().getName()
-                    + " from the recently kicked list.");
+            plugin.logDebug("Removing player " + event.getPlayer().getName() + " from the recently kicked list.");
         }
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
             @Override

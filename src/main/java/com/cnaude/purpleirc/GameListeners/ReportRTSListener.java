@@ -1,12 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.nyancraft.reportrts.data.Ticket;
 import com.nyancraft.reportrts.event.TicketAssignEvent;
 import com.nyancraft.reportrts.event.TicketClaimEvent;
 import com.nyancraft.reportrts.event.TicketCompleteEvent;
