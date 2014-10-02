@@ -506,16 +506,7 @@ public class ChatTokenizer {
         String group = plugin.getPlayerGroup(player);
         String displayName = player.getDisplayName();
         String playerIP = player.getAddress().getAddress().getHostAddress();
-        InetAddress addr = null;
-        try {
-            addr = InetAddress.getByName(playerIP);
-        } catch (UnknownHostException ex) {
-            plugin.logError(ex.getMessage());
-        }
-        String host = "";
-        if ( addr != null ) {
-            host = addr.getHostName();
-        }
+        String host = plugin.getPlayerHost(player);
         String worldName = "";
         String worldAlias = "";
         String worldColor = "";

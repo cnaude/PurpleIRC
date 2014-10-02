@@ -38,13 +38,14 @@ public class GamePlayerJoinListener implements Listener {
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
+                plugin.clearHostCache(event.getPlayer());
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     ircBot.gameJoin(event.getPlayer(), event.getJoinMessage());
                     if (plugin.netPackets != null) {
                         plugin.netPackets.updateTabList(event.getPlayer());
                     }
                 }
-                plugin.updateDisplayNameCache(event.getPlayer());
+                plugin.updateDisplayNameCache(event.getPlayer());                
             }
         }, 20);
     }

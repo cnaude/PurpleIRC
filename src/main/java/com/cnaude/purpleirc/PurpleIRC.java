@@ -48,6 +48,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,6 +88,7 @@ public class PurpleIRC extends JavaPlugin {
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircTownyChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
+    private Map<String, String> hostCache;
     public String defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
@@ -161,6 +164,7 @@ public class PurpleIRC extends JavaPlugin {
         this.heroChannelMessages = new CaseInsensitiveMap<>();
         this.heroActionChannelMessages = new CaseInsensitiveMap<>();
         this.displayNameCache = new CaseInsensitiveMap<>();
+        this.hostCache = new HashMap<>();
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
     }
 
@@ -1174,6 +1178,32 @@ public class PurpleIRC extends JavaPlugin {
             }
         } catch (IOException | NumberFormatException e) {
             logError(e.getMessage());
+        }
+    }
+    
+    public String getPlayerHost(Player player) {
+        String playerIP = player.getAddress().getAddress().getHostAddress();
+        if (hostCache.containsKey(playerIP)) {
+            return hostCache.get(playerIP);
+        }
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getByName(playerIP);
+        } catch (UnknownHostException ex) {
+            logError(ex.getMessage());
+        }
+        String host = "UnknownHost";
+        if ( addr != null ) {
+            host = addr.getHostName();
+            hostCache.put(playerIP, host);
+        }
+        return host;
+    }
+    
+    public void clearHostCache(Player player) {
+        String playerIP = player.getAddress().getAddress().getHostAddress();
+        if (hostCache.containsKey(playerIP)) {
+            hostCache.remove(playerIP);
         }
     }
 }
