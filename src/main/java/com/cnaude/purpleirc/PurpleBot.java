@@ -2103,8 +2103,10 @@ public final class PurpleBot {
      *
      * @param user
      * @param channel
+     * @param target
      * @param message
      * @param override
+     * @param ctcpResponse
      */
     public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, boolean ctcpResponse) {
         boolean messageSent = false;

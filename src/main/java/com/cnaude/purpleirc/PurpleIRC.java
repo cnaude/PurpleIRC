@@ -24,6 +24,7 @@ import com.cnaude.purpleirc.GameListeners.TownyChatListener;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
+import com.cnaude.purpleirc.Hooks.ReportRTSHook;
 import com.cnaude.purpleirc.Hooks.ShortifyHook;
 import com.cnaude.purpleirc.Hooks.TownyChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
@@ -88,7 +89,7 @@ public class PurpleIRC extends JavaPlugin {
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircTownyChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> heroActionChannelMessages;
-    private Map<String, String> hostCache;
+    private final Map<String, String> hostCache;
     public String defaultPlayerSuffix,
             defaultPlayerPrefix,
             defaultPlayerGroup,
@@ -140,6 +141,7 @@ public class PurpleIRC extends JavaPlugin {
     public DynmapHook dynmapHook;
     public JobsHook jobsHook;
     public ShortifyHook shortifyHook;
+    public ReportRTSHook reportRTSHook;
     public NetPackets netPackets;
     public CommandHandlers commandHandlers;
     private BotWatcher botWatcher;
@@ -297,6 +299,7 @@ public class PurpleIRC extends JavaPlugin {
         if (isPluginEnabled("ReportRTS")) {
             logInfo("Enabling ReportRTS support.");
             getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
+            reportRTSHook = new ReportRTSHook(this);
         } else {
             logInfo("ReportRTS not detected.");
         }

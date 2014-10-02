@@ -33,7 +33,7 @@ public class JobsHook {
     }
 
     public String getPlayerJob(String player, boolean shortName) {
-        ArrayList<String> j = new ArrayList<String>();
+        ArrayList<String> j = new ArrayList<>();
         if (plugin.isPluginEnabled("Jobs")) {
             for (Job job : Jobs.getJobs()) {
                 if (Jobs.getPlayerManager().getJobsPlayer(player)

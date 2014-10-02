@@ -194,6 +194,7 @@ channels:
     #  @motd - display minecraft server motd
     #  @msg - send private message to player
     #  @query - query remote minecraft server
+    #  @rtsmb - Send ReportRTS broadcast message to mods
     # The modes can be *, o , v , h, q, s, or i. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.
@@ -291,3 +292,11 @@ channels:
         game_command: 'gamemode %ARGS%'
         private_listen: true
         channel_listen: true
+      mb:
+        modes: 'o'
+        private: 'false'
+        ctcp: 'false'
+        game_command: '@rtsmb'
+        private_listen: 'true'
+        channel_listen: 'true'
+        perm: ''
