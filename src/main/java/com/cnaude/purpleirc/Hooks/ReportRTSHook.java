@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
 import com.nyancraft.reportrts.RTSFunctions;
 import com.nyancraft.reportrts.util.Message;
-import org.bukkit.entity.Player;
 
 /**
  *
