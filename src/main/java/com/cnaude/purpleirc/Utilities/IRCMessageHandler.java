@@ -110,7 +110,9 @@ public class IRCMessageHandler {
                             sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
                             break;
                         case "@rtsmb":
-                            plugin.reportRTSHook.modBroadcast(ircBot.botNick, commandArgs);
+                            if (plugin.reportRTSHook != null) {
+                                plugin.reportRTSHook.modBroadcast(ircBot.botNick, commandArgs);
+                            }
                             break;
                         case "@msg":
                             ircBot.playerChat(user, channel, target, commandArgs);
