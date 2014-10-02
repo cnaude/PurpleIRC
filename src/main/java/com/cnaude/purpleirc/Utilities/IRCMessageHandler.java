@@ -111,7 +111,7 @@ public class IRCMessageHandler {
                             break;
                         case "@rtsmb":
                             if (plugin.reportRTSHook != null) {
-                                plugin.reportRTSHook.modBroadcast(ircBot.botNick, commandArgs);
+                                plugin.reportRTSHook.modBroadcast(user.getNick(), commandArgs);
                             }
                             break;
                         case "@msg":
