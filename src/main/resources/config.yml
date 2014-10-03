@@ -10,12 +10,18 @@ channel-check-interval: 100
 # The following macro tokens are also supported.
 #  %WORLD% 
 #  %NAME% 
-#  %NICKPREFIX%
-#  %DISPLAYNAME% 
+#  %HOST% - Host of player or IRC user
+#  %SERVER% - Server of IRC user
+#  %AWAY% - IRC user away message
+#  %KICKERHOST% - Host of IRC kicker
+#  %KICKERSERVER% - Server of IRC kicker
+#  %KICKERAWAY% - IRC kicker away message
+#  %NICKPREFIX% - IRC user's status (see nick-prefixes below)
+#  %DISPLAYNAME% - Player's custom name
 #  %PLAYERIP% - IP address of a player
 #  %CHANNEL% 
 #  %MESSAGE%
-#  %KICKER%
+#  %KICKER% - IRC kicker name
 #  %TOPIC%
 #  %REASON%
 #  %GROUP% - Requires Vault if you want to use this.
