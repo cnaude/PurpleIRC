@@ -44,8 +44,7 @@ public class JoinListener extends ListenerAdapter {
             plugin.logDebug("Invalid channel: " + channelName);
             plugin.logDebug("Part if invalid: " + ircBot.partInvalidChannels);
             plugin.logDebug("Nick: " + user.getNick());
-            if (user.getNick().equals(ircBot.botNick)
-                    && ircBot.partInvalidChannels) {
+            if (user.getNick().equals(ircBot.botNick) && ircBot.partInvalidChannels) {
                 plugin.logInfo("Leaving invalid channel: " + channel.getName());
                 channel.send().part(ircBot.partInvalidChannelsMsg);
             }
@@ -56,8 +55,7 @@ public class JoinListener extends ListenerAdapter {
         ircBot.voiceIrcUser(channel, user);
         if (user.getNick().equals(ircBot.botNick)) {
             plugin.logInfo("Joining channel: " + channelName);
-            plugin.logDebug("Setting channel modes: " + channelName + " => "
-                    + ircBot.channelModes.get(channel.getName()));
+            plugin.logDebug("Setting channel modes: " + channelName + " => " + ircBot.channelModes.get(channel.getName()));
             channel.send().setMode(ircBot.channelModes.get(channelName));
             ircBot.fixTopic(channel, channel.getTopic(), channel.getTopicSetter());
             ircBot.updateNickList(channel);

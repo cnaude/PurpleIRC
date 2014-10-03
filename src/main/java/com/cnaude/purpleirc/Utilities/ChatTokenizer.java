@@ -6,10 +6,6 @@ import com.dthielke.herochat.ChannelManager;
 import com.gmail.nossr50.util.player.UserManager;
 import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,6 +41,9 @@ public class ChatTokenizer {
     public String chatIRCTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template) {
         return plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", user.getNick())
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNEL%", channel.getName()));
     }
@@ -75,6 +74,9 @@ public class ChatTokenizer {
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
                 .replace("%NAME%", ircNick)
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNEL%", channel.getName()));
     }
@@ -101,6 +103,9 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%NAME%", ircNick)
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", channel.getName()));
@@ -132,6 +137,9 @@ public class ChatTokenizer {
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
                 .replace("%NAME%", ircNick)
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", channel.getName()));
@@ -160,6 +168,9 @@ public class ChatTokenizer {
         return plugin.colorConverter.ircColorsToGame(tmpl
                 .replace("%TOWNYCHANNEL%", tChannel)
                 .replace("%NAME%", ircNick)
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%MESSAGE%", message)
                 .replace("%CHANNEL%", channel.getName()));
@@ -179,9 +190,15 @@ public class ChatTokenizer {
     public String ircKickTokenizer(PurpleBot ircBot, User recipient, User kicker, String reason, org.pircbotx.Channel channel, String template) {
         return plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", recipient.getNick())
+                .replace("%HOST%", recipient.getHostmask())
+                .replace("%SERVER%", recipient.getServer())
+                .replace("%AWAY%", recipient.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(kicker, channel))
                 .replace("%REASON%", reason)
                 .replace("%KICKER%", kicker.getNick())
+                .replace("%KICKERHOST%", kicker.getHostmask())
+                .replace("%KICKERSERVER%", kicker.getServer())
+                .replace("%KICKERAWAY%", kicker.getAwayMessage())
                 .replace("%CHANNEL%", channel.getName()));
     }
 
@@ -204,9 +221,15 @@ public class ChatTokenizer {
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
                 .replace("%NAME%", recipient.getNick())
+                .replace("%HOST%", recipient.getHostmask())
+                .replace("%SERVER%", recipient.getServer())
+                .replace("%AWAY%", recipient.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(kicker, channel))
                 .replace("%REASON%", reason)
                 .replace("%KICKER%", kicker.getNick())
+                .replace("%KICKERHOST%", kicker.getHostmask())
+                .replace("%KICKERSERVER%", kicker.getServer())
+                .replace("%KICKERAWAY%", kicker.getAwayMessage())
                 .replace("%CHANNEL%", channel.getName()));
     }
 
@@ -223,6 +246,9 @@ public class ChatTokenizer {
     public String ircModeTokenizer(PurpleBot ircBot, User user, String mode, org.pircbotx.Channel channel, String template) {
         return plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", user.getNick())
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%MODE%", mode)
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNEL%", channel.getName()));
@@ -242,6 +268,9 @@ public class ChatTokenizer {
     public String ircNoticeTokenizer(PurpleBot ircBot, User user, String message, String notice, org.pircbotx.Channel channel, String template) {
         return plugin.colorConverter.ircColorsToGame(template
                 .replace("%NAME%", user.getNick())
+                .replace("%HOST%", user.getHostmask())
+                .replace("%SERVER%", user.getServer())
+                .replace("%AWAY%", user.getAwayMessage())
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%MESSAGE%", message)
                 .replace("%NOTICE%", notice)

@@ -2424,8 +2424,7 @@ public final class PurpleBot {
      */
     public void broadcastIRCJoin(User user, org.pircbotx.Channel channel) {
         if (isMessageEnabled(channel, TemplateName.IRC_JOIN)) {
-            plugin.logDebug("[broadcastIRCJoin] Broadcasting join message because "
-                    + TemplateName.IRC_JOIN + " is true.");
+            plugin.logDebug("[broadcastIRCJoin] Broadcasting join message because " + TemplateName.IRC_JOIN + " is true.");
             plugin.getServer().broadcast(plugin.tokenizer.chatIRCTokenizer(
                     this, user, channel, plugin.getMsgTemplate(botNick, TemplateName.IRC_JOIN)), "irc.message.join");
         } else {
