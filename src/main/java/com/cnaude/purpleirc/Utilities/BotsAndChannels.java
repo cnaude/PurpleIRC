@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleIRC;
@@ -15,11 +10,10 @@ import org.bukkit.command.CommandSender;
  */
 public class BotsAndChannels {
 
-    public ArrayList<String> bot = new ArrayList<String>();
-    public ArrayList<String> channel = new ArrayList<String>();
+    public ArrayList<String> bot = new ArrayList<>();
+    public ArrayList<String> channel = new ArrayList<>();
 
-    public BotsAndChannels(PurpleIRC plugin, CommandSender sender,
-            String botName, String channelName) {
+    public BotsAndChannels(PurpleIRC plugin, CommandSender sender, String botName, String channelName) {
         if (plugin.ircBots.containsKey(botName)) {
             bot.add(botName);
             if (plugin.ircBots.get(botName).isValidChannel(channelName)) {           

@@ -25,7 +25,7 @@ public class BotWatcher {
                 //plugin.logDebug("Checking connection status of IRC bots.");
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
                     if (ircBot.isConnectedBlocking()) {
-                        plugin.logDebug("[" + ircBot.botNick + "] CONNECTED");
+                        //plugin.logDebug("[" + ircBot.botNick + "] CONNECTED");
                         ircBot.setConnected(true);
                     } else {
                         ircBot.setConnected(false);

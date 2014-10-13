@@ -602,7 +602,7 @@ public class PurpleIRC extends JavaPlugin {
                 if (file.getName().endsWith(".yml")) {
                     logInfo("Loading bot file: " + file.getName());
                     PurpleBot pircBot = new PurpleBot(file, this);
-                    ircBots.put(pircBot.botNick, pircBot);
+                    ircBots.put(file.getName(), pircBot);
                     logInfo("Loaded bot: " + pircBot.botNick);
                 }
             }
