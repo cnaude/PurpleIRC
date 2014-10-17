@@ -585,15 +585,15 @@ public class ChatTokenizer {
                 .replace("%WORLD%", worldName);
     }
 
-    private String playerTokenizer(String player, String message) {
-        plugin.logDebug("Tokenizing " + player);
+    private String playerTokenizer(String playerName, String message) {
+        plugin.logDebug("Tokenizing " + playerName);
         String worldName = plugin.defaultPlayerWorld;
-        String pSuffix = plugin.getPlayerSuffix(worldName, player);
-        String pPrefix = plugin.getPlayerPrefix(worldName, player);
-        String gPrefix = plugin.getGroupPrefix(worldName, player);
-        String gSuffix = plugin.getGroupSuffix(worldName, player);
-        String group = plugin.getPlayerGroup(worldName, player);
-        String displayName = plugin.getDisplayName(player);
+        String pSuffix = plugin.getPlayerSuffix(worldName, playerName);
+        String pPrefix = plugin.getPlayerPrefix(worldName, playerName);
+        String gPrefix = plugin.getGroupPrefix(worldName, playerName);
+        String gSuffix = plugin.getGroupSuffix(worldName, playerName);
+        String group = plugin.getPlayerGroup(worldName, playerName);
+        String displayName = plugin.getDisplayName(playerName);
         String worldAlias = "";
         String worldColor = "";
         String jobShort = "";
@@ -617,18 +617,18 @@ public class ChatTokenizer {
         if (group == null) {
             group = plugin.defaultPlayerGroup;
         }
-        Player playerO = plugin.getServer().getPlayer(player);
-        if (playerO != null) {
+        Player player = getPlayer(playerName);
+        if (player != null) {
             if (plugin.jobsHook != null) {
-                job = plugin.jobsHook.getPlayerJob(playerO, false);
-                jobShort = plugin.jobsHook.getPlayerJob(playerO, true);
+                job = plugin.jobsHook.getPlayerJob(player, false);
+                jobShort = plugin.jobsHook.getPlayerJob(player, true);
             }
         }
         plugin.logDebug("[S]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%JOBS%", job)
                 .replace("%JOBSSHORT%", jobShort)
-                .replace("%NAME%", player)
+                .replace("%NAME%", playerName)
                 .replace("%GROUP%", group)
                 .replace("%PLAYERPREFIX%", pPrefix)
                 .replace("%PLAYERSUFFIX%", pSuffix)
