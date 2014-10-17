@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.TemplateName;
@@ -32,21 +28,24 @@ public class JobsHook {
         return getPlayerJob(player.getName(), shortName);
     }
 
-    public String getPlayerJob(String player, boolean shortName) {
-        ArrayList<String> j = new ArrayList<>();
-        if (plugin.isPluginEnabled("Jobs")) {
-            for (Job job : Jobs.getJobs()) {
-                if (Jobs.getPlayerManager().getJobsPlayer(player)
-                        .isInJob(job)) {
-                    if (shortName) {
-                        j.add(job.getShortName());
-                    } else {
-                        j.add(job.getName());
+    public String getPlayerJob(String playerName, boolean shortName) {
+        Player player = plugin.getServer().getPlayer(playerName);
+        if (player != null) {
+            ArrayList<String> j = new ArrayList<>();
+            if (plugin.isPluginEnabled("Jobs")) {
+                for (Job job : Jobs.getJobs()) {
+                    if (Jobs.getPlayerManager().getJobsPlayer(player)
+                            .isInJob(job)) {
+                        if (shortName) {
+                            j.add(job.getShortName());
+                        } else {
+                            j.add(job.getName());
+                        }
                     }
                 }
-            }
-            if (!j.isEmpty()) {
-                return Joiner.on(plugin.getMsgTemplate(TemplateName.JOBS_SEPARATOR)).join(j);
+                if (!j.isEmpty()) {
+                    return Joiner.on(plugin.getMsgTemplate(TemplateName.JOBS_SEPARATOR)).join(j);
+                }
             }
         }
         return "";
