@@ -39,11 +39,11 @@ public class ChatTokenizer {
      * @return
      */
     public String chatIRCTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template) {
-        return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(template, user)             
+        return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(template, user)
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNEL%", channel.getName()));
     }
-    
+
     public String ircUserTokenizer(String template, User user) {
         String host = user.getHostmask();
         String server = user.getServer();
@@ -63,7 +63,7 @@ public class ChatTokenizer {
                 .replace("%SERVER%", server)
                 .replace("%AWAY%", away);
     }
-    
+
     public String ircUserTokenizer(String template, User recipient, User kicker) {
         String host = kicker.getHostmask();
         String server = kicker.getServer();
@@ -617,9 +617,12 @@ public class ChatTokenizer {
         if (group == null) {
             group = plugin.defaultPlayerGroup;
         }
-        if (plugin.jobsHook != null) {
-            job = plugin.jobsHook.getPlayerJob(player, false);
-            jobShort = plugin.jobsHook.getPlayerJob(player, true);
+        Player playerO = plugin.getServer().getPlayer(player);
+        if (playerO != null) {
+            if (plugin.jobsHook != null) {
+                job = plugin.jobsHook.getPlayerJob(playerO, false);
+                jobShort = plugin.jobsHook.getPlayerJob(playerO, true);
+            }
         }
         plugin.logDebug("[S]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)

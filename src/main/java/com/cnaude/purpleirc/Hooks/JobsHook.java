@@ -24,12 +24,7 @@ public class JobsHook {
         this.plugin = plugin;
     }
 
-    public String getPlayerJob(Player player, boolean shortName) {
-        return getPlayerJob(player.getName(), shortName);
-    }
-
-    public String getPlayerJob(String playerName, boolean shortName) {
-        Player player = plugin.getServer().getPlayer(playerName);
+    public String getPlayerJob(Player player, boolean shortName) {       
         if (player != null) {
             ArrayList<String> j = new ArrayList<>();
             if (plugin.isPluginEnabled("Jobs")) {
