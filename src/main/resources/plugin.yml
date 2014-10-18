@@ -99,3 +99,9 @@ permissions:
   'irc.motd':
     description: Gives player access to the /irc motd command.
     default: op    
+  'irc.load':
+    description: Gives player access to the /irc load command.
+    default: op  
+  'irc.unload':
+    description: Gives player access to the /irc unload command.
+    default: op  

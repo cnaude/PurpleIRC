@@ -80,7 +80,7 @@ public class PurpleIRC extends JavaPlugin {
     private final String sampleFileName;
     private final String MAINCONFIG;
     private File pluginFolder;
-    private File botsFolder;
+    public File botsFolder;
     private File configFile;
     public static long startTime;
     public boolean identServerEnabled;
@@ -599,11 +599,10 @@ public class PurpleIRC extends JavaPlugin {
         if (botsFolder.exists()) {
             logInfo("Checking for bot files in " + botsFolder);
             for (final File file : botsFolder.listFiles()) {
-                if (file.getName().endsWith(".yml")) {
+                if (file.getName().toLowerCase().endsWith(".yml")) {
                     logInfo("Loading bot file: " + file.getName());
-                    PurpleBot pircBot = new PurpleBot(file, this);
-                    ircBots.put(file.getName(), pircBot);
-                    logInfo("Loaded bot: " + pircBot.botNick);
+                    ircBots.put(file.getName(), new PurpleBot(file, this));
+                    logInfo("Loaded bot: " + file.getName() + "[" + ircBots.get(file.getName()).botNick + "]");
                 }
             }
         }
@@ -1209,4 +1208,13 @@ public class PurpleIRC extends JavaPlugin {
             hostCache.remove(playerIP);
         }
     }
+    
+    public String botify(String bot) {
+        if (bot.toLowerCase().endsWith("yml")) {
+            return bot;
+        } else {
+            return bot + ".yml";
+        }
+    }
+    
 }

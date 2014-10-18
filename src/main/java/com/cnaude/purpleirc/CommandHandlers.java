@@ -16,8 +16,8 @@ import org.bukkit.command.CommandSender;
  */
 public class CommandHandlers implements CommandExecutor {
 
-    public HashMap<String, IRCCommandInterface> commands = new HashMap<String, IRCCommandInterface>();
-    public ArrayList<String> sortedCommands = new ArrayList<String>();
+    public HashMap<String, IRCCommandInterface> commands = new HashMap<>();
+    public ArrayList<String> sortedCommands = new ArrayList<>();
     private final PurpleIRC plugin;
 
     /**
@@ -44,6 +44,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("listops", new ListOps(plugin));
         commands.put("listvoices", new ListVoices(plugin));
         commands.put("login", new Login(plugin));
+        commands.put("load", new Load(plugin));
         commands.put("messagedelay", new MessageDelay(plugin));
         commands.put("msg", new Msg(plugin));
         commands.put("motd", new Motd(plugin));
@@ -67,6 +68,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("server", new Server(plugin));
         commands.put("topic", new Topic(plugin));
         commands.put("unmute", new UnMute(plugin));
+        commands.put("unload", new Unload(plugin));
         commands.put("voice", new Voice(plugin));
         commands.put("whois", new Whois(plugin));
         commands.put("help", new Help(plugin));

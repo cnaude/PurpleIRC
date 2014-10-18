@@ -281,10 +281,12 @@ public final class PurpleBot {
                 for (String channelName : botChannels) {
                     if (channelAutoJoin.containsKey(channelName)) {
                         if (channelAutoJoin.get(channelName)) {
-                            if (channelPassword.get(channelName).isEmpty()) {
-                                bot.sendIRC().joinChannel(channelName);
-                            } else {
-                                bot.sendIRC().joinChannel(channelName, channelPassword.get(channelName));
+                            if (bot.isConnected()) {
+                                if (channelPassword.get(channelName).isEmpty()) {
+                                    bot.sendIRC().joinChannel(channelName);
+                                } else {
+                                    bot.sendIRC().joinChannel(channelName, channelPassword.get(channelName));
+                                }
                             }
                         }
                     }
