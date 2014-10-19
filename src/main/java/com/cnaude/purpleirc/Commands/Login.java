@@ -36,7 +36,7 @@ public class Login implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 3) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             String login = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 plugin.ircBots.get(bot).changeLogin(sender, login);

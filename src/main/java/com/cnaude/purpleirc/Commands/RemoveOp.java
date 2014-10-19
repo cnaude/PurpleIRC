@@ -36,7 +36,7 @@ public class RemoveOp implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 4) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             String channel = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 // #channel, user

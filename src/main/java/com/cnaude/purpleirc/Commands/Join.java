@@ -36,7 +36,7 @@ public class Join implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length >= 3) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             String channelName = args[2];
             String password = "";
             if (args.length >= 4) {

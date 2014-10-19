@@ -36,7 +36,7 @@ public class ListOps implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 3) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             String channelName = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 if (plugin.ircBots.get(bot).opsList.containsKey(channelName)) {

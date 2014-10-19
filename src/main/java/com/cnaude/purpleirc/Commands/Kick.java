@@ -36,7 +36,7 @@ public class Kick implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 4) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             String channelName = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 for (int i = 3; i < args.length; i++) {

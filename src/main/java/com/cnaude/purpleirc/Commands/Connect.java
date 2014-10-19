@@ -41,7 +41,7 @@ public class Connect implements IRCCommandInterface {
                 ircBot.asyncConnect(sender);
             }
         } else if (args.length == 2) {
-            String bot = args[1];
+            String bot = plugin.botify(args[1]);
             if (plugin.ircBots.containsKey(bot)) {
                 plugin.ircBots.get(bot).asyncConnect(sender);
             } else {
