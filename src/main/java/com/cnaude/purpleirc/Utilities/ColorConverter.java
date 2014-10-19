@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 cnaude
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleIRC;
@@ -18,8 +34,8 @@ public class ColorConverter {
     private final boolean stripGameColors;
     private final boolean stripIRCColors;
     private final boolean stripIRCBackgroundColors;
-    private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<ChatColor, String>(ChatColor.class);
-    private final HashMap<String, ChatColor> gameColorMap = new HashMap<String, ChatColor>();
+    private final EnumMap<ChatColor, String> ircColorMap = new EnumMap<>(ChatColor.class);
+    private final HashMap<String, ChatColor> gameColorMap = new HashMap<>();
     private final Pattern bgColorPattern;
     private final Pattern singleDigitColorPattern;
     private final Pattern colorHack;
@@ -131,13 +147,7 @@ public class ColorConverter {
         String s = "";
         try {
             s = (String) Colors.class.getField(ircColor.toUpperCase()).get(null);
-        } catch (NoSuchFieldException ex) {
-            plugin.logError(ex.getMessage());
-        } catch (SecurityException ex) {
-            plugin.logError(ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            plugin.logError(ex.getMessage());
-        } catch (IllegalAccessException ex) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             plugin.logError(ex.getMessage());
         }
         if (s.isEmpty()) {
