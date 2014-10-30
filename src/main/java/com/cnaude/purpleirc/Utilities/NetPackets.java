@@ -65,7 +65,7 @@ public class NetPackets {
                 return;
             }
         }
-        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO, "", false, (int) 0);
+        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO);
         try {
 
             PacketContainer packet = playerListConstructor.createPacket(
@@ -88,7 +88,7 @@ public class NetPackets {
         if (! plugin.customTabList) {
             return;
         }
-        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO, "", false, (int) 0);
+        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO);
         try {
             PacketContainer packet = playerListConstructor.createPacket(
                     truncateName(plugin.customTabPrefix + name), false, 0);
