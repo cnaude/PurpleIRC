@@ -18,7 +18,7 @@ package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.comphenix.protocol.Packets;
+import com.comphenix.protocol.PacketType;;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
@@ -65,7 +65,7 @@ public class NetPackets {
                 return;
             }
         }
-        playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
+        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO, "", false, (int) 0);
         try {
 
             PacketContainer packet = playerListConstructor.createPacket(
@@ -88,7 +88,7 @@ public class NetPackets {
         if (! plugin.customTabList) {
             return;
         }
-        playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
+        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO, "", false, (int) 0);
         try {
             PacketContainer packet = playerListConstructor.createPacket(
                     truncateName(plugin.customTabPrefix + name), false, 0);

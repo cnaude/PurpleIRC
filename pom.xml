@@ -97,6 +97,12 @@
             <groupId>com.nyancraft.reportrts</groupId>
             <artifactId>ReportRTS</artifactId>
             <version>1.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.comphenix.protocol</groupId>
+                    <artifactId>ProtocolLib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Herochat -->
@@ -194,7 +200,7 @@
         <dependency>
             <groupId>com.cnaude.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>3.4.0</version>
+            <version>3.5.0</version>
         </dependency>
         
         <!-- PircBotX -->
