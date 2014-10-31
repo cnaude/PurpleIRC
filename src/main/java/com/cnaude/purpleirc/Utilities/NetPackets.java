@@ -18,12 +18,13 @@ package com.cnaude.purpleirc.Utilities;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.comphenix.protocol.PacketType;;
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.google.common.base.Charsets;
 import java.lang.reflect.InvocationTargetException;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
@@ -33,11 +34,12 @@ import org.pircbotx.User;
  *
  * @author cnaude
  */
+
+
 public class NetPackets {
 
     PurpleIRC plugin;
     private final ProtocolManager protocolManager;
-    private PacketConstructor playerListConstructor;
 
     /**
      *
@@ -55,7 +57,7 @@ public class NetPackets {
      * @param channel
      */
     public void addToTabList(String name, PurpleBot ircBot, Channel channel) {
-        if (! plugin.customTabList) {
+        if (!plugin.customTabList) {
             return;
         }
         String channelName = channel.getName();
@@ -65,11 +67,8 @@ public class NetPackets {
                 return;
             }
         }
-        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO);
         try {
-
-            PacketContainer packet = playerListConstructor.createPacket(
-                    truncateName(plugin.customTabPrefix + name), true, 0);
+            PacketContainer packet = tabPacket(name, true);         
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);
@@ -85,13 +84,11 @@ public class NetPackets {
      * @param name
      */
     public void remFromTabList(String name) {
-        if (! plugin.customTabList) {
+        if (!plugin.customTabList) {
             return;
         }
-        playerListConstructor = protocolManager.createPacketConstructor(PacketType.Play.Server.PLAYER_INFO);
         try {
-            PacketContainer packet = playerListConstructor.createPacket(
-                    truncateName(plugin.customTabPrefix + name), false, 0);
+            PacketContainer packet = tabPacket(name, false);            
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);
@@ -100,6 +97,23 @@ public class NetPackets {
         } catch (FieldAccessException | InvocationTargetException e) {
             plugin.logError(e.getMessage());
         }
+    }
+
+    private PacketContainer tabPacket(String name, boolean add) {
+        int action;
+        if (add) {
+            action = 0;
+        } else {
+            action = 4;
+        }
+        String displayName = truncateName(plugin.customTabPrefix + name);
+        PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+        packet.getIntegers().write(0, action);
+        packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
+        packet.getIntegers().write(1, 0);
+        packet.getIntegers().write(2, 0);
+        packet.getStrings().write(0, displayName);
+        return packet;
     }
 
     /**
