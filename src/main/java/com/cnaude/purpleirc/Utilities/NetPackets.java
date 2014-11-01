@@ -19,9 +19,11 @@ package com.cnaude.purpleirc.Utilities;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
@@ -34,12 +36,11 @@ import org.pircbotx.User;
  *
  * @author cnaude
  */
-
-
 public class NetPackets {
 
     PurpleIRC plugin;
     private final ProtocolManager protocolManager;
+    private PacketConstructor playerListConstructor;
 
     /**
      *
@@ -68,7 +69,7 @@ public class NetPackets {
             }
         }
         try {
-            PacketContainer packet = tabPacket(name, true);         
+            PacketContainer packet = tabPacket(name, true);
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);
@@ -88,7 +89,7 @@ public class NetPackets {
             return;
         }
         try {
-            PacketContainer packet = tabPacket(name, false);            
+            PacketContainer packet = tabPacket(name, false);
             for (Player reciever : plugin.getServer().getOnlinePlayers()) {
                 if (reciever.hasPermission("irc.tablist")) {
                     protocolManager.sendServerPacket(reciever, packet);
@@ -100,28 +101,29 @@ public class NetPackets {
     }
 
     private PacketContainer tabPacket(String name, boolean add) {
-        int action;
-        if (add) {
-            action = 0;
-        } else {
-            action = 4;
-        }
         String displayName = truncateName(plugin.customTabPrefix + name);
-        PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-        packet.getIntegers().write(0, action);
-        packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
-        packet.getIntegers().write(1, 0);
-        packet.getIntegers().write(2, 0);
-        packet.getStrings().write(0, displayName);
+        PacketContainer packet;
+        if (plugin.getServer().getVersion().contains("MC: 1.7.10")) {
+            plugin.logDebug("tabPacket: 1.7.10");
+            packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+            packet.getIntegers().write(0, (add ? 0 : 4));
+            packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
+            packet.getIntegers().write(1, 0);
+            packet.getIntegers().write(2, 0);
+            packet.getStrings().write(0, displayName);
+        } else {
+            plugin.logDebug("tabPacket: deprecated");
+            playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
+            packet = playerListConstructor.createPacket(displayName, add, 0);
+        }
         return packet;
     }
-
-    /**
-     *
-     * @param player
-     * @param ircBot
-     * @param channel
-     */
+        /**
+         *
+         * @param player
+         * @param ircBot
+         * @param channel
+         */
     public void updateTabList(Player player, final PurpleBot ircBot, final Channel channel) {
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
