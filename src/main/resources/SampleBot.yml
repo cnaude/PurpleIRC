@@ -201,16 +201,16 @@ channels:
     raw-message-on-join: false
     # join-notice
     join-notice:
-        # enable or disable this feature
+        # Enable or disable this feature.
         enabled: false
-        # cool down in seconds per user
-        cool-down: 60
-        # if true then message will be sent in private
+        # Cool down in seconds per user.
+        cooldown: 60
+        # If true then message will be sent in private
         private: true
-        # if true then message will be sent via ctcp. if false then normal msg
+        # If true then message will be sent via ctcp. if false then normal msg
         ctcp: true
         # The actual message sent to the user when joining the channel.
-        # To run a command use {}. Example to send an motd use {/motd}
+        # If the message starts with a / then a command will be run and the output sent as the message.
         message: '{/motd}'
     # commands - A list of commands that the bot will act on
     # There are several builtin game_command options.

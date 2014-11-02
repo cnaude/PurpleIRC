@@ -811,12 +811,12 @@ public final class PurpleBot {
                 }
 
                 // build join notice
-                joinNoticeCoolDown = config.getInt("channels." + enChannelName + ".join-notice.cool-down", 60);
+                joinNoticeCoolDown = config.getInt("channels." + enChannelName + ".join-notice.cooldown", 60);
                 joinNoticeEnabled = config.getBoolean("channels." + enChannelName + ".join-notice.enabled", false);
                 joinNoticePrivate = config.getBoolean("channels." + enChannelName + ".join-notice.private", true);
                 joinNoticeCtcp = config.getBoolean("channels." + enChannelName + ".join-notice.ctcp", true);
                 joinNoticeMessage = config.getString("channels." + enChannelName + ".join-notice.message", "");
-                plugin.logDebug("join-notice.cool-down: " + joinNoticeCoolDown);
+                plugin.logDebug("join-notice.cooldown: " + joinNoticeCoolDown);
                 plugin.logDebug("join-notice.enabled: " + joinNoticeEnabled);
                 plugin.logDebug("join-notice.private: " + joinNoticePrivate);
                 plugin.logDebug("join-notice.ctcp: " + joinNoticeCtcp);
@@ -2870,15 +2870,15 @@ public final class PurpleBot {
                 target = user.getNick();
             }
             String myMessage = joinNoticeMessage.replace("%NAME%", user.getNick());
-            //if (joinNoticeMessage.matches("{/.*}")) {
-            //    String comOutput = 
-            //}
-            if (joinNoticeCtcp) {
-                asyncCTCPMessage(target, myMessage);
+            if (joinNoticeMessage.startsWith("/")) {
+                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(this, target, plugin, joinNoticeCtcp), myMessage.trim().substring(1)));
             } else {
-                asyncIRCMessage(target, myMessage);
+                if (joinNoticeCtcp) {
+                    asyncCTCPMessage(target, myMessage);
+                } else {
+                    asyncIRCMessage(target, myMessage);
+                }
             }
-
         }
     }
 }
