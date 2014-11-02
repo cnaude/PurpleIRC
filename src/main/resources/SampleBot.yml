@@ -211,7 +211,7 @@ channels:
         ctcp: true
         # The actual message sent to the user when joining the channel.
         # If the message starts with a / then a command will be run and the output sent as the message.
-        message: '{/motd}'
+        message: '/list'
     # commands - A list of commands that the bot will act on
     # There are several builtin game_command options.
     #  @list - list the players in the game
