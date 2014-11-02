@@ -137,12 +137,18 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Collection<String>> muteList;
     public CaseInsensitiveMap<Collection<String>> enabledMessages;
     public CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>> commandMap;
+    public CaseInsensitiveMap<Long> joinNoticeCooldownMap;
     public ArrayList<CommandSender> whoisSenders;
     public List<String> channelCmdNotifyRecipients;
     public List<String> channelCmdNotifyIgnore;
     private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
     private final String fileName;
+    int joinNoticeCoolDown;
+    boolean joinNoticeEnabled;
+    boolean joinNoticePrivate;
+    boolean joinNoticeCtcp;
+    String joinNoticeMessage;
 
     /**
      *
@@ -157,6 +163,7 @@ public final class PurpleBot {
         this.channelCmdNotifyRecipients = new ArrayList<>();
         this.channelCmdNotifyIgnore = new ArrayList<>();
         this.commandMap = new CaseInsensitiveMap<>();
+        this.joinNoticeCooldownMap = new CaseInsensitiveMap<>();
         this.enabledMessages = new CaseInsensitiveMap<>();
         this.muteList = new CaseInsensitiveMap<>();
         this.worldList = new CaseInsensitiveMap<>();
@@ -802,6 +809,18 @@ public final class PurpleBot {
                 if (filters.isEmpty()) {
                     plugin.logInfo("World list is empty!");
                 }
+
+                // build join notice
+                joinNoticeCoolDown = config.getInt("channels." + enChannelName + ".join-notice.cool-down", 60);
+                joinNoticeEnabled = config.getBoolean("channels." + enChannelName + ".join-notice.enabled", false);
+                joinNoticePrivate = config.getBoolean("channels." + enChannelName + ".join-notice.private", true);
+                joinNoticeCtcp = config.getBoolean("channels." + enChannelName + ".join-notice.ctcp", true);
+                joinNoticeMessage = config.getString("channels." + enChannelName + ".join-notice.message", "");
+                plugin.logDebug("join-notice.cool-down: " + joinNoticeCoolDown);
+                plugin.logDebug("join-notice.enabled: " + joinNoticeEnabled);
+                plugin.logDebug("join-notice.private: " + joinNoticePrivate);
+                plugin.logDebug("join-notice.ctcp: " + joinNoticeCtcp);
+                plugin.logDebug("join-notice.message: " + joinNoticeMessage);
 
                 // build command map
                 CaseInsensitiveMap<CaseInsensitiveMap<String>> map = new CaseInsensitiveMap<>();
@@ -2827,6 +2846,39 @@ public final class PurpleBot {
                         .replace("%PLUGIN%", pluginName)
                 );
             }
+        }
+    }
+
+    public void joinNotice(Channel channel, User user) {
+        if (user.getNick().equalsIgnoreCase(botNick)) {
+            return;
+        }
+        if (joinNoticeEnabled) {
+            if (joinNoticeCooldownMap.containsKey(user.getHostmask())) {
+                long prevTime = joinNoticeCooldownMap.get(user.getHostmask());
+                long currentTime = System.currentTimeMillis();
+                long diff = currentTime - prevTime;
+                if (diff < (joinNoticeCoolDown * 1000)) {
+                    plugin.logDebug("joinNotice: " + diff);
+                    return;
+                }
+            } else {
+                joinNoticeCooldownMap.put(user.getHostmask(), System.currentTimeMillis());
+            }
+            String target = channel.getName();
+            if (joinNoticePrivate) {
+                target = user.getNick();
+            }
+            String myMessage = joinNoticeMessage.replace("%NAME%", user.getNick());
+            //if (joinNoticeMessage.matches("{/.*}")) {
+            //    String comOutput = 
+            //}
+            if (joinNoticeCtcp) {
+                asyncCTCPMessage(target, myMessage);
+            } else {
+                asyncIRCMessage(target, myMessage);
+            }
+
         }
     }
 }

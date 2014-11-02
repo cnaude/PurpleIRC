@@ -183,21 +183,6 @@ channels:
     # muted - IRC users that should not be heard in game
     muted:      
     - KuShy
-    # commands - A list of commands that the bot will act on
-    # There are several builtin game_command options.
-    #  @list - list the players in the game
-    #  @help - print out of all of the commands
-    #  @uptime - print the uptime of the game server
-    #  @chat - send message to game
-    #  @hchat - send message to specific hero channel
-    #  @ochat - send message to game (overrides irc-chat)
-    #  @motd - display minecraft server motd
-    #  @msg - send private message to player
-    #  @query - query remote minecraft server
-    #  @rtsmb - Send ReportRTS broadcast message to mods
-    # The modes can be *, o , v , h, q, s, or i. Mix and match as needed.
-    # If game_command can optionally accept arguments via %ARGS% and %NAME%
-    # If a command is private then the result is sent to the player privately.
     # Set ignore-irc-chat to true if you are using @chat and don't want regular IRC chat in your game
     ignore-irc-chat: false
     # ignore list for custom tab list
@@ -214,6 +199,34 @@ channels:
     # Raw message to send if raw-message-on-join is true
     raw-message: ''
     raw-message-on-join: false
+    # join-notice
+    join-notice:
+        # enable or disable this feature
+        enabled: false
+        # cool down in seconds per user
+        cool-down: 60
+        # if true then message will be sent in private
+        private: true
+        # if true then message will be sent via ctcp. if false then normal msg
+        ctcp: true
+        # The actual message sent to the user when joining the channel.
+        # To run a command use {}. Example to send an motd use {/motd}
+        message: '{/motd}'
+    # commands - A list of commands that the bot will act on
+    # There are several builtin game_command options.
+    #  @list - list the players in the game
+    #  @help - print out of all of the commands
+    #  @uptime - print the uptime of the game server
+    #  @chat - send message to game
+    #  @hchat - send message to specific hero channel
+    #  @ochat - send message to game (overrides irc-chat)
+    #  @motd - display minecraft server motd
+    #  @msg - send private message to player
+    #  @query - query remote minecraft server
+    #  @rtsmb - Send ReportRTS broadcast message to mods
+    # The modes can be *, o , v , h, q, s, or i. Mix and match as needed.
+    # If game_command can optionally accept arguments via %ARGS% and %NAME%
+    # If a command is private then the result is sent to the player privately.
     commands:
       chat:
         modes: '*'
