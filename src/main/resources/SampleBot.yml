@@ -291,20 +291,6 @@ channels:
         game_command: lag   
         private_listen: true
         channel_listen: true
-      lagmem:
-        modes: '*'
-        private: true
-        ctcp: false
-        game_command: lagmem        
-        private_listen: true
-        channel_listen: true
-      gamemode:
-        modes: 'o'
-        private: false
-        ctcp: false
-        game_command: 'gamemode %ARGS%'
-        private_listen: true
-        channel_listen: true
       mb:
         modes: 'o'
         private: 'false'
@@ -313,3 +299,10 @@ channels:
         private_listen: 'true'
         channel_listen: 'true'
         perm: ''
+#      gamemode:
+#        modes: 'o'
+#        private: false
+#        ctcp: false
+#        game_command: 'gamemode %ARGS%'
+#        private_listen: true
+#        channel_listen: true
