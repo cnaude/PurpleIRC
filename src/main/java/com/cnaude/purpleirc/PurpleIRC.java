@@ -1204,22 +1204,27 @@ public class PurpleIRC extends JavaPlugin {
         if (hostCache.containsKey(playerIP)) {
             return hostCache.get(playerIP);
         } else {
-            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {                
+            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
                 @Override
                 public void run() {
-                    logDebug("Asynchronously looking up hostname for " + playerIP);
+                    long a = System.currentTimeMillis();
                     InetAddress addr = null;
                     try {
                         addr = InetAddress.getByName(playerIP);
                     } catch (UnknownHostException ex) {
                         logError(ex.getMessage());
                     }
+                    String host;
                     if (addr != null) {
-                        hostCache.put(playerIP, addr.getHostName());
+                        host = addr.getHostName();
+                    } else {
+                        host = playerIP;
                     }
+                    hostCache.put(playerIP, host);
+                    logDebug("getPlayerHost[" + (System.currentTimeMillis() - a) + "ms] " + playerIP + " = " + host);
                 }
-            }, 5);
-            return "";
+            }, 0);
+            return playerIP;
         }
     }
 
