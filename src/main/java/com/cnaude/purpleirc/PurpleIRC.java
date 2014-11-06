@@ -1200,34 +1200,34 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     public String getPlayerHost(Player player) {
-        String playerIP = player.getAddress().getAddress().getHostAddress();
+        final String playerIP = player.getAddress().getAddress().getHostAddress();
         if (hostCache.containsKey(playerIP)) {
             return hostCache.get(playerIP);
+        } else {
+            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {                
+                @Override
+                public void run() {
+                    logDebug("Asynchronously looking up hostname for " + playerIP);
+                    InetAddress addr = null;
+                    try {
+                        addr = InetAddress.getByName(playerIP);
+                    } catch (UnknownHostException ex) {
+                        logError(ex.getMessage());
+                    }
+                    if (addr != null) {
+                        hostCache.put(playerIP, addr.getHostName());
+                    }
+                }
+            }, 5);
+            return "";
         }
-        InetAddress addr = null;
-        try {
-            addr = InetAddress.getByName(playerIP);
-        } catch (UnknownHostException ex) {
-            logError(ex.getMessage());
-        }
-        String host = "UnknownHost";
-        if (addr != null) {
-            host = addr.getHostName();
-            hostCache.put(playerIP, host);
-        }
-        return host;
     }
 
     public void clearHostCache(final Player player) {
-        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                String playerIP = player.getAddress().getAddress().getHostAddress();
-                if (hostCache.containsKey(playerIP)) {
-                    hostCache.remove(playerIP);
-                }
-            }
-        }, 5);
+        String playerIP = player.getAddress().getAddress().getHostAddress();
+        if (hostCache.containsKey(playerIP)) {
+            hostCache.remove(playerIP);
+        }
     }
 
     public String botify(String bot) {
