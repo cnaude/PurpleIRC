@@ -219,7 +219,7 @@ public class PurpleIRC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GamePlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);        
+        getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);
         if (isPluginEnabled("Herochat")) {
             logInfo("Enabling HeroChat support.");
             getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
@@ -716,7 +716,7 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
     }
-    
+
     private void createConfig() {
         if (!configFile.exists()) {
             try {
@@ -1006,7 +1006,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("Caching displayName for " + player.getName() + " = " + player.getDisplayName());
         displayNameCache.put(player.getName(), player.getDisplayName());
     }
-    
+
     /**
      *
      * @param player
@@ -1182,7 +1182,7 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
-    public void loadDisplayNameCache() {        
+    public void loadDisplayNameCache() {
         try {
             try (BufferedReader in = new BufferedReader(new FileReader(cacheFile))) {
                 String line;
@@ -1198,7 +1198,7 @@ public class PurpleIRC extends JavaPlugin {
             logError(e.getMessage());
         }
     }
-    
+
     public String getPlayerHost(Player player) {
         String playerIP = player.getAddress().getAddress().getHostAddress();
         if (hostCache.containsKey(playerIP)) {
@@ -1211,20 +1211,25 @@ public class PurpleIRC extends JavaPlugin {
             logError(ex.getMessage());
         }
         String host = "UnknownHost";
-        if ( addr != null ) {
+        if (addr != null) {
             host = addr.getHostName();
             hostCache.put(playerIP, host);
         }
         return host;
     }
-    
-    public void clearHostCache(Player player) {
-        String playerIP = player.getAddress().getAddress().getHostAddress();
-        if (hostCache.containsKey(playerIP)) {
-            hostCache.remove(playerIP);
-        }
+
+    public void clearHostCache(final Player player) {
+        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                String playerIP = player.getAddress().getAddress().getHostAddress();
+                if (hostCache.containsKey(playerIP)) {
+                    hostCache.remove(playerIP);
+                }
+            }
+        }, 5);
     }
-    
+
     public String botify(String bot) {
         if (bot.toLowerCase().endsWith("yml")) {
             return bot;
@@ -1232,5 +1237,5 @@ public class PurpleIRC extends JavaPlugin {
             return bot + ".yml";
         }
     }
-    
+
 }
