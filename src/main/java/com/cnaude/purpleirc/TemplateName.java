@@ -37,7 +37,7 @@ public class TemplateName {
     
     public final static String DYNMAP_WEB_CHAT = "dynmap-web-chat";
     public final static String IRC_DYNMAP_WEB_CHAT = "irc-dynmap-web-chat";
-    public final static String IRC_ACTION_DYNMAP_WEB_CHAT = "irc-dynmap-web-chat";
+    public final static String IRC_ACTION_DYNMAP_WEB_CHAT = "irc-action-dynmap-web-chat";
     
     public final static String CLEVER_SEND = "clever-send";
     

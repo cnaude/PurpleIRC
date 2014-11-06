@@ -2387,7 +2387,7 @@ public final class PurpleBot {
         }
         
         if (plugin.dynmapHook != null) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled ...");
+            plugin.logDebug("xChecking if " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled ...");
             if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT)) {
                 plugin.logDebug("Yes, " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled...");
                 String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT);
