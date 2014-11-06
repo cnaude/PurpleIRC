@@ -126,7 +126,9 @@ channels:
     # Dynmap Web Chat to IRC
     - dynmap-web-chat
     # IRC to Dynmap Web Chat
-    #- irc-dynmap-web-chat
+    - irc-dynmap-web-chat
+    # IRC acion to Dynmap Chat (/me)
+    - irc-action-dynmap-web-chat
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
     - mcmmo-party-chat

@@ -2385,6 +2385,19 @@ public final class PurpleBot {
                             )
                     );
         }
+        
+        if (plugin.dynmapHook != null) {
+            plugin.logDebug("Checking if " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled ...");
+            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT)) {
+                plugin.logDebug("Yes, " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled...");
+                String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT);
+                String rawDWMessage = filterMessage(
+                        plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, template, message), myChannel);
+                plugin.dynmapHook.sendMessage(user.getNick(), rawDWMessage);
+            } else {
+                plugin.logDebug("Nope, " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is NOT enabled...");
+            }
+        }
     }
 
     /**
