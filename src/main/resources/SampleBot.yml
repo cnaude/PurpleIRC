@@ -5,6 +5,10 @@
 #
 # nick - Your bot's unique nickname
 nick: AwesomeBot
+# if your bot's nick is in use try these alternates
+alt-nicks:
+    - AwesomeBot_
+    - AwesomeBotA
 # login - Your bot's login name
 login: AwesomeName
 # realname

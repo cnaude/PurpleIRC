@@ -94,6 +94,8 @@ public final class PurpleBot {
     public String botServer;
     public String bindAddress;
     public String botNick;
+    public List<String> altNicks;
+    int nickIndex = 0;
     public String botLogin;
     public String botRealName;
     public int ircMaxLineLength;
@@ -157,6 +159,7 @@ public final class PurpleBot {
      */
     public PurpleBot(File file, PurpleIRC plugin) {
         fileName = file.getName();
+        this.altNicks = new ArrayList<>();
         this.connected = false;
         this.botChannels = new ArrayList<>();
         this.ircListeners = new ArrayList<>();
@@ -585,6 +588,7 @@ public final class PurpleBot {
             partInvalidChannels = config.getBoolean("part-invalid-channels", false);
             partInvalidChannelsMsg = config.getString("part-invalid-channels-message", "");
             botNick = config.getString("nick", "");
+            altNicks = config.getStringList("alt-nicks");
             plugin.loadTemplates(config, botNick);
             botLogin = config.getString("login", "PircBot");
             botRealName = config.getString("realname", "");
@@ -2385,7 +2389,7 @@ public final class PurpleBot {
                             )
                     );
         }
-        
+
         if (plugin.dynmapHook != null) {
             plugin.logDebug("xChecking if " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled ...");
             if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT)) {
@@ -2893,5 +2897,19 @@ public final class PurpleBot {
                 }
             }
         }
+    }
+
+    public void altNickChange() {
+        if (altNicks.isEmpty()) {
+            return;
+        }
+        if (nickIndex >= 0 && nickIndex < altNicks.size()) {
+            botNick = altNicks.get(nickIndex);
+            nickIndex++;
+        } else {
+            nickIndex = 0;
+        }
+        plugin.logInfo("Trying alternate nick " + botNick);
+        bot.sendIRC().changeNick(botNick);
     }
 }

@@ -57,6 +57,11 @@ public class ServerResponseListener extends ListenerAdapter {
             plugin.logInfo("Banned from the channel.");
         }
         
+        if (serverReply == ReplyConstants.ERR_NICKNAMEINUSE) {
+            plugin.logInfo("Nickname already in use.");
+            ircBot.altNickChange();
+        }
+        
         //plugin.logDebug("Server response: " + event.getRawLine());
         
     }
