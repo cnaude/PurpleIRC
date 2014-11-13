@@ -93,6 +93,7 @@ public final class PurpleBot {
     public long chatDelay;
     public String botServer;
     public String bindAddress;
+    public String nick;
     public String botNick;
     public List<String> altNicks;
     int nickIndex = 0;
@@ -587,7 +588,8 @@ public final class PurpleBot {
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
             partInvalidChannels = config.getBoolean("part-invalid-channels", false);
             partInvalidChannelsMsg = config.getString("part-invalid-channels-message", "");
-            botNick = config.getString("nick", "");
+            nick = config.getString("nick", "");
+            botNick = nick;
             altNicks = config.getStringList("alt-nicks");
             plugin.loadTemplates(config, botNick);
             botLogin = config.getString("login", "PircBot");
@@ -2904,7 +2906,7 @@ public final class PurpleBot {
             return;
         }
         if (nickIndex >= 0 && nickIndex < altNicks.size()) {
-            botNick = altNicks.get(nickIndex);
+            botNick = altNicks.get(nickIndex).replace("%NICK%", nick);
             nickIndex++;
         } else {
             nickIndex = 0;

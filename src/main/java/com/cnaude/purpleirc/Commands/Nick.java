@@ -31,7 +31,7 @@ public class Nick implements IRCCommandInterface {
     private final String usage = "[bot] [nick]";
     private final String desc = "Change bot's IRC nick.";
     private final String name = "nick";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
@@ -52,15 +52,7 @@ public class Nick implements IRCCommandInterface {
             String bot = plugin.botify(args[1]);
             String nick = args[2];
             if (plugin.ircBots.containsKey(bot)) {
-                if (plugin.ircBots.containsKey(nick)) {
-                    sender.sendMessage(ChatColor.RED 
-                            + "There is already a bot with that nick!");
-                } else {
-                    plugin.ircBots.get(bot).asyncChangeNick(sender, nick);
-                    PurpleBot ircBot = plugin.ircBots.remove(bot);
-                    plugin.ircBots.put(nick, ircBot);
-                    ircBot.botNick = nick;
-                }
+                plugin.ircBots.get(bot).asyncChangeNick(sender, nick);
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
