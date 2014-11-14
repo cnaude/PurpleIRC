@@ -7,8 +7,8 @@
 nick: AwesomeBot
 # If your bot's nick is in use try these alternates. Leave blank for none.
 alt-nicks:
-    - AwesomeBot_
-    - AwesomeBotA
+    - %NICK%_
+    - %NICK%__
 # login - Your bot's login name
 login: AwesomeName
 # realname
@@ -302,6 +302,16 @@ channels:
         private: 'false'
         ctcp: 'false'
         game_command: '@rtsmb'
+        private_listen: 'true'
+        channel_listen: 'true'
+        perm: ''
+      lv:
+        modes: 'o'
+        private: 'false'
+        ctcp: 'false'
+        game_command: '@list'
+        extra_commands: 
+            - version
         private_listen: 'true'
         channel_listen: 'true'
         perm: ''

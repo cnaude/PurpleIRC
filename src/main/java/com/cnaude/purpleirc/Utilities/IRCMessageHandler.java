@@ -88,13 +88,15 @@ public class IRCMessageHandler {
                     return;
                 }
 
-                String gameCommand = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
+                String gc = (String) ircBot.commandMap.get(myChannel).get(command).get("game_command");
+                List<String> extraCommands = ircBot.extraCommandMap.get(myChannel).get(command);
+                List<String> gameCommands = new ArrayList<>();
+                gameCommands.add(gc);
+                gameCommands.addAll(extraCommands);
                 String modes = (String) ircBot.commandMap.get(myChannel).get(command).get("modes");
                 String perm = (String) ircBot.commandMap.get(myChannel).get(command).get("perm");
                 boolean privateCommand = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("private"));
                 boolean ctcpResponse = Boolean.parseBoolean(ircBot.commandMap.get(myChannel).get(command).get("ctcp"));
-
-                plugin.logDebug(gameCommand + ":" + modes + ":" + privateCommand);
 
                 if (privateCommand || privateMessage) {
                     target = user.getNick();
@@ -103,60 +105,62 @@ public class IRCMessageHandler {
                 plugin.logDebug("Target: " + target);
 
                 if (isValidMode(modes, user, channel) && checkPerm(perm, user.getNick())) {
-                    switch (gameCommand) {
-                        case "@list":
-                            sendMessage(ircBot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
-                            break;
-                        case "@uptime":
-                            sendMessage(ircBot, target, plugin.getMCUptime(), ctcpResponse);
-                            break;
-                        case "@help":
-                            sendMessage(ircBot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
-                            break;
-                        case "@chat":
-                            ircBot.broadcastChat(user, channel, target, commandArgs, false, ctcpResponse);
-                            break;
-                        case "@ochat":
-                            ircBot.broadcastChat(user, channel, target, commandArgs, true, ctcpResponse);
-                            break;
-                        case "@hchat":
-                            ircBot.broadcastHeroChat(user, channel, target, commandArgs);
-                            break;
-                        case "@motd":
-                            sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
-                            break;
-                        case "@rtsmb":
-                            if (plugin.reportRTSHook != null) {
-                                plugin.reportRTSHook.modBroadcast(user.getNick(), commandArgs);
-                            }
-                            break;
-                        case "@msg":
-                            ircBot.playerChat(user, channel, target, commandArgs);
-                            break;
-                        case "@clearqueue":
-                            sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
-                            sendMessage(ircBot, target, ircBot.messageQueue.clearQueue(), ctcpResponse);
-                            break;
-                        case "@query":
-                            sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);
-                            break;
-                        default:
-                            if (commandArgs == null) {
-                                commandArgs = "";
-                            }
-                            if (gameCommand.contains("%ARGS%")) {
-                                gameCommand = gameCommand.replace("%ARGS%", commandArgs);
-                            }
-                            if (gameCommand.contains("%NAME%")) {
-                                gameCommand = gameCommand.replace("%NAME%", user.getNick());
-                            }
-                            plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
-                            try {
-                                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
-                            } catch (Exception ex) {
-                                plugin.logError(ex.getMessage());
-                            }
-                            break;
+                    for (String gameCommand : gameCommands) {
+                        switch (gameCommand) {
+                            case "@list":
+                                sendMessage(ircBot, target, plugin.getMCPlayers(ircBot, myChannel), ctcpResponse);
+                                break;
+                            case "@uptime":
+                                sendMessage(ircBot, target, plugin.getMCUptime(), ctcpResponse);
+                                break;
+                            case "@help":
+                                sendMessage(ircBot, target, getCommands(ircBot.commandMap, myChannel), ctcpResponse);
+                                break;
+                            case "@chat":
+                                ircBot.broadcastChat(user, channel, target, commandArgs, false, ctcpResponse);
+                                break;
+                            case "@ochat":
+                                ircBot.broadcastChat(user, channel, target, commandArgs, true, ctcpResponse);
+                                break;
+                            case "@hchat":
+                                ircBot.broadcastHeroChat(user, channel, target, commandArgs);
+                                break;
+                            case "@motd":
+                                sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
+                                break;
+                            case "@rtsmb":
+                                if (plugin.reportRTSHook != null) {
+                                    plugin.reportRTSHook.modBroadcast(user.getNick(), commandArgs);
+                                }
+                                break;
+                            case "@msg":
+                                ircBot.playerChat(user, channel, target, commandArgs);
+                                break;
+                            case "@clearqueue":
+                                sendMessage(ircBot, target, plugin.commandQueue.clearQueue(), ctcpResponse);
+                                sendMessage(ircBot, target, ircBot.messageQueue.clearQueue(), ctcpResponse);
+                                break;
+                            case "@query":
+                                sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);
+                                break;
+                            default:
+                                if (commandArgs == null) {
+                                    commandArgs = "";
+                                }
+                                if (gameCommand.contains("%ARGS%")) {
+                                    gameCommand = gameCommand.replace("%ARGS%", commandArgs);
+                                }
+                                if (gameCommand.contains("%NAME%")) {
+                                    gameCommand = gameCommand.replace("%NAME%", user.getNick());
+                                }
+                                plugin.logDebug("GM: \"" + gameCommand.trim() + "\"");
+                                try {
+                                    plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(ircBot, target, plugin, ctcpResponse), gameCommand.trim()));
+                                } catch (Exception ex) {
+                                    plugin.logError(ex.getMessage());
+                                }
+                                break;
+                        }
                     }
                 } else {
                     plugin.logDebug("User '" + user.getNick() + "' mode not okay.");
