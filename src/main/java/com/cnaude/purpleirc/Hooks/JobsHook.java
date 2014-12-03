@@ -40,19 +40,23 @@ public class JobsHook {
         this.plugin = plugin;
     }
 
-    public String getPlayerJob(Player player, boolean shortName) {       
+    public String getPlayerJob(Player player, boolean shortName) {
         if (player != null) {
             ArrayList<String> j = new ArrayList<>();
             if (plugin.isPluginEnabled("Jobs")) {
-                for (Job job : Jobs.getJobs()) {
-                    if (Jobs.getPlayerManager().getJobsPlayer(player)
-                            .isInJob(job)) {
-                        if (shortName) {
-                            j.add(job.getShortName());
-                        } else {
-                            j.add(job.getName());
+                try {
+                    for (Job job : Jobs.getJobs()) {
+                        if (Jobs.getPlayerManager().getJobsPlayer(player)
+                                .isInJob(job)) {
+                            if (shortName) {
+                                j.add(job.getShortName());
+                            } else {
+                                j.add(job.getName());
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    plugin.logError("Problem with Jobs hook: " + ex.getMessage());
                 }
                 if (!j.isEmpty()) {
                     return Joiner.on(plugin.getMsgTemplate(TemplateName.JOBS_SEPARATOR)).join(j);
