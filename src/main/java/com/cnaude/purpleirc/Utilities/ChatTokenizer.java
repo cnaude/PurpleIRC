@@ -584,6 +584,10 @@ public class ChatTokenizer {
             job = plugin.jobsHook.getPlayerJob(player, false);
             jobShort = plugin.jobsHook.getPlayerJob(player, true);
         }
+        if (plugin.jobsHookOld != null) {
+            job = plugin.jobsHookOld.getPlayerJob(player, false);
+            jobShort = plugin.jobsHookOld.getPlayerJob(player, true);
+        }
         plugin.logDebug("[P]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%JOBS%", job)
@@ -638,6 +642,12 @@ public class ChatTokenizer {
             if (plugin.jobsHook != null) {
                 job = plugin.jobsHook.getPlayerJob(player, false);
                 jobShort = plugin.jobsHook.getPlayerJob(player, true);
+            }
+        }
+        if (player != null) {
+            if (plugin.jobsHookOld != null) {
+                job = plugin.jobsHookOld.getPlayerJob(player, false);
+                jobShort = plugin.jobsHookOld.getPlayerJob(player, true);
             }
         }
         plugin.logDebug("[S]Raw message: " + message);

@@ -40,6 +40,7 @@ import com.cnaude.purpleirc.GameListeners.TownyChatListener;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
+import com.cnaude.purpleirc.Hooks.JobsHookOld;
 import com.cnaude.purpleirc.Hooks.ReportRTSHook;
 import com.cnaude.purpleirc.Hooks.ShortifyHook;
 import com.cnaude.purpleirc.Hooks.TownyChatHook;
@@ -156,6 +157,7 @@ public class PurpleIRC extends JavaPlugin {
     public TownyChatHook tcHook;
     public DynmapHook dynmapHook;
     public JobsHook jobsHook;
+    public JobsHookOld jobsHookOld;
     public ShortifyHook shortifyHook;
     public ReportRTSHook reportRTSHook;
     public NetPackets netPackets;
@@ -282,7 +284,14 @@ public class PurpleIRC extends JavaPlugin {
         }
         if (isPluginEnabled("Jobs")) {
             logInfo("Enabling Jobs support.");
-            jobsHook = new JobsHook(this);
+            String m = getServer().getPluginManager().getPlugin("Jobs").getDescription().getMain();
+            if (m.contains("me.zford")) {
+                jobsHookOld = new JobsHookOld(this);
+            } else if (m.contains("com.gamingmesh")) {
+                jobsHook = new JobsHook(this);
+            } else {
+                logError("Unable to hook into Jobs: " + m);
+            }
         } else {
             logInfo("Jobs not detected.");
         }

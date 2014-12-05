@@ -18,18 +18,18 @@ package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.PlayerManager;
-import com.gamingmesh.jobs.container.Job;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
+import me.zford.jobs.Jobs;
+import me.zford.jobs.PlayerManager;
+import me.zford.jobs.container.Job;
 import org.bukkit.entity.Player;
 
 /**
  *
  * @author cnaude
  */
-public class JobsHook {
+public class JobsHookOld {
 
     private final PurpleIRC plugin;
     private PlayerManager playerManager = null;
@@ -38,7 +38,7 @@ public class JobsHook {
      *
      * @param plugin
      */
-    public JobsHook(PurpleIRC plugin) {
+    public JobsHookOld(PurpleIRC plugin) {
         this.plugin = plugin;
         try {
             this.playerManager = Jobs.getPlayerManager();
