@@ -19,9 +19,12 @@ package com.cnaude.purpleirc.Hooks;
 import com.cnaude.purpleirc.TemplateName;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.google.common.base.Joiner;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import me.zford.jobs.Jobs;
 import me.zford.jobs.container.Job;
+import me.zford.jobs.container.JobsPlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -31,6 +34,7 @@ import org.bukkit.entity.Player;
 public class JobsHook {
 
     private final PurpleIRC plugin;
+    private final Method getJobsPlayer;
 
     /**
      *
@@ -38,6 +42,13 @@ public class JobsHook {
      */
     public JobsHook(PurpleIRC plugin) {
         this.plugin = plugin;
+        Method m = null;
+        try {
+            m = Jobs.class.getMethod("getJobsPlayer");
+        } catch (NoSuchMethodException | SecurityException e) {
+            // doesn't matter
+        }
+        getJobsPlayer = m;
     }
 
     public String getPlayerJob(Player player, boolean shortName) {
@@ -46,8 +57,7 @@ public class JobsHook {
             if (plugin.isPluginEnabled("Jobs")) {
                 try {
                     for (Job job : Jobs.getJobs()) {
-                        if (Jobs.getPlayerManager().getJobsPlayer(player)
-                                .isInJob(job)) {
+                        if (((JobsPlayer) getJobsPlayer.invoke(player)).isInJob(job)) {
                             if (shortName) {
                                 j.add(job.getShortName());
                             } else {
@@ -55,7 +65,7 @@ public class JobsHook {
                             }
                         }
                     }
-                } catch (Exception ex) {
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     plugin.logError("Problem with Jobs hook: " + ex.getMessage());
                 }
                 if (!j.isEmpty()) {
