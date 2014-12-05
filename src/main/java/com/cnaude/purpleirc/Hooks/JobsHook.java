@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import me.zford.jobs.Jobs;
+import me.zford.jobs.PlayerManager;
 import me.zford.jobs.container.Job;
 import me.zford.jobs.container.JobsPlayer;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ import org.bukkit.entity.Player;
 public class JobsHook {
 
     private final PurpleIRC plugin;
-    private final Method getJobsPlayer;
+    private PlayerManager playerManager = null;
 
     /**
      *
@@ -42,31 +43,28 @@ public class JobsHook {
      */
     public JobsHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        Method m = null;
         try {
-            m = Jobs.class.getMethod("getJobsPlayer");
-        } catch (NoSuchMethodException | SecurityException e) {
-            // doesn't matter
+            this.playerManager = Jobs.getPlayerManager();
+        } catch (Exception ex) {
+            plugin.logError("Jobs: " + ex.getMessage());
         }
-        getJobsPlayer = m;
     }
 
     public String getPlayerJob(Player player, boolean shortName) {
+        if (playerManager == null) {
+            return "";
+        }
         if (player != null) {
             ArrayList<String> j = new ArrayList<>();
             if (plugin.isPluginEnabled("Jobs")) {
-                try {
-                    for (Job job : Jobs.getJobs()) {
-                        if (((JobsPlayer) getJobsPlayer.invoke(player)).isInJob(job)) {
-                            if (shortName) {
-                                j.add(job.getShortName());
-                            } else {
-                                j.add(job.getName());
-                            }
+                for (Job job : Jobs.getJobs()) {
+                    if (playerManager.getJobsPlayer(player).isInJob(job)) {
+                        if (shortName) {
+                            j.add(job.getShortName());
+                        } else {
+                            j.add(job.getName());
                         }
                     }
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    plugin.logError("Problem with Jobs hook: " + ex.getMessage());
                 }
                 if (!j.isEmpty()) {
                     return Joiner.on(plugin.getMsgTemplate(TemplateName.JOBS_SEPARATOR)).join(j);
