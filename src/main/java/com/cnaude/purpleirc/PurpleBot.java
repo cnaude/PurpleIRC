@@ -39,7 +39,7 @@ import com.dthielke.herochat.Herochat;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.UPlayer;
+import com.massivecraft.factions.entity.MPlayer;
 import com.nyancraft.reportrts.data.Ticket;
 import com.titankingdoms.dev.titanchat.core.participant.Participant;
 import java.io.File;
@@ -2691,7 +2691,7 @@ public final class PurpleBot {
      * @return
      */
     protected String getFactionName(Player player) {
-        UPlayer uPlayer = UPlayer.get(player);
+        MPlayer uPlayer = MPlayer.get(player);
         Faction faction = uPlayer.getFaction();
         return faction.getName();
     }
