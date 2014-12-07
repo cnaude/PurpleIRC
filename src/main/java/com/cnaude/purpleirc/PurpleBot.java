@@ -2691,8 +2691,8 @@ public final class PurpleBot {
      * @return
      */
     protected String getFactionName(Player player) {
-        MPlayer uPlayer = MPlayer.get(player);
-        Faction faction = uPlayer.getFaction();
+        MPlayer mPlayer = MPlayer.get(player);
+        Faction faction = mPlayer.getFaction();
         return faction.getName();
     }
 
