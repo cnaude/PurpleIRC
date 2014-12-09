@@ -307,8 +307,13 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("DeathMessages not detected.");
         }
         if (isPluginEnabled("Shortify")) {
-            logInfo("Enabling Shortify support.");
-            shortifyHook = new ShortifyHook(this);
+            String shortifyVersion = getServer().getPluginManager().getPlugin("Shortify").getDescription().getVersion();
+            if (shortifyVersion.startsWith("1.6")) {
+                logError("Shortify v" + shortifyVersion + " not supported. Please install 1.7 or newer.");
+            } else {
+                logInfo("Enabling Shortify support.");
+                shortifyHook = new ShortifyHook(this);
+            }
         } else {
             logInfo("Shortify not detected.");
         }
