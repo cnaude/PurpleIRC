@@ -288,11 +288,13 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
         if (isPluginEnabled("Jobs")) {
-            logInfo("Enabling Jobs support.");
             String m = getServer().getPluginManager().getPlugin("Jobs").getDescription().getMain();
+            String jobsVersion = getServer().getPluginManager().getPlugin("Jobs").getDescription().getVersion();
             if (m.contains("me.zford")) {
+                logInfo("Enabling legacy Jobs support: " + jobsVersion);
                 jobsHookOld = new JobsHookOld(this);
             } else if (m.contains("com.gamingmesh")) {
+                logInfo("Enabling new Jobs support: " + jobsVersion);
                 jobsHook = new JobsHook(this);
             } else {
                 logError("Unable to hook into Jobs: " + m);
