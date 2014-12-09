@@ -276,8 +276,13 @@ public class PurpleIRC extends JavaPlugin {
         }
         if (isFactionsEnabled()) {
             if (isPluginEnabled("FactionChat")) {
-                logInfo("Enabling FactionChat support.");
-                fcHook = new FactionChatHook(this);
+                String s = getServer().getPluginManager().getPlugin("FactionChat").getDescription().getVersion();
+                if (s.startsWith("1.7")) {
+                    logInfo("FactionChat v" + s + " not supported. Please install 1.8 or newer.");
+                } else {
+                    logInfo("Enabling FactionChat support.");
+                    fcHook = new FactionChatHook(this);
+                }
             } else {
                 logInfo("FactionChat not detected.");
             }

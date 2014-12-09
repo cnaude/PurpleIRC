@@ -165,7 +165,7 @@
         <dependency>
             <groupId>com.cnaude.factionchat</groupId>
             <artifactId>FactionChat</artifactId>
-            <version>1.791</version>
+            <version>1.8.6</version>
         </dependency>
 
         <!-- TitanChat -->
