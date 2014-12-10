@@ -102,29 +102,34 @@ public class NetPackets {
 
     private PacketContainer tabPacket(String name, boolean add) {
         String displayName = truncateName(plugin.customTabPrefix + name);
-        PacketContainer packet;
+        PacketContainer packet = null;
         String version = plugin.getServer().getVersion();
+        plugin.logDebug("tabPacket: " + version);
         if (version.contains("MC: 1.7.10") || version.contains("MC: 1.8")) {
-            plugin.logDebug("tabPacket: " + version);
-            packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-            packet.getIntegers().write(0, (add ? 0 : 4));
-            packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
-            packet.getIntegers().write(1, 0);
-            packet.getIntegers().write(2, 0);
-            packet.getStrings().write(0, displayName);
+            try {
+                packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+                packet.getIntegers().write(0, (add ? 0 : 4));
+                packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
+                packet.getIntegers().write(1, 0);
+                packet.getIntegers().write(2, 0);
+                packet.getStrings().write(0, displayName);
+            } catch (Exception ex) {
+                plugin.logError("tabPacket: " + ex.getMessage());                
+            }
         } else {
-            plugin.logDebug("tabPacket: deprecated " + version);
+            plugin.logDebug("tabPacket: deprecated ");
             playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
             packet = playerListConstructor.createPacket(displayName, add, 0);
         }
         return packet;
     }
-        /**
-         *
-         * @param player
-         * @param ircBot
-         * @param channel
-         */
+
+    /**
+     *
+     * @param player
+     * @param ircBot
+     * @param channel
+     */
     public void updateTabList(Player player, final PurpleBot ircBot, final Channel channel) {
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
