@@ -70,9 +70,11 @@ public class NetPackets {
         }
         try {
             PacketContainer packet = tabPacket(name, true);
-            for (Player reciever : plugin.getServer().getOnlinePlayers()) {
-                if (reciever.hasPermission("irc.tablist")) {
-                    protocolManager.sendServerPacket(reciever, packet);
+            if (packet != null) {
+                for (Player reciever : plugin.getServer().getOnlinePlayers()) {
+                    if (reciever.hasPermission("irc.tablist")) {
+                        protocolManager.sendServerPacket(reciever, packet);
+                    }
                 }
             }
         } catch (FieldAccessException | InvocationTargetException e) {
@@ -90,9 +92,11 @@ public class NetPackets {
         }
         try {
             PacketContainer packet = tabPacket(name, false);
-            for (Player reciever : plugin.getServer().getOnlinePlayers()) {
-                if (reciever.hasPermission("irc.tablist")) {
-                    protocolManager.sendServerPacket(reciever, packet);
+            if (packet != null) {
+                for (Player reciever : plugin.getServer().getOnlinePlayers()) {
+                    if (reciever.hasPermission("irc.tablist")) {
+                        protocolManager.sendServerPacket(reciever, packet);
+                    }
                 }
             }
         } catch (FieldAccessException | InvocationTargetException e) {
@@ -114,7 +118,7 @@ public class NetPackets {
                 packet.getIntegers().write(2, 0);
                 packet.getStrings().write(0, displayName);
             } catch (Exception ex) {
-                plugin.logError("tabPacket: " + ex.getMessage());                
+                plugin.logError("tabPacket: " + ex.getMessage());
             }
         } else {
             plugin.logDebug("tabPacket: deprecated ");
