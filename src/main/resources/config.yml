@@ -44,7 +44,7 @@ channel-check-interval: 100
 #  %TOWNYCHANNELTAG% - Towny channel tag name
 #  %TOWNYMSGCOLOR% - Towny message color
 #  %JOBS% - Player jobs
-#  %JOBS% - Player jobs shortened
+#  %JOBSSHORT% - Player jobs shortened
 # Prism custom tokens:
 #   prism-rollback:
 #    %COMMAND%
