@@ -207,7 +207,7 @@
         <dependency>
             <groupId>com.cnaude.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.3</version>
         </dependency>
         
         <!-- PircBotX -->

@@ -103,8 +103,9 @@ public class NetPackets {
     private PacketContainer tabPacket(String name, boolean add) {
         String displayName = truncateName(plugin.customTabPrefix + name);
         PacketContainer packet;
-        if (plugin.getServer().getVersion().contains("MC: 1.7.10")) {
-            plugin.logDebug("tabPacket: 1.7.10");
+        String version = plugin.getServer().getVersion();
+        if (version.contains("MC: 1.7.10") || version.contains("MC: 1.8")) {
+            plugin.logDebug("tabPacket: " + version);
             packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
             packet.getIntegers().write(0, (add ? 0 : 4));
             packet.getGameProfiles().write(0, new WrappedGameProfile(java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), displayName));
@@ -112,7 +113,7 @@ public class NetPackets {
             packet.getIntegers().write(2, 0);
             packet.getStrings().write(0, displayName);
         } else {
-            plugin.logDebug("tabPacket: deprecated");
+            plugin.logDebug("tabPacket: deprecated " + version);
             playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
             packet = playerListConstructor.createPacket(displayName, add, 0);
         }
