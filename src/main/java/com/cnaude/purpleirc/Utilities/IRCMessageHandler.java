@@ -26,6 +26,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.xml.transform.Templates;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -146,7 +147,10 @@ public class IRCMessageHandler {
                             case "@a":
                                 if (plugin.adminPrivateChatHook != null) {
                                     plugin.adminPrivateChatHook.sendMessage(commandArgs, user.getNick());
-                                    ircBot.asyncIRCMessage(target, "AdminChat -> " + commandArgs);
+                                    String acResponse = plugin.tokenizer.msgChatResponseTokenizer(target, commandArgs, plugin.getMsgTemplate(TemplateName.IRC_A_RESPONSE));
+                                    if (!acResponse.isEmpty()) {
+                                        sendMessage(ircBot, target, acResponse, ctcpResponse);
+                                    }
                                 }
                                 break;
                             default:

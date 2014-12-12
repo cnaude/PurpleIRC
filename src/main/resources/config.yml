@@ -113,6 +113,8 @@ message-format:
   irc-mode: '[&4IRC&r] %NAME% %MODE% on %CHANNEL%'
   irc-console-chat: '&f[&5IRC&f]&r<%NAME%> %MESSAGE%'
   irc-notice: '[&4IRC&r] [notice(%CHANNEL%)] %NOTICE% '
+  # AdminPrivateChat response message in IRC. Set to '' to disable.
+  irc-a-response: ' &6-> &7[AdminChat]: %MESSAGE%'
   # Message template for Clevernotch bot to IRC messages
   clever-send: '[&4BOT]<%NAME%> %MESSAGE%' 
   # Message templates for mcMMO to IRC messages

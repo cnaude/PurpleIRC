@@ -316,6 +316,15 @@ channels:
         private_listen: 'true'
         channel_listen: 'true'
         perm: ''
+## Uncomment this if you want to hook into AdminPrivateChat
+#      a:
+#        modes: '*'
+#        private: false
+#        ctcp: false
+#        game_command: '@a'
+#        private_listen: true
+#        channel_listen: true
+## Uncomment this to allow gamemode changes via IRC
 #      gamemode:
 #        modes: 'o'
 #        private: false

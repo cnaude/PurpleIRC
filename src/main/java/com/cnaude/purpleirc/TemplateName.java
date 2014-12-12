@@ -121,5 +121,7 @@ public class TemplateName {
     public final static String PRISM_CUSTOM = "prism-custom";
     
     public final static String REDDIT_MESSAGES = "reddit-messages";
+    
+    public final static String IRC_A_RESPONSE = "irc-a-response";
         
 }
