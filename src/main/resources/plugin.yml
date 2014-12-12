@@ -19,6 +19,7 @@ softdepend:
 - Shortify
 - OreBroadcast
 - RedditStream
+- AdminPrivateChat
 commands:
     irc:
         description: Various irc commands

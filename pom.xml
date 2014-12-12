@@ -259,6 +259,13 @@
             <artifactId>Prism</artifactId>
             <version>2.0.1</version>
         </dependency>
+        
+        <!-- AdminPrivateChat -->
+        <dependency>
+            <groupId>com.cnaude.adminprivatechat</groupId>
+            <artifactId>AdminPrivateChat</artifactId>
+            <version>2.0</version>
+        </dependency>
            
         <!-- Testing only -->
         <dependency>

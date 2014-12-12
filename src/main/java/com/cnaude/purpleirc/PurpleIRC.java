@@ -37,6 +37,7 @@ import com.cnaude.purpleirc.GameListeners.RedditStreamListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
+import com.cnaude.purpleirc.Hooks.AdminPrivateChatHook;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
@@ -158,6 +159,7 @@ public class PurpleIRC extends JavaPlugin {
     public DynmapHook dynmapHook;
     public JobsHook jobsHook;
     public JobsHookOld jobsHookOld;
+    public AdminPrivateChatHook adminPrivateChatHook;
     public ShortifyHook shortifyHook;
     public ReportRTSHook reportRTSHook;
     public NetPackets netPackets;
@@ -286,6 +288,12 @@ public class PurpleIRC extends JavaPlugin {
             } else {
                 logInfo("FactionChat not detected.");
             }
+        }
+        if (isPluginEnabled("AdminPrivateChat")) {
+            logInfo("Enabling AdminPrivateChat support.");
+            adminPrivateChatHook = new AdminPrivateChatHook(this);
+        } else {
+            logInfo("AdminPrivateChat not detected.");
         }
         if (isPluginEnabled("Jobs")) {
             String m = getServer().getPluginManager().getPlugin("Jobs").getDescription().getMain();

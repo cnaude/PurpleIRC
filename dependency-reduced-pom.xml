@@ -280,6 +280,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.cnaude.adminprivatechat</groupId>
+      <artifactId>AdminPrivateChat</artifactId>
+      <version>2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>

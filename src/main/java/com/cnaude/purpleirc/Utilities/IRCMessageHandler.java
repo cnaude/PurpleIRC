@@ -143,6 +143,12 @@ public class IRCMessageHandler {
                             case "@query":
                                 sendMessage(ircBot, target, plugin.getRemotePlayers(commandArgs), ctcpResponse);
                                 break;
+                            case "@a":
+                                if (plugin.adminPrivateChatHook != null) {
+                                    plugin.adminPrivateChatHook.sendMessage(commandArgs, user.getNick());
+                                    ircBot.asyncIRCMessage(target, "AdminChat -> " + commandArgs);
+                                }
+                                break;
                             default:
                                 if (commandArgs == null) {
                                     commandArgs = "";
