@@ -123,5 +123,6 @@ public class TemplateName {
     public final static String REDDIT_MESSAGES = "reddit-messages";
     
     public final static String IRC_A_RESPONSE = "irc-a-response";
+    public final static String GAME_A_CHAT = "game-a-chat";
         
 }

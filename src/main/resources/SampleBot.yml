@@ -177,6 +177,8 @@ channels:
     #- broadcast-message
     # RedditStream
     #- reddit-messages
+    # AdminPrivateChat messages
+    #- game-a-chat
     # Hero channel destination for IRC messages    
     hero-channel: admin
     # Towny channel destination for IRC messages

@@ -43,9 +43,8 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String message) {
-        plugin.logDebug("sendMessage[single]: " + message);
-        ircBot.messageQueue.add(new IRCMessage(target,
-                plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
+        plugin.logDebug("sendMessage: " + message);
+        addMessageToQueue(message);
     }
 
     /**
@@ -54,11 +53,17 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String[] messages) {
+
         for (String message : messages) {
-            plugin.logDebug("sendMessage[multi]: " + message);
-            ircBot.messageQueue.add(new IRCMessage(target,
-                    plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
+            plugin.logDebug("sendMessage[]: " + message);
+            addMessageToQueue(message);
         }
+    }
+
+    private void addMessageToQueue(String message) {
+
+        ircBot.messageQueue.add(new IRCMessage(target,
+                plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
 
     /**
@@ -69,10 +74,12 @@ public class IRCCommandSender implements CommandSender {
      * @param ctcpResponse
      */
     public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse) {
+        super();
         this.target = target;
         this.ircBot = ircBot;
         this.plugin = plugin;
         this.ctcpResponse = ctcpResponse;
+
     }
 
     /**
@@ -81,6 +88,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public Server getServer() {
+
         return Bukkit.getServer();
     }
 
@@ -90,6 +98,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public String getName() {
+
         return "CONSOLE";
     }
 
@@ -99,16 +108,18 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+
         return null;
     }
 
     /**
      *
-     * @param arg0
+     * @param perm
      * @return
      */
     @Override
-    public boolean hasPermission(final String arg0) {
+    public boolean hasPermission(final String perm) {
+        System.out.println("Perm: " + perm);
         return true;
     }
 
@@ -119,6 +130,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean hasPermission(final Permission arg0) {
+
         return true;
     }
 
@@ -129,6 +141,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isPermissionSet(final String arg0) {
+
         return true;
     }
 
@@ -139,6 +152,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isPermissionSet(final Permission arg0) {
+
         return true;
     }
 
@@ -147,6 +161,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void recalculatePermissions() {
+
     }
 
     /**
@@ -155,6 +170,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void removeAttachment(final PermissionAttachment arg0) {
+
     }
 
     /**
@@ -163,6 +179,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isOp() {
+
         return true;
     }
 
@@ -172,6 +189,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void setOp(final boolean op) {
+
     }
 
     /**
@@ -181,6 +199,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0) {
+
         return null;
     }
 
@@ -192,6 +211,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final int arg1) {
+
         return null;
     }
 
@@ -204,6 +224,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2) {
+
         return null;
     }
 
@@ -217,6 +238,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2, final int arg3) {
+
         return null;
     }
 }

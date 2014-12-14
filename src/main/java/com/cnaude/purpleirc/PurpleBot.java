@@ -843,7 +843,7 @@ public final class PurpleBot {
                         optionPair.put("modes", config.getString(commandKey + "modes", "*"));
                         optionPair.put("private", config.getString(commandKey + "private", "false"));
                         optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
-                        optionPair.put("game_command", config.getString(commandKey + "game_command", "")); 
+                        optionPair.put("game_command", config.getString(commandKey + "game_command", ""));
                         extraCommands.addAll(config.getStringList(commandKey + "extra_commands"));
                         plugin.logDebug("extra_commands: " + extraCommands.toString());
                         optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
@@ -1161,6 +1161,27 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, "clever-chat")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(cleverBotName, plugin.getMsgTemplate(botNick, "clever-send"), message));
+            }
+        }
+    }
+
+    // Called from AdminChatEvent
+    /**
+     *
+     * @param name
+     * @param message
+     * @param world
+     */
+    public void adminChat(String name, String message, String world) {
+        if (!this.isConnected() || world.isEmpty()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.GAME_A_CHAT)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(name, plugin.getMsgTemplate(botNick, TemplateName.GAME_A_CHAT), message)
+                        .replace("%WORLD%", world)
+                );
             }
         }
     }

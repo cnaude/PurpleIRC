@@ -14,32 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.cnaude.purpleirc.Hooks;
+package com.cnaude.purpleirc.GameListeners;
 
-import com.ammaraskar.adminonly.AdminChat;
+import com.ammaraskar.adminonly.AdminChatEvent;
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author cnaude
  */
-public class AdminPrivateChatHook {
+public class AdminChatListener implements Listener {
 
     private final PurpleIRC plugin;
-    private final AdminChat ac;
 
     /**
      *
      * @param plugin
      */
-    public AdminPrivateChatHook(PurpleIRC plugin) {
+    public AdminChatListener(PurpleIRC plugin) {
         this.plugin = plugin;
-        this.ac = (AdminChat) plugin.getServer().getPluginManager().getPlugin("AdminPrivateChat");
     }
 
-    public void sendMessage(String message, String playername) {
-        plugin.logDebug("AdminPrivateChatHook: " + message);
-        ac.methods.MessageBuild(message, playername, "");
+    /**
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onAdminChatEvent(AdminChatEvent event) {
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            ircBot.adminChat(event.getName(), event.getMessage(), event.getWorld());
+        }
     }
 }

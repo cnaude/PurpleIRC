@@ -16,6 +16,7 @@
  */
 package com.cnaude.purpleirc;
 
+import com.cnaude.purpleirc.GameListeners.AdminChatListener;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
 import com.cnaude.purpleirc.GameListeners.DynmapListener;
@@ -292,6 +293,7 @@ public class PurpleIRC extends JavaPlugin {
         if (isPluginEnabled("AdminPrivateChat")) {
             logInfo("Enabling AdminPrivateChat support.");
             adminPrivateChatHook = new AdminPrivateChatHook(this);
+            getServer().getPluginManager().registerEvents(new AdminChatListener(this), this);
         } else {
             logInfo("AdminPrivateChat not detected.");
         }
