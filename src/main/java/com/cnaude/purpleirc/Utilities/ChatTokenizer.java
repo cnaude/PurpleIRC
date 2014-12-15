@@ -608,35 +608,49 @@ public class ChatTokenizer {
     private String playerTokenizer(String playerName, String message) {
         plugin.logDebug("Tokenizing " + playerName);
         String worldName = plugin.defaultPlayerWorld;
+        plugin.logDebug("playerTokenizer: 1 ");
         String pSuffix = plugin.getPlayerSuffix(worldName, playerName);
+        plugin.logDebug("playerTokenizer: 2 ");
         String pPrefix = plugin.getPlayerPrefix(worldName, playerName);
+        plugin.logDebug("playerTokenizer: 3 ");
         String gPrefix = plugin.getGroupPrefix(worldName, playerName);
+        plugin.logDebug("playerTokenizer: 4 ");
         String gSuffix = plugin.getGroupSuffix(worldName, playerName);
+        plugin.logDebug("playerTokenizer: 5 ");
         String group = plugin.getPlayerGroup(worldName, playerName);
+        plugin.logDebug("playerTokenizer: 6 ");
         String displayName = plugin.getDisplayName(playerName);
+        plugin.logDebug("playerTokenizer: 7 ");
         String worldAlias = "";
         String worldColor = "";
         String jobShort = "";
         String job = "";
+        plugin.logDebug("playerTokenizer: 8 ");
         if (!worldName.isEmpty()) {
             worldAlias = plugin.getWorldAlias(worldName);
             worldColor = plugin.getWorldColor(worldName);
         }
+        plugin.logDebug("playerTokenizer: 9 ");
         if (pSuffix == null) {
             pSuffix = plugin.defaultPlayerSuffix;
         }
+        plugin.logDebug("playerTokenizer: 10 ");
         if (pPrefix == null) {
             pPrefix = plugin.defaultPlayerPrefix;
         }
+        plugin.logDebug("playerTokenizer: 11 ");
         if (gSuffix == null) {
             gSuffix = plugin.defaultGroupSuffix;
         }
+        plugin.logDebug("playerTokenizer: 12 ");
         if (gPrefix == null) {
             gPrefix = plugin.defaultGroupPrefix;
         }
+        plugin.logDebug("playerTokenizer: 13 ");
         if (group == null) {
             group = plugin.defaultPlayerGroup;
         }
+        plugin.logDebug("playerTokenizer: 14 ");
         Player player = getPlayer(playerName);
         if (player != null) {
             if (plugin.jobsHook != null) {
@@ -644,6 +658,7 @@ public class ChatTokenizer {
                 jobShort = plugin.jobsHook.getPlayerJob(player, true);
             }
         }
+        plugin.logDebug("playerTokenizer: 15 ");
         if (player != null) {
             if (plugin.jobsHookOld != null) {
                 job = plugin.jobsHookOld.getPlayerJob(player, false);

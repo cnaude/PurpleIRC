@@ -109,7 +109,7 @@ public class NetPackets {
         PacketContainer packet = null;
         String version = plugin.getServer().getVersion();
         plugin.logDebug("tabPacket: " + version);
-        if (version.contains("MC: 1.7.10") || version.contains("MC: 1.8")) {
+        if (version.contains("MC: 1.7.10")) {
             try {
                 packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
                 packet.getIntegers().write(0, (add ? 0 : 4));
@@ -119,6 +119,15 @@ public class NetPackets {
                 packet.getStrings().write(0, displayName);
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
+            }
+        } else if (version.contains("MC: 1.8")) {
+            try {
+                packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+                
+                
+            } catch (Exception ex) {
+                plugin.logError("tabPacket: " + ex.getMessage());
+                ex.printStackTrace();
             }
         } else {
             plugin.logDebug("tabPacket: deprecated ");
