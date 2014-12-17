@@ -123,7 +123,7 @@ public class NetPackets {
         } else if (version.contains("MC: 1.8")) {
             try {
                 packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-                
+                //packet.getChatComponents()
                 
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());

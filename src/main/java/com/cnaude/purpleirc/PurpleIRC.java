@@ -79,6 +79,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -997,7 +998,14 @@ public class PurpleIRC extends JavaPlugin {
         String suffix = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
-                suffix = vaultHelpers.chat.getPlayerSuffix(worldName, player);
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                if (offlinePlayer != null) {
+                    try {
+                        suffix = vaultHelpers.chat.getPlayerSuffix(worldName, offlinePlayer);
+                    } catch (Exception ex) {
+                        logDebug("getPlayerSuffix (" + player + "): " + ex.getMessage());
+                    }
+                }
             }
         }
         if (suffix == null) {
@@ -1061,7 +1069,7 @@ public class PurpleIRC extends JavaPlugin {
                 try {
                     group = vaultHelpers.permission.getPrimaryGroup(player);
                 } catch (Exception ex) {
-                    logDebug("Problem with primary group (" + player.getName() + "): " + ex.getMessage());
+                    logDebug("getGroupPrefix (" + player.getName() + "): " + ex.getMessage());
                 }
                 if (group == null) {
                     group = "";
@@ -1086,10 +1094,13 @@ public class PurpleIRC extends JavaPlugin {
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
                 String group = "";
-                try {
-                    group = vaultHelpers.permission.getPrimaryGroup(worldName, player);
-                } catch (Exception ex) {
-                    logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                if (offlinePlayer != null) {
+                    try {
+                        group = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
+                    } catch (Exception ex) {
+                        logDebug("getGroupPrefix (" + player + "): " + ex.getMessage());
+                    }
                 }
                 if (group == null) {
                     group = "";
