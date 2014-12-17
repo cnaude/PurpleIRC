@@ -961,7 +961,14 @@ public class PurpleIRC extends JavaPlugin {
         String prefix = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.chat != null) {
-                prefix = vaultHelpers.chat.getPlayerPrefix(worldName, player);
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                if (offlinePlayer != null) {
+                    try {
+                        prefix = vaultHelpers.chat.getPlayerPrefix(worldName, offlinePlayer);
+                    } catch (Exception ex) {
+                        logDebug("getPlayerPrefix (" + player + "): " + ex.getMessage());
+                    }
+                }
             }
         }
         if (prefix == null) {
