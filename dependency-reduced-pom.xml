@@ -157,7 +157,17 @@
           <artifactId>ProtocolLib</artifactId>
           <groupId>com.comphenix.protocol</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>Vault</artifactId>
+          <groupId>net.milkbowl.net</groupId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>Vault</artifactId>
+      <version>1.5.1</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.cnaude.herochat</groupId>

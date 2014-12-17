@@ -102,7 +102,18 @@
                     <groupId>com.comphenix.protocol</groupId>
                     <artifactId>ProtocolLib</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>net.milkbowl.net</groupId>
+                    <artifactId>Vault</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        
+        <!-- Vault -->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <version>1.5.1</version>
         </dependency>
 
         <!-- Herochat -->
