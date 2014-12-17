@@ -882,7 +882,8 @@ public class PurpleIRC extends JavaPlugin {
     public void setupVault() {
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             vaultHelpers = new VaultHook(this);
-            logInfo("Hooked into Vault!");
+            String vv = getServer().getPluginManager().getPlugin("Vault").getDescription().getVersion();
+            logInfo("Hooked into Vault v" + vv);
         } else {
             logInfo("Not hooked into Vault!");
         }
@@ -920,10 +921,13 @@ public class PurpleIRC extends JavaPlugin {
         String groupName = "";
         if (vaultHelpers != null) {
             if (vaultHelpers.permission != null) {
-                try {
-                    groupName = vaultHelpers.permission.getPrimaryGroup(worldName, player);
-                } catch (Exception ex) {
-                    logDebug("Problem with primary group (" + player + "): " + ex.getMessage());
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                if (offlinePlayer != null) {
+                    try {
+                        groupName = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
+                    } catch (Exception ex) {
+                        logDebug("getPlayerGroup (" + player + "): " + ex.getMessage());
+                    }
                 }
             }
         }
