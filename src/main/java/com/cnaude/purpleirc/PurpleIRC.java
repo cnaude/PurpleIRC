@@ -45,6 +45,7 @@ import com.cnaude.purpleirc.Hooks.JobsHook;
 import com.cnaude.purpleirc.Hooks.JobsHookOld;
 import com.cnaude.purpleirc.Hooks.ReportRTSHook;
 import com.cnaude.purpleirc.Hooks.ShortifyHook;
+import com.cnaude.purpleirc.Hooks.SuperVanishHook;
 import com.cnaude.purpleirc.Hooks.TownyChatHook;
 import com.cnaude.purpleirc.Hooks.VanishHook;
 import com.cnaude.purpleirc.Hooks.VaultHook;
@@ -176,6 +177,7 @@ public class PurpleIRC extends JavaPlugin {
     private File heroConfigFile;
     public VaultHook vaultHelpers;
     public VanishHook vanishHook;
+    public SuperVanishHook superVanishHook;
     private YamlConfiguration heroConfig;
     private final File cacheFile;
     private final File uuidCacheFile;
@@ -350,6 +352,12 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("OreBroadcast not detected.");
         }
         vanishHook = new VanishHook(this);
+        if (isPluginEnabled("SuperVanish")) {
+            logInfo("Enabling SuperVanish support.");            
+            superVanishHook = new SuperVanishHook(this);
+        } else {
+            logInfo("SuperVanish not detected.");
+        }
         if (isPluginEnabled("ReportRTS")) {
             logInfo("Enabling ReportRTS support.");
             getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);

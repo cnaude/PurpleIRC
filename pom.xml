@@ -277,6 +277,13 @@
             <artifactId>AdminPrivateChat</artifactId>
             <version>2.1</version>
         </dependency>
+        
+        <!-- SuperVanish -->
+        <dependency>
+            <groupId>com.cnaude.supervanish</groupId>
+            <artifactId>SuperVanish</artifactId>
+            <version>5.0.1</version>
+        </dependency>
            
         <!-- Testing only -->
         <dependency>

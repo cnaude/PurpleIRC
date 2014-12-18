@@ -17,22 +17,23 @@
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import java.util.List;
+import me.MyzelYam.SuperVanish.api.SVAPI;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 
 /**
  *
  * @author cnaude
  */
-public class VanishHook {
-
+public class SuperVanishHook {
+    
     final PurpleIRC plugin;
-
+    
     /**
      *
      * @param plugin
      */
-    public VanishHook(PurpleIRC plugin) {
+    public SuperVanishHook(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -42,22 +43,11 @@ public class VanishHook {
      * @return
      */
     public boolean isVanished(Player player) {
-        // Try SuperVanish first
-        if (plugin.superVanishHook != null) {
-            return plugin.superVanishHook.isVanished(player);
-        } else {
-            // Fallback to other Vanish
-            if (player.hasMetadata("vanished")) {
-                plugin.logDebug("Player " + player.getName() + " has vanished metadata.");
-                MetadataValue md = player.getMetadata("vanished").get(0);
-                if (md.asBoolean()) {
-                    plugin.logDebug("Player " + player.getName() + " is vanished.");
-                    return true;
-                } else {
-                    plugin.logDebug("Player " + player.getName() + " is NOT vanished.");
-                }
-            } else {
-                plugin.logDebug("Player " + player.getName() + " has NO vanished metadata.");
+        List<String> invisiblePlayers = SVAPI.getInvisiblePlayers();
+        for (String uuid : invisiblePlayers) {
+            if (uuid.equalsIgnoreCase(player.getUniqueId().toString())) {
+                plugin.logDebug("Player " + player.getName() + " is vanished.");
+                return true;
             }
         }
         return false;
