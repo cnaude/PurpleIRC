@@ -133,7 +133,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> enableMessageFiltering;
     private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
-    public CaseInsensitiveMap<String> townyChannel;
+    public CaseInsensitiveMap<String> townyChannel;    
     public CaseInsensitiveMap<Collection<String>> opsList;
     public CaseInsensitiveMap<Collection<String>> voicesList;
     public CaseInsensitiveMap<Collection<String>> worldList;

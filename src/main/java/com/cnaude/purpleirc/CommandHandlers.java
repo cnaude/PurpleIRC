@@ -89,6 +89,8 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("whois", new Whois(plugin));
         commands.put("help", new Help(plugin));
 
+        commands.put("test", new Test(plugin));
+
         for (String s : commands.keySet()) {
             sortedCommands.add(s);
         }

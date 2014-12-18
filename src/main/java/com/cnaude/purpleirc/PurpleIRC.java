@@ -76,6 +76,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
@@ -127,6 +128,7 @@ public class PurpleIRC extends JavaPlugin {
             ircNickPrefixHalfOp,
             ircNickPrefixVoice;
     private final CaseInsensitiveMap<String> displayNameCache;
+    public CaseInsensitiveMap<UUID> uuidCache;
 
     public ArrayList<String> kickedPlayers = new ArrayList<>();
 
@@ -176,6 +178,7 @@ public class PurpleIRC extends JavaPlugin {
     public VanishHook vanishHook;
     private YamlConfiguration heroConfig;
     private final File cacheFile;
+    private final File uuidCacheFile;
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -188,8 +191,10 @@ public class PurpleIRC extends JavaPlugin {
         this.heroChannelMessages = new CaseInsensitiveMap<>();
         this.heroActionChannelMessages = new CaseInsensitiveMap<>();
         this.displayNameCache = new CaseInsensitiveMap<>();
+        this.uuidCache = new CaseInsensitiveMap<>();
         this.hostCache = new HashMap<>();
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
+        this.uuidCacheFile = new File("plugins/PurpleIRC/uuid.cache");
     }
 
     /**
@@ -209,6 +214,7 @@ public class PurpleIRC extends JavaPlugin {
         saveConfig();
         loadConfig();
         loadDisplayNameCache();
+        loadUuidCache();
         if (identServerEnabled) {
             logInfo("Starting Ident Server ...");
             try {
@@ -414,6 +420,7 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
         saveDisplayNameCache();
+        saveUuidCache();
     }
 
     /**
@@ -910,6 +917,18 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
+    
+    /**
+     *
+     * @param player
+     * @return
+     */
+    public UUID getPlayerUuid(String player) {
+        if (uuidCache.containsKey(player)) {
+            return uuidCache.get(player);
+        }
+        return null;
+    }
 
     /**
      *
@@ -919,9 +938,10 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
-        if (vaultHelpers != null) {
+        UUID uuid = getPlayerUuid(player);
+        if (vaultHelpers != null && uuid != null) {
             if (vaultHelpers.permission != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
                     try {
                         groupName = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
@@ -963,9 +983,10 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
-        if (vaultHelpers != null) {
+        UUID uuid = getPlayerUuid(player);
+        if (vaultHelpers != null && uuid != null) {
             if (vaultHelpers.chat != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
                     try {
                         prefix = vaultHelpers.chat.getPlayerPrefix(worldName, offlinePlayer);
@@ -1007,9 +1028,10 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
-        if (vaultHelpers != null) {
+        UUID uuid = getPlayerUuid(player);
+        if (vaultHelpers != null && uuid != null) {
             if (vaultHelpers.chat != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(player);
+                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
                     try {
                         suffix = vaultHelpers.chat.getPlayerSuffix(worldName, offlinePlayer);
@@ -1065,6 +1087,25 @@ public class PurpleIRC extends JavaPlugin {
     public void updateDisplayNameCache(String player, String displayName) {
         logDebug("Caching displayName for " + player + " = " + displayName);
         displayNameCache.put(player, displayName);
+    }
+    
+    /**
+     *
+     * @param player
+     */
+    public void updateUuidCache(Player player) {
+        logDebug("Caching UUID for " + player.getName() + " = " + player.getUniqueId().toString());
+        uuidCache.put(player.getName(), player.getUniqueId());
+    }
+    
+    /**
+     *
+     * @param player
+     * @param uuid
+     */
+    public void updateUuidCache(String player, UUID uuid) {
+        logDebug("Caching UUID for " + player + " = " + uuid.toString());
+        uuidCache.put(player, uuid);
     }
 
     /**
@@ -1245,6 +1286,43 @@ public class PurpleIRC extends JavaPlugin {
                     }
                     String[] parts = line.split("\t", 2);
                     updateDisplayNameCache(parts[0], parts[1]);
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            logError(e.getMessage());
+        }
+    }
+    
+    public void saveUuidCache() {
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(uuidCacheFile));
+        } catch (IOException ex) {
+            logError(ex.getMessage());
+            return;
+        }
+
+        try {
+            for (String s : uuidCache.keySet()) {
+                logDebug("Saving to uuid.cache: " + s + "\t" + uuidCache.get(s).toString());
+                writer.write(s + "\t" + uuidCache.get(s).toString() + "\n");
+            }
+            writer.close();
+        } catch (IOException ex) {
+            logError(ex.getMessage());
+        }
+    }
+
+    public void loadUuidCache() {
+        try {
+            try (BufferedReader in = new BufferedReader(new FileReader(uuidCacheFile))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    if (line.equals("\n")) {
+                        continue;
+                    }
+                    String[] parts = line.split("\t", 2);
+                    updateUuidCache(parts[0], UUID.fromString(parts[1]));
                 }
             }
         } catch (IOException | NumberFormatException e) {
