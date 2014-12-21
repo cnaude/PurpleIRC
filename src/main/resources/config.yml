@@ -167,7 +167,7 @@ message-format:
       Global: '[G][IRC]%PLAYERPREFIX%%NAME% %MESSAGE%'
   # Message format per hero channel. From IRC actions to game.
   irc-hero-action-channels:
-      Global: '[G][IRC]%PLAYERPREFIX%%NAME% %MESSAGE%'
+      Global: '[G][IRC]***%PLAYERPREFIX%%NAME% %MESSAGE%'
   # Message format per hero channel. From game to IRC. Overrides hero-chat template.
   hero-channels:
       Global: '[%CHANNEL%]<%NAME%> %MESSAGE%'
