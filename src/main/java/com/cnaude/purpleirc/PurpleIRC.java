@@ -328,13 +328,13 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("DeathMessages not detected.");
         }
         if (isPluginEnabled("Shortify")) {
-            //String shortifyVersion = getServer().getPluginManager().getPlugin("Shortify").getDescription().getVersion();
-            //if (shortifyVersion.startsWith("1.6")) {
-            //    logError("Shortify v" + shortifyVersion + " not supported. Please install 1.7 or newer.");
-            //} else {
-            logInfo("Enabling Shortify support.");
-            shortifyHook = new ShortifyHook(this);
-            //}
+            String shortifyVersion = getServer().getPluginManager().getPlugin("Shortify").getDescription().getVersion();
+            if (shortifyVersion.startsWith("1.8")) {
+                logInfo("Enabling Shortify v" + shortifyVersion + " support.");
+                shortifyHook = new ShortifyHook(this);
+            } else {
+                logError("Shortify v" + shortifyVersion + " not supported. Please use the latest version from http://jenkins.cnaude.org/job/Shortify/");
+            }
         } else {
             logInfo("Shortify not detected.");
         }
@@ -353,7 +353,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         vanishHook = new VanishHook(this);
         if (isPluginEnabled("SuperVanish")) {
-            logInfo("Enabling SuperVanish support.");            
+            logInfo("Enabling SuperVanish support.");
             superVanishHook = new SuperVanishHook(this);
         } else {
             logInfo("SuperVanish not detected.");
@@ -925,7 +925,7 @@ public class PurpleIRC extends JavaPlugin {
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
     }
-    
+
     /**
      *
      * @param player
@@ -1096,7 +1096,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("Caching displayName for " + player + " = " + displayName);
         displayNameCache.put(player, displayName);
     }
-    
+
     /**
      *
      * @param player
@@ -1105,7 +1105,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("Caching UUID for " + player.getName() + " = " + player.getUniqueId().toString());
         uuidCache.put(player.getName(), player.getUniqueId());
     }
-    
+
     /**
      *
      * @param player
@@ -1300,7 +1300,7 @@ public class PurpleIRC extends JavaPlugin {
             logError(e.getMessage());
         }
     }
-    
+
     public void saveUuidCache() {
         BufferedWriter writer;
         try {

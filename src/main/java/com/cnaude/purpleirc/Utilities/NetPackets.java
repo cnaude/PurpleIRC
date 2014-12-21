@@ -25,9 +25,14 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -108,7 +113,6 @@ public class NetPackets {
         String displayName = truncateName(plugin.customTabPrefix + name);
         PacketContainer packet = null;
         String version = plugin.getServer().getVersion();
-        plugin.logDebug("tabPacket: " + version);
         if (version.contains("MC: 1.7.10")) {
             try {
                 packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
@@ -121,14 +125,44 @@ public class NetPackets {
                 plugin.logError("tabPacket: " + ex.getMessage());
             }
         } else if (version.contains("MC: 1.8")) {
+            /*
             try {
                 packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-                //packet.getChatComponents()
-                
+                UUID uuid = plugin.getPlayerUuid(name);
+                if (uuid == null) {
+                    uuid = java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + displayName).getBytes(Charsets.UTF_8));
+                }
+                PlayerInfoData pid = new PlayerInfoData(
+                        packet,
+                        NativeGameMode.CREATIVE,
+                        0,
+                        new WrappedGameProfile(uuid, displayName),
+                        WrappedChatComponent.fromJson("{\"text\": \"" + displayName + "\"}"));
+                List<PlayerInfoData> pil = packet.getPlayerInfoDataLists().read(0);
+                int count = packet.getPlayerInfoDataLists().size();
+                pil.add(pid);
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    if (plugin.vanishHook != null) {
+                        if (plugin.vanishHook.isVanished(player)) {
+                            continue;
+                        }
+                    }
+                    pil.add(new PlayerInfoData(
+                            packet,
+                            NativeGameMode.valueOf(player.getGameMode().name()),
+                            0,
+                            new WrappedGameProfile(player.getUniqueId(), player.getDisplayName()),
+                            WrappedChatComponent.fromJson("{\"text\": \"" + player.getDisplayName() + "\"}"))
+                    );
+                }
+                packet.getPlayerInfoDataLists().write(0, pil);                
+                return packet;
+
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            */
         } else {
             plugin.logDebug("tabPacket: deprecated ");
             playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);
