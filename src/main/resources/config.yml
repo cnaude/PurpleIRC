@@ -210,6 +210,8 @@ strip-irc-bg-colors: true
 custom-tab-list: false
 # Nothing to see here
 custom-tab-prefix: '[I] '
+# IRC user gamemode in the tab list: ADVENTURE, CREATIVE, NOT_SET, SPECTATOR, SURVIVAL
+custom-tab-gamemode: SPECTATOR
 # IRC nick must be an exact match to a player name for token expanding
 nick-exact-match: true
 # IRC nick prefixes (can include & color codes)

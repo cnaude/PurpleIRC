@@ -74,6 +74,14 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${bukkit.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Following dependency is provided by CraftBukkit -->
         <dependency>
@@ -254,7 +262,7 @@
         <dependency>
             <groupId>com.cnaude.shortify</groupId>
             <artifactId>Shortify</artifactId>
-            <version>1.7-SNAPSHOT</version>
+            <version>1.8-SNAPSHOT</version>
         </dependency>
         
         <!-- DynmapAPI -->

@@ -136,6 +136,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.8</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>15.0</version>
@@ -274,7 +280,7 @@
     <dependency>
       <groupId>com.cnaude.shortify</groupId>
       <artifactId>Shortify</artifactId>
-      <version>1.7-SNAPSHOT</version>
+      <version>1.8-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

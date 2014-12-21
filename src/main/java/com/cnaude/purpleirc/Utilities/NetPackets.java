@@ -30,9 +30,15 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
+import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.util.Arrays;
 import java.util.UUID;
+import net.minecraft.server.v1_8_R1.EntityPlayer;
+import net.minecraft.server.v1_8_R1.EnumPlayerInfoAction;
+import net.minecraft.server.v1_8_R1.MinecraftServer;
+import net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R1.PlayerInteractManager;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -125,44 +131,37 @@ public class NetPackets {
                 plugin.logError("tabPacket: " + ex.getMessage());
             }
         } else if (version.contains("MC: 1.8")) {
-            /*
             try {
-                packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-                UUID uuid = plugin.getPlayerUuid(name);
+                UUID uuid = null; // = plugin.getPlayerUuid(name);
                 if (uuid == null) {
-                    uuid = java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + displayName).getBytes(Charsets.UTF_8));
+                    uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + displayName).getBytes(Charsets.UTF_8));
                 }
-                PlayerInfoData pid = new PlayerInfoData(
-                        packet,
-                        NativeGameMode.CREATIVE,
-                        0,
-                        new WrappedGameProfile(uuid, displayName),
-                        WrappedChatComponent.fromJson("{\"text\": \"" + displayName + "\"}"));
-                List<PlayerInfoData> pil = packet.getPlayerInfoDataLists().read(0);
-                int count = packet.getPlayerInfoDataLists().size();
-                pil.add(pid);
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    if (plugin.vanishHook != null) {
-                        if (plugin.vanishHook.isVanished(player)) {
-                            continue;
-                        }
-                    }
-                    pil.add(new PlayerInfoData(
-                            packet,
-                            NativeGameMode.valueOf(player.getGameMode().name()),
-                            0,
-                            new WrappedGameProfile(player.getUniqueId(), player.getDisplayName()),
-                            WrappedChatComponent.fromJson("{\"text\": \"" + player.getDisplayName() + "\"}"))
-                    );
-                }
-                packet.getPlayerInfoDataLists().write(0, pil);                
-                return packet;
+                if (add) {
+                    packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
 
+                    PlayerInfoData pid = new PlayerInfoData(
+                            new WrappedGameProfile(uuid, displayName),
+                            0,
+                            NativeGameMode.valueOf(plugin.customTabGamemode.toUpperCase()),
+                            WrappedChatComponent.fromJson("{\"text\": \"" + displayName + "\"}"));
+                    packet.getPlayerInfoDataLists().write(0, Arrays.asList(pid));
+                } else {
+                    plugin.logDebug("T: Removing: " + name);
+                    EntityPlayer pl = new EntityPlayer(   
+                            MinecraftServer.getServer(),
+                            MinecraftServer.getServer().getWorldServer(0),
+                            (GameProfile)(new WrappedGameProfile(uuid, displayName)).getHandle(),
+                            new PlayerInteractManager(MinecraftServer.getServer().getWorldServer(0))
+
+                    );
+                    PacketPlayOutPlayerInfo pi = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, pl);
+                    return PacketContainer.fromPacket(pi);
+                    
+                }
+                return packet;
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
-                ex.printStackTrace();
             }
-            */
         } else {
             plugin.logDebug("tabPacket: deprecated ");
             playerListConstructor = protocolManager.createPacketConstructor(Packets.Server.PLAYER_INFO, "", false, (int) 0);

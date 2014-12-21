@@ -150,6 +150,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripIRCColors;
     private boolean stripIRCBackgroundColors;
     public boolean customTabList;
+    public String customTabGamemode;
     private boolean listSortByName;
     public boolean exactNickMatch;
     public boolean ignoreChatCancel;
@@ -652,10 +653,12 @@ public class PurpleIRC extends JavaPlugin {
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
+        customTabGamemode = getConfig().getString("custom-tab-gamemode", "SPECTATOR");
         customTabList = getConfig().getBoolean("custom-tab-list", false);
         customTabPrefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("custom-tab-prefix", "[IRC] "));
         logDebug("custom-tab-list: " + customTabList);
         logDebug("custom-tab-prefix: " + customTabPrefix);
+        logDebug("custom-tab-gamemode: " + customTabGamemode);
     }
 
     private void loadBots() {
