@@ -2412,14 +2412,19 @@ public final class PurpleBot {
         }
 
         if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_ACTION)) {
-            Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
-                    .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
-                                    this, user, channel, plugin.getMsgTemplate(
-                                            botNick, TemplateName.IRC_HERO_ACTION), message,
-                                    Herochat.getChannelManager(),
-                                    heroChannel.get(myChannel)
-                            )
-                    );
+            String hChannel = heroChannel.get(myChannel);
+            String tmpl = plugin.getIRCHeroActionChannelTemplate(botNick, hChannel);
+            plugin.logDebug("broadcastChat [HA]: " + hChannel + ": " + tmpl);
+            String rawHCMessage = filterMessage(
+                    plugin.tokenizer.ircChatToHeroChatTokenizer(this, user, channel, tmpl, message, Herochat.getChannelManager(), hChannel), myChannel);
+            if (!rawHCMessage.isEmpty()) {
+                Herochat.getChannelManager().getChannel(hChannel).sendRawMessage(rawHCMessage);
+                if (logIrcToHeroChat.containsKey(myChannel)) {
+                    if (logIrcToHeroChat.get(myChannel)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
+                    }
+                }
+            }
         }
 
         if (plugin.dynmapHook != null) {
