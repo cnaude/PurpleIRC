@@ -256,8 +256,9 @@ public class IRCMessageHandler {
                 sortedCommands.add(command);
             }
             Collections.sort(sortedCommands, Collator.getInstance());
-
-            return "Valid commands: " + Joiner.on(", ").join(sortedCommands);
+            String cmds = Joiner.on(", ").join(sortedCommands);
+            String msg = plugin.getMsgTemplate(TemplateName.VALID_IRC_COMMANDS).replace("%COMMANDS%", cmds);
+            return msg;
         }
         return "";
     }

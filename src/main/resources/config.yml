@@ -141,7 +141,9 @@ message-format:
   # Message template for TitanChat to IRC messages
   titan-chat: '[%CHANNEL%]<%NAME%> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
-  irc-titan-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'  
+  irc-titan-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'
+  # Help reply message
+  valid-irc-commands: 'Valid commands: %COMMANDS%'
   # Invalid IRC command message
   invalid-irc-command: "I'm sorry '%NICK%' I can't do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
   no-perm-for-irc-command: "I'm sorry '%NICK%' you are not authorized to do that. Type '%CMDPREFIX%help' for a list of commands I might respond to."
