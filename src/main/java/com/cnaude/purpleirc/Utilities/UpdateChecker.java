@@ -61,44 +61,73 @@ public class UpdateChecker {
             @Override
             public void run() {
                 if (plugin.isUpdateCheckerEnabled()) {
-                    plugin.logInfo("Checking for updates ... ");
-                    newBuild = updateCheck(currentBuild);
-                    if (newBuild > currentBuild) {
-                        plugin.logInfo("Stable version: " + newVersion + " is out!" + " You are still running version: " + currentVersion);
-                        plugin.logInfo("Update at: http://dev.bukkit.org/server-mods/purpleirc");
-                    } else if (currentBuild > newBuild) {
-                        plugin.logInfo("Stable version: " + newVersion + " | Current Version: " + currentVersion);
-                    } else {
-                        plugin.logInfo("No new version available");
-                    }
+                    plugin.logInfo("Checking for " + plugin.updateCheckerMode() + " updates ... ");
+                    updateCheck();
                 }
             }
         }, 0, 432000);
     }
 
-    public int updateCheck(int currentVersion) {
-        try {
-            URL url = new URL("https://api.curseforge.com/servermods/files?projectids=56773");
-            URLConnection conn = url.openConnection();
-            conn.setReadTimeout(5000);
-            conn.addRequestProperty("User-Agent", "PurpleIRC Update Checker");
-            conn.setDoOutput(true);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            final String response = reader.readLine();
-            final JSONArray array = (JSONArray) JSONValue.parse(response);
-            if (array.size() == 0) {
-                plugin.logInfo("No files found, or Feed URL is bad.");
-                return currentVersion;
+    public void updateCheck() {
+        if (plugin.updateCheckerMode().equalsIgnoreCase("stable")) {
+            try {
+                URL url = new URL("https://api.curseforge.com/servermods/files?projectids=56773");
+                URLConnection conn = url.openConnection();
+                conn.setReadTimeout(5000);
+                conn.addRequestProperty("User-Agent", "PurpleIRC Update Checker");
+                conn.setDoOutput(true);
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                final String response = reader.readLine();
+                final JSONArray array = (JSONArray) JSONValue.parse(response);
+                if (array.size() == 0) {
+                    plugin.logInfo("No files found, or Feed URL is bad.");
+                    return;
+                }
+                newVersion = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).trim();
+                plugin.logDebug("newVersionTitle: " + newVersion);
+                newBuild = Integer.valueOf(newVersion.split("-")[1]);
+                if (newBuild > currentBuild) {
+                    plugin.logInfo("Stable version: " + newVersion + " is out!" + " You are still running version: " + currentVersion);
+                    plugin.logInfo("Update at: http://dev.bukkit.org/server-mods/purpleirc");
+                } else if (currentBuild > newBuild) {
+                    plugin.logInfo("Stable version: " + newVersion + " | Current Version: " + currentVersion);
+                } else {
+                    plugin.logInfo("No new version available");
+                }
+            } catch (IOException | NumberFormatException e) {
+                plugin.logInfo("Error checking for latest version: " + e.getMessage());
             }
-            newVersion = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).trim();
-            plugin.logDebug("newVersionTitle: " + newVersion);
-            int t = Integer.valueOf(newVersion.split("-")[1]);
-            plugin.logDebug("t: " + t);
-            return t;
-        } catch (IOException | NumberFormatException e) {
-            plugin.logInfo("Error checking for latest version: " + e.getMessage());
+        } else {
+            try {
+                URL url = new URL("http://h.cnaude.org:8081/job/PurpleIRC/lastStableBuild/api/json");
+                URLConnection conn = url.openConnection();
+                conn.setReadTimeout(5000);
+                conn.addRequestProperty("User-Agent", "PurpleIRC Update Checker");
+                conn.setDoOutput(true);
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                final String response = reader.readLine();
+                final JSONObject obj = (JSONObject) JSONValue.parse(response);
+                if (obj.isEmpty()) {
+                    plugin.logInfo("No files found, or Feed URL is bad.");
+                    return;
+                }
+
+                newVersion = obj.get("number").toString();
+                String downloadUrl = obj.get("url").toString();
+                plugin.logDebug("newVersionTitle: " + newVersion);
+                newBuild = Integer.valueOf(newVersion);
+                if (newBuild > currentBuild) {
+                    plugin.logInfo("Latest dev build: " + newVersion + " is out!" + " You are still running build: " + currentVersion);
+                    plugin.logInfo("Update at: " + downloadUrl);
+                } else if (currentBuild > newBuild) {
+                    plugin.logInfo("Dev build: " + newVersion + " | Current build: " + currentVersion);
+                } else {
+                    plugin.logInfo("No new version available");
+                }
+            } catch (IOException | NumberFormatException e) {
+                plugin.logInfo("Error checking for latest dev build: " + e.getMessage());
+            }
         }
-        return currentVersion;
     }
 
     public void cancel() {
