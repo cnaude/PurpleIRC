@@ -84,6 +84,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("server", new Server(plugin));
         commands.put("topic", new Topic(plugin));
         commands.put("unmute", new UnMute(plugin));
+        commands.put("updatecheck", new UpdateCheck(plugin));
         commands.put("unload", new Unload(plugin));
         commands.put("voice", new Voice(plugin));
         commands.put("whois", new Whois(plugin));

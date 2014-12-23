@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -62,14 +63,25 @@ public class UpdateChecker {
             public void run() {
                 if (plugin.isUpdateCheckerEnabled()) {
                     plugin.logInfo("Checking for " + plugin.updateCheckerMode() + " updates ... ");
-                    updateCheck();
+                    updateCheck(plugin.getServer().getConsoleSender(), plugin.updateCheckerMode());
                 }
             }
         }, 0, 432000);
     }
+    
+    public void asyncUpdateCheck(final CommandSender sender, final String mode) {
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (plugin.isUpdateCheckerEnabled()) {                    
+                    updateCheck(sender, mode);
+                }
+            }
+        }, 0);
+    }
 
-    public void updateCheck() {
-        if (plugin.updateCheckerMode().equalsIgnoreCase("stable")) {
+    private void updateCheck(CommandSender sender, String mode) {
+        if (mode.equalsIgnoreCase("stable")) {
             try {
                 URL url = new URL("https://api.curseforge.com/servermods/files?projectids=56773");
                 URLConnection conn = url.openConnection();
@@ -87,15 +99,15 @@ public class UpdateChecker {
                 plugin.logDebug("newVersionTitle: " + newVersion);
                 newBuild = Integer.valueOf(newVersion.split("-")[1]);
                 if (newBuild > currentBuild) {
-                    plugin.logInfo("Stable version: " + newVersion + " is out!" + " You are still running version: " + currentVersion);
-                    plugin.logInfo("Update at: http://dev.bukkit.org/server-mods/purpleirc");
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Stable version: " + newVersion + " is out!" + " You are still running version: " + currentVersion);
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Update at: http://dev.bukkit.org/server-mods/purpleirc");
                 } else if (currentBuild > newBuild) {
-                    plugin.logInfo("Stable version: " + newVersion + " | Current Version: " + currentVersion);
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Stable version: " + newVersion + " | Current Version: " + currentVersion);
                 } else {
-                    plugin.logInfo("No new version available");
+                    sender.sendMessage(plugin.LOG_HEADER_F + " No new version available");
                 }
             } catch (IOException | NumberFormatException e) {
-                plugin.logInfo("Error checking for latest version: " + e.getMessage());
+                sender.sendMessage(plugin.LOG_HEADER_F + " Error checking for latest version: " + e.getMessage());
             }
         } else {
             try {
@@ -108,7 +120,7 @@ public class UpdateChecker {
                 final String response = reader.readLine();
                 final JSONObject obj = (JSONObject) JSONValue.parse(response);
                 if (obj.isEmpty()) {
-                    plugin.logInfo("No files found, or Feed URL is bad.");
+                    sender.sendMessage(plugin.LOG_HEADER_F + " No files found, or Feed URL is bad.");
                     return;
                 }
 
@@ -117,15 +129,15 @@ public class UpdateChecker {
                 plugin.logDebug("newVersionTitle: " + newVersion);
                 newBuild = Integer.valueOf(newVersion);
                 if (newBuild > currentBuild) {
-                    plugin.logInfo("Latest dev build: " + newVersion + " is out!" + " You are still running build: " + currentVersion);
-                    plugin.logInfo("Update at: " + downloadUrl);
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Latest dev build: " + newVersion + " is out!" + " You are still running build: " + currentVersion);
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Update at: " + downloadUrl);
                 } else if (currentBuild > newBuild) {
-                    plugin.logInfo("Dev build: " + newVersion + " | Current build: " + currentVersion);
+                    sender.sendMessage(plugin.LOG_HEADER_F + " Dev build: " + newVersion + " | Current build: " + currentVersion);
                 } else {
-                    plugin.logInfo("No new version available");
+                    sender.sendMessage(plugin.LOG_HEADER_F + " No new version available");
                 }
             } catch (IOException | NumberFormatException e) {
-                plugin.logInfo("Error checking for latest dev build: " + e.getMessage());
+                sender.sendMessage(plugin.LOG_HEADER_F + " Error checking for latest dev build: " + e.getMessage());
             }
         }
     }
