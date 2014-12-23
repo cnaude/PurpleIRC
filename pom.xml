@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -59,11 +59,12 @@
         </repository>
        
         <!-- Vault -->
+        <!--
         <repository>
             <id>vault-repo</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
-       
+       -->
     </repositories>
     
     <dependencies>
@@ -113,6 +114,10 @@
                 <exclusion>
                     <groupId>net.milkbowl.net</groupId>
                     <artifactId>Vault</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -327,7 +332,7 @@
                 </excludes>
             </resource>
         </resources>
-        
+               
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -382,7 +387,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>   
+            </plugin>  
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -401,7 +406,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>        
+            </plugin>
         </plugins>
     </build>
             

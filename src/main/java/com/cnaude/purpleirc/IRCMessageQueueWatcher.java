@@ -30,7 +30,7 @@ public class IRCMessageQueueWatcher {
     private final PurpleIRC plugin;
     private final PurpleBot ircBot;
     private final Timer timer;
-    private final BlockingQueue<IRCMessage> queue = new LinkedBlockingQueue<IRCMessage>();
+    private final BlockingQueue<IRCMessage> queue = new LinkedBlockingQueue<>();
 
     /**
      *

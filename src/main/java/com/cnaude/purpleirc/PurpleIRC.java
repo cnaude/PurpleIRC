@@ -56,6 +56,7 @@ import com.cnaude.purpleirc.Utilities.IRCMessageHandler;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import com.cnaude.purpleirc.Utilities.Query;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
+import com.cnaude.purpleirc.Utilities.UpdateChecker;
 import com.google.common.base.Joiner;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -175,6 +176,7 @@ public class PurpleIRC extends JavaPlugin {
     public IRCMessageHandler ircMessageHandler;
 
     public CommandQueueWatcher commandQueue;
+    public UpdateChecker updateChecker;
     public ChatTokenizer tokenizer;
     private File heroConfigFile;
     public VaultHook vaultHelpers;
@@ -396,6 +398,7 @@ public class PurpleIRC extends JavaPlugin {
         botWatcher = new BotWatcher(this);
         ircMessageHandler = new IRCMessageHandler(this);
         commandQueue = new CommandQueueWatcher(this);
+        updateChecker = new UpdateChecker(this);
     }
 
     /**
@@ -411,12 +414,16 @@ public class PurpleIRC extends JavaPlugin {
             logDebug("Disabling botWatcher ...");
             botWatcher.cancel();
         }
+        if (updateChecker != null) {
+            logDebug("Disabling updateChecker ...");
+            updateChecker.cancel();
+        }
         if (ircBots.isEmpty()) {
             logInfo("No IRC bots to disconnect.");
         } else {
             logInfo("Disconnecting IRC bots.");
             for (PurpleBot ircBot : ircBots.values()) {
-                commandQueue.cancel();
+                commandQueue.cancel();                
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }
