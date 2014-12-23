@@ -212,8 +212,7 @@ public class PurpleIRC extends JavaPlugin {
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
-        LOG_HEADER_F = ChatColor.DARK_PURPLE + "[" + this.getName() + "]"
-                + ChatColor.WHITE;
+        LOG_HEADER_F = ChatColor.DARK_PURPLE + "[" + this.getName() + "]" + ChatColor.RESET;
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");
@@ -425,7 +424,7 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             logInfo("Disconnecting IRC bots.");
             for (PurpleBot ircBot : ircBots.values()) {
-                commandQueue.cancel();                
+                commandQueue.cancel();
                 ircBot.saveConfig(getServer().getConsoleSender());
                 ircBot.quit();
             }
@@ -777,7 +776,7 @@ public class PurpleIRC extends JavaPlugin {
         reloadConfig();
         getConfig().options().copyDefaults(false);
         loadConfig();
-        sender.sendMessage(LOG_HEADER_F + ChatColor.WHITE + " Done.");
+        sender.sendMessage(LOG_HEADER_F + ChatColor.RESET + " Done.");
     }
 
     private void createConfigDirs() {
@@ -1417,11 +1416,11 @@ public class PurpleIRC extends JavaPlugin {
             return bot + ".yml";
         }
     }
-    
+
     public boolean isUpdateCheckerEnabled() {
         return updateCheckerEnabled;
     }
-    
+
     public String updateCheckerMode() {
         return updateCheckerMode;
     }

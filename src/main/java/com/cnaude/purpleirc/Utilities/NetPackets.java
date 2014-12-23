@@ -34,11 +34,6 @@ import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.UUID;
-import net.minecraft.server.v1_8_R1.EntityPlayer;
-import net.minecraft.server.v1_8_R1.EnumPlayerInfoAction;
-import net.minecraft.server.v1_8_R1.MinecraftServer;
-import net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R1.PlayerInteractManager;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -147,16 +142,15 @@ public class NetPackets {
                     packet.getPlayerInfoDataLists().write(0, Arrays.asList(pid));
                 } else {
                     plugin.logDebug("T: Removing: " + name);
-                    EntityPlayer pl = new EntityPlayer(   
-                            MinecraftServer.getServer(),
-                            MinecraftServer.getServer().getWorldServer(0),
-                            (GameProfile)(new WrappedGameProfile(uuid, displayName)).getHandle(),
-                            new PlayerInteractManager(MinecraftServer.getServer().getWorldServer(0))
-
+                    net.minecraft.server.v1_8_R1.EntityPlayer pl = new net.minecraft.server.v1_8_R1.EntityPlayer(
+                            net.minecraft.server.v1_8_R1.MinecraftServer.getServer(),
+                            net.minecraft.server.v1_8_R1.MinecraftServer.getServer().getWorldServer(0),
+                            (GameProfile) (new WrappedGameProfile(uuid, displayName)).getHandle(),
+                            new net.minecraft.server.v1_8_R1.PlayerInteractManager(net.minecraft.server.v1_8_R1.MinecraftServer.getServer().getWorldServer(0))
                     );
-                    PacketPlayOutPlayerInfo pi = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, pl);
+                    net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo pi = new net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo(net.minecraft.server.v1_8_R1.EnumPlayerInfoAction.REMOVE_PLAYER, pl);
                     return PacketContainer.fromPacket(pi);
-                    
+
                 }
                 return packet;
             } catch (Exception ex) {
