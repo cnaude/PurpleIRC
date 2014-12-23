@@ -36,10 +36,10 @@ public class UpdateChecker {
     PurpleIRC plugin;
 
     private BukkitTask bt;
-    private int newVersion = 0;
-    private int currentVersion = 0;
-    private String currentVersionTitle = "";
-    private String newVersionTitle = "";
+    private int newBuild = 0;
+    private int currentBuild = 0;
+    private String currentVersion = "";
+    private String newVersion = "";
 
     /**
      *
@@ -47,29 +47,30 @@ public class UpdateChecker {
      */
     public UpdateChecker(PurpleIRC plugin) {
         this.plugin = plugin;
-        currentVersionTitle = plugin.getDescription().getVersion();
+        currentVersion = plugin.getDescription().getVersion();
         try {
-            currentVersion = Integer.valueOf(currentVersionTitle.split("-")[1]);
+            currentBuild = Integer.valueOf(currentVersion.split("-")[1]);
         } catch (NumberFormatException e) {
-            currentVersion = 0;
+            currentBuild = 0;
         }
         startUpdateChecker();
     }
 
     private void startUpdateChecker() {
-        plugin.logDebug("Starting update checker");
         bt = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                plugin.logInfo("Checking for Updates ... ");
-                newVersion = updateCheck(currentVersion);
-                if (newVersion > currentVersion) {
-                    plugin.logInfo("Stable Version: " + newVersionTitle + " is out!" + " You are still running version: " + currentVersionTitle);
-                    plugin.logInfo("Update at: http://dev.bukkit.org/server-mods/purpleirc");
-                } else if (currentVersion > newVersion) {
-                    plugin.logInfo("Stable Version: " + newVersionTitle + " | Current Version: " + currentVersionTitle);
-                } else {
-                    plugin.logInfo("No new version available");
+                if (plugin.isUpdateCheckerEnabled()) {
+                    plugin.logInfo("Checking for updates ... ");
+                    newBuild = updateCheck(currentBuild);
+                    if (newBuild > currentBuild) {
+                        plugin.logInfo("Stable version: " + newVersion + " is out!" + " You are still running version: " + currentVersion);
+                        plugin.logInfo("Update at: http://dev.bukkit.org/server-mods/purpleirc");
+                    } else if (currentBuild > newBuild) {
+                        plugin.logInfo("Stable version: " + newVersion + " | Current Version: " + currentVersion);
+                    } else {
+                        plugin.logInfo("No new version available");
+                    }
                 }
             }
         }, 0, 432000);
@@ -89,13 +90,13 @@ public class UpdateChecker {
                 plugin.logInfo("No files found, or Feed URL is bad.");
                 return currentVersion;
             }
-            newVersionTitle = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).trim();
-            plugin.logDebug("newVersionTitle: " + newVersionTitle);
-            int t = Integer.valueOf(newVersionTitle.split("-")[1]);
+            newVersion = ((String) ((JSONObject) array.get(array.size() - 1)).get("name")).trim();
+            plugin.logDebug("newVersionTitle: " + newVersion);
+            int t = Integer.valueOf(newVersion.split("-")[1]);
             plugin.logDebug("t: " + t);
             return t;
         } catch (IOException | NumberFormatException e) {
-            plugin.logInfo("There was an issue attempting to check for the latest version: " + e.getMessage());
+            plugin.logInfo("Error checking for latest version: " + e.getMessage());
         }
         return currentVersion;
     }

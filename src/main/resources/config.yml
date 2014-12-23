@@ -1,5 +1,7 @@
 # Global configuration for PurpleIRC
 # NOTE: If you make changes to this file while the server is running use "/irc reloadconfig" to load the changes into memory.
+# Check for updates
+update-checker: true
 # How often we check to see if a bot is connected to the IRC server. This is in server ticks (There 20 ticks in one sec).
 conn-check-interval: 1000
 # Startup an ident server

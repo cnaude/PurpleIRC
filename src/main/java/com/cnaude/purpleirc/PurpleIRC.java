@@ -147,6 +147,7 @@ public class PurpleIRC extends JavaPlugin {
             + ChatColor.WHITE + "%CHANNEL%";
     public final String noPermission = ChatColor.RED + "You do not have permission to use this command.";
 
+    private boolean updateCheckerEnabled;
     private boolean debugEnabled;
     private boolean stripGameColors;
     private boolean stripIRCColors;
@@ -646,6 +647,7 @@ public class PurpleIRC extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException ex) {
             logError(ex.getMessage());
         }
+        updateCheckerEnabled = getConfig().getBoolean("update-checker", true);
         debugEnabled = getConfig().getBoolean("Debug");
         identServerEnabled = getConfig().getBoolean("enable-ident-server");
         logDebug("Debug enabled");
@@ -1412,6 +1414,10 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             return bot + ".yml";
         }
+    }
+    
+    public boolean isUpdateCheckerEnabled() {
+        return updateCheckerEnabled;
     }
 
 }
