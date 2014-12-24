@@ -776,7 +776,7 @@ public class PurpleIRC extends JavaPlugin {
         reloadConfig();
         getConfig().options().copyDefaults(false);
         loadConfig();
-        sender.sendMessage(LOG_HEADER_F + ChatColor.RESET + " Done.");
+        sender.sendMessage(LOG_HEADER_F + " Done.");
     }
 
     private void createConfigDirs() {
