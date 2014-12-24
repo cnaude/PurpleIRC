@@ -19,7 +19,6 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.command.CommandSender;
 
 /**
  *

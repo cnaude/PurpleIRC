@@ -174,6 +174,7 @@ public class PurpleIRC extends JavaPlugin {
     public ReportRTSHook reportRTSHook;
     public NetPackets netPackets;
     public CommandHandlers commandHandlers;
+    public PurpleTabCompleter ircTabCompleter;
     private BotWatcher botWatcher;
     public IRCMessageHandler ircMessageHandler;
 
@@ -378,7 +379,9 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Essentials not detected.");
         }
         commandHandlers = new CommandHandlers(this);
+        ircTabCompleter = new PurpleTabCompleter(this);
         getCommand("irc").setExecutor(commandHandlers);
+        getCommand("irc").setTabCompleter(ircTabCompleter);
         regexGlobber = new RegexGlobber();
         tokenizer = new ChatTokenizer(this);
         loadBots();
