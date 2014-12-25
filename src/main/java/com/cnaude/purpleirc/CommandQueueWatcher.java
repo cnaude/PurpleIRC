@@ -52,7 +52,11 @@ public class CommandQueueWatcher {
     private void queueAndSend() {
         IRCCommand ircCommand = queue.poll();
         if (ircCommand != null) {
-            plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+            if (plugin.getServer().getVersion().contains("MC: 1.8")) {
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), ircCommand.getGameCommand());
+            } else {
+                plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+            }
             plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
         }
     }
