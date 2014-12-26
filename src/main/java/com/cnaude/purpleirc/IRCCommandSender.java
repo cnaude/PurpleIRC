@@ -108,7 +108,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-
         return null;
     }
 
@@ -119,7 +118,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean hasPermission(final String perm) {
-        System.out.println("Perm: " + perm);
         return true;
     }
 
@@ -241,4 +239,5 @@ public class IRCCommandSender implements CommandSender {
 
         return null;
     }
+
 }
