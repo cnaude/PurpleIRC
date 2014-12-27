@@ -235,6 +235,9 @@ channels:
     #  @query - query remote minecraft server
     #  @rtsmb - Send ReportRTS broadcast message to mods
     #  @a - Send message to AdminPrivateChat
+    #  @version - display version
+    #  @bukkit - display API version
+    #  @versionfull - display full version info (same as /version)
     # The modes can be *, o , v , h, q, s, or i. Mix and match as needed.
     # If game_command can optionally accept arguments via %ARGS% and %NAME%
     # If a command is private then the result is sent to the player privately.

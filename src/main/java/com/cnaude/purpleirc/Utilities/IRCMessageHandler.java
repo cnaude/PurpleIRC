@@ -128,6 +128,21 @@ public class IRCMessageHandler {
                             case "@motd":
                                 sendMessage(ircBot, target, plugin.getServerMotd(), ctcpResponse);
                                 break;
+                            case "@version":
+                                sendMessage(ircBot, target, plugin.getServer().getVersion(), ctcpResponse);
+                                break;
+                            case "@versionfull":
+                                String v = "This server is running "
+                                        + plugin.getServer().getName()
+                                        + " version "
+                                        + plugin.getServer().getVersion()
+                                        + " (Implementing API version "
+                                        + plugin.getServer().getBukkitVersion() + ")";
+                                sendMessage(ircBot, target, v, ctcpResponse);
+                                break;
+                            case "@bukkit":
+                                sendMessage(ircBot, target, plugin.getServer().getBukkitVersion(), ctcpResponse);
+                                break;
                             case "@rtsmb":
                                 if (plugin.reportRTSHook != null) {
                                     plugin.reportRTSHook.modBroadcast(user.getNick(), commandArgs);
