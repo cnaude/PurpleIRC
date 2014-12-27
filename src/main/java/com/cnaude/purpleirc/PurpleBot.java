@@ -31,7 +31,6 @@ import com.cnaude.purpleirc.IRCListeners.PrivateMessageListener;
 import com.cnaude.purpleirc.IRCListeners.QuitListener;
 import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
-import com.cnaude.purpleirc.IRCListeners.VersionListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
 import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
 import com.dthielke.herochat.Chatter;
@@ -153,6 +152,8 @@ public final class PurpleBot {
     boolean joinNoticePrivate;
     boolean joinNoticeCtcp;
     String joinNoticeMessage;
+    String version;
+    String finger;
 
     /**
      *
@@ -204,8 +205,12 @@ public final class PurpleBot {
         config = new YamlConfiguration();
         loadConfig();
         addListeners();
+        version = plugin.getDescription().getFullName() + ", "
+                        + plugin.getDescription().getDescription() + " - "
+                        + plugin.getDescription().getWebsite();
         buildBot();
         messageQueue = new IRCMessageQueueWatcher(this, plugin);
+        
     }
 
     public void buildBot() {
@@ -213,6 +218,8 @@ public final class PurpleBot {
                 .setName(botNick)
                 .setLogin(botLogin)
                 .setAutoNickChange(true)
+                .setVersion(version)
+                .setFinger(finger)
                 .setCapEnabled(true)
                 .setMessageDelay(chatDelay)
                 .setRealName(botRealName)
@@ -282,7 +289,6 @@ public final class PurpleBot {
         ircListeners.add(new PrivateMessageListener(plugin, this));
         ircListeners.add(new QuitListener(plugin, this));
         ircListeners.add(new TopicListener(plugin, this));
-        ircListeners.add(new VersionListener(plugin));
         ircListeners.add(new WhoisListener(plugin, this));
         ircListeners.add(new MotdListener(plugin, this));
         ircListeners.add(new ServerResponseListener(plugin, this));
@@ -613,6 +619,7 @@ public final class PurpleBot {
             botIdentPassword = config.getString("ident-password", "");
             commandPrefix = config.getString("command-prefix", ".");
             chatDelay = config.getLong("message-delay", 1000);
+            finger = config.getString("finger-reply", "PurpleIRC");
             plugin.logDebug("Message Delay => " + chatDelay);
             quitMessage = ChatColor.translateAlternateColorCodes('&', config.getString("quit-message", ""));
             plugin.logDebug("Nick => " + botNick);
