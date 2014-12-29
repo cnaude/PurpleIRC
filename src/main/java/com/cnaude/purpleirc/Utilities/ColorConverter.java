@@ -121,6 +121,11 @@ public class ColorConverter {
         ChatColor chatColor;
         try {
             chatColor = ChatColor.valueOf(gameColor.toUpperCase());
+            if (ircColor.equalsIgnoreCase("strip") && ircColorMap.containsKey(chatColor)) {
+                plugin.logDebug("addIrcColorMap: " + ircColor + " => " + gameColor);
+                ircColorMap.remove(chatColor);
+                return;
+            }
         } catch (Exception ex) {
             plugin.logError("Invalid game color: " + gameColor);
             return;
@@ -132,6 +137,11 @@ public class ColorConverter {
     }
 
     public void addGameColorMap(String ircColor, String gameColor) {
+        if (gameColor.equalsIgnoreCase("strip") && gameColorMap.containsKey(getIrcColor(ircColor))) {
+            plugin.logDebug("addGameColorMap: " + ircColor + " => " + gameColor);
+            gameColorMap.remove(getIrcColor(ircColor));
+            return;
+        }
         ChatColor chatColor;
         try {
             chatColor = ChatColor.valueOf(gameColor.toUpperCase());
