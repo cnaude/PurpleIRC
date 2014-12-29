@@ -53,7 +53,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void sendMessage(String[] messages) {
-
         for (String message : messages) {
             plugin.logDebug("sendMessage[]: " + message);
             addMessageToQueue(message);
@@ -61,7 +60,6 @@ public class IRCCommandSender implements CommandSender {
     }
 
     private void addMessageToQueue(String message) {
-
         ircBot.messageQueue.add(new IRCMessage(target,
                 plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
@@ -88,7 +86,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public Server getServer() {
-
         return Bukkit.getServer();
     }
 
@@ -98,7 +95,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public String getName() {
-
         return "CONSOLE";
     }
 
@@ -128,7 +124,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean hasPermission(final Permission arg0) {
-
         return true;
     }
 
@@ -139,7 +134,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isPermissionSet(final String arg0) {
-
         return true;
     }
 
@@ -150,7 +144,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isPermissionSet(final Permission arg0) {
-
         return true;
     }
 
@@ -159,7 +152,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void recalculatePermissions() {
-
     }
 
     /**
@@ -168,7 +160,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void removeAttachment(final PermissionAttachment arg0) {
-
     }
 
     /**
@@ -177,7 +168,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public boolean isOp() {
-
         return true;
     }
 
@@ -187,7 +177,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public void setOp(final boolean op) {
-
     }
 
     /**
@@ -197,7 +186,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0) {
-
         return null;
     }
 
@@ -209,7 +197,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final int arg1) {
-
         return null;
     }
 
@@ -222,7 +209,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2) {
-
         return null;
     }
 
@@ -236,7 +222,6 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2, final int arg3) {
-
         return null;
     }
 

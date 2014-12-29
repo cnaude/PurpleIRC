@@ -19,6 +19,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.command.CommandException;
 
 /**
  *
@@ -52,10 +53,16 @@ public class CommandQueueWatcher {
     private void queueAndSend() {
         IRCCommand ircCommand = queue.poll();
         if (ircCommand != null) {
-            if (plugin.getServer().getVersion().contains("MC: 1.8")) {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), ircCommand.getGameCommand());
-            } else {
-                plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+            try {
+                if (plugin.getServer().getPluginCommand(ircCommand.getGameCommand()) != null) {
+                    plugin.logDebug("Dispatching plugin command: " + ircCommand.getGameCommand());
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+                } else {
+                    plugin.logDebug("Dispatching vanilla command: " + ircCommand.getGameCommand());
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), ircCommand.getGameCommand());
+                }
+            } catch (CommandException ce) {
+                plugin.logError("Error running command: " + ce.getMessage());
             }
             plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
         }

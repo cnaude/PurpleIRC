@@ -295,7 +295,7 @@ channels:
         modes: '*'
         private: false
         ctcp: false
-        game_command: version        
+        game_command: '@versionfull'
         private_listen: true
         channel_listen: true
       lag:
@@ -319,7 +319,7 @@ channels:
         ctcp: 'false'
         game_command: '@list'
         extra_commands: 
-            - version
+            - '@version'
         private_listen: 'true'
         channel_listen: 'true'
         perm: ''
