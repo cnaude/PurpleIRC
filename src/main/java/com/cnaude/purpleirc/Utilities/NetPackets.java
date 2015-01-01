@@ -25,15 +25,9 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
-import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
-import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -122,37 +116,6 @@ public class NetPackets {
                 packet.getIntegers().write(1, 0);
                 packet.getIntegers().write(2, 0);
                 packet.getStrings().write(0, displayName);
-            } catch (Exception ex) {
-                plugin.logError("tabPacket: " + ex.getMessage());
-            }
-        } else if (version.contains("MC: 1.8")) {
-            try {
-                UUID uuid = null; // = plugin.getPlayerUuid(name);
-                if (uuid == null) {
-                    uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + displayName).getBytes(Charsets.UTF_8));
-                }
-                if (add) {
-                    packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-
-                    PlayerInfoData pid = new PlayerInfoData(
-                            new WrappedGameProfile(uuid, displayName),
-                            0,
-                            NativeGameMode.valueOf(plugin.customTabGamemode.toUpperCase()),
-                            WrappedChatComponent.fromJson("{\"text\": \"" + displayName + "\"}"));
-                    packet.getPlayerInfoDataLists().write(0, Arrays.asList(pid));
-                } else {
-                    plugin.logDebug("T: Removing: " + name);
-                    net.minecraft.server.v1_8_R1.EntityPlayer pl = new net.minecraft.server.v1_8_R1.EntityPlayer(
-                            net.minecraft.server.v1_8_R1.MinecraftServer.getServer(),
-                            net.minecraft.server.v1_8_R1.MinecraftServer.getServer().getWorldServer(0),
-                            (GameProfile) (new WrappedGameProfile(uuid, displayName)).getHandle(),
-                            new net.minecraft.server.v1_8_R1.PlayerInteractManager(net.minecraft.server.v1_8_R1.MinecraftServer.getServer().getWorldServer(0))
-                    );
-                    net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo pi = new net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo(net.minecraft.server.v1_8_R1.EnumPlayerInfoAction.REMOVE_PLAYER, pl);
-                    return PacketContainer.fromPacket(pi);
-
-                }
-                return packet;
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
             }

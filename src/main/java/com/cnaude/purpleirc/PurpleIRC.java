@@ -214,6 +214,11 @@ public class PurpleIRC extends JavaPlugin {
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
         LOG_HEADER_F = ChatColor.DARK_PURPLE + "[" + this.getName() + "]" + ChatColor.RESET;
+        if (getServer().getVersion().contains("Spigot") && getServer().getVersion().contains("MC: 1.8")) {
+            logError("This plugin is not compatible with Spigot 1.8. Please download the Spigot version from the Spigot site.");
+            this.getPluginLoader().disablePlugin(this);
+            return;
+        }
         pluginFolder = getDataFolder();
         botsFolder = new File(pluginFolder + "/bots");
         configFile = new File(pluginFolder, "config.yml");

@@ -127,14 +127,8 @@
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.8</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>spigot</artifactId>
-      <version>1.8</version>
+      <artifactId>bukkit</artifactId>
+      <version>1.7.9-R0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -339,7 +333,7 @@
   <properties>
     <build.number>SNAPSHOT</build.number>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bukkit.version>1.8</bukkit.version>
+    <bukkit.version>1.7.9-R0.1</bukkit.version>
   </properties>
 </project>
 
