@@ -208,7 +208,14 @@ public final class PurpleBot {
         version = plugin.getDescription().getFullName() + ", "
                         + plugin.getDescription().getDescription() + " - "
                         + plugin.getDescription().getWebsite();
-        buildBot();
+        
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                buildBot();
+            }
+        });
+        
         messageQueue = new IRCMessageQueueWatcher(this, plugin);
         
     }
