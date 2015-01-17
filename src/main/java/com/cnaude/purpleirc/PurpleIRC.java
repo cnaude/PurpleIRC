@@ -1381,8 +1381,10 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
-    public String getPlayerHost(Player player) {
-        final String playerIP = player.getAddress().getAddress().getHostAddress();
+    public String getPlayerHost(final String playerIP) {
+        if (playerIP == null) {
+            return "unknown";
+        }
         if (hostCache.containsKey(playerIP)) {
             return hostCache.get(playerIP);
         } else {

@@ -256,7 +256,7 @@
     <dependency>
       <groupId>com.cnaude.protocol</groupId>
       <artifactId>ProtocolLib</artifactId>
-      <version>3.6.3</version>
+      <version>3.4.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
