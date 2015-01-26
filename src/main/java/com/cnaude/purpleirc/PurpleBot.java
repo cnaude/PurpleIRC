@@ -858,6 +858,7 @@ public final class PurpleBot {
                         optionPair.put("private", config.getString(commandKey + "private", "false"));
                         optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
                         optionPair.put("game_command", config.getString(commandKey + "game_command", ""));
+                        optionPair.put("sender", config.getString(commandKey + "sender", "CONSOLE"));
                         extraCommands.addAll(config.getStringList(commandKey + "extra_commands"));
                         plugin.logDebug("extra_commands: " + extraCommands.toString());
                         optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
@@ -1964,15 +1965,15 @@ public final class PurpleBot {
         }
         List<String> channelUsers = new ArrayList<>();
         for (User user : channel.getUsers()) {
-            String nick = user.getNick();
-            nick = getNickPrefix(user, channel) + nick;
+            String n = user.getNick();
+            n = getNickPrefix(user, channel) + n;
             if (user.isAway()) {
-                nick = nick + ChatColor.GRAY + " | Away";
+                n = n + ChatColor.GRAY + " | Away";
             }
-            if (nick.equals(bot.getNick())) {
-                nick = ChatColor.DARK_PURPLE + nick;
+            if (n.equals(bot.getNick())) {
+                n = ChatColor.DARK_PURPLE + n;
             }
-            channelUsers.add(nick);
+            channelUsers.add(n);
         }
         Collections.sort(channelUsers, Collator.getInstance());
         for (String userName : channelUsers) {
@@ -2939,7 +2940,7 @@ public final class PurpleBot {
             }
             String myMessage = ChatColor.translateAlternateColorCodes('&', plugin.colorConverter.gameColorsToIrc(joinNoticeMessage.replace("%NAME%", user.getNick())));
             if (joinNoticeMessage.startsWith("/")) {
-                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(this, target, plugin, joinNoticeCtcp), myMessage.trim().substring(1)));
+                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"), myMessage.trim().substring(1)));
             } else {
                 if (joinNoticeCtcp) {
                     asyncCTCPMessage(target, myMessage);

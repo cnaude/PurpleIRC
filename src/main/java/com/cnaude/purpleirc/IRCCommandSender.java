@@ -36,6 +36,7 @@ public class IRCCommandSender implements CommandSender {
     private final String target;
     private final PurpleIRC plugin;
     private final boolean ctcpResponse;
+    private final String name;
 
     /**
      *
@@ -64,20 +65,21 @@ public class IRCCommandSender implements CommandSender {
                 plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
 
-    /**
+     /**
      *
      * @param ircBot
      * @param target
      * @param plugin
      * @param ctcpResponse
+     * @param name
      */
-    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse) {
+    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse, String name) {
         super();
         this.target = target;
         this.ircBot = ircBot;
         this.plugin = plugin;
         this.ctcpResponse = ctcpResponse;
-
+        this.name = name;
     }
 
     /**
@@ -95,7 +97,7 @@ public class IRCCommandSender implements CommandSender {
      */
     @Override
     public String getName() {
-        return "CONSOLE";
+        return name;
     }
 
     /**

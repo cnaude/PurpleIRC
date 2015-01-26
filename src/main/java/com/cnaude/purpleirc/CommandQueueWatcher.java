@@ -54,14 +54,8 @@ public class CommandQueueWatcher {
         IRCCommand ircCommand = queue.poll();
         if (ircCommand != null) {
             try {
-                if (plugin.getServer().getVersion().contains("MC: 1.8")
-                        && plugin.getServer().getPluginCommand(ircCommand.getGameCommand()) == null) {
-                    plugin.logDebug("Dispatching command as ConsoleSender: " + ircCommand.getGameCommand());
-                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), ircCommand.getGameCommand());
-                } else {
-                    plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
-                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
-                }
+                plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
+                plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
             } catch (CommandException ce) {
                 plugin.logError("Error running command: " + ce.getMessage());
             }
