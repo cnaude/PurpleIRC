@@ -188,7 +188,7 @@ public class PurpleIRC extends JavaPlugin {
     private YamlConfiguration heroConfig;
     private final File cacheFile;
     private final File uuidCacheFile;
-
+    
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
         this.sampleFileName = "SampleBot.yml";
@@ -206,7 +206,7 @@ public class PurpleIRC extends JavaPlugin {
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
         this.uuidCacheFile = new File("plugins/PurpleIRC/uuid.cache");
     }
-
+    
     /**
      *
      */
@@ -1435,5 +1435,5 @@ public class PurpleIRC extends JavaPlugin {
     public String updateCheckerMode() {
         return updateCheckerMode;
     }
-
+    
 }
