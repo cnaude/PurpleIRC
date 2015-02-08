@@ -319,12 +319,6 @@
       <version>0.4.0</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.cnaude.purpleirc</groupId>
-      <artifactId>PurpleIRC-API</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   <distributionManagement>
     <repository>
