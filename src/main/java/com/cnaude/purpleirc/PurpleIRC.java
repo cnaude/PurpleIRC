@@ -188,7 +188,7 @@ public class PurpleIRC extends JavaPlugin {
     private YamlConfiguration heroConfig;
     private final File cacheFile;
     private final File uuidCacheFile;
-    
+
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
         this.sampleFileName = "SampleBot.yml";
@@ -206,7 +206,7 @@ public class PurpleIRC extends JavaPlugin {
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
         this.uuidCacheFile = new File("plugins/PurpleIRC/uuid.cache");
     }
-    
+
     /**
      *
      */
@@ -707,8 +707,13 @@ public class PurpleIRC extends JavaPlugin {
             for (final File file : botsFolder.listFiles()) {
                 if (file.getName().toLowerCase().endsWith(".yml")) {
                     logInfo("Loading bot file: " + file.getName());
-                    ircBots.put(file.getName(), new PurpleBot(file, this));
-                    logInfo("Loaded bot: " + file.getName() + "[" + ircBots.get(file.getName()).botNick + "]");
+                    PurpleBot ircBot = new PurpleBot(file, this);
+                    if (ircBot.goodBot) {
+                        ircBots.put(file.getName(), ircBot);
+                        logInfo("Loaded bot: " + file.getName() + " [" + ircBot.botNick + "]");
+                    } else {
+                        logError("Bot not loaded: " + file.getName());
+                    }
                 }
             }
         }
@@ -1435,5 +1440,5 @@ public class PurpleIRC extends JavaPlugin {
     public String updateCheckerMode() {
         return updateCheckerMode;
     }
-    
+
 }
