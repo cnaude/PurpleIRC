@@ -494,13 +494,18 @@ public final class PurpleBot {
      * @param sender
      */
     public void saveConfig(CommandSender sender) {
-        try {
-            config.save(file);
+        if (goodBot) {
+            try {
+                config.save(file);
+                sender.sendMessage(plugin.LOG_HEADER_F
+                        + " Saving bot \"" + botNick + "\" to " + file.getName());
+            } catch (IOException ex) {
+                plugin.logError(ex.getMessage());
+                sender.sendMessage(ex.getMessage());
+            }
+        } else {
             sender.sendMessage(plugin.LOG_HEADER_F
-                    + " Saving bot \"" + botNick + "\" to " + file.getName());
-        } catch (IOException ex) {
-            plugin.logError(ex.getMessage());
-            sender.sendMessage(ex.getMessage());
+                    + ChatColor.RED + " Not saving bot \"" + botNick + "\" to " + file.getName());
         }
     }
 
@@ -688,7 +693,7 @@ public final class PurpleBot {
             }
 
             if (config.getConfigurationSection("channels") == null) {
-                plugin.logError("No channels found!");                
+                plugin.logError("No channels found!");
                 return false;
             } else {
                 for (String enChannelName : config.getConfigurationSection("channels").getKeys(false)) {
