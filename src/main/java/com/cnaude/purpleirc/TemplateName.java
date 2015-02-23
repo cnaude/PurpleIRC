@@ -38,6 +38,8 @@ public class TemplateName {
     public final static String DYNMAP_WEB_CHAT = "dynmap-web-chat";
     public final static String IRC_DYNMAP_WEB_CHAT = "irc-dynmap-web-chat";
     public final static String IRC_ACTION_DYNMAP_WEB_CHAT = "irc-action-dynmap-web-chat";
+    public final static String IRC_DYNMAP_NICK = "irc-dynmap-nick";
+    public final static String IRC_DYNMAP_ACTION_NICK = "irc-dynmap-action-nick";
     
     public final static String CLEVER_SEND = "clever-send";
     
@@ -125,5 +127,6 @@ public class TemplateName {
     
     public final static String IRC_A_RESPONSE = "irc-a-response";
     public final static String GAME_A_CHAT = "game-a-chat";
+    public final static String IRC_A_CHAT = "irc-a-chat";
         
 }
