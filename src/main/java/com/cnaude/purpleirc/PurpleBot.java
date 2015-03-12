@@ -51,6 +51,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import me.botsko.prism.actionlibs.QueryParameters;
 import me.botsko.prism.events.BlockStateChange;
 import org.bukkit.Achievement;
@@ -139,6 +143,9 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Collection<String>> worldList;
     public CaseInsensitiveMap<Collection<String>> muteList;
     public CaseInsensitiveMap<Collection<String>> enabledMessages;
+    public CaseInsensitiveMap<String> userPrefixes;
+    public CaseInsensitiveMap<CaseInsensitiveMap<String>> firstOccurrenceReplacements;
+    public String defaultCustomPrefix;
     public CaseInsensitiveMap<CaseInsensitiveMap<CaseInsensitiveMap<String>>> commandMap;
     public CaseInsensitiveMap<CaseInsensitiveMap<List<String>>> extraCommandMap;
     public CaseInsensitiveMap<Long> joinNoticeCooldownMap;
@@ -155,6 +162,8 @@ public final class PurpleBot {
     String joinNoticeMessage;
     String version;
     String finger;
+    private final ReadWriteLock rwl;
+    private final Lock wl;
 
     /**
      *
@@ -162,6 +171,8 @@ public final class PurpleBot {
      * @param plugin
      */
     public PurpleBot(File file, PurpleIRC plugin) {
+        this.rwl = new ReentrantReadWriteLock();
+        this.wl = rwl.writeLock();
         fileName = file.getName();
         this.altNicks = new ArrayList<>();
         this.connected = false;
@@ -173,6 +184,8 @@ public final class PurpleBot {
         this.extraCommandMap = new CaseInsensitiveMap<>();
         this.joinNoticeCooldownMap = new CaseInsensitiveMap<>();
         this.enabledMessages = new CaseInsensitiveMap<>();
+        this.firstOccurrenceReplacements = new CaseInsensitiveMap<>();
+        this.userPrefixes = new CaseInsensitiveMap<>();
         this.muteList = new CaseInsensitiveMap<>();
         this.worldList = new CaseInsensitiveMap<>();
         this.opsList = new CaseInsensitiveMap<>();
@@ -668,6 +681,27 @@ public final class PurpleBot {
 
             channelCmdNotifyMode = config.getString("command-notify.mode", "msg");
             plugin.logDebug(" channelCmdNotifyMode => " + channelCmdNotifyMode);
+
+            for (String s : config.getStringList("custom-prefixes")) {
+                String pair[] = s.split(" ", 2);
+                if (pair.length > 0) {
+                    userPrefixes.put(pair[0], ChatColor.translateAlternateColorCodes('&', pair[1]));
+                }
+            }
+            for (String key : userPrefixes.keySet()) {
+                plugin.logDebug(" CustomPrefix: " + key + " => " + userPrefixes.get(key));
+            }
+            defaultCustomPrefix = ChatColor.translateAlternateColorCodes('&', config.getString("custom-prefix-default", "[IRC]"));
+
+            for (String s : config.getStringList("replace-first-occurrences")) {
+                String pair[] = s.split(" ", 3);
+                if (pair.length > 2) {
+                    CaseInsensitiveMap rfo = new CaseInsensitiveMap<>();
+                    rfo.put(pair[1], pair[2]);
+                    firstOccurrenceReplacements.put(pair[0], rfo);
+                    plugin.logDebug("ReplaceFirstOccurence: " + pair[0] + " => " + pair[1] + " => " + pair[2]);
+                }
+            }
 
             // build command notify recipient list            
             for (String recipient : config.getStringList("command-notify.recipients")) {
@@ -2061,21 +2095,30 @@ public final class PurpleBot {
             //plugin.logDebug("N: " + user.getNick());
             users.add(user.getNick());
         }
-        // Iterate over previous list and remove from tab list
-        String channelName = channel.getName();
-        if (channelNicks.containsKey(channelName)) {
-            for (String name : channelNicks.get(channelName)) {
-                //plugin.logDebug("O: " + name);
-                if (!users.contains(name)) {
-                    plugin.logDebug("Removing " + name + " from list.");
-                    if (plugin.netPackets != null) {
-                        plugin.netPackets.remFromTabList(name);
+        try {
+            wl.tryLock(10, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ex) {
+            plugin.logDebug("Lock Error: " + ex.getMessage());
+            return;
+        }
+        try {
+            String channelName = channel.getName();
+            if (channelNicks.containsKey(channelName)) {
+                for (String name : channelNicks.get(channelName)) {
+                    //plugin.logDebug("O: " + name);
+                    if (!users.contains(name)) {
+                        plugin.logDebug("Removing " + name + " from list.");
+                        if (plugin.netPackets != null) {
+                            plugin.netPackets.remFromTabList(name);
+                        }
                     }
                 }
+                channelNicks.remove(channelName);
             }
-            channelNicks.remove(channelName);
+            channelNicks.put(channelName, users);
+        } finally {
+            wl.unlock();
         }
-        channelNicks.put(channelName, users);
     }
 
     /**
