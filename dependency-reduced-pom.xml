@@ -211,9 +211,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.cnaude.vanishnopacket</groupId>
-      <artifactId>VanishNoPacket</artifactId>
-      <version>3.19.1</version>
+      <groupId>com.cnaude.vanishnopacket-bukkit</groupId>
+      <artifactId>VanishNoPacket-bukkit</artifactId>
+      <version>3.19.2-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
