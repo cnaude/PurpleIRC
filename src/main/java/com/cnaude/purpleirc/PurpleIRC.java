@@ -38,6 +38,7 @@ import com.cnaude.purpleirc.GameListeners.RedditStreamListener;
 import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
+import com.cnaude.purpleirc.GameListeners.VanishNoPacketListener;
 import com.cnaude.purpleirc.Hooks.AdminPrivateChatHook;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
@@ -352,11 +353,11 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("OreBroadcast not detected.");
         }
         vanishHook = new VanishHook(this);
-        if (isPluginEnabled("SuperVanish")) {
-            logInfo("Enabling SuperVanish support.");
-            superVanishHook = new SuperVanishHook(this);
+        if (isPluginEnabled("VanishNoPacket")) {
+            logInfo("Enabling VanishNoPacket support.");
+            getServer().getPluginManager().registerEvents(new VanishNoPacketListener(this), this);
         } else {
-            logInfo("SuperVanish not detected.");
+            logInfo("VanishNoPacket not detected.");
         }
         if (isPluginEnabled("ReportRTS")) {
             logInfo("Enabling ReportRTS support.");
