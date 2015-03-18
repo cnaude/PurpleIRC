@@ -69,6 +69,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 
@@ -87,6 +88,7 @@ public final class PurpleBot {
     private boolean connected;
     public boolean autoConnect;
     public boolean ssl;
+    public boolean tls;
     public boolean trustAllCerts;
     public boolean sendRawMessageOnConnect;
     public boolean showMOTD;
@@ -269,6 +271,9 @@ public final class PurpleBot {
                 plugin.logInfo("Enabling SSL ...");
             }
             configBuilder.setSocketFactory(socketFactory);
+            if (tls) {
+                configBuilder.addCapHandler(new TLSCapHandler(socketFactory, true));
+            }
         }
         if (charSet.isEmpty()) {
             plugin.logInfo("Using default character set: " + Charset.defaultCharset());
@@ -624,6 +629,7 @@ public final class PurpleBot {
             config.load(file);
             autoConnect = config.getBoolean("autoconnect", true);
             ssl = config.getBoolean("ssl", false);
+            tls = config.getBoolean("tls", false);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
@@ -662,6 +668,7 @@ public final class PurpleBot {
             plugin.logDebug("Channel Auto Join Delay => " + channelAutoJoinDelay);
             plugin.logDebug(("Bind => ") + bindAddress);
             plugin.logDebug("SSL => " + ssl);
+            plugin.logDebug("TLS => " + tls);
             plugin.logDebug("Trust All Certs => " + trustAllCerts);
             plugin.logDebug("Port => " + botServerPort);
             plugin.logDebug("Command Prefix => " + commandPrefix);
@@ -930,10 +937,10 @@ public final class PurpleBot {
                     if (map.isEmpty()) {
                         plugin.logInfo("No commands specified!");
                     }
-                    connectMessage = "Connecting to \"" + botServer + ":"
-                            + botServerPort + "\" as \"" + botNick
-                            + "\" [SSL: " + ssl + "]" + " [TrustAllCerts: "
-                            + trustAllCerts + "]";
+                    connectMessage = "Connecting to " + botServer + ":"
+                            + botServerPort + ": [Nick: " + botNick
+                            + "] [SSL: " + ssl + "]" + " [TrustAllCerts: "
+                            + trustAllCerts + "] [TLS: " + tls + "]";
                 }
             }
         } catch (IOException | InvalidConfigurationException ex) {
