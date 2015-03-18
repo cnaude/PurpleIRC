@@ -261,7 +261,7 @@ public final class PurpleBot {
             plugin.logInfo("Setting IdentPassword ...");
             configBuilder.setNickservPassword(botIdentPassword);
         }
-        if (ssl) {
+        if (ssl || tls) {
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
             socketFactory.disableDiffieHellman();
             if (trustAllCerts) {
