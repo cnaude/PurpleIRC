@@ -261,7 +261,10 @@ public final class PurpleBot {
             plugin.logInfo("Setting IdentPassword ...");
             configBuilder.setNickservPassword(botIdentPassword);
         }
-        if (ssl || tls) {
+        if (tls) {
+            plugin.logInfo("Enabling TLS ...");
+            configBuilder.addCapHandler(new TLSCapHandler());
+        } else if (ssl) {
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
             socketFactory.disableDiffieHellman();
             if (trustAllCerts) {
@@ -271,9 +274,6 @@ public final class PurpleBot {
                 plugin.logInfo("Enabling SSL ...");
             }
             configBuilder.setSocketFactory(socketFactory);
-            if (tls) {
-                configBuilder.addCapHandler(new TLSCapHandler(socketFactory, true));
-            }
         }
         if (charSet.isEmpty()) {
             plugin.logInfo("Using default character set: " + Charset.defaultCharset());
