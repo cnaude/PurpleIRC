@@ -397,8 +397,7 @@ public final class PurpleBot {
         } else {
             sender.sendMessage("User '" + user + "' is now muted.");
             muteList.get(channelName).add(user);
-            config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".muted", muteList.get(channelName));
-            saveConfig();
+            saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".muted", muteList.get(channelName));
         }
     }
 
@@ -413,7 +412,6 @@ public final class PurpleBot {
         } else {
             sender.sendMessage("Muted users for " + channelName
                     + ": " + Joiner.on(", ").join(muteList.get(channelName)));
-            saveConfig();
         }
     }
 
@@ -427,8 +425,7 @@ public final class PurpleBot {
         if (muteList.get(channelName).contains(user)) {
             sender.sendMessage("User '" + user + "' is no longer muted.");
             muteList.get(channelName).remove(user);
-            config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".muted", muteList.get(channelName));
-            saveConfig();
+            saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".muted", muteList.get(channelName));
         } else {
             sender.sendMessage("User '" + user + "' is not muted.");
         }
@@ -538,6 +535,17 @@ public final class PurpleBot {
             plugin.logError(ex.getMessage());
         }
     }
+    
+        /**
+     *
+     * @param section
+     * @param obj
+     */
+    public void saveConfig(String section, Object obj) {
+        plugin.logDebug("Saving [" + section + "]: " + obj.toString());
+        config.set(section, obj);
+        saveConfig();
+    }
 
     /**
      *
@@ -556,8 +564,7 @@ public final class PurpleBot {
             }
         });
         sender.sendMessage("Setting nickname to " + newNick);
-        config.set("nick", newNick);
-        saveConfig();
+        saveConfig("nick", newNick);
     }
 
     public void asyncJoinChannel(final String channelName, final String password) {
@@ -615,15 +622,13 @@ public final class PurpleBot {
                 + "Login set to " + ChatColor.WHITE
                 + newLogin + ChatColor.DARK_PURPLE
                 + ". Reload the bot for the change to take effect.");
-        config.set("login", newLogin);
-        saveConfig();
+        saveConfig("login", newLogin);
     }
 
     private void sanitizeServerName() {
         botServer = botServer.replace("^.*\\/\\/", "");
         botServer = botServer.replace(":\\d+$", "");
-        config.set("server", botServer);
-        saveConfig();
+        saveConfig("server", botServer);
     }
 
     private boolean loadConfig() {
@@ -958,8 +963,7 @@ public final class PurpleBot {
      * @param delay
      */
     public void setIRCDelay(CommandSender sender, long delay) {
-        config.set("message-delay", delay);
-        saveConfig();
+        saveConfig("message-delay", delay);
         sender.sendMessage(ChatColor.DARK_PURPLE
                 + "IRC message delay changed to "
                 + ChatColor.WHITE + delay + ChatColor.DARK_PURPLE + " ms. "
@@ -1502,7 +1506,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     /**
      *
      * @param player
@@ -1667,9 +1671,8 @@ public final class PurpleBot {
         String tTopic = tokenizedTopic(topic);
         if (channel != null) {
             setTheTopic(channel, tTopic);
-            config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".topic", topic);
+            saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".topic", topic);
             channelTopic.put(channelName, topic);
-            saveConfig();
             sender.sendMessage("IRC topic for " + channelName + " changed to \"" + topic + "\"");
         } else {
             sender.sendMessage("Invalid channel: " + channelName);
@@ -1720,9 +1723,9 @@ public final class PurpleBot {
         }
         sanitizeServerName();
         autoConnect = auto;
-        config.set("server", botServer);
-        config.set("port", botServerPort);
-        config.set("autoconnect", autoConnect);
+        saveConfig("server", botServer);
+        saveConfig("port", botServerPort);
+        saveConfig("autoconnect", autoConnect);
 
         sender.sendMessage("IRC server changed to \"" + botServer + ":"
                 + botServerPort + "\". (AutoConnect: "
@@ -1744,8 +1747,7 @@ public final class PurpleBot {
                     + ChatColor.RESET + " has been added to the ops list.");
             opsList.get(channelName).add(userMask);
         }
-        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
-        saveConfig();
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
     }
 
     /**
@@ -1763,8 +1765,7 @@ public final class PurpleBot {
                     + ChatColor.RESET + " has been added to the voices list.");
             voicesList.get(channelName).add(userMask);
         }
-        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
-        saveConfig();
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
     }
 
     /**
@@ -1782,8 +1783,7 @@ public final class PurpleBot {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
                     + ChatColor.RESET + " is not in the ops list.");
         }
-        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
-        saveConfig();
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
     }
 
     /**
@@ -1801,8 +1801,7 @@ public final class PurpleBot {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
                     + ChatColor.RESET + " is not in the voices list.");
         }
-        config.set("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
-        saveConfig();
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".voices", voicesList.get(channelName));
     }
 
     /**
@@ -1913,8 +1912,6 @@ public final class PurpleBot {
         String channelName = channel.getName();
         String tTopic = tokenizedTopic(topic);
         if (setBy.equals(botNick)) {
-            //config.set("channels." + encodeChannel(channelName) + ".topic", topic);
-            //saveConfig();
             return;
         }
 
@@ -3127,4 +3124,5 @@ public final class PurpleBot {
         plugin.logInfo("Trying alternate nick " + botNick);
         bot.sendIRC().changeNick(botNick);
     }
+   
 }
