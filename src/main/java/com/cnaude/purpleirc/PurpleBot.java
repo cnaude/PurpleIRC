@@ -137,6 +137,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Boolean> invalidCommandCTCP;
     public CaseInsensitiveMap<Boolean> logIrcToHeroChat;
     public CaseInsensitiveMap<Boolean> enableMessageFiltering;
+    public CaseInsensitiveMap<String> channelPrefix;
     private final CaseInsensitiveMap<Boolean> shortify;
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<String> townyChannel;
@@ -215,6 +216,7 @@ public final class PurpleBot {
         this.joinMsg = new CaseInsensitiveMap<>();
         this.msgOnJoin = new CaseInsensitiveMap<>();
         this.enableMessageFiltering = new CaseInsensitiveMap<>();
+        this.channelPrefix = new CaseInsensitiveMap<>();
         this.plugin = plugin;
         this.file = file;
         whoisSenders = new ArrayList<>();
@@ -807,6 +809,9 @@ public final class PurpleBot {
 
                     enableMessageFiltering.put(channelName, config.getBoolean("channels." + enChannelName + ".enable-filtering", false));
                     plugin.logDebug("  EnableMessageFiltering => " + enableMessageFiltering.get(channelName));
+                    
+                    channelPrefix.put(channelName, config.getString("channels." + enChannelName + ".prefix", ""));
+                    plugin.logDebug("  ChannelPrefix => " + channelPrefix.get(channelName));
 
                     // build channel op list
                     Collection<String> cOps = new ArrayList<>();
@@ -2103,6 +2108,13 @@ public final class PurpleBot {
             }
         } catch (Exception ex) {
             plugin.logDebug(ex.getMessage());
+        }
+        return "";
+    }
+    
+    public String getChannelPrefix(Channel channel) {
+        if (channelPrefix.containsKey(channel.getName())) {
+            return channelPrefix.get(channel.getName());
         }
         return "";
     }
