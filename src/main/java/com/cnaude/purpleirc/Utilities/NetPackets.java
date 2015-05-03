@@ -27,7 +27,13 @@ import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
+import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
+import net.minecraft.server.v1_8_R2.EntityPlayer;
+import net.minecraft.server.v1_8_R2.MinecraftServer;
+import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R2.PlayerInteractManager;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -116,6 +122,39 @@ public class NetPackets {
                 packet.getIntegers().write(1, 0);
                 packet.getIntegers().write(2, 0);
                 packet.getStrings().write(0, displayName);
+            } catch (Exception ex) {
+                plugin.logError("tabPacket: " + ex.getMessage());
+            }
+        } else if (version.contains("MC: 1.8.3")) {
+            try {
+                UUID uuid = null; // = plugin.getPlayerUuid(name);
+                if (uuid == null) {
+                    uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + displayName).getBytes(Charsets.UTF_8));
+                }
+                if (add) {
+                    EntityPlayer pl = new EntityPlayer(
+                            MinecraftServer.getServer(),
+                            MinecraftServer.getServer().getWorldServer(0),
+                            (GameProfile) (new WrappedGameProfile(uuid, displayName)).getHandle(),
+                            new PlayerInteractManager(MinecraftServer.getServer().getWorldServer(0))
+                    );
+                    PacketPlayOutPlayerInfo pi
+                            = new PacketPlayOutPlayerInfo(
+                                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, pl);
+                    return PacketContainer.fromPacket(pi);
+                } else {
+                    plugin.logDebug("T: Removing: " + name);
+                    EntityPlayer pl = new EntityPlayer(
+                            MinecraftServer.getServer(),
+                            MinecraftServer.getServer().getWorldServer(0),
+                            (GameProfile) (new WrappedGameProfile(uuid, displayName)).getHandle(),
+                            new PlayerInteractManager(MinecraftServer.getServer().getWorldServer(0))
+                    );
+                    PacketPlayOutPlayerInfo pi
+                            = new PacketPlayOutPlayerInfo(
+                                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, pl);
+                    return PacketContainer.fromPacket(pi);
+                }
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
             }
