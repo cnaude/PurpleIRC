@@ -44,7 +44,9 @@ public class VanishHook {
     public boolean isVanished(Player player) {
         // Try SuperVanish first
         if (plugin.superVanishHook != null) {
-            return plugin.superVanishHook.isVanished(player);
+            boolean isPlayerVanish = plugin.superVanishHook.isVanished(player);
+            plugin.logDebug("isVanished: " + player.getName() + ":" + isPlayerVanish);
+            return isPlayerVanish;
         } else {
             // Fallback to other Vanish
             if (player.hasMetadata("vanished")) {

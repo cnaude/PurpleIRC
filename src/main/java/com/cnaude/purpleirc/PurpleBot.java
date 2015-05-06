@@ -1146,17 +1146,13 @@ public final class PurpleBot {
                 if (!isPlayerInValidWorld(player, channelName)) {
                     continue;
                 }
-                plugin.logDebug("townyChat: Checking for towny-"
-                        + townyChannel.getName() + "-chat"
-                        + " or " + "towny-" + townyChannel.getChannelTag() + "-chat"
-                        + " or towny-chat");
                 if (isMessageEnabled(channelName, "towny-" + townyChannel.getName() + "-chat")
                         || isMessageEnabled(channelName, "towny-" + townyChannel.getChannelTag() + "-chat")
-                        || isMessageEnabled(channelName, "towny-chat")
-                        || isMessageEnabled(channelName, "towny-channel-chat")) {
+                        || isMessageEnabled(channelName, TemplateName.TOWNY_CHAT)
+                        || isMessageEnabled(channelName, TemplateName.TOWNY_CHANNEL_CHAT)) {
                     asyncIRCMessage(channelName, plugin.tokenizer
                             .chatTownyChannelTokenizer(player, townyChannel, message,
-                                    plugin.getMsgTemplate(botNick, "towny-channel-chat")));
+                                    plugin.getMsgTemplate(botNick, TemplateName.TOWNY_CHANNEL_CHAT)));
                 }
             }
         }
@@ -1406,7 +1402,9 @@ public final class PurpleBot {
             return;
         }
         for (String channelName : botChannels) {
+            plugin.logDebug("dynmapWebChat: " + channelName);
             if (isMessageEnabled(channelName, TemplateName.DYNMAP_WEB_CHAT)) {
+                plugin.logDebug("dynmapWebChat: sending message");
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .dynmapWebChatToIRCTokenizer(source, name, plugin.getMsgTemplate(
                                         botNick, TemplateName.DYNMAP_WEB_CHAT),
@@ -1442,12 +1440,8 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.REDDIT_MESSAGES)) {
-                plugin.logDebug("Checking if " + TemplateName.REDDIT_MESSAGES + " is enabled... YES");
                 asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(plugin.getMsgTemplate(botNick, TemplateName.REDDIT_MESSAGES), message));
-            } else {
-                plugin.logDebug("Checking if " + TemplateName.REDDIT_MESSAGES + " is enabled... NOPE");
-            }
-
+            } 
         }
     }
 
@@ -1466,7 +1460,6 @@ public final class PurpleBot {
                     return;
                 }
                 if (hideJoinWhenVanished.get(channelName)) {
-                    plugin.logDebug("Checking if player " + player.getName() + " is vanished.");
                     if (plugin.vanishHook.isVanished(player)) {
                         plugin.logDebug("Not sending join message to IRC for player "
                                 + player.getName() + " due to being vanished.");
@@ -1476,9 +1469,7 @@ public final class PurpleBot {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
                                         botNick, TemplateName.GAME_JOIN), message));
-            } else {
-                plugin.logDebug("Not sending join message due to " + TemplateName.GAME_JOIN + " being disabled");
-            }
+            } 
         }
     }
 
@@ -1497,8 +1488,7 @@ public final class PurpleBot {
                     return;
                 }
                 if (hideQuitWhenVanished.get(channelName)) {
-                    plugin.logDebug("Checking if player " + player.getName()
-                            + " is vanished.");
+                    plugin.logDebug("Checking if player " + player.getName() + " is vanished.");
                     if (plugin.vanishHook.isVanished(player)) {
                         plugin.logDebug("Not sending quit message to IRC for player "
                                 + player.getName() + " due to being vanished.");
@@ -2329,9 +2319,7 @@ public final class PurpleBot {
          Send messages to Dynmap if enabled
          */
         if (plugin.dynmapHook != null) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled ...");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_DYNMAP_WEB_CHAT)) {
-                plugin.logDebug("Yes, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled...");
+            if (isMessageEnabled(myChannel,TemplateName.IRC_DYNMAP_WEB_CHAT)) {
                 plugin.logDebug("broadcastChat [DW]: " + message);
                 String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_DYNMAP_WEB_CHAT);
                 String rawDWMessage = filterMessage(
@@ -2340,18 +2328,14 @@ public final class PurpleBot {
                 String rawNick = nickTmpl.replace("%NICK%", user.getNick());
                 plugin.dynmapHook.sendMessage(rawNick, rawDWMessage);
                 messageSent = true;
-            } else {
-                plugin.logDebug("Nope, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is NOT enabled...");
-            }
+            } 
         }
 
         /*
          Send messages to TownyChat if enabled
          */
         if (plugin.tcHook != null) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_TOWNY_CHAT + " is enabled ...");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_TOWNY_CHAT)) {
-                plugin.logDebug("Yes, " + TemplateName.IRC_TOWNY_CHAT + " is enabled...");
+            if (isMessageEnabled(myChannel,TemplateName.IRC_TOWNY_CHAT)) {
                 if (townyChannel.containsKey(myChannel)) {
                     String tChannel = townyChannel.get(myChannel);
                     if (!tChannel.isEmpty()) {
@@ -2363,17 +2347,13 @@ public final class PurpleBot {
                         messageSent = true;
                     }
                 }
-            } else {
-                plugin.logDebug("Nope, " + TemplateName.IRC_TOWNY_CHAT + " is NOT enabled...");
-            }
+            } 
         }
 
         /*
          Send messages to players if enabled
          */
-        plugin.logDebug("Checking if " + TemplateName.IRC_CHAT + " is enabled before broadcasting chat from IRC");
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT) || override) {
-            plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_CHAT + " enabled");
+        if (isMessageEnabled(myChannel, TemplateName.IRC_CHAT) || override) {
             String newMessage = filterMessage(
                     plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, plugin.getMsgTemplate(
                                     botNick, TemplateName.IRC_CHAT), message), myChannel);
@@ -2381,14 +2361,12 @@ public final class PurpleBot {
                 plugin.getServer().broadcast(newMessage, "irc.message.chat");
                 messageSent = true;
             }
-        } else {
-            plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_CHAT + " disabled");
-        }
-
+        } 
+        
         /*
          Send messages to console if enabled
          */
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CONSOLE_CHAT)) {
+        if (isMessageEnabled(myChannel, TemplateName.IRC_CONSOLE_CHAT)) {
             String tmpl = plugin.getMsgTemplate(botNick, TemplateName.IRC_CONSOLE_CHAT);
             plugin.logDebug("broadcastChat [Console]: " + tmpl);
             plugin.getServer().getConsoleSender().sendMessage(plugin.tokenizer.ircChatToGameTokenizer(
@@ -2399,8 +2377,7 @@ public final class PurpleBot {
         /*
          Send messages to Herochat if enabled
          */
-        plugin.logDebug("Checking if " + TemplateName.IRC_HERO_CHAT + " is enabled before broadcasting chat from IRC to HeroChat");
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_CHAT)) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_HERO_CHAT)) {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroChatChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HC]: " + hChannel + ": " + tmpl);
@@ -2415,17 +2392,13 @@ public final class PurpleBot {
                     }
                 }
             }
-        } else {
-            plugin.logDebug("NOPE we can't broadcast to HeroChat due to " + TemplateName.IRC_HERO_CHAT + " disabled");
-        }
+        } 
 
         /*
          Send messages to Essentials if enabled
          */
         if (plugin.isPluginEnabled("Essentials")) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_ESS_HELPOP + " is enabled before broadcasting chat from IRC");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ESS_HELPOP) || override) {
-                plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_ESS_HELPOP + " enabled");
+            if (isMessageEnabled(myChannel,TemplateName.IRC_ESS_HELPOP) || override) {
                 String newMessage = filterMessage(
                         plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, plugin.getMsgTemplate(
                                         botNick, TemplateName.IRC_ESS_HELPOP), message), myChannel);
@@ -2433,19 +2406,14 @@ public final class PurpleBot {
                     plugin.getServer().broadcast(newMessage, "essentials.helpop.receive");
                     messageSent = true;
                 }
-            } else {
-                plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_ESS_HELPOP
-                        + " disabled");
-            }
+            } 
         }
 
         /*
          Send messages to AdminPrivateChat if enabled
          */
-        if (plugin.adminPrivateChatHook != null) {
-            plugin.logDebug("Checking if " + TemplateName.IRC_A_CHAT + " is enabled before broadcasting chat from IRC");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_A_CHAT) || override) {
-                plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_A_CHAT + " enabled");
+        if (plugin.adminPrivateChatHook != null) {            
+            if (isMessageEnabled(myChannel,TemplateName.IRC_A_CHAT) || override) {                
                 String newMessage = filterMessage(
                         plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, plugin.getMsgTemplate(
                                         botNick, TemplateName.IRC_A_CHAT), message), myChannel);
@@ -2453,15 +2421,13 @@ public final class PurpleBot {
                     plugin.adminPrivateChatHook.sendMessage(newMessage, user.getNick());
                     messageSent = true;
                 }
-            } else {
-                plugin.logDebug("NOPE we can't broadcast due to " + TemplateName.IRC_A_CHAT + " disabled");
-            }
+            } 
         }
 
         /*
          Notify IRC user that message was sent.
          */
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_CHAT_RESPONSE) && messageSent && target != null) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_CHAT_RESPONSE) && messageSent && target != null) {
             // Let the sender know the message was sent
             String responseTemplate = plugin.getMsgTemplate(botNick, TemplateName.IRC_CHAT_RESPONSE);
             if (!responseTemplate.isEmpty()) {
@@ -2495,7 +2461,6 @@ public final class PurpleBot {
             String msg;
             hChannel = message.split(" ", 2)[0];
             msg = message.split(" ", 2)[1];
-            plugin.logDebug("Check if " + TemplateName.IRC_HERO_CHAT + " is enabled before broadcasting chat from IRC");
             if (enabledMessages.get(ircChannel).contains(TemplateName.IRC_HERO_CHAT)) {
                 plugin.logDebug("Checking if " + hChannel + " is a valid hero channel...");
                 if (Herochat.getChannelManager().hasChannel(hChannel)) {
@@ -2518,10 +2483,7 @@ public final class PurpleBot {
                 } else {
                     asyncIRCMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
                 }
-            } else {
-                plugin.logDebug("NOPE we can't broadcast due to "
-                        + TemplateName.IRC_HERO_CHAT + " disabled");
-            }
+            } 
         } else {
             asyncIRCMessage(target, "No message specified.");
         }
@@ -2547,10 +2509,7 @@ public final class PurpleBot {
             String msg;
             pName = message.split(" ", 2)[0];
             msg = message.split(" ", 2)[1];
-            plugin.logDebug("Check if " + TemplateName.IRC_PCHAT + " is enabled before broadcasting chat from IRC");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_PCHAT)) {
-                plugin.logDebug("Yup we can broadcast due to " + TemplateName.IRC_PCHAT
-                        + " enabled... Checking if " + pName + " is a valid player...");
+            if (isMessageEnabled(myChannel,TemplateName.IRC_PCHAT)) {
                 Player player = plugin.getServer().getPlayer(pName);
                 if (player != null) {
                     if (player.isOnline()) {
@@ -2572,9 +2531,7 @@ public final class PurpleBot {
                 } else {
                     asyncIRCMessage(target, "Player not found (possibly offline): " + pName);
                 }
-            } else {
-                plugin.logDebug("NOPE we can't broadcast due to irc-pchat disabled");
-            }
+            } 
         } else {
             asyncIRCMessage(target, "No message specified.");
         }
@@ -2589,7 +2546,7 @@ public final class PurpleBot {
      */
     public void broadcastAction(User user, org.pircbotx.Channel channel, String message) {
         String myChannel = channel.getName();
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION)) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_ACTION)) {
             plugin.getServer().broadcast(plugin.tokenizer.ircChatToGameTokenizer(
                     this, user, channel, plugin.getMsgTemplate(botNick,
                             TemplateName.IRC_ACTION), message), "irc.message.action");
@@ -2598,7 +2555,7 @@ public final class PurpleBot {
                     + TemplateName.IRC_ACTION + " is false");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_ACTION)) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_HERO_ACTION)) {
             String hChannel = heroChannel.get(myChannel);
             String tmpl = plugin.getIRCHeroActionChannelTemplate(botNick, hChannel);
             plugin.logDebug("broadcastChat [HA]: " + hChannel + ": " + tmpl);
@@ -2615,16 +2572,12 @@ public final class PurpleBot {
         }
 
         if (plugin.dynmapHook != null) {
-            plugin.logDebug("xChecking if " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled ...");
-            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT)) {
-                plugin.logDebug("Yes, " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is enabled...");
+            if (isMessageEnabled(myChannel,TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT)) {
                 String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT);
                 String rawDWMessage = filterMessage(
                         plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, template, message), myChannel);
                 plugin.dynmapHook.sendMessage(user.getNick(), rawDWMessage);
-            } else {
-                plugin.logDebug("Nope, " + TemplateName.IRC_ACTION_DYNMAP_WEB_CHAT + " is NOT enabled...");
-            }
+            } 
         }
     }
 
@@ -2637,14 +2590,14 @@ public final class PurpleBot {
      */
     public void broadcastIRCKick(User recipient, User kicker, String reason, org.pircbotx.Channel channel) {
         String myChannel = channel.getName();
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_KICK)) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_KICK)) {
             plugin.getServer().broadcast(plugin.tokenizer.ircKickTokenizer(
                     this, recipient, kicker, reason, channel, plugin.getMsgTemplate(
                             botNick, TemplateName.IRC_KICK)),
                     "irc.message.kick");
         }
 
-        if (enabledMessages.get(myChannel).contains(TemplateName.IRC_HERO_KICK)) {
+        if (isMessageEnabled(myChannel,TemplateName.IRC_HERO_KICK)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(myChannel))
                     .sendRawMessage(plugin.tokenizer
                             .ircKickToHeroChatTokenizer(this,
@@ -2793,7 +2746,9 @@ public final class PurpleBot {
      * @return
      */
     public boolean isMessageEnabled(String channelName, String templateName) {
-        return enabledMessages.get(channelName).contains(templateName);
+        boolean isEnabled = enabledMessages.get(channelName).contains(templateName);
+        plugin.logDebug("[isMessageEnabled] " + channelName + ":" + templateName + ":" + isEnabled);
+        return isEnabled;
     }
 
     /**
