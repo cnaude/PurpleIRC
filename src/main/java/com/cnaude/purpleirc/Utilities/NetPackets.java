@@ -191,6 +191,7 @@ public class NetPackets {
             if (ircBot.tabIgnoreDuplicates.get(channel)) {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (name.equalsIgnoreCase(player.getName())) {
+                        plugin.logDebug("Not adidng to tab list due to player with same name.");
                         return true;
                     }
                 }
