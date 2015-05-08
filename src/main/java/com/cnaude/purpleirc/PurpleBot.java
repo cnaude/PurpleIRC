@@ -118,6 +118,7 @@ public final class PurpleBot {
     public ArrayList<String> botChannels;
     public CaseInsensitiveMap<Collection<String>> channelNicks;
     public CaseInsensitiveMap<Collection<String>> tabIgnoreNicks;
+    public CaseInsensitiveMap<Boolean> tabIgnoreDuplicates;
     public CaseInsensitiveMap<Collection<String>> filters;
     public CaseInsensitiveMap<String> channelPassword;
     public CaseInsensitiveMap<String> channelTopic;
@@ -210,6 +211,7 @@ public final class PurpleBot {
         this.channelTopic = new CaseInsensitiveMap<>();
         this.channelPassword = new CaseInsensitiveMap<>();
         this.tabIgnoreNicks = new CaseInsensitiveMap<>();
+        this.tabIgnoreDuplicates = new CaseInsensitiveMap<>();
         this.filters = new CaseInsensitiveMap<>();
         this.channelNicks = new CaseInsensitiveMap<>();
         this.channelTopicChanserv = new CaseInsensitiveMap<>();
@@ -812,7 +814,10 @@ public final class PurpleBot {
                     
                     channelPrefix.put(channelName, config.getString("channels." + enChannelName + ".prefix", ""));
                     plugin.logDebug("  ChannelPrefix => " + channelPrefix.get(channelName));
-
+                    
+                    tabIgnoreDuplicates.put(channelName, config.getBoolean("channels." + enChannelName + ".custom-tab-ignore-duplicates", false));
+                    plugin.logDebug("  TabIgnoreDuplicates => " + tabIgnoreDuplicates.get(channelName));
+                    
                     // build channel op list
                     Collection<String> cOps = new ArrayList<>();
                     for (String channelOper : config.getStringList("channels." + enChannelName + ".ops")) {
@@ -888,7 +893,7 @@ public final class PurpleBot {
                     }
                     tabIgnoreNicks.put(channelName, t);
                     if (tabIgnoreNicks.isEmpty()) {
-                        plugin.logInfo("World list is empty!");
+                        plugin.logInfo("Tab ignore list is empty!");
                     }
 
                     // build valid world list

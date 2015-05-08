@@ -27,13 +27,7 @@ import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.google.common.base.Charsets;
-import com.mojang.authlib.GameProfile;
 import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.MinecraftServer;
-import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R2.PlayerInteractManager;
 import org.bukkit.entity.Player;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -65,6 +59,9 @@ public class NetPackets {
      */
     public void addToTabList(String name, PurpleBot ircBot, Channel channel) {
         if (!plugin.customTabList) {
+            return;
+        }
+        if (isPlayerOnline(name, ircBot, channel.getName())) {
             return;
         }
         String channelName = channel.getName();
@@ -131,7 +128,7 @@ public class NetPackets {
                     return NetPacket_183.add(displayName);
                 } else {
                     plugin.logDebug("T: Removing: " + name);
-                    return NetPacket_183.rem(displayName);                    
+                    return NetPacket_183.rem(displayName);
                 }
             } catch (Exception ex) {
                 plugin.logError("tabPacket: " + ex.getMessage());
@@ -187,5 +184,18 @@ public class NetPackets {
         } else {
             return name;
         }
+    }
+
+    private boolean isPlayerOnline(String name, PurpleBot ircBot, String channel) {
+        if (ircBot.tabIgnoreDuplicates.containsKey(channel)) {
+            if (ircBot.tabIgnoreDuplicates.get(channel)) {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    if (name.equalsIgnoreCase(player.getName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
