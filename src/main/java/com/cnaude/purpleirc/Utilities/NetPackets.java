@@ -66,9 +66,11 @@ public class NetPackets {
         }
         String channelName = channel.getName();
         if (ircBot.tabIgnoreNicks.containsKey(channelName)) {
-            if (ircBot.tabIgnoreNicks.get(channelName).contains(name)) {
-                plugin.logDebug("Not adding " + name + " to tab list.");
-                return;
+            for (String s : ircBot.tabIgnoreNicks.get(channelName)) {
+                if (s.equalsIgnoreCase(name)) {
+                    plugin.logDebug("Not adding " + name + " to tab list.");
+                    return;
+                }
             }
         }
         try {
