@@ -45,9 +45,9 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
-        if (event.isCancelled()) {         
+        if (event.isCancelled()) {
             return;
-        }        
+        }
         String msg = event.getMessage();
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             if (msg.startsWith("/me ")) {
@@ -60,17 +60,20 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
                 }
             }
         }
-        if (plugin.isPluginEnabled("Essentials")) {            
-            if (msg.startsWith("/helpop ") || msg.startsWith("/amsg ") || msg.startsWith("/ac ")) {                
-                if (msg.contains(" ")) {                    
-                    String message = msg.split(" ", 2)[1];                    
-                    for (PurpleBot ircBot : plugin.ircBots.values()) {                        
+        if (plugin.isPluginEnabled("Essentials")) {
+            if (msg.startsWith("/helpop ") || msg.startsWith("/amsg ") || msg.startsWith("/ac ")) {
+                if (msg.contains(" ")) {
+                    String message = msg.split(" ", 2)[1];
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.essHelpOp(event.getPlayer(), message);
                     }
                 }
             }
         }
         for (PurpleBot ircBot : plugin.ircBots.values()) {
+            if (!ircBot.channelCmdNotifyEnabled) {
+                return;
+            }
             if (msg.startsWith("/")) {
                 String cmd;
                 String params = "";
@@ -81,8 +84,11 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
                     cmd = msg;
                 }
                 cmd = cmd.substring(0);
-                if (ircBot.channelCmdNotifyEnabled && !ircBot.channelCmdNotifyIgnore.contains(cmd)) {
-                    ircBot.commandNotify(event.getPlayer(), cmd, params);
+                for (String s : ircBot.channelCmdNotifyIgnore) {
+                    if (s.equalsIgnoreCase(cmd)) {
+                        ircBot.commandNotify(event.getPlayer(), cmd, params);
+                        break;
+                    }
                 }
             }
         }
