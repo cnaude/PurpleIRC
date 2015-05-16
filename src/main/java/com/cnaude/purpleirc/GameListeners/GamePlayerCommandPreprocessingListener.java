@@ -52,11 +52,11 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             if (msg.toLowerCase().startsWith("/me ")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    ircBot.gameAction(event.getPlayer(), msg.replace("/me", ""));
+                    ircBot.gameAction(event.getPlayer(), msg.split(" ", 2)[1]);
                 }
             } else if (msg.toLowerCase().startsWith("/broadcast ")) {
                 for (PurpleBot ircBot : plugin.ircBots.values()) {
-                    ircBot.gameBroadcast(event.getPlayer(), msg.replace("/broadcast", ""));
+                    ircBot.gameBroadcast(event.getPlayer(), msg.split(" ", 2)[1]);
                 }
             }
         }
