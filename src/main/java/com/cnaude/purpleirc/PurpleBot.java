@@ -466,18 +466,20 @@ public final class PurpleBot {
         if (!this.isConnected()) {
             return;
         }
-        plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target + ": " + message);
-        bot.sendIRC().message(target, plugin.colorConverter.gameColorsToIrc(message));
-        plugin.logDebug("[blockingIRCMessage] Message sent to " + target + ": " + message);
+        String fMessage = plugin.colorConverter.gameColorsToIrc(message);
+        plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target + ": " + fMessage);
+        bot.sendIRC().message(target, fMessage);
+        plugin.logDebug("[blockingIRCMessage] Message sent to " + target + ": " + fMessage);
     }
 
     public void blockingCTCPMessage(final String target, final String message) {
         if (!this.isConnected()) {
             return;
         }
-        plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target + ": " + message);
-        bot.sendIRC().ctcpResponse(target, plugin.colorConverter.gameColorsToIrc(message));
-        plugin.logDebug("[blockingCTCPMessage] Message sent to " + target + ": " + message);
+        String fMessage = plugin.colorConverter.gameColorsToIrc(message);
+        plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target + ": " + fMessage);
+        bot.sendIRC().ctcpResponse(target, fMessage);
+        plugin.logDebug("[blockingCTCPMessage] Message sent to " + target + ": " + fMessage);
     }
 
     public void asyncCTCPCommand(final String target, final String command) {
