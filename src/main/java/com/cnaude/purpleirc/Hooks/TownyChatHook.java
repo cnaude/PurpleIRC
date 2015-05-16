@@ -16,8 +16,11 @@
  */
 package com.cnaude.purpleirc.Hooks;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.TemplateName;
 import com.palmergames.bukkit.TownyChat.Chat;
+import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.channels.channelTypes;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -108,14 +111,36 @@ public class TownyChatHook {
                 plugin.logDebug("CT: " + ct.name());
                 String townyChannelName = chat.getChannelsHandler().getActiveChannel(player, ct).getName();
                 if (townyChannel.equalsIgnoreCase(townyChannelName)) {
-                    plugin.logDebug("TC ["+townyChannelName+"]: Sending message to " + player + ": " + message);
+                    plugin.logDebug("TC [" + townyChannelName + "]: Sending message to " + player + ": " + message);
                     player.sendMessage(message);
                     break;
                 } else {
-                    plugin.logDebug("TC "+townyChannelName+"]: invalid TC channel name for " + player);
+                    plugin.logDebug("TC " + townyChannelName + "]: invalid TC channel name for " + player);
                 }
-                    
+
             }
         }
     }
+
+    public void sendToIrc(PurpleBot ircBot, Player player, Channel townyChannel, String message) {
+        if (!ircBot.isConnected()) {
+            return;
+        }
+        if (plugin.tcHook != null) {
+            for (String channelName : ircBot.botChannels) {
+                if (!ircBot.isPlayerInValidWorld(player, channelName)) {
+                    continue;
+                }
+                if (ircBot.isMessageEnabled(channelName, "towny-" + townyChannel.getName() + "-chat")
+                        || ircBot.isMessageEnabled(channelName, "towny-" + townyChannel.getChannelTag() + "-chat")
+                        || ircBot.isMessageEnabled(channelName, TemplateName.TOWNY_CHAT)
+                        || ircBot.isMessageEnabled(channelName, TemplateName.TOWNY_CHANNEL_CHAT)) {
+                    ircBot.asyncIRCMessage(channelName, plugin.tokenizer
+                            .chatTownyChannelTokenizer(player, townyChannel, message,
+                                    plugin.getMsgTemplate(ircBot.botNick, TemplateName.TOWNY_CHANNEL_CHAT)));
+                }
+            }
+        }
+    }
+
 }
