@@ -2251,11 +2251,28 @@ public final class PurpleBot {
     public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, boolean ctcpResponse) {
         boolean messageSent = false;
         String myChannel = channel.getName();
+        
+        /*
+         First occurrence replacements
+         */
+        if (!firstOccurrenceReplacements.isEmpty()) {
+            for (String key : firstOccurrenceReplacements.keySet()) {
+                if (user.getNick().equalsIgnoreCase(key) || checkUserMask(user, key)) {
+                    CaseInsensitiveMap cm = firstOccurrenceReplacements.get(key);
+                    for (Object obj : cm.keySet()) {
+                        message = message.replaceFirst((String) obj, ChatColor.translateAlternateColorCodes('&', (String) cm.get(obj)));
+                    }
+                }
+            }
+        }
+        
         /*
          Send messages to Dynmap if enabled
          */
         if (plugin.dynmapHook != null) {
-            if (isMessageEnabled(myChannel, TemplateName.IRC_DYNMAP_WEB_CHAT)) {
+            plugin.logDebug("Checking if " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled ...");
+            if (enabledMessages.get(myChannel).contains(TemplateName.IRC_DYNMAP_WEB_CHAT)) {
+                plugin.logDebug("Yes, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is enabled...");
                 plugin.logDebug("broadcastChat [DW]: " + message);
                 String template = plugin.getMsgTemplate(botNick, TemplateName.IRC_DYNMAP_WEB_CHAT);
                 String rawDWMessage = filterMessage(
@@ -2264,6 +2281,8 @@ public final class PurpleBot {
                 String rawNick = nickTmpl.replace("%NICK%", user.getNick());
                 plugin.dynmapHook.sendMessage(rawNick, rawDWMessage);
                 messageSent = true;
+            } else {
+                plugin.logDebug("Nope, " + TemplateName.IRC_DYNMAP_WEB_CHAT + " is NOT enabled...");
             }
         }
 
