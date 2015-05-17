@@ -79,7 +79,7 @@ import org.pircbotx.hooks.ListenerAdapter;
  */
 public final class PurpleBot {
 
-    private PircBotX bot;
+    protected PircBotX bot;
 
     protected boolean goodBot;
     public final PurpleIRC plugin;
@@ -460,26 +460,6 @@ public final class PurpleBot {
         plugin.logDebug("Entering asyncCTCPMessage");
         messageQueue.add(new IRCMessage(target, plugin.colorConverter
                 .gameColorsToIrc(message), true));
-    }
-
-    public void blockingIRCMessage(final String target, final String message) {
-        if (!this.isConnected()) {
-            return;
-        }
-        String fMessage = plugin.colorConverter.gameColorsToIrc(message);
-        plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target + ": " + fMessage);
-        bot.sendIRC().message(target, fMessage);
-        plugin.logDebug("[blockingIRCMessage] Message sent to " + target + ": " + fMessage);
-    }
-
-    public void blockingCTCPMessage(final String target, final String message) {
-        if (!this.isConnected()) {
-            return;
-        }
-        String fMessage = plugin.colorConverter.gameColorsToIrc(message);
-        plugin.logDebug("[blockingCTCPMessage] About to send IRC message to " + target + ": " + fMessage);
-        bot.sendIRC().ctcpResponse(target, fMessage);
-        plugin.logDebug("[blockingCTCPMessage] Message sent to " + target + ": " + fMessage);
     }
 
     public void asyncCTCPCommand(final String target, final String command) {
