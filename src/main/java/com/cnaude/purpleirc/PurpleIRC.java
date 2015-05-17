@@ -152,6 +152,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripGameColors;
     private boolean stripIRCColors;
     private boolean stripIRCBackgroundColors;
+    private boolean broadcastChatToConsole;
     public boolean customTabList;
     public String customTabGamemode;
     private boolean listSortByName;
@@ -186,6 +187,7 @@ public class PurpleIRC extends JavaPlugin {
     private YamlConfiguration heroConfig;
     private final File cacheFile;
     private final File uuidCacheFile;
+    public int reconnectSuppression;
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -203,6 +205,7 @@ public class PurpleIRC extends JavaPlugin {
         this.hostCache = new HashMap<>();
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
         this.uuidCacheFile = new File("plugins/PurpleIRC/uuid.cache");
+        this.reconnectSuppression = 0;
     }
 
     /**
@@ -680,6 +683,7 @@ public class PurpleIRC extends JavaPlugin {
         listSortByName = getConfig().getBoolean("list-sort-by-name", true);
 
         ircConnCheckInterval = getConfig().getLong("conn-check-interval");
+        reconnectSuppression = getConfig().getInt("reconnect-fail-message-count", 10);
         ircChannelCheckInterval = getConfig().getLong("channel-check-interval");
 
         customTabGamemode = getConfig().getString("custom-tab-gamemode", "SPECTATOR");
@@ -688,6 +692,7 @@ public class PurpleIRC extends JavaPlugin {
         logDebug("custom-tab-list: " + customTabList);
         logDebug("custom-tab-prefix: " + customTabPrefix);
         logDebug("custom-tab-gamemode: " + customTabGamemode);
+        broadcastChatToConsole = getConfig().getBoolean("broadcast-chat-to-console", true);
     }
 
     private void loadBots() {
@@ -1430,6 +1435,20 @@ public class PurpleIRC extends JavaPlugin {
 
     public String updateCheckerMode() {
         return updateCheckerMode;
+    }
+    
+    public void broadcastToGame(final String message, final String permission) {
+        if (broadcastChatToConsole) {
+            logDebug("Broadcast All [" + permission + "]: " + message);
+            getServer().broadcast(message, permission);
+        } else {
+            logDebug("Broadcast Players [" + permission + "]: " + message);
+            for (Player player : getServer().getOnlinePlayers()) {
+                if (player.hasPermission(permission)) {
+                    player.sendMessage(message);
+                }
+            }
+        }
     }
 
 }
