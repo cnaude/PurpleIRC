@@ -247,6 +247,7 @@ public final class PurpleBot {
         }
 
         messageQueue = new IRCMessageQueueWatcher(this, plugin);
+        floodChecker = new FloodChecker(this, plugin);
 
     }
 
@@ -2837,13 +2838,15 @@ public final class PurpleBot {
     }
 
     public boolean isValidChannel(String channelName) {
+        boolean valid = false;
         for (String s : botChannels) {
             if (channelName.equalsIgnoreCase(s)) {
-                return true;
+                valid = true;
+                break;
             }
         }
-        plugin.logDebug("Channel " + channelName + " is not valid.");
-        return false;
+        plugin.logDebug("[isValidChannel] [c: " + channelName + "] [b: " + valid + "]");
+        return valid;
     }
 
     public PircBotX getBot() {
