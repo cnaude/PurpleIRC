@@ -17,6 +17,11 @@
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -27,7 +32,7 @@ import org.bukkit.command.CommandSender;
 public class Test implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[player name]";
+    private final String usage = "[name|sslciphers]";
     private final String desc = "Testing various Vault methods.";
     private final String name = "test";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
@@ -55,12 +60,28 @@ public class Test implements IRCCommandInterface {
         if (plugin.debugMode()) {
             if (args.length >= 2) {
                 String playername = args[1];
-                sender.sendMessage(ChatColor.LIGHT_PURPLE + "Testing " + playername);
-                sender.sendMessage("getGroupPrefix  : " + plugin.getGroupPrefix(plugin.defaultPlayerWorld, playername));
-                sender.sendMessage("getGroupSuffix  : " + plugin.getGroupSuffix(plugin.defaultPlayerWorld, playername));
-                sender.sendMessage("getPlayerPrefix : " + plugin.getPlayerPrefix(plugin.defaultPlayerWorld, playername));
-                sender.sendMessage("getPlayerSuffix : " + plugin.getPlayerSuffix(plugin.defaultPlayerWorld, playername));
-                sender.sendMessage("getPlayerGroup  : " + plugin.getPlayerGroup(plugin.defaultPlayerWorld, playername));
+                if (playername.equalsIgnoreCase("sslciphers")) {
+                    sender.sendMessage(ChatColor.LIGHT_PURPLE + "Available SSL ciphers");
+                    SSLContext context;
+                    try {
+                        context = SSLContext.getDefault();
+                        SSLSocketFactory sf = context.getSocketFactory();
+                        String[] cipherSuites = sf.getSupportedCipherSuites();
+                        for (String s : cipherSuites) {
+                            sender.sendMessage(ChatColor.WHITE + "-- " + ChatColor.GOLD + s);
+                        }
+                    } catch (NoSuchAlgorithmException ex) {
+                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } else {
+                    sender.sendMessage(ChatColor.LIGHT_PURPLE + "Testing " + playername);
+                    sender.sendMessage("getGroupPrefix  : " + plugin.getGroupPrefix(plugin.defaultPlayerWorld, playername));
+                    sender.sendMessage("getGroupSuffix  : " + plugin.getGroupSuffix(plugin.defaultPlayerWorld, playername));
+                    sender.sendMessage("getPlayerPrefix : " + plugin.getPlayerPrefix(plugin.defaultPlayerWorld, playername));
+                    sender.sendMessage("getPlayerSuffix : " + plugin.getPlayerSuffix(plugin.defaultPlayerWorld, playername));
+                    sender.sendMessage("getPlayerGroup  : " + plugin.getPlayerGroup(plugin.defaultPlayerWorld, playername));
+                }
             } else {
                 sender.sendMessage(fullUsage);
             }

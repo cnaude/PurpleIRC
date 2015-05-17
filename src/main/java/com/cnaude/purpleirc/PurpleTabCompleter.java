@@ -46,10 +46,6 @@ public class PurpleTabCompleter implements TabCompleter {
 
         List<String> list = new ArrayList<>();
 
-        plugin.logDebug("S: " + string);
-        for (String s : strings) {
-            plugin.logDebug("S1: " + s);
-        }
         if (strings.length == 1) {
             for (String c : plugin.commandHandlers.sortedCommands) {
                 if (cs.hasPermission("irc." + c)) {

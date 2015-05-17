@@ -158,6 +158,11 @@ public final class PurpleBot {
     public List<String> channelCmdNotifyIgnore;
     private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
+    public FloodChecker floodChecker;
+    protected boolean floodControlEnabled;
+    protected int floodControlMaxMessages;
+    protected long floodControlTimeInterval;
+    protected long floodControlCooldown;
     private final String fileName;
     int joinNoticeCoolDown;
     boolean joinNoticeEnabled;
@@ -885,6 +890,12 @@ public final class PurpleBot {
                     plugin.logDebug("join-notice.private: " + joinNoticePrivate);
                     plugin.logDebug("join-notice.ctcp: " + joinNoticeCtcp);
                     plugin.logDebug("join-notice.message: " + joinNoticeMessage);
+                    
+                    // flood control setup
+                    floodControlEnabled = config.getBoolean("flood-control.enabled", false);
+                    floodControlMaxMessages = config.getInt("flood-control.max-messages", 2);
+                    floodControlTimeInterval = config.getLong("flood-control.time-interval", 1000L);
+                    floodControlCooldown = config.getLong("flood-control.cooldown", 60000L);
 
                     // build command map
                     CaseInsensitiveMap<CaseInsensitiveMap<String>> map = new CaseInsensitiveMap<>();
@@ -1007,6 +1018,15 @@ public final class PurpleBot {
                             .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, TemplateName.GAME_CHAT), message));
                 }
             }
+        }
+    }
+    
+    private void sendFloodWarning(Player player) {
+        String message = plugin.getMsgTemplate(
+                botNick, TemplateName.GAME_FLOOD_WARNING)
+                .replace("%COOLDOWN%", floodChecker.getCoolDown(player));
+        if (!message.isEmpty()) {
+            player.sendMessage(message);
         }
     }
 
