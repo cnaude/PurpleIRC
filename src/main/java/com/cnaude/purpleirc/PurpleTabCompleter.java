@@ -65,7 +65,9 @@ public class PurpleTabCompleter implements TabCompleter {
                 for (Channel channel : ircBot.getChannels()) {
                     for (User user : channel.getUsers()) {
                         if (user.getNick().startsWith(strings[1])) {
-                            list.add(user.getNick());
+                            if (!list.contains(user.getNick())) {
+                                list.add(user.getNick());
+                            }
                         }
                     }
                 }
@@ -77,7 +79,9 @@ public class PurpleTabCompleter implements TabCompleter {
                     }
                 }
                 if (player.getDisplayName().startsWith(strings[1])) {
-                    list.add(player.getDisplayName());
+                    if (!list.contains(player.getDisplayName())) {
+                        list.add(player.getDisplayName());
+                    }
                 }
             }
         }
