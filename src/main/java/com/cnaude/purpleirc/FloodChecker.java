@@ -50,9 +50,7 @@ public class FloodChecker {
     }
 
     public boolean isSpam(Object object) {
-        plugin.logDebug("[isSpam]: 0");
         if (ircBot.floodControlEnabled) {
-            plugin.logDebug("[isSpam]: 1");
             String key;
             String name;
             if (object instanceof User) {
@@ -89,7 +87,7 @@ public class FloodChecker {
                 myUsers.put(key, new MyUser());
             }
         }
-plugin.logDebug("[isSpam]: 2");
+
         return false;
     }
 

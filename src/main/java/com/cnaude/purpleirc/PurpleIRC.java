@@ -40,6 +40,7 @@ import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
 import com.cnaude.purpleirc.GameListeners.VanishNoPacketListener;
 import com.cnaude.purpleirc.Hooks.AdminPrivateChatHook;
+import com.cnaude.purpleirc.Hooks.CommandBookHook;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
@@ -75,6 +76,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -171,6 +173,7 @@ public class PurpleIRC extends JavaPlugin {
     public AdminPrivateChatHook adminPrivateChatHook;
     public ShortifyHook shortifyHook;
     public ReportRTSHook reportRTSHook;
+    public CommandBookHook commandBookHook;
     public NetPackets netPackets;
     public CommandHandlers commandHandlers;
     public PurpleTabCompleter ircTabCompleter;
@@ -188,6 +191,27 @@ public class PurpleIRC extends JavaPlugin {
     private final File cacheFile;
     private final File uuidCacheFile;
     public int reconnectSuppression;
+
+    final String PL_ESSENTIALS = "Essentials";
+    final String PL_REPORTRTS = "ReportRTS";
+    final String PL_SUPERVANISH = "SuperVanish";
+    final String PL_VANISHNOPACKET = "VanishNoPacket";
+    final String PL_OREBROADCAST = "OreBroadcast";
+    final String PL_DYNMAP = "dynmap";
+    final String PL_SHORTIFY = "Shortify";
+    final String PL_DEATHMESSAGES = "DeathMessages";
+    final String PL_JOBS = "Jobs";
+    final String PL_COMMANDBOOK = "CommandBook";
+    final String PL_ADMINPRIVATECHAT = "AdminPrivateChat";
+    final String PL_FACTIONCHAT = "FactionChat";
+    final String PL_MCMMO = "mcMMO";
+    final String PL_CLEVERNOTCH = "CleverNotch";
+    final String PL_TOWNYCHAT = "TownyChat";
+    final String PL_REDDITSTREAM = "RedditStream";
+    final String PL_PRISM = "Prism";
+    final String PL_TITANCHAT = "TitanChat";
+    final String PL_HEROCHAT = "Herochat";
+    List<String> hookList = new ArrayList<>();
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -247,134 +271,10 @@ public class PurpleIRC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GamePlayerKickListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new GameServerCommandListener(this), this);
-        if (isPluginEnabled("Herochat")) {
-            logInfo("Enabling HeroChat support.");
-            getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
-            heroConfig = new YamlConfiguration();
-            heroConfigFile = new File(getServer().getPluginManager()
-                    .getPlugin("Herochat").getDataFolder(), "config.yml");
-            try {
-                heroConfig.load(heroConfigFile);
-            } catch (IOException | InvalidConfigurationException ex) {
-                logError(ex.getMessage());
+        detectHooks();
+        if (debugEnabled) {
+            getPurpleHooks(getServer().getConsoleSender(), false);
             }
-            heroChatEmoteFormat = heroConfig.getString("format.emote", "");
-        } else {
-            logInfo("HeroChat not detected.");
-        }
-        if (isPluginEnabled("TitanChat")) {
-            logInfo("Enabling TitanChat support.");
-            getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
-        } else {
-            logInfo("TitanChat not detected.");
-        }
-        if (isPluginEnabled("Prism")) {
-            logInfo("Enabling Prism support.");
-            getServer().getPluginManager().registerEvents(new PrismListener(this), this);
-        } else {
-            logInfo("Prism not detected.");
-        }
-        if (isPluginEnabled("RedditStream")) {
-            logInfo("Enabling RedditStream support.");
-            getServer().getPluginManager().registerEvents(new RedditStreamListener(this), this);
-        } else {
-            logInfo("RedditStream not detected.");
-        }
-        if (isPluginEnabled("TownyChat")) {
-            logInfo("Enabling TownyChat support.");
-            getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
-            tcHook = new TownyChatHook(this);
-        } else {
-            logInfo("TownyChat not detected.");
-        }
-        if (isPluginEnabled("CleverNotch")) {
-            logInfo("Enabling CleverNotch support.");
-            getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
-        } else {
-            logInfo("CleverNotch not detected.");
-        }
-        if (isPluginEnabled("mcMMO")) {
-            logInfo("Enabling mcMMO support.");
-            getServer().getPluginManager().registerEvents(new McMMOChatListener(this), this);
-        } else {
-            logInfo("mcMMO not detected.");
-        }
-        if (isFactionsEnabled()) {
-            if (isPluginEnabled("FactionChat")) {
-                String factionChatVersion = getServer().getPluginManager().getPlugin("FactionChat").getDescription().getVersion();
-                if (factionChatVersion.startsWith("1.7")) {
-                    logError("FactionChat v" + factionChatVersion + " not supported. Please install 1.8 or newer.");
-                } else {
-                    logInfo("Enabling FactionChat support.");
-                    fcHook = new FactionChatHook(this);
-                }
-            } else {
-                logInfo("FactionChat not detected.");
-            }
-        }
-        if (isPluginEnabled("AdminPrivateChat")) {
-            logInfo("Enabling AdminPrivateChat support.");
-            adminPrivateChatHook = new AdminPrivateChatHook(this);
-            getServer().getPluginManager().registerEvents(new AdminChatListener(this), this);
-        } else {
-            logInfo("AdminPrivateChat not detected.");
-        }
-        if (isPluginEnabled("Jobs")) {
-            logInfo("Enabling new Jobs support.");
-            jobsHook = new JobsHook(this);
-        } else {
-            logInfo("Jobs not detected.");
-        }
-        if (isPluginEnabled("DeathMessages")) {
-            logInfo("Enabling DeathMessages support.");
-            getServer().getPluginManager().registerEvents(new DeathMessagesListener(this), this);
-        } else {
-            logInfo("DeathMessages not detected.");
-        }
-        if (isPluginEnabled("Shortify")) {
-            String shortifyVersion = getServer().getPluginManager().getPlugin("Shortify").getDescription().getVersion();
-            if (shortifyVersion.startsWith("1.8")) {
-                logInfo("Enabling Shortify v" + shortifyVersion + " support.");
-                shortifyHook = new ShortifyHook(this);
-            } else {
-                logError("Shortify v" + shortifyVersion + " not supported. Please use the latest version from http://jenkins.cnaude.org/job/Shortify/");
-            }
-        } else {
-            logInfo("Shortify not detected.");
-        }
-        if (isPluginEnabled("dynmap")) {
-            logInfo("Enabling Dynmap support.");
-            getServer().getPluginManager().registerEvents(new DynmapListener(this), this);
-            dynmapHook = new DynmapHook(this);
-        } else {
-            logInfo("Dynmap not detected.");
-        }
-        if (isPluginEnabled("OreBroadcast")) {
-            logInfo("Enabling OreBroadcast support.");
-            getServer().getPluginManager().registerEvents(new OreBroadcastListener(this), this);
-        } else {
-            logInfo("OreBroadcast not detected.");
-        }
-        vanishHook = new VanishHook(this);
-        if (isPluginEnabled("VanishNoPacket")) {
-            logInfo("Enabling VanishNoPacket support.");
-            getServer().getPluginManager().registerEvents(new VanishNoPacketListener(this), this);
-        } else {
-            logInfo("VanishNoPacket not detected.");
-        }
-        if (isPluginEnabled("ReportRTS")) {
-            logInfo("Enabling ReportRTS support.");
-            getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
-            reportRTSHook = new ReportRTSHook(this);
-        } else {
-            logInfo("ReportRTS not detected.");
-        }
-        if (isPluginEnabled("Essentials")) {
-            logInfo("Enabling Essentials support.");
-            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
-        } else {
-            logInfo("Essentials not detected.");
-        }
         commandHandlers = new CommandHandlers(this);
         ircTabCompleter = new PurpleTabCompleter(this);
         getCommand("irc").setExecutor(commandHandlers);
@@ -953,14 +853,15 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerGroup(Player player) {
         String groupName = "";
+        try {
         if (vaultHelpers != null) {
-            if (vaultHelpers.permission != null) {
-                try {
+                if (vaultHelpers.permission != null && vaultHelpers.permission != null) {
+                    logDebug("getPlayerGroup: " + player.getName());
                     groupName = vaultHelpers.permission.getPrimaryGroup(player);
-                } catch (Exception ex) {
-                    logDebug("Problem with primary group (" + player.getName() + "): " + ex.getMessage());
                 }
             }
+        } catch (Exception ex) {
+            logDebug("getPlayerGroup (" + player.getName() + "): " + ex.getMessage());
         }
         if (groupName == null) {
             groupName = "";
@@ -988,18 +889,19 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
+        try {
         UUID uuid = getPlayerUuid(player);
         if (vaultHelpers != null && uuid != null) {
-            if (vaultHelpers.permission != null) {
+                if (vaultHelpers.permission != null && vaultHelpers.permission != null) {
                 OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
-                    try {
+                        logDebug("getPlayerGroup: " + worldName + " " + player);
                         groupName = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
-                    } catch (Exception ex) {
-                        logDebug("getPlayerGroup (" + player + "): " + ex.getMessage());
                     }
                 }
             }
+        } catch (Exception ex) {
+            logDebug("getPlayerGroup (" + player + "): " + ex.getMessage());
         }
         if (groupName == null) {
             groupName = "";
@@ -1033,18 +935,19 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
+        try {
         UUID uuid = getPlayerUuid(player);
         if (vaultHelpers != null && uuid != null) {
             if (vaultHelpers.chat != null) {
                 OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
-                    try {
+                        logDebug("getPlayerPrefix: " + worldName + " " + player);
                         prefix = vaultHelpers.chat.getPlayerPrefix(worldName, offlinePlayer);
-                    } catch (Exception ex) {
-                        logDebug("getPlayerPrefix (" + player + "): " + ex.getMessage());
                     }
                 }
             }
+        } catch (Exception ex) {
+            logDebug("getPlayerPrefix (" + player + "): " + ex.getMessage());
         }
         if (prefix == null) {
             prefix = "";
@@ -1078,18 +981,19 @@ public class PurpleIRC extends JavaPlugin {
      */
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
+        try {
         UUID uuid = getPlayerUuid(player);
         if (vaultHelpers != null && uuid != null) {
             if (vaultHelpers.chat != null) {
                 OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 if (offlinePlayer != null) {
-                    try {
+                        logDebug("getPlayerSuffix: " + worldName + " " + offlinePlayer.getName());
                         suffix = vaultHelpers.chat.getPlayerSuffix(worldName, offlinePlayer);
-                    } catch (Exception ex) {
-                        logDebug("getPlayerSuffix (" + player + "): " + ex.getMessage());
                     }
                 }
             }
+        } catch (Exception ex) {
+            logDebug("getPlayerSuffix (" + player + "): " + ex.getMessage());
         }
         if (suffix == null) {
             suffix = "";
@@ -1166,7 +1070,7 @@ public class PurpleIRC extends JavaPlugin {
     public String getGroupPrefix(Player player) {
         String prefix = "";
         if (vaultHelpers != null) {
-            if (vaultHelpers.chat != null) {
+            if (vaultHelpers.chat != null && vaultHelpers.permission != null) {
                 String group = "";
                 try {
                     group = vaultHelpers.permission.getPrimaryGroup(player);
@@ -1192,28 +1096,42 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getGroupPrefix(String worldName, String player) {
+        logDebug("getGroupPrefix: 1");
         String prefix = "";
+        try {
+            logDebug("getGroupPrefix: 2");
         UUID uuid = getPlayerUuid(player);
+            logDebug("getGroupPrefix: 3");
         if (vaultHelpers != null && uuid != null) {
-            if (vaultHelpers.chat != null) {
+                logDebug("getGroupPrefix: 4");
+                if (vaultHelpers.chat != null && vaultHelpers.permission != null) {
+                    logDebug("getGroupPrefix: 5");
                 String group = "";
+                    logDebug("getGroupPrefix: 6");
                 OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
+                    logDebug("getGroupPrefix: 7");
                 if (offlinePlayer != null) {
-                    try {
+                        logDebug("getGroupPrefix: 8");
                         group = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
-                    } catch (Exception ex) {
-                        logDebug("getGroupPrefix (" + player + "): " + ex.getMessage());
+                        logDebug("getGroupPrefix: 9");
                     }
-                }
+                    logDebug("getGroupPrefix: 10");
                 if (group == null) {
+                        logDebug("getGroupPrefix: 11");
                     group = "";
                 }
+                    logDebug("getGroupPrefix: 12");
                 prefix = vaultHelpers.chat.getGroupPrefix(worldName, group);
+                    logDebug("getGroupPrefix: 13");
             }
         }
         if (prefix == null) {
             prefix = "";
         }
+        } catch (Exception ex) {
+            logDebug("getGroupPrefix (" + player + "): " + ex.getMessage());
+        }
+        logDebug("getGroupPrefix: 14");
         return ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
@@ -1248,7 +1166,7 @@ public class PurpleIRC extends JavaPlugin {
     public String getGroupSuffix(Player player) {
         String suffix = "";
         if (vaultHelpers != null) {
-            if (vaultHelpers.chat != null) {
+            if (vaultHelpers.chat != null && vaultHelpers.permission != null) {
                 String group = "";
                 try {
                     group = vaultHelpers.permission.getPrimaryGroup(player);
@@ -1277,7 +1195,7 @@ public class PurpleIRC extends JavaPlugin {
         String suffix = "";
         UUID uuid = getPlayerUuid(player);
         if (vaultHelpers != null && uuid != null) {
-            if (vaultHelpers.chat != null) {
+            if (vaultHelpers.chat != null && vaultHelpers.permission != null) {
                 String group = "";
                 OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                 try {
@@ -1437,6 +1355,196 @@ public class PurpleIRC extends JavaPlugin {
         return updateCheckerMode;
     }
     
+    private String hookFormat(String name, boolean enabled) {
+        String message;
+
+        if (enabled) {
+            String version = getServer().getPluginManager().getPlugin(name).getDescription().getVersion();
+            logInfo("Enabling " + name + " support.");
+            message = ChatColor.WHITE + "[" + ChatColor.GREEN + "Y" + ChatColor.WHITE + "]";
+            message = message + " [" + ChatColor.GOLD + name + ChatColor.WHITE + "] ["
+                    + ChatColor.GOLD + "v" + version + ChatColor.WHITE + "]";
+        } else {
+            logInfo("Enabling " + name + " support.");
+            message = ChatColor.WHITE + "[" + ChatColor.RED + "N" + ChatColor.WHITE + "]";
+            message = message + " [" + ChatColor.GRAY + name + ChatColor.WHITE + "]";
+        }
+
+        return message;
+    }
+
+    private void detectHooks() {
+        logInfo("Detecting plugin hooks...");
+        if (isPluginEnabled(PL_HEROCHAT)) {
+            hookList.add(hookFormat(PL_HEROCHAT, true));
+            getServer().getPluginManager().registerEvents(new HeroChatListener(this), this);
+            heroConfig = new YamlConfiguration();
+            heroConfigFile = new File(getServer().getPluginManager()
+                    .getPlugin(PL_HEROCHAT).getDataFolder(), "config.yml");
+            try {
+                heroConfig.load(heroConfigFile);
+            } catch (IOException | InvalidConfigurationException ex) {
+                logError(ex.getMessage());
+            }
+            heroChatEmoteFormat = heroConfig.getString("format.emote", "");
+        } else {
+            hookList.add(hookFormat(PL_HEROCHAT, false));
+        }
+        if (isPluginEnabled(PL_TITANCHAT)) {
+            hookList.add(hookFormat(PL_TITANCHAT, true));
+            getServer().getPluginManager().registerEvents(new TitanChatListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_TITANCHAT, false));
+        }
+        if (isPluginEnabled(PL_PRISM)) {
+            hookList.add(hookFormat(PL_PRISM, true));
+            getServer().getPluginManager().registerEvents(new PrismListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_PRISM, false));
+        }
+        if (isPluginEnabled(PL_REDDITSTREAM)) {
+            hookList.add(hookFormat(PL_REDDITSTREAM, true));
+            getServer().getPluginManager().registerEvents(new RedditStreamListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_REDDITSTREAM, false));
+        }
+        if (isPluginEnabled(PL_TOWNYCHAT)) {
+            hookList.add(hookFormat(PL_TOWNYCHAT, true));
+            getServer().getPluginManager().registerEvents(new TownyChatListener(this), this);
+            tcHook = new TownyChatHook(this);
+        } else {
+            hookList.add(hookFormat(PL_TOWNYCHAT, false));
+        }
+        if (isPluginEnabled(PL_CLEVERNOTCH)) {
+            hookList.add(hookFormat(PL_CLEVERNOTCH, true));
+            getServer().getPluginManager().registerEvents(new CleverNotchListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_CLEVERNOTCH, false));
+        }
+        if (isPluginEnabled(PL_MCMMO)) {
+            hookList.add(hookFormat(PL_MCMMO, true));
+            getServer().getPluginManager().registerEvents(new McMMOChatListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_MCMMO, false));
+        }
+        if (isFactionsEnabled()) {
+            if (isPluginEnabled(PL_FACTIONCHAT)) {
+                String factionChatVersion = getServer().getPluginManager().getPlugin(PL_FACTIONCHAT).getDescription().getVersion();
+                if (factionChatVersion.startsWith("1.7")) {
+                    logError(PL_FACTIONCHAT + " v" + factionChatVersion + " not supported. Please install 1.8 or newer.");
+                    hookList.add(hookFormat(PL_FACTIONCHAT, false));
+                } else {
+                    hookList.add(hookFormat(PL_FACTIONCHAT, true));
+                    fcHook = new FactionChatHook(this);
+                }
+            } else {
+                hookList.add(hookFormat(PL_FACTIONCHAT, false));
+            }
+        } else {
+            hookList.add(hookFormat(PL_FACTIONCHAT, false));
+        }
+        if (isPluginEnabled(PL_ADMINPRIVATECHAT)) {
+            hookList.add(hookFormat(PL_ADMINPRIVATECHAT, true));
+            adminPrivateChatHook = new AdminPrivateChatHook(this);
+            getServer().getPluginManager().registerEvents(new AdminChatListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_ADMINPRIVATECHAT, false));
+        }
+        if (isPluginEnabled(PL_COMMANDBOOK)) {
+            hookList.add(hookFormat(PL_COMMANDBOOK, true));
+            commandBookHook = new CommandBookHook(this);
+        } else {
+            hookList.add(hookFormat(PL_COMMANDBOOK, false));
+        }
+        if (isPluginEnabled(PL_JOBS)) {
+            hookList.add(hookFormat(PL_JOBS, true));
+            jobsHook = new JobsHook(this);
+        } else {
+            hookList.add(hookFormat(PL_JOBS, false));
+        }
+        if (isPluginEnabled(PL_DEATHMESSAGES)) {
+            hookList.add(hookFormat(PL_DEATHMESSAGES, true));
+            getServer().getPluginManager().registerEvents(new DeathMessagesListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_DEATHMESSAGES, false));
+        }
+        if (isPluginEnabled(PL_SHORTIFY)) {
+            String shortifyVersion = getServer().getPluginManager().getPlugin(PL_SHORTIFY).getDescription().getVersion();
+            if (shortifyVersion.startsWith("1.8")) {
+                hookList.add(hookFormat(PL_SHORTIFY, true));
+                shortifyHook = new ShortifyHook(this);
+            } else {
+                hookList.add(hookFormat(PL_SHORTIFY, false));
+                logError(PL_SHORTIFY + " v" + shortifyVersion + " not supported. Please use the latest version from http://jenkins.cnaude.org/job/Shortify/");
+            }
+        } else {
+            hookList.add(hookFormat(PL_SHORTIFY, false));
+        }
+        if (isPluginEnabled(PL_DYNMAP)) {
+            hookList.add(hookFormat(PL_DYNMAP, true));
+            getServer().getPluginManager().registerEvents(new DynmapListener(this), this);
+            dynmapHook = new DynmapHook(this);
+        } else {
+            hookList.add(hookFormat(PL_DYNMAP, false));
+        }
+        if (isPluginEnabled(PL_OREBROADCAST)) {
+            hookList.add(hookFormat(PL_OREBROADCAST, true));
+            getServer().getPluginManager().registerEvents(new OreBroadcastListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_OREBROADCAST, false));
+        }
+        vanishHook = new VanishHook(this);
+        if (isPluginEnabled(PL_VANISHNOPACKET)) {
+            hookList.add(hookFormat(PL_VANISHNOPACKET, true));
+            getServer().getPluginManager().registerEvents(new VanishNoPacketListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_VANISHNOPACKET, false));
+        }
+        if (isPluginEnabled(PL_SUPERVANISH)) {
+            hookList.add(hookFormat(PL_SUPERVANISH, true));
+            superVanishHook = new SuperVanishHook(this);
+        } else {
+            hookList.add(hookFormat(PL_SUPERVANISH, false));
+        }
+        if (isPluginEnabled(PL_REPORTRTS)) {
+            hookList.add(hookFormat(PL_REPORTRTS, true));
+            getServer().getPluginManager().registerEvents(new ReportRTSListener(this), this);
+            reportRTSHook = new ReportRTSHook(this);
+        } else {
+            hookList.add(hookFormat(PL_REPORTRTS, false));
+        }
+        if (isPluginEnabled(PL_ESSENTIALS)) {
+            hookList.add(hookFormat(PL_ESSENTIALS, true));
+            getServer().getPluginManager().registerEvents(new EssentialsListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_ESSENTIALS, false));
+        }
+    }
+
+    public void getPurpleHooks(CommandSender sender, boolean colors) {
+        String header = ChatColor.DARK_PURPLE + "-----[" + ChatColor.WHITE
+                + " PurpleIRC " + ChatColor.DARK_PURPLE
+                + "-" + ChatColor.WHITE + " Plugin Hooks " + ChatColor.DARK_PURPLE + "]-----";
+        String footer = ChatColor.DARK_PURPLE + "-------------------------------------";
+        if (colors) {
+            sender.sendMessage(header);
+        } else {
+            sender.sendMessage(ChatColor.stripColor(header));
+        }
+        for (String s : hookList) {
+            if (colors) {
+                sender.sendMessage(s);
+            } else {
+                sender.sendMessage(ChatColor.stripColor(s));
+            }
+        }
+        if (colors) {
+            sender.sendMessage(footer);
+        } else {
+            sender.sendMessage(ChatColor.stripColor(footer));
+        }
+    }
+
     public void broadcastToGame(final String message, final String permission) {
         if (broadcastChatToConsole) {
             logDebug("Broadcast All [" + permission + "]: " + message);

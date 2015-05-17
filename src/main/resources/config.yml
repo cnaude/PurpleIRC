@@ -6,6 +6,8 @@ update-checker: true
 update-checker-mode: stable
 # How often we check to see if a bot is connected to the IRC server. This is in server ticks (There 20 ticks in one sec).
 conn-check-interval: 1000
+# Suppress connection failure messages after this many reconnect attempts
+reconnect-fail-message-count: 10
 # Startup an ident server
 enable-ident-server: false
 # How often we check the channel user list
@@ -122,7 +124,7 @@ message-format:
   irc-notice: '[&4IRC&r] [notice(%CHANNEL%)] %NOTICE% '
   # AdminPrivateChat response message in IRC. Set to '' to disable.
   irc-a-response: ' &6-> &7[AdminChat]: %MESSAGE%'
-  # AdinPrivateChat message from game to IRC
+  # AdminPrivateChat message from game to IRC
   game-a-chat: '[%WORLD%] <%NAME%> -> [AdminChat]: %MESSAGE%'
   # AdminPrivateChat message from IRC to game
   irc-a-chat: '[AdminChat] [&4IRC&r] %MESSAGE%'
@@ -289,3 +291,5 @@ game-color-map:
 Debug: false
 # Ignore chat cancellation.
 ignore-chat-cancel: false
+# Broadcast IRC chat to console
+broadcast-chat-to-console: true

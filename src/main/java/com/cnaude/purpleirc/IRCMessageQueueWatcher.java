@@ -71,8 +71,8 @@ public class IRCMessageQueueWatcher {
             return;
         }
         plugin.logDebug("[blockingIRCMessage] About to send IRC message to " + target + ": " + message);
-        //ircBot.bot.sendIRC().message(target, message);
-        ircBot.bot.sendRaw().rawLineNow("PRIVMSG " + target + " :" + message);
+        ircBot.bot.sendIRC().message(target, message);
+        //ircBot.bot.sendRaw().rawLineNow("PRIVMSG " + target + " :" + message);
         plugin.logDebug("[blockingIRCMessage] Message sent to " + target + ": " + message);
     }
 

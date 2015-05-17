@@ -206,7 +206,7 @@ channels:
     #- broadcast-message
     # RedditStream
     #- reddit-messages
-    # AdminPrivateChat messages
+    # AdminPrivateChat messages game to IRC
     #- game-a-chat
     # AdminPrivateChat messages IRC to game
     #- irc-a-chat
