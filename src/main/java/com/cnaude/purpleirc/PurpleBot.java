@@ -173,6 +173,7 @@ public final class PurpleBot {
     String finger;
     private final ReadWriteLock rwl;
     private final Lock wl;
+    public String sslInfo = "";
 
     /**
      *

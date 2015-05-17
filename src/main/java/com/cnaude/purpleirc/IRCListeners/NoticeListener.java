@@ -54,6 +54,9 @@ public class NoticeListener extends ListenerAdapter {
         User user = event.getUser();
 
         plugin.logInfo("-" + user.getNick() + "-" + message);
+        if (message.contains("You are connected using SSL cipher ")) {
+            ircBot.sslInfo = message.split(" SSL cipher ")[1];
+        }
         if (channel != null) {
             if (ircBot.isValidChannel(channel.getName())) {
                 ircBot.broadcastIRCNotice(user, message, notice, channel);
