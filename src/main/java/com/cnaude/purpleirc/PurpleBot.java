@@ -279,7 +279,7 @@ public final class PurpleBot {
         }
         if (!botIdentPassword.isEmpty()) {
             if (!reload) {
-            plugin.logInfo("Setting IdentPassword ...");
+                plugin.logInfo("Setting IdentPassword ...");
             }
             configBuilder.setNickservPassword(botIdentPassword);
         }
@@ -300,25 +300,25 @@ public final class PurpleBot {
 
         if (charSet.isEmpty()) {
             if (!reload) {
-            plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+                plugin.logInfo("Using default character set: " + Charset.defaultCharset());
             }
         } else {
             if (Charset.isSupported(charSet)) {
                 if (!reload) {
-                plugin.logInfo("Using character set: " + charSet);
+                    plugin.logInfo("Using character set: " + charSet);
                 }
                 configBuilder.setEncoding(Charset.forName(charSet));
             } else {
                 plugin.logError("Invalid character set: " + charSet);
                 if (!reload) {
-                plugin.logInfo("Available character sets: " + Joiner.on(", ").join(Charset.availableCharsets().keySet()));
-                plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+                    plugin.logInfo("Available character sets: " + Joiner.on(", ").join(Charset.availableCharsets().keySet()));
+                    plugin.logInfo("Using default character set: " + Charset.defaultCharset());
+                }
             }
-        }
         }
         if (!bindAddress.isEmpty()) {
             if (!reload) {
-            plugin.logInfo("Binding to " + bindAddress);
+                plugin.logInfo("Binding to " + bindAddress);
             }
             try {
                 configBuilder.setLocalAddress(InetAddress.getByName(bindAddress));
@@ -469,7 +469,7 @@ public final class PurpleBot {
             public void run() {
                 try {
                     if (!reload) {
-                    plugin.logInfo(connectMessage);
+                        plugin.logInfo(connectMessage);
                     }
                     bot.startBot();
                     reconnectCount = 0;
@@ -477,9 +477,9 @@ public final class PurpleBot {
                     if (reconnectCount <= plugin.reconnectSuppression) {
                         plugin.logError("Problem connecting to " + botServer
                                 + " [Nick: " + botNick + "] [Error: " + ex.getMessage() + "]");
-                }
+                    }
                     reconnectCount++;
-            }
+                }
             }
         });
     }
@@ -930,7 +930,7 @@ public final class PurpleBot {
                     plugin.logDebug("join-notice.private: " + joinNoticePrivate);
                     plugin.logDebug("join-notice.ctcp: " + joinNoticeCtcp);
                     plugin.logDebug("join-notice.message: " + joinNoticeMessage);
-                    
+
                     // flood control setup
                     floodControlEnabled = config.getBoolean("flood-control.enabled", false);
                     floodControlMaxMessages = config.getInt("flood-control.max-messages", 2);
@@ -1064,7 +1064,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     private void sendFloodWarning(Player player) {
         String message = plugin.getMsgTemplate(
                 botNick, TemplateName.GAME_FLOOD_WARNING)
@@ -2327,7 +2327,7 @@ public final class PurpleBot {
     public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, boolean ctcpResponse) {
         boolean messageSent = false;
         String myChannel = channel.getName();
-        
+
         /*
          First occurrence replacements
          */
@@ -2341,7 +2341,7 @@ public final class PurpleBot {
                 }
             }
         }
-        
+
         /*
          Send messages to Dynmap if enabled
          */
