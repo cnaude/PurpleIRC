@@ -16,6 +16,7 @@
  */
 package com.cnaude.purpleirc.Commands;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -73,9 +74,15 @@ public class Test implements IRCCommandInterface {
                     } catch (NoSuchAlgorithmException ex) {
                         Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                } else if (playername.equalsIgnoreCase("splits")) {
+                    for (PurpleBot ircBot : plugin.ircBots.values()) {
+                        for (String channelName : ircBot.botChannels) {
+                            ircBot.asyncIRCMessage(channelName, "Test\r\nTest2\r\nTest3\nTest4\nTest5");
+                        }
+                    }
                 } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Testing " + playername);
+                sender.sendMessage("displayName     : " + plugin.getDisplayName(name));
                     sender.sendMessage("getGroupPrefix  : " + plugin.getGroupPrefix(plugin.defaultPlayerWorld, playername));
                     sender.sendMessage("getGroupSuffix  : " + plugin.getGroupSuffix(plugin.defaultPlayerWorld, playername));
                     sender.sendMessage("getPlayerPrefix : " + plugin.getPlayerPrefix(plugin.defaultPlayerWorld, playername));

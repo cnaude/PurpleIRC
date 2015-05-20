@@ -50,7 +50,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -159,7 +158,6 @@ public final class PurpleBot {
     public List<String> channelCmdNotifyIgnore;
     private final ArrayList<ListenerAdapter> ircListeners;
     public IRCMessageQueueWatcher messageQueue;
-    public HashMap<String, IRCMessageQueueWatcher> messageQueueMap;
     public FloodChecker floodChecker;
     protected boolean floodControlEnabled;
     protected int floodControlMaxMessages;
@@ -251,11 +249,6 @@ public final class PurpleBot {
         }
 
         messageQueue = new IRCMessageQueueWatcher(this, plugin);
-        messageQueueMap = new HashMap<>();
-        for (String channelName : botChannels) {
-            plugin.logDebug("Building message queue for " + channelName);
-            messageQueueMap.put(channelName, new IRCMessageQueueWatcher(this, plugin));
-        }
         floodChecker = new FloodChecker(this, plugin);
 
     }
@@ -487,21 +480,13 @@ public final class PurpleBot {
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
         IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), false);
-        if (messageQueueMap.containsKey(target)) {
-            messageQueueMap.get(target).add(ircMessage);
-        } else {
-            messageQueue.add(ircMessage);
-        }
+        messageQueue.add(ircMessage);
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.logDebug("Entering asyncCTCPMessage");
         IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), true);
-        if (messageQueueMap.containsKey(target)) {
-            messageQueueMap.get(target).add(ircMessage);
-        } else {
-            messageQueue.add(ircMessage);
-        }
+        messageQueue.add(ircMessage);
     }
 
     public void asyncCTCPCommand(final String target, final String command) {
