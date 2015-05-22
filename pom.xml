@@ -79,8 +79,16 @@
         
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
+            <artifactId>craftbukkit-183</artifactId>
             <version>1.8.3</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit-184</artifactId>
+            <version>1.8.4</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
