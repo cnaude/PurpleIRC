@@ -102,7 +102,7 @@ public final class PurpleBot {
     public String nick;
     public String botNick;
     public List<String> altNicks;
-    int nickIndex = 0;
+    private int nickIndex = 0;
     public String botLogin;
     public String botRealName;
     public int ircMaxLineLength;
@@ -1056,8 +1056,7 @@ public final class PurpleBot {
     }
 
     private void sendFloodWarning(Player player) {
-        String message = plugin.getMsgTemplate(
-                botNick, "", TemplateName.GAME_FLOOD_WARNING)
+        String message = plugin.getMsgTemplate(botNick, "", TemplateName.GAME_FLOOD_WARNING)
                 .replace("%COOLDOWN%", floodChecker.getCoolDown(player));
         if (!message.isEmpty()) {
             player.sendMessage(message);
@@ -1112,8 +1111,8 @@ public final class PurpleBot {
                 if (isMessageEnabled(channelName, TemplateName.MCMMO_ADMIN_CHAT)) {
                     plugin.logDebug("Sending message because " + TemplateName.MCMMO_ADMIN_CHAT + " is enabled.");
                     asyncIRCMessage(channelName, plugin.tokenizer
-                            .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                            botNick, channelName, TemplateName.MCMMO_ADMIN_CHAT), message));
+                            .mcMMOChatToIRCTokenizer(player, plugin
+                                    .getMsgTemplate(botNick, channelName, TemplateName.MCMMO_ADMIN_CHAT), message));
                 } else {
                     plugin.logDebug("Player " + player.getName()
                             + " is in mcMMO AdminChat but " + TemplateName.MCMMO_ADMIN_CHAT + " is disabled.");
@@ -1135,8 +1134,8 @@ public final class PurpleBot {
                 if (isMessageEnabled(channelName, TemplateName.MCMMO_PARTY_CHAT)) {
                     plugin.logDebug("Sending message because " + TemplateName.MCMMO_PARTY_CHAT + " is enabled.");
                     asyncIRCMessage(channelName, plugin.tokenizer
-                            .mcMMOPartyChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                            botNick, channelName, TemplateName.MCMMO_PARTY_CHAT), message, partyName));
+                            .mcMMOPartyChatToIRCTokenizer(player, plugin
+                                    .getMsgTemplate(botNick, channelName, TemplateName.MCMMO_PARTY_CHAT), message, partyName));
                 } else {
                     plugin.logDebug("Player " + player.getName()
                             + " is in mcMMO PartyChat but " + TemplateName.MCMMO_PARTY_CHAT + " is disabled.");
@@ -1158,8 +1157,8 @@ public final class PurpleBot {
                 if (isMessageEnabled(channelName, TemplateName.MCMMO_CHAT)) {
                     plugin.logDebug("Sending message because " + TemplateName.MCMMO_CHAT + " is enabled.");
                     asyncIRCMessage(channelName, plugin.tokenizer
-                            .mcMMOChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                            botNick, channelName, TemplateName.MCMMO_CHAT), message));
+                            .mcMMOChatToIRCTokenizer(player, plugin
+                                    .getMsgTemplate(botNick, channelName, TemplateName.MCMMO_CHAT), message));
                 } else {
                     plugin.logDebug("Player " + player.getName()
                             + " is in mcMMO Chat but " + TemplateName.MCMMO_CHAT + " is disabled.");
@@ -1244,8 +1243,8 @@ public final class PurpleBot {
         }
         if (isValidChannel(channelName)) {
             asyncIRCMessage(channelName, plugin.tokenizer
-                    .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                    botNick, channelName, TemplateName.GAME_SEND), message));
+                    .gameChatToIRCTokenizer(player, plugin
+                            .getMsgTemplate(botNick, channelName, TemplateName.GAME_SEND), message));
         }
     }
 
@@ -1262,7 +1261,8 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, "clever-chat")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(cleverBotName, plugin.getMsgTemplate(botNick, channelName, TemplateName.CLEVER_SEND), message));
+                        .gameChatToIRCTokenizer(cleverBotName, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.CLEVER_SEND), message));
             }
         }
     }
@@ -1281,7 +1281,8 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.GAME_A_CHAT)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(name, plugin.getMsgTemplate(botNick, channelName, TemplateName.GAME_A_CHAT), message)
+                        .gameChatToIRCTokenizer(name, plugin.
+                                getMsgTemplate(botNick, channelName, TemplateName.GAME_A_CHAT), message)
                         .replace("%WORLD%", world)
                 );
             }
@@ -1304,7 +1305,8 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, messageType)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .reportRTSTokenizer(pName, plugin.getMsgTemplate(botNick, channelName, messageType), ticket));
+                        .reportRTSTokenizer(pName, plugin
+                                .getMsgTemplate(botNick, channelName, messageType), ticket));
             }
         }
     }
@@ -1332,8 +1334,8 @@ public final class PurpleBot {
         }
         if (isValidChannel(channelName)) {
             asyncIRCMessage(channelName, plugin.tokenizer
-                    .gameChatToIRCTokenizer("CONSOLE", message, plugin.getMsgTemplate(
-                                    botNick, channelName, TemplateName.GAME_SEND)));
+                    .gameChatToIRCTokenizer("CONSOLE", message, plugin
+                            .getMsgTemplate(botNick, channelName, TemplateName.GAME_SEND)));
         }
     }
 
@@ -1348,8 +1350,8 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.CONSOLE_CHAT)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.CONSOLE_CHAT),
+                        .gameChatToIRCTokenizer(plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.CONSOLE_CHAT),
                                 ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
@@ -1409,7 +1411,9 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.ORE_BROADCAST)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(botNick, channelName, TemplateName.ORE_BROADCAST), ChatColor.translateAlternateColorCodes('&', message)));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.ORE_BROADCAST), 
+                                ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
@@ -1429,8 +1433,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.DYNMAP_WEB_CHAT)) {
                 plugin.logDebug("dynmapWebChat: sending message");
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .dynmapWebChatToIRCTokenizer(source, name, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.DYNMAP_WEB_CHAT),
+                        .dynmapWebChatToIRCTokenizer(source, name, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.DYNMAP_WEB_CHAT),
                                 ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
@@ -1447,8 +1451,9 @@ public final class PurpleBot {
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.BROADCAST_CONSOLE_MESSAGE)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(plugin.getMsgTemplate(
-                                botNick, channelName, TemplateName.BROADCAST_CONSOLE_MESSAGE), ChatColor.translateAlternateColorCodes('&', message)));
+                        .gameChatToIRCTokenizer(plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.BROADCAST_CONSOLE_MESSAGE),
+                                ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
     }
@@ -1463,7 +1468,9 @@ public final class PurpleBot {
         }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.REDDIT_MESSAGES)) {
-                asyncIRCMessage(channelName, plugin.tokenizer.gameChatToIRCTokenizer(plugin.getMsgTemplate(botNick, channelName, TemplateName.REDDIT_MESSAGES), message));
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.REDDIT_MESSAGES), message));
             }
         }
     }
@@ -1486,8 +1493,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_JOIN)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_JOIN), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_JOIN), message));
             }
         }
     }
@@ -1510,8 +1517,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_QUIT)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_QUIT), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_QUIT), message));
             }
         }
     }
@@ -1529,8 +1536,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.FAKE_JOIN)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.FAKE_JOIN), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.FAKE_JOIN), message));
             }
         }
     }
@@ -1548,8 +1555,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.FAKE_QUIT)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.FAKE_QUIT), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.FAKE_QUIT), message));
             }
         }
     }
@@ -1568,8 +1575,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_ACHIEVEMENT)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_ACHIEVEMENT), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_ACHIEVEMENT), message));
             }
         }
     }
@@ -1588,8 +1595,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_MODE)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_MODE), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_MODE), message));
             }
         }
     }
@@ -1608,8 +1615,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_KICK)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameKickTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_KICK), message, reason));
+                        .gameKickTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_KICK), message, reason));
             }
         }
     }
@@ -1631,8 +1638,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.GAME_ACTION)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                        botNick, channelName, TemplateName.GAME_ACTION), message));
+                        .gameChatToIRCTokenizer(player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_ACTION), message));
             }
         }
     }
@@ -1651,8 +1658,8 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, templateName)) {
                 if (isPlayerInValidWorld(player, channelName)) {
                     asyncIRCMessage(channelName, plugin.tokenizer
-                            .gameChatToIRCTokenizer(player, plugin.getMsgTemplate(
-                                            botNick, channelName, templateName), message));
+                            .gameChatToIRCTokenizer(player, plugin
+                                    .getMsgTemplate(botNick, channelName, templateName), message));
                 }
             }
         }
@@ -2676,7 +2683,7 @@ public final class PurpleBot {
      *
      * @param user
      * @param channel
-     */    
+     */
     public void broadcastIRCJoin(User user, org.pircbotx.Channel channel) {
         String channelName = channel.getName();
         if (isMessageEnabled(channel, TemplateName.IRC_JOIN)) {
