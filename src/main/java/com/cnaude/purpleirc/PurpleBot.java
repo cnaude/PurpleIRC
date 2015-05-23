@@ -1412,7 +1412,7 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, TemplateName.ORE_BROADCAST)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(player, plugin
-                                .getMsgTemplate(botNick, channelName, TemplateName.ORE_BROADCAST), 
+                                .getMsgTemplate(botNick, channelName, TemplateName.ORE_BROADCAST),
                                 ChatColor.translateAlternateColorCodes('&', message)));
             }
         }
@@ -2825,15 +2825,15 @@ public final class PurpleBot {
         if (!this.isConnected()) {
             return;
         }
-        String msg = plugin.tokenizer.gameCommandToIRCTokenizer(player,
-                plugin.getMsgTemplate(botNick, "", TemplateName.GAME_COMMAND), cmd, params);
         if (channelCmdNotifyMode.equalsIgnoreCase("msg")) {
             for (String recipient : channelCmdNotifyRecipients) {
-                asyncIRCMessage(recipient, msg);
+                asyncIRCMessage(recipient, plugin.tokenizer.gameCommandToIRCTokenizer(player, plugin
+                        .getMsgTemplate(botNick, recipient, TemplateName.GAME_COMMAND), cmd, params));
             }
         } else if (channelCmdNotifyMode.equalsIgnoreCase("ctcp")) {
             for (String recipient : channelCmdNotifyRecipients) {
-                asyncCTCPMessage(recipient, msg);
+                asyncCTCPMessage(recipient, plugin.tokenizer.gameCommandToIRCTokenizer(player, plugin
+                        .getMsgTemplate(botNick, recipient, TemplateName.GAME_COMMAND), cmd, params));
             }
         }
     }
