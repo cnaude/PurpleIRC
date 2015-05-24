@@ -89,6 +89,10 @@ custom-prefix-default: '[IRC]'
 replace-first-occurrences:
     - 'AwesomeNick : &r:'
     - '*!*sarah@example.com : &r:'
+# Action commands
+action-commands:
+    - /me
+    - /eme
 # channels - List the channels your bot will join here
 channels:
   # Channel name must be surrounded by sing quotes to be YAML compliant.

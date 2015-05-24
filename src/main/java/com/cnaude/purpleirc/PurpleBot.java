@@ -175,6 +175,7 @@ public final class PurpleBot {
     private final ReadWriteLock rwl;
     private final Lock wl;
     public String sslInfo = "";
+    public List<String> actionCommands;
 
     /**
      *
@@ -229,7 +230,8 @@ public final class PurpleBot {
         this.plugin = plugin;
         this.file = file;
         this.reconnectCount = 0;
-        whoisSenders = new ArrayList<>();
+        this.whoisSenders = new ArrayList<>();
+        this.actionCommands = new ArrayList<>();
         config = new YamlConfiguration();
         goodBot = loadConfig();
         if (goodBot) {
@@ -889,6 +891,17 @@ public final class PurpleBot {
                     tabIgnoreNicks.put(channelName, t);
                     if (tabIgnoreNicks.isEmpty()) {
                         plugin.logInfo("Tab ignore list is empty!");
+                    }
+                    
+                    // build action command list
+                    for (String name : config.getStringList("action-commands")) {
+                        if (!actionCommands.contains(name)) {
+                            actionCommands.add(name);
+                        }
+                        plugin.logDebug("  Action Command => " + name);
+                    }
+                    if (actionCommands.isEmpty()) {
+                        actionCommands.add("/me");
                     }
 
                     // build valid world list
