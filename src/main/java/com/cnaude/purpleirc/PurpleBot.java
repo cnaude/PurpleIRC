@@ -651,7 +651,7 @@ public final class PurpleBot {
             ciphers = config.getStringList("ciphers");
             plugin.logDebug("Ciphers => " + ciphers);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
-            disableDiffieHellman = config.getBoolean("disable-diffie-hellman", true);
+            disableDiffieHellman = config.getBoolean("disable-diffie-hellman", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
