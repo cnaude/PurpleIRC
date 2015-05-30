@@ -294,7 +294,10 @@ public final class PurpleBot {
                 plugin.logInfo("Enabling SSL and trusting all certificates ...");
                 socketFactory.trustAllCertificates();
             } else {
-            plugin.logInfo("Enabling SSL ...");
+                plugin.logInfo("Enabling SSL ...");
+            }
+            if (!ciphers.isEmpty()) {
+                socketFactory.setCiphers(ciphers);
             }
             configBuilder.setSocketFactory(socketFactory);
         }
