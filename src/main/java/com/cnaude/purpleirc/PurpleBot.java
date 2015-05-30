@@ -50,6 +50,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -176,6 +177,7 @@ public final class PurpleBot {
     private final Lock wl;
     public String sslInfo = "";
     public List<String> actionCommands;
+    public List<String> ciphers;
 
     /**
      *
@@ -232,6 +234,7 @@ public final class PurpleBot {
         this.reconnectCount = 0;
         this.whoisSenders = new ArrayList<>();
         this.actionCommands = new ArrayList<>();
+        this.ciphers = new LinkedList<>();
         config = new YamlConfiguration();
         goodBot = loadConfig();
         if (goodBot) {
@@ -272,6 +275,9 @@ public final class PurpleBot {
         for (ListenerAdapter ll : ircListeners) {
             configBuilder.addListener(ll);
         }
+        if (!ciphers.isEmpty()) {
+            configBuilder.setCiphers(ciphers);
+        }
         if (!botIdentPassword.isEmpty()) {
             if (!reload) {
                 plugin.logInfo("Setting IdentPassword ...");
@@ -288,7 +294,7 @@ public final class PurpleBot {
                 plugin.logInfo("Enabling SSL and trusting all certificates ...");
                 socketFactory.trustAllCertificates();
             } else {
-                plugin.logInfo("Enabling SSL ...");
+            plugin.logInfo("Enabling SSL ...");
             }
             configBuilder.setSocketFactory(socketFactory);
         }
@@ -636,6 +642,8 @@ public final class PurpleBot {
             autoConnect = config.getBoolean("autoconnect", true);
             tls = config.getBoolean("tls", false);
             ssl = config.getBoolean("ssl", false);
+            ciphers = config.getStringList("ciphers");
+            plugin.logDebug("Ciphers => " + ciphers);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
@@ -892,7 +900,7 @@ public final class PurpleBot {
                     if (tabIgnoreNicks.isEmpty()) {
                         plugin.logInfo("Tab ignore list is empty!");
                     }
-                    
+
                     // build action command list
                     for (String name : config.getStringList("action-commands")) {
                         if (!actionCommands.contains(name)) {

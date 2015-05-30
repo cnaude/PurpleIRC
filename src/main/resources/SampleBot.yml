@@ -23,6 +23,8 @@ tls: false
 ssl: false
 # Trust all SSL certs
 trust-all-certs: false
+# Enabled ciphers - To get a list of available ciphers run "/irc test sslcpihers"
+ciphers: []
 # Bind address
 bind: ''
 # Auto split length for long messages
