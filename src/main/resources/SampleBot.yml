@@ -21,6 +21,8 @@ port: 6667
 tls: false
 # Attempt ssl connection to IRC server
 ssl: false
+# Disable DHE. Some java implementations don't play nice with DHE.
+disable-diffie-hellman: true
 # Trust all SSL certs
 trust-all-certs: false
 # Enabled ciphers - To get a list of available ciphers run "/irc test sslcpihers"

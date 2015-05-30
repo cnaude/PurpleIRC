@@ -91,6 +91,7 @@ public final class PurpleBot {
     public boolean ssl;
     public boolean tls;
     public boolean trustAllCerts;
+    public boolean disableDiffieHellman;
     public boolean sendRawMessageOnConnect;
     public boolean showMOTD;
     public boolean channelCmdNotifyEnabled;
@@ -289,7 +290,9 @@ public final class PurpleBot {
             configBuilder.addCapHandler(new TLSCapHandler());
         } else if (ssl) {
             UtilSSLSocketFactory socketFactory = new UtilSSLSocketFactory();
-            socketFactory.disableDiffieHellman();
+            if (disableDiffieHellman) {
+                socketFactory.disableDiffieHellman();
+            }
             if (trustAllCerts) {
                 plugin.logInfo("Enabling SSL and trusting all certificates ...");
                 socketFactory.trustAllCertificates();
@@ -648,6 +651,7 @@ public final class PurpleBot {
             ciphers = config.getStringList("ciphers");
             plugin.logDebug("Ciphers => " + ciphers);
             trustAllCerts = config.getBoolean("trust-all-certs", false);
+            disableDiffieHellman = config.getBoolean("disable-diffie-hellman", true);
             sendRawMessageOnConnect = config.getBoolean("raw-message-on-connect", false);
             rawMessage = config.getString("raw-message", "");
             relayPrivateChat = config.getBoolean("relay-private-chat", false);
@@ -685,6 +689,7 @@ public final class PurpleBot {
             plugin.logDebug("Channel Auto Join Delay => " + channelAutoJoinDelay);
             plugin.logDebug(("Bind => ") + bindAddress);
             plugin.logDebug("SSL => " + ssl);
+            plugin.logDebug("DisableDHE => " + disableDiffieHellman);
             plugin.logDebug("TLS => " + tls);
             plugin.logDebug("Trust All Certs => " + trustAllCerts);
             plugin.logDebug("Port => " + botServerPort);
