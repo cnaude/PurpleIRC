@@ -134,6 +134,9 @@ message-format:
   mcmmo-admin-chat: '[admin:%WORLD%]<%NAME%> %MESSAGE%'
   mcmmo-party-chat: '[party:%PARTY%]<%NAME%> %MESSAGE%'
   mcmmo-chat: '[mcMMO]<%NAME%> %MESSAGE%'
+  # Message templates for IRC to mcMMO
+  irc-mcmmo-admin-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'
+  irc-mcmmo-party-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'
   # Message templates for FactionChat to IRC messages
   faction-public-chat: '[%FACTIONMODE%&r][%FACTIONTAG%]<%NAME%> %MESSAGE%'
   faction-ally-chat: '[%FACTIONMODE%&r][%FACTIONTAG%]<%NAME%> %MESSAGE%'

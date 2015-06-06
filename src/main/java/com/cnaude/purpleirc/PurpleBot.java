@@ -734,7 +734,7 @@ public final class PurpleBot {
                 }
             }
 
-            // build command notify recipient list            
+            // build command notify recipient list
             for (String recipient : config.getStringList("command-notify.recipients")) {
                 if (!channelCmdNotifyRecipients.contains(recipient)) {
                     channelCmdNotifyRecipients.add(recipient);
@@ -745,7 +745,7 @@ public final class PurpleBot {
                 plugin.logInfo(" No command recipients defined.");
             }
 
-            // build command notify ignore list            
+            // build command notify ignore list
             for (String command : config.getStringList("command-notify.ignore")) {
                 if (!channelCmdNotifyIgnore.contains(command)) {
                     channelCmdNotifyIgnore.add(command);
@@ -1969,10 +1969,10 @@ public final class PurpleBot {
     }
 
     private void setTheTopic(Channel channel, String topic) {
-        String myChannel = channel.getName();
-        if (channelTopicChanserv.containsKey(myChannel)) {
-            if (channelTopicChanserv.get(myChannel)) {
-                String msg = String.format("TOPIC %s %s", myChannel, topic);
+        String channelName = channel.getName();
+        if (channelTopicChanserv.containsKey(channelName)) {
+            if (channelTopicChanserv.get(channelName)) {
+                String msg = String.format("TOPIC %s %s", channelName, topic);
                 plugin.logDebug("Sending chanserv rmessage: " + msg);
                 asyncIRCMessage("chanserv", msg);
                 return;
@@ -2323,10 +2323,10 @@ public final class PurpleBot {
         }
     }
 
-    public String filterMessage(String message, String myChannel) {
-        if (filters.containsKey(myChannel)) {
-            if (!filters.get(myChannel).isEmpty()) {
-                for (String filter : filters.get(myChannel)) {
+    public String filterMessage(String message, String channelName) {
+        if (filters.containsKey(channelName)) {
+            if (!filters.get(channelName).isEmpty()) {
+                for (String filter : filters.get(channelName)) {
                     if (filter.startsWith("/") && filter.endsWith("/")) {
                         filter = filter.substring(1, filter.length() - 1);
                         plugin.logDebug("Regex filtering " + filter + " from " + message);
@@ -2341,7 +2341,7 @@ public final class PurpleBot {
         return message;
     }
 
-    // Broadcast chat messages from IRC
+    // Broadcast chat messages from IRC to the game
     /**
      *
      * @param user
@@ -2403,6 +2403,42 @@ public final class PurpleBot {
                                 plugin.tokenizer.ircChatToTownyChatTokenizer(this, user, channel, tmpl, message, tChannel), channelName);
                         plugin.tcHook.sendMessage(tChannel, rawTCMessage);
                         messageSent = true;
+                    }
+                }
+            }
+        }
+
+        /*
+         Send messages to mcMMO if enabled
+         */
+        if (plugin.mcMMOChatHook != null) {
+            /*
+             Send to mcMMMO admin channel if enabled
+             */
+            if (isMessageEnabled(channelName, TemplateName.IRC_MCMMO_ADMIN_CHAT)) {
+                String tmpl = plugin.getMsgTemplate(botNick, channelName, TemplateName.IRC_MCMMO_ADMIN_CHAT);
+                plugin.logDebug("broadcastChat [mcMMO:admin]: " + message);
+                String rawMcMMOMessage = filterMessage(
+                        plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, tmpl, message), channelName);
+                plugin.mcMMOChatHook.sendAdminMessage(user.getNick(), rawMcMMOMessage);
+                messageSent = true;
+
+            }
+            /*
+             Send to specific mcMMMO party channel if enabled
+             */
+            for (String em : getEnabledMessages(channel.getName())) {
+                if (em.startsWith("irc-mcmmo-party-") && em.endsWith("-chat")) {
+                    if (isMessageEnabled(channelName, em)) {
+                        String party = em.replace("irc-mcmmo-party-", "").replace("-chat", "");
+                        if (!party.isEmpty()) {
+                            String tmpl = plugin.getMsgTemplate(botNick, channelName, TemplateName.IRC_MCMMO_PARTY_CHAT);
+                            plugin.logDebug("broadcastChat [mcMMO:party]: " + party + " : " + message);
+                            String rawMcMMOMessage = filterMessage(
+                                    plugin.tokenizer.ircChatToGameTokenizer(this, user, channel, tmpl, message), channelName);
+                            plugin.mcMMOChatHook.sendPartyMessage(user.getNick(), party, rawMcMMOMessage);
+                            messageSent = true;
+                        }
                     }
                 }
             }
@@ -2817,6 +2853,18 @@ public final class PurpleBot {
 
     /**
      *
+     * @param channelName
+     * @return
+     */
+    public Collection<String> getEnabledMessages(String channelName) {
+        if (enabledMessages.containsKey(channelName)) {
+            return enabledMessages.get(channelName);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
      * @param channel
      * @param templateName
      * @return
@@ -2902,6 +2950,7 @@ public final class PurpleBot {
                 plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message);
         asyncIRCMessage(nick, msg);
     }
+
 
     /**
      *
@@ -3130,7 +3179,10 @@ public final class PurpleBot {
             }
             String myMessage = ChatColor.translateAlternateColorCodes('&', plugin.colorConverter.gameColorsToIrc(joinNoticeMessage.replace("%NAME%", user.getNick())));
             if (joinNoticeMessage.startsWith("/")) {
-                plugin.commandQueue.add(new IRCCommand(new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"), myMessage.trim().substring(1)));
+                plugin.commandQueue.add(new IRCCommand(
+                        new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
+//                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
+                        myMessage.trim().substring(1)));
             } else {
                 if (joinNoticeCtcp) {
                     asyncCTCPMessage(target, myMessage);
