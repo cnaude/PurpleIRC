@@ -2107,7 +2107,7 @@ public final class PurpleBot {
             String n = user.getNick();
             n = getNickPrefix(user, channel) + n;
             if (user.isAway()) {
-                n = n + ChatColor.GRAY + " | Away";
+                n = n + ChatColor.GRAY + " | Away | " + user.getAwayMessage();
             }
             if (n.equals(bot.getNick())) {
                 n = ChatColor.DARK_PURPLE + n;
