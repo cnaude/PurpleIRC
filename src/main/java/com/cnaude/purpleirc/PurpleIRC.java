@@ -83,6 +83,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -216,6 +217,9 @@ public class PurpleIRC extends JavaPlugin {
     List<String> hookList = new ArrayList<>();
     public static final String PURPLETAG = "UHVycGxlSVJDCg==";
     public static final String TOWNYTAG = "VG93bnlDaGF0Cg==";
+    public static final String LINK_CMD = "PurpleIRC-Link:";
+    public boolean overrideMsgCmd = false;
+    public CaseInsensitiveMap<String> privateMsgReply;
 
     public PurpleIRC() {
         this.MAINCONFIG = "MAIN-CONFIG";
@@ -234,6 +238,7 @@ public class PurpleIRC extends JavaPlugin {
         this.cacheFile = new File("plugins/PurpleIRC/displayName.cache");
         this.uuidCacheFile = new File("plugins/PurpleIRC/uuid.cache");
         this.reconnectSuppression = 0;
+        this.privateMsgReply = new CaseInsensitiveMap<>();
     }
 
     /**
@@ -283,6 +288,10 @@ public class PurpleIRC extends JavaPlugin {
         ircTabCompleter = new PurpleTabCompleter(this);
         getCommand("irc").setExecutor(commandHandlers);
         getCommand("irc").setTabCompleter(ircTabCompleter);
+        if (overrideMsgCmd) {
+            getCommand("msg").setExecutor(commandHandlers);
+            getCommand("r").setExecutor(commandHandlers);
+        }
         regexGlobber = new RegexGlobber();
         tokenizer = new ChatTokenizer(this);
         loadBots();
@@ -563,6 +572,7 @@ public class PurpleIRC extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException ex) {
             logError(ex.getMessage());
         }
+        overrideMsgCmd = getConfig().getBoolean("override-msg-cmd", false);
         updateCheckerEnabled = getConfig().getBoolean("update-checker", true);
         updateCheckerMode = getConfig().getString("update-checker-mode", "stable");
         debugEnabled = getConfig().getBoolean("Debug");
@@ -1576,5 +1586,16 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
     }
+
+    /**
+     *
+     * @param cmd
+     * @param msg
+     * @return
+     */
+    public String encodeLinkMsg(String cmd, String msg) {
+        String encodedText = new String(Base64.encodeBase64(msg.getBytes()));
+        return String.format("%s:%s", cmd, encodedText);
+}
 
 }

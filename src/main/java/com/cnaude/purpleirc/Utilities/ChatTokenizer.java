@@ -330,6 +330,19 @@ public class ChatTokenizer {
     }
 
     /**
+     * Game chat to game (private messages)
+     *
+     * @param player
+     * @param template
+     * @param message
+     * @return
+     */
+    public String gameChatTokenizer(Player player, String template, String message) {
+        return playerTokenizer(player, template)
+                .replace("%MESSAGE%", message);
+    }
+
+    /**
      * Game chat to IRC
      *
      * @param player

@@ -17,6 +17,7 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.IRCListeners.ActionListener;
+import com.cnaude.purpleirc.IRCListeners.AwayListener;
 import com.cnaude.purpleirc.IRCListeners.ConnectListener;
 import com.cnaude.purpleirc.IRCListeners.DisconnectListener;
 import com.cnaude.purpleirc.IRCListeners.JoinListener;
@@ -179,6 +180,11 @@ public final class PurpleBot {
     public String sslInfo = "";
     public List<String> actionCommands;
     public List<String> ciphers;
+    public boolean botLinkingEnabled;
+    public CaseInsensitiveMap<String> botLinks;
+    public CaseInsensitiveMap<String> linkRequests;
+    public CaseInsensitiveMap<Collection<String>> remotePlayers;
+    public CaseInsensitiveMap<CaseInsensitiveMap<String>> remoteServerInfo;
 
     /**
      *
@@ -236,6 +242,10 @@ public final class PurpleBot {
         this.whoisSenders = new ArrayList<>();
         this.actionCommands = new ArrayList<>();
         this.ciphers = new LinkedList<>();
+        this.botLinks = new CaseInsensitiveMap<>();
+        this.linkRequests = new CaseInsensitiveMap<>();
+        this.remotePlayers = new CaseInsensitiveMap<>();
+        this.remoteServerInfo = new CaseInsensitiveMap<>();
         config = new YamlConfiguration();
         goodBot = loadConfig();
         if (goodBot) {
@@ -345,6 +355,7 @@ public final class PurpleBot {
 
     private void addListeners() {
         ircListeners.add(new ActionListener(plugin, this));
+        ircListeners.add(new AwayListener(plugin, this));
         ircListeners.add(new ConnectListener(plugin, this));
         ircListeners.add(new DisconnectListener(plugin, this));
         ircListeners.add(new JoinListener(plugin, this));
@@ -712,6 +723,21 @@ public final class PurpleBot {
 
             channelCmdNotifyMode = config.getString("command-notify.mode", "msg");
             plugin.logDebug(" channelCmdNotifyMode => " + channelCmdNotifyMode);
+
+            botLinkingEnabled = config.getBoolean("bot-linking-enabled", false);
+            plugin.logDebug(" BotLinkingEnabled => " + botLinkingEnabled);
+            if (config.contains("bot-links") && botLinkingEnabled) {
+                for (String t : config.getConfigurationSection("bot-links").getKeys(false)) {
+                    if (!t.startsWith("MemorySection")) {
+                        botLinks.put(t, config.getString("bot-links." + t, ""));
+                        plugin.logDebug("Bot-Link: " + t + " => " + botLinks.get(t));
+                    }
+                }
+                for (String s : botLinks.keySet()) {
+                    remotePlayers.put(s, new ArrayList<String>());
+                    remoteServerInfo.put(s, new CaseInsensitiveMap<String>());
+                }
+            }
 
             for (String s : config.getStringList("custom-prefixes")) {
                 String pair[] = s.split(" ", 2);
@@ -1734,6 +1760,17 @@ public final class PurpleBot {
 
     /**
      *
+     * @param bot2
+     * @param code
+     */
+    public void setBotLink(String bot2, String code) {
+        plugin.logInfo("Saving bot-link: " + bot2);
+        botLinks.put(bot2, code);
+        saveConfig("bot-links", botLinks);
+    }
+
+    /**
+     *
      * @param sender
      * @param botServer
      */
@@ -2049,6 +2086,7 @@ public final class PurpleBot {
     public void sendUserWhois(CommandSender sender, String nick) {
         User user = null;
         for (Channel channel : getChannels()) {
+            bot.sendRaw().rawLineNow("WHO " + channel.getName());
             for (User u : channel.getUsers()) {
                 if (u.getNick().equals(nick)) {
                     user = u;
@@ -2641,6 +2679,33 @@ public final class PurpleBot {
         }
     }
 
+    /**
+     * Send received private chat to a player
+     *
+     * @param user
+     * @param from
+     * @param pName
+     * @param msg
+     */
+    public void playerCrossChat(User user, String from, String pName, String msg) {
+        if (true) {
+            Player player = plugin.getServer().getPlayer(pName);
+            if (player != null) {
+                if (player.isOnline()) {
+                    plugin.logDebug("Yup, " + pName + " is a valid player...");
+                    String template = plugin.getMsgTemplate(botNick, "", TemplateName.CROSS_CHAT);
+                    String m = template.replace("%MESSAGE%", msg).replace("%SERVER%", user.getNick());
+                    player.sendMessage(plugin.colorConverter.ircColorsToGame(m));
+                    plugin.privateMsgReply.put(pName, from);
+                } else {
+                    //no such player online
+                }
+            } else {
+                //asyncIRCMessage(from, "Player not found (possibly offline): " + pName);
+            }
+        }
+    }
+
 // Broadcast action messages from IRC
     /**
      *
@@ -2961,6 +3026,63 @@ public final class PurpleBot {
         asyncIRCMessage(nick, msg);
     }
 
+    /**
+     * Send a private message to a remote linked bot.
+     *
+     * @param sender
+     * @param remoteBot
+     * @param remotePlayer
+     * @param message
+     */
+    public void msgRemotePlayer(Player sender, String remoteBot, String remotePlayer, String message) {
+        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender,
+                plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message);
+        if (botLinks.containsKey(remoteBot)) {
+            String code = botLinks.get(remoteBot);
+            String from = sender.getName();
+            String clearText = "PRIVATE_MSG:" + code + ":" + from + ":" + remotePlayer + ":" + msg;
+            asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
+        } else {
+            sender.sendMessage(ChatColor.RED + "Not linked to " + ChatColor.WHITE + remoteBot);
+        }
+    }
+
+    public void sendRemotePlayerInfo() {
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (botLinkingEnabled) {
+                    for (String remoteBot : botLinks.keySet()) {
+                        String code = botLinks.get(remoteBot);
+                        String clearText = "PLAYER_INFO:" + code + ":"
+                                + plugin.getServer().getOnlinePlayers().length
+                                + ":" + plugin.getServer().getMaxPlayers();
+                        List<String> players = new ArrayList<>();
+                        for (Player player : plugin.getServer().getOnlinePlayers()) {
+                            players.add(player.getName());
+                        }
+                        clearText = clearText + ":" + Joiner.on(",").join(players);
+                        asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
+                    }
+                }
+            }
+        }, 20);
+    }
+
+    /**
+     * Send a private message to a remote linked bot.
+     *
+     * @param remoteBot
+     * @param remotePlayer
+     * @param message
+     */
+    public void replyToRemotePlayer(String remotePlayer, String remoteBot, String message) {
+        if (botLinks.containsKey(remoteBot)) {
+            String code = botLinks.get(remoteBot);
+            String clearText = "PRIVATE_AUTO_REPLY:" + code + ":" + botNick + ":" + remotePlayer + ":" + message;
+            asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
+        }
+    }
 
     /**
      *
@@ -2971,6 +3093,26 @@ public final class PurpleBot {
         String msg = plugin.tokenizer.gameChatToIRCTokenizer("console",
                 plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
         asyncIRCMessage(nick, msg);
+    }
+
+    /**
+     *
+     * @param sender
+     * @param remoteBot
+     * @param remotePlayer
+     * @param message
+     */
+    public void msgRemotePlayer(CommandSender sender, String remoteBot, String remotePlayer, String message) {
+        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender.getName(),
+                plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
+        if (botLinks.containsKey(remoteBot)) {
+            String code = botLinks.get(remoteBot);
+            String from = sender.getName();
+            String clearText = "PRIVATE_MSG:" + code + ":" + from + ":" + remotePlayer + ":" + msg;
+            asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
+        } else {
+            sender.sendMessage(ChatColor.RED + "Not linked to " + ChatColor.WHITE + remoteBot);
+        }
     }
 
     /**
@@ -3191,7 +3333,7 @@ public final class PurpleBot {
             if (joinNoticeMessage.startsWith("/")) {
                 plugin.commandQueue.add(new IRCCommand(
                         new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
-//                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
+                        //                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
                         myMessage.trim().substring(1)));
             } else {
                 if (joinNoticeCtcp) {

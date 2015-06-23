@@ -20,8 +20,10 @@ import com.cnaude.purpleirc.Commands.*;
 import com.google.common.base.Joiner;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +37,7 @@ public class CommandHandlers implements CommandExecutor {
     public HashMap<String, IRCCommandInterface> commands = new HashMap<>();
     public ArrayList<String> sortedCommands = new ArrayList<>();
     private final PurpleIRC plugin;
-    
+
     /**
      *
      * @param plugin
@@ -56,6 +58,8 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("join", new Join(plugin));
         commands.put("kick", new Kick(plugin));
         commands.put("leave", new Leave(plugin));
+        commands.put("link", new Link(plugin));
+        commands.put("linkaccept", new LinkAccept(plugin));
         commands.put("list", new List(plugin));
         commands.put("listbots", new ListBots(plugin));
         commands.put("listops", new ListOps(plugin));
@@ -83,6 +87,8 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("send", new Send(plugin));
         commands.put("sendraw", new SendRaw(plugin));
         commands.put("server", new Server(plugin));
+        commands.put("slist", new SList(plugin));
+        commands.put("smsg", new SMsg(plugin));
         commands.put("topic", new Topic(plugin));
         commands.put("unmute", new UnMute(plugin));
         commands.put("updatecheck", new UpdateCheck(plugin));
@@ -110,15 +116,52 @@ public class CommandHandlers implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        if (args.length >= 1) {
-            String subCmd = args[0].toLowerCase();
-            if (commands.containsKey(subCmd)) {
-                if (!sender.hasPermission("irc." + subCmd)) {
+        if (commandLabel.equalsIgnoreCase("irc")) {
+            if (args.length >= 1) {
+                String subCmd = args[0].toLowerCase();
+                if (commands.containsKey(subCmd)) {
+                    if (!sender.hasPermission("irc." + subCmd)) {
+                        sender.sendMessage(plugin.noPermission);
+                        return true;
+                    }
+                    commands.get(subCmd).dispatch(sender, args);
+                    return true;
+                }
+            }
+        } else if (commandLabel.equalsIgnoreCase("msg")) {
+            if (args.length >= 1) {
+                if (!sender.hasPermission("irc.smsg")) {
                     sender.sendMessage(plugin.noPermission);
                     return true;
                 }
-                commands.get(subCmd).dispatch(sender, args);
+                ArrayList<String> list = new ArrayList<>();
+                list.add("smsg");
+                list.addAll(Arrays.asList(args));
+                plugin.logDebug("MSG: " + list);
+                commands.get("smsg").dispatch(sender, list.toArray(new String[list.size()]));
                 return true;
+            }
+        } else if (commandLabel.equalsIgnoreCase("r")) {
+            plugin.logDebug("Command: r");
+            if (plugin.privateMsgReply.containsKey(sender.getName())) {
+                plugin.logDebug("Command: r2");
+                if (args.length >= 1) {
+                    plugin.logDebug("Command: r3");
+                    if (!sender.hasPermission("irc.smsg")) {
+                        sender.sendMessage(plugin.noPermission);
+                        return true;
+                    }
+                    plugin.logDebug("Command: r4");
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add("smsg");
+                    list.add(plugin.privateMsgReply.get(sender.getName()));
+                    list.addAll(Arrays.asList(args));
+                    plugin.logDebug("R: " + list);
+                    commands.get("smsg").dispatch(sender, list.toArray(new String[list.size()]));
+                    return true;
+                }
+            } else {
+                sender.sendMessage(ChatColor.RED + "No messages received.");
             }
         }
         commands.get("help").dispatch(sender, args);
