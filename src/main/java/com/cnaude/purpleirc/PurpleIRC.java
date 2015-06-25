@@ -284,7 +284,7 @@ public class PurpleIRC extends JavaPlugin {
         detectHooks();
         if (debugEnabled) {
             getPurpleHooks(getServer().getConsoleSender(), false);
-            }
+        }
         commandHandlers = new CommandHandlers(this);
         ircTabCompleter = new PurpleTabCompleter(this);
         getCommand("irc").setExecutor(commandHandlers);
@@ -887,7 +887,7 @@ public class PurpleIRC extends JavaPlugin {
     public String getPlayerGroup(Player player) {
         String groupName = "";
         try {
-        if (vaultHelpers != null) {
+            if (vaultHelpers != null) {
                 if (vaultHelpers.permission != null && vaultHelpers.permission != null) {
                     logDebug("getPlayerGroup: " + player.getName());
                     groupName = vaultHelpers.permission.getPrimaryGroup(player);
@@ -923,11 +923,11 @@ public class PurpleIRC extends JavaPlugin {
     public String getPlayerGroup(String worldName, String player) {
         String groupName = "";
         try {
-        UUID uuid = getPlayerUuid(player);
-        if (vaultHelpers != null && uuid != null) {
+            UUID uuid = getPlayerUuid(player);
+            if (vaultHelpers != null && uuid != null) {
                 if (vaultHelpers.permission != null && vaultHelpers.permission != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
-                if (offlinePlayer != null) {
+                    OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
+                    if (offlinePlayer != null) {
                         logDebug("getPlayerGroup: " + worldName + " " + player);
                         groupName = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
                     }
@@ -969,11 +969,11 @@ public class PurpleIRC extends JavaPlugin {
     public String getPlayerPrefix(String worldName, String player) {
         String prefix = "";
         try {
-        UUID uuid = getPlayerUuid(player);
-        if (vaultHelpers != null && uuid != null) {
-            if (vaultHelpers.chat != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
-                if (offlinePlayer != null) {
+            UUID uuid = getPlayerUuid(player);
+            if (vaultHelpers != null && uuid != null) {
+                if (vaultHelpers.chat != null) {
+                    OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
+                    if (offlinePlayer != null) {
                         logDebug("getPlayerPrefix: " + worldName + " " + player);
                         prefix = vaultHelpers.chat.getPlayerPrefix(worldName, offlinePlayer);
                     }
@@ -1015,11 +1015,11 @@ public class PurpleIRC extends JavaPlugin {
     public String getPlayerSuffix(String worldName, String player) {
         String suffix = "";
         try {
-        UUID uuid = getPlayerUuid(player);
-        if (vaultHelpers != null && uuid != null) {
-            if (vaultHelpers.chat != null) {
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
-                if (offlinePlayer != null) {
+            UUID uuid = getPlayerUuid(player);
+            if (vaultHelpers != null && uuid != null) {
+                if (vaultHelpers.chat != null) {
+                    OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
+                    if (offlinePlayer != null) {
                         logDebug("getPlayerSuffix: " + worldName + " " + offlinePlayer.getName());
                         suffix = vaultHelpers.chat.getPlayerSuffix(worldName, offlinePlayer);
                     }
@@ -1133,34 +1133,34 @@ public class PurpleIRC extends JavaPlugin {
         String prefix = "";
         try {
             logDebug("getGroupPrefix: 2");
-        UUID uuid = getPlayerUuid(player);
+            UUID uuid = getPlayerUuid(player);
             logDebug("getGroupPrefix: 3");
-        if (vaultHelpers != null && uuid != null) {
+            if (vaultHelpers != null && uuid != null) {
                 logDebug("getGroupPrefix: 4");
                 if (vaultHelpers.chat != null && vaultHelpers.permission != null) {
                     logDebug("getGroupPrefix: 5");
-                String group = "";
+                    String group = "";
                     logDebug("getGroupPrefix: 6");
-                OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
+                    OfflinePlayer offlinePlayer = getServer().getOfflinePlayer(uuid);
                     logDebug("getGroupPrefix: 7");
-                if (offlinePlayer != null) {
+                    if (offlinePlayer != null) {
                         logDebug("getGroupPrefix: 8");
                         group = vaultHelpers.permission.getPrimaryGroup(worldName, offlinePlayer);
                         logDebug("getGroupPrefix: 9");
                     }
                     logDebug("getGroupPrefix: 10");
-                if (group == null) {
+                    if (group == null) {
                         logDebug("getGroupPrefix: 11");
-                    group = "";
-                }
+                        group = "";
+                    }
                     logDebug("getGroupPrefix: 12");
-                prefix = vaultHelpers.chat.getGroupPrefix(worldName, group);
+                    prefix = vaultHelpers.chat.getGroupPrefix(worldName, group);
                     logDebug("getGroupPrefix: 13");
+                }
             }
-        }
-        if (prefix == null) {
-            prefix = "";
-        }
+            if (prefix == null) {
+                prefix = "";
+            }
         } catch (Exception ex) {
             logDebug("getGroupPrefix (" + player + "): " + ex.getMessage());
         }
@@ -1387,7 +1387,7 @@ public class PurpleIRC extends JavaPlugin {
     public String updateCheckerMode() {
         return updateCheckerMode;
     }
-    
+
     private String hookFormat(String name, boolean enabled) {
         String message;
 
@@ -1602,6 +1602,17 @@ public class PurpleIRC extends JavaPlugin {
     public String encodeLinkMsg(String cmd, String msg) {
         String encodedText = new String(Base64.encodeBase64(msg.getBytes()));
         return String.format("%s:%s", cmd, encodedText);
-}
+    }
+    
+    /**
+     * Generic player counter.  CB uses Player[] and Spigot uses List<>().
+    */
+    public int getOnlinePlayerCount() {
+        int count = 0;
+        for (Player player : getServer().getOnlinePlayers()) {
+            count++;
+        }
+        return count;
+    }
 
 }
