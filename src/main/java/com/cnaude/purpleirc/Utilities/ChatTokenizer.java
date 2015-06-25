@@ -761,4 +761,10 @@ public class ChatTokenizer {
                 .replace("%MESSAGE%", message)
         );
     }
+
+    public String msgChatResponseTokenizer(Player player, String message, String template) {
+        return template
+                .replace("%TARGET%", player.getName())
+                .replace("%MESSAGE%", message);
+    }
 }
