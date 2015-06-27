@@ -88,24 +88,28 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
             }
         }
         if (plugin.overrideMsgCmd) {
-            if (cmd.equalsIgnoreCase("/msg")) {
+            if (cmd.equalsIgnoreCase(plugin.smsgAlias)) {
                 event.setCancelled(true); //prevent other plugins from using /msg
                 if (player.hasPermission("irc.smsg")) {
-                    String newCmd[] = message.replaceFirst(cmd, "smsg").split(" ");
-                    plugin.commandHandlers.commands.get("smsg").dispatch(player, newCmd);
+                    String args[] = message.replaceFirst(cmd, "smsg").split(" ");
+                    if (args.length >= 3) {
+                        plugin.commandHandlers.commands.get("smsg").dispatch(player, args);
+                    } else {
+                        player.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + plugin.smsgAlias + " [player] [message]");
+                    }
                 } else {
                     player.sendMessage(plugin.noPermission);
                 }
-            } else if (cmd.equalsIgnoreCase("/r")) {
+            } else if (cmd.equalsIgnoreCase(plugin.smsgReplyAlias)) {
                 event.setCancelled(true); //prevent other plugins from using /msg
                 if (player.hasPermission("irc.smsg")) {
                     String pName = player.getName();
                     if (plugin.privateMsgReply.containsKey(pName)) {
                         String args[] = message.replaceFirst(cmd, "smsg " + plugin.privateMsgReply.get(pName)).split(" ");
-                        if (args.length >= 1) {
+                        if (args.length >= 3) {
                             plugin.commandHandlers.commands.get("smsg").dispatch(player, args);
                         } else {
-                            player.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/r [message]");
+                            player.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + plugin.smsgReplyAlias + " [message]");
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "No messages received.");

@@ -220,6 +220,8 @@ public class PurpleIRC extends JavaPlugin {
     public static final String TOWNYTAG = "VG93bnlDaGF0Cg==";
     public static final String LINK_CMD = "PurpleIRC-Link:";
     public boolean overrideMsgCmd = false;
+    public String smsgAlias = "/m";
+    public String smsgReplyAlias = "/r";
     public CaseInsensitiveMap<String> privateMsgReply;
 
     public PurpleIRC() {
@@ -575,6 +577,8 @@ public class PurpleIRC extends JavaPlugin {
             logError(ex.getMessage());
         }
         overrideMsgCmd = getConfig().getBoolean("override-msg-cmd", false);
+        smsgAlias = getConfig().getString("smsg-alias", "/m");
+        smsgReplyAlias = getConfig().getString("smsg-reply-alias", "/r");
         updateCheckerEnabled = getConfig().getBoolean("update-checker", true);
         updateCheckerMode = getConfig().getString("update-checker-mode", "stable");
         debugEnabled = getConfig().getBoolean("Debug");
