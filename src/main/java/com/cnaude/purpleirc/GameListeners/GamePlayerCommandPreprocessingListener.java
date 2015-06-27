@@ -18,6 +18,10 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,11 +47,12 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
      *
      * @param event
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
         if (event.isCancelled()) {
             return;
         }
+        Player player = event.getPlayer();
         String message = event.getMessage();
         String cmd;
         String action;
@@ -79,6 +84,34 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
                     for (PurpleBot ircBot : plugin.ircBots.values()) {
                         ircBot.essHelpOp(event.getPlayer(), action);
                     }
+                }
+            }
+        }
+        if (plugin.overrideMsgCmd) {
+            if (cmd.equalsIgnoreCase("/msg")) {
+                event.setCancelled(true); //prevent other plugins from using /msg
+                if (player.hasPermission("irc.smsg")) {
+                    String newCmd[] = message.replaceFirst(cmd, "smsg").split(" ");
+                    plugin.commandHandlers.commands.get("smsg").dispatch(player, newCmd);
+                } else {
+                    player.sendMessage(plugin.noPermission);
+                }
+            } else if (cmd.equalsIgnoreCase("/r")) {
+                event.setCancelled(true); //prevent other plugins from using /msg
+                if (player.hasPermission("irc.smsg")) {
+                    String pName = player.getName();
+                    if (plugin.privateMsgReply.containsKey(pName)) {
+                        String args[] = message.replaceFirst(cmd, "smsg " + plugin.privateMsgReply.get(pName)).split(" ");
+                        if (args.length >= 1) {
+                            plugin.commandHandlers.commands.get("smsg").dispatch(player, args);
+                        } else {
+                            player.sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/r [message]");
+                        }
+                    } else {
+                        player.sendMessage(ChatColor.RED + "No messages received.");
+                    }
+                } else {
+                    player.sendMessage(plugin.noPermission);
                 }
             }
         }

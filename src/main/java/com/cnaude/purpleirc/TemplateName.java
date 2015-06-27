@@ -141,5 +141,5 @@ public class TemplateName {
     public final static String IRC_FLOOD_WARNING = "irc-flood-warning";
 
     public final static String CROSS_CHAT = "cross-chat";
-
+    
 }
