@@ -54,7 +54,7 @@ public class Whois implements IRCCommandInterface {
                 ircBot.sendUserWhois(sender, nick);
             }
         } else if (args.length == 3) {
-            String bot = plugin.botify(args[1]);
+            String bot = args[1];
             String nick = args[2];
             if (plugin.ircBots.containsKey(bot)) {
                 PurpleBot ircBot = plugin.ircBots.get(bot);

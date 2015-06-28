@@ -18,8 +18,6 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -89,7 +87,7 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
         }
         if (plugin.overrideMsgCmd) {
             if (cmd.equalsIgnoreCase(plugin.smsgAlias)) {
-                event.setCancelled(true); //prevent other plugins from using /msg
+                event.setCancelled(true);
                 if (player.hasPermission("irc.smsg")) {
                     String args[] = message.replaceFirst(cmd, "smsg").split(" ");
                     if (args.length >= 3) {
@@ -101,7 +99,7 @@ public class GamePlayerCommandPreprocessingListener implements Listener {
                     player.sendMessage(plugin.noPermission);
                 }
             } else if (cmd.equalsIgnoreCase(plugin.smsgReplyAlias)) {
-                event.setCancelled(true); //prevent other plugins from using /msg
+                event.setCancelled(true);
                 if (player.hasPermission("irc.smsg")) {
                     String pName = player.getName();
                     if (plugin.privateMsgReply.containsKey(pName)) {

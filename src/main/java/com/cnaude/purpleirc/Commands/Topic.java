@@ -61,9 +61,9 @@ public class Topic implements IRCCommandInterface {
             bac = new BotsAndChannels(plugin, sender);
             for (String botName : bac.bot) {
                 for (String channelName : bac.channel) {
-                    sender.sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_PURPLE 
+                    sender.sendMessage(ChatColor.WHITE + "[" + ChatColor.LIGHT_PURPLE 
                             + botName + ChatColor.WHITE 
-                            + "/" + ChatColor.DARK_PURPLE + channelName 
+                            + "/" + ChatColor.LIGHT_PURPLE + channelName 
                             + ChatColor.WHITE + "]"
                             + " Topic: " + plugin.ircBots.get(botName)
                                     .channelTopic.get(channelName));

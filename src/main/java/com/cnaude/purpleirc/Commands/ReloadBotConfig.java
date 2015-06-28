@@ -48,7 +48,7 @@ public class ReloadBotConfig implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            String bot = plugin.botify(args[1]);
+            String bot = args[1];
             if (plugin.ircBots.containsKey(bot)) {
                 plugin.ircBots.get(bot).reloadConfig(sender);
             } else {

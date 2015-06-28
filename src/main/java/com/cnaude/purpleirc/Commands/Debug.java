@@ -48,7 +48,7 @@ public class Debug implements IRCCommandInterface {
     @Override
     public void dispatch(CommandSender sender, String[] args) {        
         if (args.length == 1) {
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is currently "
+            sender.sendMessage(ChatColor.LIGHT_PURPLE + "Debug mode is currently "
                     + ChatColor.WHITE + plugin.debugMode());
         } else if (args.length == 2) {
             if (args[1].startsWith("t")) {
@@ -58,7 +58,7 @@ public class Debug implements IRCCommandInterface {
             } else {
                 sender.sendMessage(usage);
             }
-            sender.sendMessage(ChatColor.DARK_PURPLE + "Debug mode is now "
+            sender.sendMessage(ChatColor.LIGHT_PURPLE + "Debug mode is now "
                     + ChatColor.WHITE + plugin.debugMode());
         } else {
             sender.sendMessage(fullUsage);

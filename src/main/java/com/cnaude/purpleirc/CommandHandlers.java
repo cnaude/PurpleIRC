@@ -20,10 +20,8 @@ import com.cnaude.purpleirc.Commands.*;
 import com.google.common.base.Joiner;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -125,6 +123,10 @@ public class CommandHandlers implements CommandExecutor {
                         return true;
                     }
                     commands.get(subCmd).dispatch(sender, args);
+                    return true;
+                } else {
+                    String s[] = {"help", subCmd};
+                    commands.get("help").dispatch(sender, s);
                     return true;
                 }
             }

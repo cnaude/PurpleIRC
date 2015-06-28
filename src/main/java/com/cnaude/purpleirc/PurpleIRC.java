@@ -250,7 +250,7 @@ public class PurpleIRC extends JavaPlugin {
     @Override
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
-        LOG_HEADER_F = ChatColor.DARK_PURPLE + "[" + this.getName() + "]" + ChatColor.RESET;
+        LOG_HEADER_F = ChatColor.LIGHT_PURPLE + "[" + this.getName() + "]" + ChatColor.RESET;
         if (getServer().getVersion().contains("Spigot") && getServer().getVersion().contains("MC: 1.8")) {
             logError("This plugin is not compatible with Spigot 1.8. Please download the Spigot version from the Spigot site.");
             this.getPluginLoader().disablePlugin(this);
@@ -633,16 +633,37 @@ public class PurpleIRC extends JavaPlugin {
             logInfo("Checking for bot files in " + botsFolder);
             for (final File file : botsFolder.listFiles()) {
                 if (file.getName().toLowerCase().endsWith(".yml")) {
-                    logInfo("Loading bot file: " + file.getName());
-                    PurpleBot ircBot = new PurpleBot(file, this);
-                    if (ircBot.goodBot) {
-                        ircBots.put(file.getName(), ircBot);
-                        logInfo("Loaded bot: " + file.getName() + " [" + ircBot.botNick + "]");
-                    } else {
-                        logError("Bot not loaded: " + file.getName());
-                    }
+                    loadBot(getServer().getConsoleSender(), file);
                 }
             }
+        }
+    }
+
+    public void loadBot(CommandSender sender, File file) {
+        String fileName = file.getName();
+        if (fileName.toLowerCase().endsWith(".yml")) {
+            if (file.exists()) {
+                String bot = fileName.replaceAll("(?i).yml", "");
+                if (ircBots.containsKey(bot)) {
+                    sender.sendMessage(ChatColor.RED + "Sorry that bot is already loaded. Try to unload it first.");
+                    return;
+                }
+                sender.sendMessage(ChatColor.WHITE + "Loading " + fileName + "...");
+                PurpleBot ircBot = new PurpleBot(file, this);
+                if (ircBot.goodBot) {
+                    ircBots.put(bot, ircBot);
+                    sender.sendMessage(LOG_HEADER_F + " " + ChatColor.WHITE + "Bot loaded from " + fileName
+                            + ChatColor.LIGHT_PURPLE + " [" + ChatColor.WHITE + ircBot.botNick + ChatColor.LIGHT_PURPLE + "/"
+                            + ChatColor.WHITE + ircBot.botServer + ChatColor.LIGHT_PURPLE + ":"
+                            + ChatColor.WHITE + ircBot.botServerPort + ChatColor.LIGHT_PURPLE + "]");
+                } else {
+                    logError("Unable to load " + fileName);
+                }
+            } else {
+                sender.sendMessage(ChatColor.RED + "No such bot file: " + ChatColor.WHITE + fileName);
+            }
+        } else {
+            sender.sendMessage(ChatColor.RED + "Invalid file name.");
         }
     }
 
@@ -821,7 +842,7 @@ public class PurpleIRC extends JavaPlugin {
             Collections.sort(tmp, Collator.getInstance());
             pList = Joiner.on(listSeparator).join(tmp);
         } else {
-            // sort without nick prefixes 
+            // sort without nick prefixes
             pList = Joiner.on(listSeparator).join(playerList.values());
         }
 
@@ -1372,14 +1393,6 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
-    public String botify(String bot) {
-        if (bot.toLowerCase().endsWith("yml")) {
-            return bot;
-        } else {
-            return bot + ".yml";
-        }
-    }
-
     public boolean isUpdateCheckerEnabled() {
         return updateCheckerEnabled;
     }
@@ -1556,10 +1569,10 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     public void getPurpleHooks(CommandSender sender, boolean colors) {
-        String header = ChatColor.DARK_PURPLE + "-----[" + ChatColor.WHITE
-                + " PurpleIRC " + ChatColor.DARK_PURPLE
-                + "-" + ChatColor.WHITE + " Plugin Hooks " + ChatColor.DARK_PURPLE + "]-----";
-        String footer = ChatColor.DARK_PURPLE + "-------------------------------------";
+        String header = ChatColor.LIGHT_PURPLE + "-----[" + ChatColor.WHITE
+                + " PurpleIRC " + ChatColor.LIGHT_PURPLE
+                + "-" + ChatColor.WHITE + " Plugin Hooks " + ChatColor.LIGHT_PURPLE + "]-----";
+        String footer = ChatColor.LIGHT_PURPLE + "-------------------------------------";
         if (colors) {
             sender.sendMessage(header);
         } else {
@@ -1606,7 +1619,8 @@ public class PurpleIRC extends JavaPlugin {
 
     /**
      * Generic player counter. CB uses Player[] and Spigot uses List<>().
-     * @return 
+     *
+     * @return
      */
     public int getOnlinePlayerCount() {
         int count = 0;
