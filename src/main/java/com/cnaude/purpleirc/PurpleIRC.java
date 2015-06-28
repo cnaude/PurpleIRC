@@ -54,6 +54,7 @@ import com.cnaude.purpleirc.Hooks.VaultHook;
 import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
 import com.cnaude.purpleirc.Utilities.ChatTokenizer;
 import com.cnaude.purpleirc.Utilities.ColorConverter;
+import com.cnaude.purpleirc.Utilities.CompatChecker;
 import com.cnaude.purpleirc.Utilities.NetPackets;
 import com.cnaude.purpleirc.Utilities.Query;
 import com.cnaude.purpleirc.Utilities.RegexGlobber;
@@ -251,8 +252,7 @@ public class PurpleIRC extends JavaPlugin {
     public void onEnable() {
         LOG_HEADER = "[" + this.getName() + "]";
         LOG_HEADER_F = ChatColor.LIGHT_PURPLE + "[" + this.getName() + "]" + ChatColor.RESET;
-        if (getServer().getVersion().contains("Spigot") && getServer().getVersion().contains("MC: 1.8")) {
-            logError("This plugin is not compatible with Spigot 1.8. Please download the Spigot version from the Spigot site.");
+        if (!CompatChecker.isCompatible(this)) {
             this.getPluginLoader().disablePlugin(this);
             return;
         }
