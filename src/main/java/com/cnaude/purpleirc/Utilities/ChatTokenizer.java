@@ -845,14 +845,14 @@ public class ChatTokenizer {
 
     /**
      *
-     * @param player
+     * @param targetPlayer
      * @param message
      * @param template
      * @return
      */
-    public String msgChatResponseTokenizer(Player player, String message, String template) {
-        return playerTokenizer(player, template)
-                .replace("%TARGET%", player.getName())
+    public String msgChatResponseTokenizer(CommandSender sender, Player targetPlayer, String message, String template) {
+        return template.replace("%NAME%", sender.getName())
+                .replace("%TARGET%", targetPlayer.getName())
                 .replace("%MESSAGE%", message);
     }
 }
