@@ -3027,16 +3027,23 @@ public final class PurpleBot {
     }
 
     /**
-     * Send a private message to a remote linked bot.
      *
      * @param sender
      * @param remoteBot
      * @param remotePlayer
      * @param message
      */
-    public void msgRemotePlayer(Player sender, String remoteBot, String remotePlayer, String message) {
-        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender,
-                plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message);
+    public void msgRemotePlayer(CommandSender sender, String remoteBot, String remotePlayer, String message) {
+        String msg;
+        if (sender instanceof Player) {
+            msg = plugin.tokenizer.gameChatToIRCTokenizer((Player)sender,
+                    plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message)
+                    .replace("%TARGET%", remotePlayer);
+        } else {
+            msg = plugin.tokenizer.gameChatToIRCTokenizer(sender.getName(),
+                    plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message)
+                    .replace("%TARGET%", remotePlayer);
+        }
         if (botLinks.containsKey(remoteBot)) {
             String code = botLinks.get(remoteBot);
             String from = sender.getName();
@@ -3093,26 +3100,6 @@ public final class PurpleBot {
         String msg = plugin.tokenizer.gameChatToIRCTokenizer("console",
                 plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
         asyncIRCMessage(nick, msg);
-    }
-
-    /**
-     *
-     * @param sender
-     * @param remoteBot
-     * @param remotePlayer
-     * @param message
-     */
-    public void msgRemotePlayer(CommandSender sender, String remoteBot, String remotePlayer, String message) {
-        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender.getName(),
-                plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
-        if (botLinks.containsKey(remoteBot)) {
-            String code = botLinks.get(remoteBot);
-            String from = sender.getName();
-            String clearText = "PRIVATE_MSG:" + code + ":" + from + ":" + remotePlayer + ":" + msg;
-            asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
-        } else {
-            sender.sendMessage(ChatColor.RED + "Not linked to " + ChatColor.WHITE + remoteBot);
-        }
     }
 
     /**
