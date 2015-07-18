@@ -170,7 +170,10 @@ public class IRCMessageHandler {
                                 break;
                             case "@a":
                                 if (plugin.adminPrivateChatHook != null) {
-                                    plugin.adminPrivateChatHook.sendMessage(commandArgs, user.getNick());
+                                    String newMessage = ircBot.filterMessage(
+                                            plugin.tokenizer.ircChatToGameTokenizer(ircBot, user, channel, plugin.getMsgTemplate(
+                                                            ircBot.botNick, channelName, TemplateName.IRC_A_CHAT), commandArgs), channelName);
+                                    plugin.adminPrivateChatHook.sendMessage(newMessage, user.getNick());
                                     String acResponse = plugin.tokenizer.msgChatResponseTokenizer(target, commandArgs, plugin.getMsgTemplate(TemplateName.IRC_A_RESPONSE));
                                     if (!acResponse.isEmpty()) {
                                         sendMessage(ircBot, target, acResponse, ctcpResponse);
@@ -187,7 +190,7 @@ public class IRCMessageHandler {
                                 
                                 if (gameCommand.matches(".*%ARG\\d+%.*")) {
                                     String commandArgsArray[] = commandArgs.split(" ");
-                                    for (int i = 0; i < commandArgsArray.length; i ++) {
+                                    for (int i = 0; i < commandArgsArray.length; i++) {
                                         gameCommand = gameCommand.replace("%ARG" + (i + 1) + "%", commandArgsArray[i]);
                                     }
                                     gameCommand = gameCommand.replaceAll("%ARG\\d+%", "");
