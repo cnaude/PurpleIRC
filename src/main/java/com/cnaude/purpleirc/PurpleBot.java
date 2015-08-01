@@ -990,6 +990,7 @@ public final class PurpleBot {
                             optionPair.put("private", config.getString(commandKey + "private", "false"));
                             optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
                             optionPair.put("game_command", config.getString(commandKey + "game_command", ""));
+                            optionPair.put("game_command_usage", config.getString(commandKey + "game_command_usage", ""));
                             optionPair.put("sender", config.getString(commandKey + "sender", "CONSOLE"));
                             extraCommands.addAll(config.getStringList(commandKey + "extra_commands"));
                             plugin.logDebug("extra_commands: " + extraCommands.toString());
@@ -1062,6 +1063,9 @@ public final class PurpleBot {
      */
     public void gameChat(Player player, String message) {
         if (!this.isConnected()) {
+            return;
+        }
+        if (plugin.isMuted(player)) {
             return;
         }
         if (floodChecker.isSpam(player)) {
@@ -1683,6 +1687,9 @@ public final class PurpleBot {
      */
     public void gameAction(Player player, String message) {
         if (!this.isConnected()) {
+            return;
+        }
+        if (plugin.isMuted(player)) {
             return;
         }
         if (floodChecker.isSpam(player)) {
@@ -2690,6 +2697,9 @@ public final class PurpleBot {
     public void playerCrossChat(User user, String from, String pName, String msg) {
         if (true) {
             Player player = plugin.getServer().getPlayer(pName);
+            if (plugin.isMuted(player)) {
+                return;
+            }
             if (player != null) {
                 if (player.isOnline()) {
                     plugin.logDebug("Yup, " + pName + " is a valid player...");
@@ -3027,23 +3037,16 @@ public final class PurpleBot {
     }
 
     /**
+     * Send a private message to a remote linked bot.
      *
      * @param sender
      * @param remoteBot
      * @param remotePlayer
      * @param message
      */
-    public void msgRemotePlayer(CommandSender sender, String remoteBot, String remotePlayer, String message) {
-        String msg;
-        if (sender instanceof Player) {
-            msg = plugin.tokenizer.gameChatToIRCTokenizer((Player)sender,
-                    plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message)
-                    .replace("%TARGET%", remotePlayer);
-        } else {
-            msg = plugin.tokenizer.gameChatToIRCTokenizer(sender.getName(),
-                    plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message)
-                    .replace("%TARGET%", remotePlayer);
-        }
+    public void msgRemotePlayer(Player sender, String remoteBot, String remotePlayer, String message) {
+        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender,
+                plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message);
         if (botLinks.containsKey(remoteBot)) {
             String code = botLinks.get(remoteBot);
             String from = sender.getName();
@@ -3100,6 +3103,26 @@ public final class PurpleBot {
         String msg = plugin.tokenizer.gameChatToIRCTokenizer("console",
                 plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
         asyncIRCMessage(nick, msg);
+    }
+
+    /**
+     *
+     * @param sender
+     * @param remoteBot
+     * @param remotePlayer
+     * @param message
+     */
+    public void msgRemotePlayer(CommandSender sender, String remoteBot, String remotePlayer, String message) {
+        String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender.getName(),
+                plugin.getMsgTemplate(botNick, "", TemplateName.CONSOLE_CHAT), message);
+        if (botLinks.containsKey(remoteBot)) {
+            String code = botLinks.get(remoteBot);
+            String from = sender.getName();
+            String clearText = "PRIVATE_MSG:" + code + ":" + from + ":" + remotePlayer + ":" + msg;
+            asyncCTCPMessage(remoteBot, plugin.encodeLinkMsg(PurpleIRC.LINK_CMD, clearText));
+        } else {
+            sender.sendMessage(ChatColor.RED + "Not linked to " + ChatColor.WHITE + remoteBot);
+        }
     }
 
     /**

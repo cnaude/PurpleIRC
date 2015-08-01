@@ -75,7 +75,7 @@ flood-control:
     # Time interval in milliseconds
     time-interval: 1000
     # Cooldown in milliseconds. If user is spamming then this cooldown takes effect.
-    cooldown: 60000    
+    cooldown: 60000
 # Automatically part invalid channels
 part-invalid-channels: false
 # Message when leaving invalid channel
@@ -177,7 +177,7 @@ channels:
     - irc-action-dynmap-web-chat
     # mcMMO messages sent to IRC
     - mcmmo-admin-chat
-    - mcmmo-party-chat
+    - mcmmo-party-chat    
     - mcmmo-chat
     # mcMMO messages sent from IRC. Replace [PARTY] with destination mcMMO party
     - irc-mcmmo-admin-chat
@@ -386,3 +386,16 @@ channels:
 #        game_command: 'gamemode %ARGS%'
 #        private_listen: true
 #        channel_listen: true
+## Sample of %ARGX% and %ARGX+% with game_command_usage
+#      mute:
+#        modes: o
+#        private: 'false'
+#        ctcp: 'false'
+#        game_command: mute %ARG1% %ARG2% %ARG3+%
+#        extra_commands:
+#        - 'irc say SpigBot #PurpleIRC Muted %ARG1% for %ARG2%. [Reason %ARG3+%]'
+#        game_command_usage: 'Usage: .mute <player> <time> <reason>'
+#        private_listen: 'true'
+#        channel_listen: 'true'
+#        perm: ''
+#        sender: CONSOLE
