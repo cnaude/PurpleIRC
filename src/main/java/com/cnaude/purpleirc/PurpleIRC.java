@@ -1439,9 +1439,9 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             hookList.add(hookFormat(PL_HEROCHAT, false));
         }
-        if (isPluginEnabled(PL_GRIEFPREVENTION)) {
+        if (isPluginEnabled(PL_GRIEFPREVENTION) && getServer().getVersion().contains("MC: 1.8")) {
             hookList.add(hookFormat(PL_GRIEFPREVENTION, true));
-                griefPreventionHook = new GriefPreventionHook(this);           
+            griefPreventionHook = new GriefPreventionHook(this);
         } else {
             hookList.add(hookFormat(PL_GRIEFPREVENTION, false));
         }
@@ -1502,10 +1502,10 @@ public class PurpleIRC extends JavaPlugin {
         if (isPluginEnabled(PL_ADMINPRIVATECHAT)) {
             if (getServer().getPluginManager().getPlugin(PL_ADMINPRIVATECHAT)
                     .getDescription().getAuthors().contains("cnaude")) {
-            hookList.add(hookFormat(PL_ADMINPRIVATECHAT, true));
-            adminPrivateChatHook = new AdminPrivateChatHook(this);
-            getServer().getPluginManager().registerEvents(new AdminChatListener(this), this);
-        } else {
+                hookList.add(hookFormat(PL_ADMINPRIVATECHAT, true));
+                adminPrivateChatHook = new AdminPrivateChatHook(this);
+                getServer().getPluginManager().registerEvents(new AdminChatListener(this), this);
+            } else {
                 logError(PL_ADMINPRIVATECHAT + "Version not supported. Please use the latest version from http://jenkins.cnaude.org/job/AdminPrivateChat/");
             }
         } else {
@@ -1649,9 +1649,9 @@ public class PurpleIRC extends JavaPlugin {
             if (griefPreventionHook.isMuted(player)) {
                 logDebug("GP: Player " + player.getDisplayName() + " is muted.");
                 return true;
-}
+            }
         }
         return false;
     }
-    
+
 }
