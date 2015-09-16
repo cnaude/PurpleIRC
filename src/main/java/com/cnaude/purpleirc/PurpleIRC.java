@@ -1451,16 +1451,13 @@ public class PurpleIRC extends JavaPlugin {
             if (cls != null) {
                 for (Method m : cls.getMethods()) {
                     if (m.getName().equals("isSoftMuted")) {
-                        hookList.add(hookFormat(PL_GRIEFPREVENTION, true));
                         griefPreventionHook = new GriefPreventionHook(this);
                         hooked = true;
                         break;
                     }
                 }
             }
-            if (!hooked) {
-                hookList.add(hookFormat(PL_GRIEFPREVENTION, false));
-            }
+            hookList.add(hookFormat(PL_GRIEFPREVENTION, hooked));
         } else {
             hookList.add(hookFormat(PL_GRIEFPREVENTION, false));
         }
