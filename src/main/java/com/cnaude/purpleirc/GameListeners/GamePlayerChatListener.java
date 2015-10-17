@@ -16,7 +16,6 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
-import com.ammaraskar.adminonly.AdminChat;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.event.EventHandler;
@@ -50,6 +49,9 @@ public class GamePlayerChatListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
+        //if(plugin.isPluginEnabled("GriefPrevention")) {
+        //    return;
+        //}
         plugin.logDebug("ChatFormat [" + event.isCancelled() + "]: " + event.getFormat());
         if (message.startsWith(PurpleIRC.TOWNYTAG)) {
             event.setMessage(message.replace(PurpleIRC.TOWNYTAG, ""));
@@ -61,9 +63,11 @@ public class GamePlayerChatListener implements Listener {
             plugin.logDebug("Ignore chat message due to event cancellation: " + event.getMessage());
             return;
         }
+        if (plugin.adminPrivateChatHook != null) {
         if (event.isCancelled() && plugin.adminPrivateChatHook.ac.toggledPlayers.contains(event.getPlayer().getName())) {
             plugin.logDebug("Ignore AdminChat message due to event cancellation: " + event.getMessage());
             return;
+        }
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
