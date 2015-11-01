@@ -105,7 +105,7 @@ public class PurpleIRC extends JavaPlugin {
 
     public String LOG_HEADER;
     public String LOG_HEADER_F;
-    static final Logger log = Logger.getLogger("Minecraft");
+    static final Logger LOG = Logger.getLogger("Minecraft");
     private final String sampleFileName;
     private final String MAINCONFIG;
     private File pluginFolder;
@@ -781,7 +781,7 @@ public class PurpleIRC extends JavaPlugin {
      * @param message
      */
     public void logInfo(String message) {
-        log.log(Level.INFO, String.format("%s %s", LOG_HEADER, message));
+        LOG.log(Level.INFO, String.format("%s %s", LOG_HEADER, message));
     }
 
     /**
@@ -789,7 +789,7 @@ public class PurpleIRC extends JavaPlugin {
      * @param message
      */
     public void logError(String message) {
-        log.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, message));
+        LOG.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, message));
     }
 
     /**
@@ -798,7 +798,7 @@ public class PurpleIRC extends JavaPlugin {
      */
     public void logDebug(String message) {
         if (debugEnabled) {
-            log.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, message));
+            LOG.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, message));
         }
     }
 
@@ -826,6 +826,25 @@ public class PurpleIRC extends JavaPlugin {
      * @return
      */
     public String getMCPlayers(PurpleBot ircBot, String channelName) {
+        PlayerList pl = getMCPlayerList(ircBot, channelName);
+
+        String msg = listFormat
+                .replace("%COUNT%", Integer.toString(pl.count))
+                .replace("%MAX%", Integer.toString(pl.max))
+                .replace("%PLAYERS%", pl.list);
+        
+        return colorConverter.gameColorsToIrc(msg);
+    }
+    
+    /**
+     *
+     * @param ircBot
+     * @param channelName
+     * @return
+     */
+    public PlayerList getMCPlayerList(PurpleBot ircBot, String channelName) {
+        PlayerList pl = new PlayerList();
+        
         Map<String, String> playerList = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (Player player : getServer().getOnlinePlayers()) {
             if (ircBot.hideListWhenVanished.get(channelName)) {
@@ -849,15 +868,15 @@ public class PurpleIRC extends JavaPlugin {
             // sort without nick prefixes
             pList = Joiner.on(listSeparator).join(playerList.values());
         }
-
-        String msg = listFormat
-                .replace("%COUNT%", Integer.toString(playerList.size()))
-                .replace("%MAX%", Integer.toString(getServer().getMaxPlayers()))
-                .replace("%PLAYERS%", pList);
-        logDebug("L: " + msg);
-        return colorConverter.gameColorsToIrc(msg);
+        
+        pl.count = playerList.size();
+        pl.max = getServer().getMaxPlayers();
+        pl.list = pList;
+        
+        return pl;
+        
     }
-
+    
     public String getRemotePlayers(String commandArgs) {
         if (commandArgs != null) {
             String host;
@@ -1451,13 +1470,16 @@ public class PurpleIRC extends JavaPlugin {
             if (cls != null) {
                 for (Method m : cls.getMethods()) {
                     if (m.getName().equals("isSoftMuted")) {
+                        hookList.add(hookFormat(PL_GRIEFPREVENTION, true));
                         griefPreventionHook = new GriefPreventionHook(this);
                         hooked = true;
                         break;
                     }
                 }
             }
-            hookList.add(hookFormat(PL_GRIEFPREVENTION, hooked));
+            if (!hooked) {
+                hookList.add(hookFormat(PL_GRIEFPREVENTION, false));
+            }
         } else {
             hookList.add(hookFormat(PL_GRIEFPREVENTION, false));
         }

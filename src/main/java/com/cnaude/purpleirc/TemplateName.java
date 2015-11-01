@@ -47,7 +47,7 @@ public class TemplateName {
     public final static String MCMMO_ADMIN_CHAT = "mcmmo-admin-chat";
     public final static String MCMMO_PARTY_CHAT = "mcmmo-party-chat";
     public final static String MCMMO_CHAT = "mcmmo-chat";
-
+    
     public final static String IRC_MCMMO_ADMIN_CHAT = "irc-mcmmo-admin-chat";
     public final static String IRC_MCMMO_PARTY_CHAT = "irc-mcmmo-party-chat";
 
@@ -130,16 +130,16 @@ public class TemplateName {
 
     public final static String REDDIT_MESSAGES = "reddit-messages";
 
-    public final static String IRC_A_RESPONSE = "irc-a-response";
-    public final static String GAME_A_CHAT = "game-a-chat";
-    public final static String IRC_A_CHAT = "irc-a-chat";
+    public final static String IRC_ADMIN_RESPONSE = "irc-a-response";
+    public final static String GAME_ADMIN_CHAT = "game-a-chat";
+    public final static String IRC_ADMIN_CHAT = "irc-a-chat";
 
     public final static String FAKE_JOIN = "fake-join";
     public final static String FAKE_QUIT = "fake-quit";
     
     public final static String GAME_FLOOD_WARNING = "game-flood-warning";
     public final static String IRC_FLOOD_WARNING = "irc-flood-warning";
-
-    public final static String CROSS_CHAT = "cross-chat";
     
+    public final static String CROSS_CHAT = "cross-chat";
+
 }
