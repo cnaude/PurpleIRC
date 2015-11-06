@@ -1001,6 +1001,7 @@ public final class PurpleBot {
                             optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
                             optionPair.put("channel_listen", config.getString(commandKey + "channel_listen", "true"));
                             optionPair.put("perm", config.getString(commandKey + "perm", ""));
+                            optionPair.put("output", config.getString(commandKey + "output", "%RESULT%"));
                             for (String s : optionPair.keySet()) {
                                 config.set(commandKey + s, optionPair.get(s));
                             }
