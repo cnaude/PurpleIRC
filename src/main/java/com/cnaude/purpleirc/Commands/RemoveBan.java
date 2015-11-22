@@ -16,7 +16,6 @@
  */
 package com.cnaude.purpleirc.Commands;
 
-import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -25,19 +24,19 @@ import org.bukkit.command.CommandSender;
  *
  * @author Chris Naude
  */
-public class Connect implements IRCCommandInterface {
+public class RemoveBan implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Connect to configured IRC server.";
-    private final String name = "connect";
+    private final String usage = "[bot] [channel] [user mask]";
+    private final String desc = "Remove a user mask from the ban list.";
+    private final String name = "removeban";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
 
     /**
      *
      * @param plugin the PurpleIRC plugin
      */
-    public Connect(PurpleIRC plugin) {
+    public RemoveBan(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -48,14 +47,13 @@ public class Connect implements IRCCommandInterface {
      */
     @Override
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length == 1) {
-            for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.asyncConnect(sender);
-            }
-        } else if (args.length == 2) {
+        if (args.length == 4) {
             String bot = args[1];
+            String channel = args[2];
             if (plugin.ircBots.containsKey(bot)) {
-                plugin.ircBots.get(bot).asyncConnect(sender);
+                // #channel, user
+                plugin.ircBots.get(bot).removeBan(channel, args[3], sender);
+                plugin.ircBots.get(bot).unBan(channel, args[3]);
             } else {
                 sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }

@@ -17,6 +17,7 @@
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.pircbotx.Channel;
@@ -24,19 +25,19 @@ import org.pircbotx.User;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class AddVoice implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[bot] [channel] [user|mask]";
+    private final String usage = "([bot]) ([channel]) [user|mask]";
     private final String desc = "Add IRC users to IRC auto voice list.";
     private final String name = "addvoice";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public AddVoice(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -49,33 +50,44 @@ public class AddVoice implements IRCCommandInterface {
      */
     @Override
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length == 4) {
-            String bot = args[1];
-            String channelName = args[2];
-            if (plugin.ircBots.containsKey(bot)) {
-                // #channel, user
-                String nick = args[3];
-                String mask = nick;
-                Channel channel = plugin.ircBots.get(bot).getChannel(channelName);
-                if (channel != null) {
-                    for (User user : channel.getUsers()) {
-                        if (user.getNick().equalsIgnoreCase(nick)) {
-                            mask = "*!*" + user.getLogin() + "@" + user.getHostmask();
+        BotsAndChannels bac;
+        int idx;
+
+        if (args.length >= 4) {
+            bac = new BotsAndChannels(plugin, sender, args[1], args[2]);
+            idx = 3;
+        } else if (args.length == 2) {
+            bac = new BotsAndChannels(plugin, sender);
+            idx = 1;
+        } else {
+            sender.sendMessage(fullUsage);
+            return;
+        }
+        if (bac.bot.size() > 0 && bac.channel.size() > 0) {
+            for (String botName : bac.bot) {
+                for (String channelName : bac.channel) {
+                    for (int i = idx; i < args.length; i++) {
+
+                        String nick = args[i];
+                        String mask = nick;
+                        Channel channel = plugin.ircBots.get(botName).getChannel(channelName);
+                        if (channel != null) {
+                            for (User user : channel.getUsers()) {
+                                if (user.getNick().equalsIgnoreCase(nick)) {
+                                    mask = "*!*" + user.getLogin() + "@" + user.getHostmask();
+                                }
+                            }
+                        }
+                        if (mask.split("[\\!\\@]", 3).length == 3) {
+                            plugin.ircBots.get(botName).addVoice(channelName, mask, sender);
+                            plugin.ircBots.get(botName).voiceIrcUsers(channelName);
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "Invalid user or mask: "
+                                    + ChatColor.WHITE + mask);
                         }
                     }
                 }
-                if (mask.split("[\\!\\@]", 3).length == 3) {
-                    plugin.ircBots.get(bot).addVoice(channelName, mask, sender);
-                    plugin.ircBots.get(bot).voiceIrcUsers(channelName);
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Invalid user or mask: " 
-                            + ChatColor.WHITE + mask);
-                }
-            } else {
-                sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
             }
-        } else {
-            sender.sendMessage(fullUsage);
         }
     }
 

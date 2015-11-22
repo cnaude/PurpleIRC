@@ -19,7 +19,9 @@ package com.cnaude.purpleirc;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -30,14 +32,13 @@ import org.bukkit.plugin.Plugin;
  * @author Chris Naude We have to implement our own CommandSender so that we can
  * receive output from the command dispatcher.
  */
-public class IRCCommandSender implements CommandSender {
+public class IRCConsoleCommandSender implements ConsoleCommandSender {
 
     private final PurpleBot ircBot;
     private final String target;
     private final PurpleIRC plugin;
     private final boolean ctcpResponse;
     private final String name;
-    private final String template;
 
     /**
      *
@@ -46,7 +47,7 @@ public class IRCCommandSender implements CommandSender {
     @Override
     public void sendMessage(String message) {
         plugin.logDebug("sendMessage: " + message);
-        addMessageToQueue(template.replace("%RESULT%", message));
+        addMessageToQueue(message);
     }
 
     /**
@@ -57,7 +58,7 @@ public class IRCCommandSender implements CommandSender {
     public void sendMessage(String[] messages) {
         for (String message : messages) {
             plugin.logDebug("sendMessage[]: " + message);
-            addMessageToQueue(template.replace("%RESULT%", message));
+            addMessageToQueue(message);
         }
     }
 
@@ -66,23 +67,21 @@ public class IRCCommandSender implements CommandSender {
                 plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
 
-     /**
+    /**
      *
      * @param ircBot
      * @param target
      * @param plugin the PurpleIRC plugin
      * @param ctcpResponse
      * @param name
-     * @param template
      */
-    public IRCCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse, String name, String template) {
+    public IRCConsoleCommandSender(PurpleBot ircBot, String target, PurpleIRC plugin, boolean ctcpResponse, String name) {
         super();
         this.target = target;
         this.ircBot = ircBot;
         this.plugin = plugin;
         this.ctcpResponse = ctcpResponse;
         this.name = name;
-        this.template = template;
     }
 
     /**
@@ -152,82 +151,74 @@ public class IRCCommandSender implements CommandSender {
         return true;
     }
 
-    /**
-     *
-     */
+    @Override
+    public void sendRawMessage(String string) {
+        plugin.logDebug("sendRawMessage: " + string);
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String string, boolean bln) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String string, boolean bln, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeAttachment(PermissionAttachment pa) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public void recalculatePermissions() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param arg0
-     */
-    @Override
-    public void removeAttachment(final PermissionAttachment arg0) {
-    }
-
-    /**
-     *
-     * @return
-     */
     @Override
     public boolean isOp() {
-        return true;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param op
-     */
     @Override
-    public void setOp(final boolean op) {
+    public void setOp(boolean bln) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param arg0
-     * @return
-     */
     @Override
-    public PermissionAttachment addAttachment(final Plugin arg0) {
-        return null;
+    public boolean isConversing() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param arg0
-     * @param arg1
-     * @return
-     */
     @Override
-    public PermissionAttachment addAttachment(final Plugin arg0, final int arg1) {
-        return null;
+    public void acceptConversationInput(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param arg0
-     * @param arg1
-     * @param arg2
-     * @return
-     */
     @Override
-    public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2) {
-        return null;
+    public boolean beginConversation(Conversation c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     *
-     * @param arg0
-     * @param arg1
-     * @param arg2
-     * @param arg3
-     * @return
-     */
     @Override
-    public PermissionAttachment addAttachment(final Plugin arg0, final String arg1, final boolean arg2, final int arg3) {
-        return null;
+    public void abandonConversation(Conversation c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void abandonConversation(Conversation c, ConversationAbandonedEvent cae) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

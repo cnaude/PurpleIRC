@@ -59,6 +59,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import me.botsko.prism.actionlibs.QueryParameters;
 import me.botsko.prism.events.BlockStateChange;
+import org.apache.commons.io.input.Tailer;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -147,6 +148,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<String> townyChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
+    public CaseInsensitiveMap<Collection<String>> banList;
     public CaseInsensitiveMap<Collection<String>> voicesList;
     public CaseInsensitiveMap<Collection<String>> worldList;
     public CaseInsensitiveMap<Collection<String>> muteList;
@@ -187,11 +189,16 @@ public final class PurpleBot {
     public CaseInsensitiveMap<String> linkRequests;
     public CaseInsensitiveMap<Collection<String>> remotePlayers;
     public CaseInsensitiveMap<CaseInsensitiveMap<String>> remoteServerInfo;
+    private LogTailer tailer;
+    private boolean tailerEnabled;
+    private String tailerFile;
+    private String tailerRecipient;
+    private boolean tailerCtcp;
 
     /**
      *
      * @param file
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public PurpleBot(File file, PurpleIRC plugin) {
         this.rwl = new ReentrantReadWriteLock();
@@ -213,6 +220,7 @@ public final class PurpleBot {
         this.muteList = new CaseInsensitiveMap<>();
         this.worldList = new CaseInsensitiveMap<>();
         this.opsList = new CaseInsensitiveMap<>();
+        this.banList = new CaseInsensitiveMap<>();
         this.voicesList = new CaseInsensitiveMap<>();
         this.heroChannel = new CaseInsensitiveMap<>();
         this.townyChannel = new CaseInsensitiveMap<>();
@@ -273,6 +281,9 @@ public final class PurpleBot {
     }
 
     public void buildBot(boolean reload) {
+        if (tailer != null) {
+            tailer.stopTailer();
+        }
         Configuration.Builder configBuilder = new Configuration.Builder()
                 .setName(botNick)
                 .setLogin(botLogin)
@@ -352,6 +363,15 @@ public final class PurpleBot {
             plugin.logInfo("Auto-connect is disabled. To connect: /irc connect " + bot.getNick());
         }
         plugin.logDebug("Max line length: " + configBuilder.getMaxLineLength());
+        if (tailerEnabled && !tailerFile.isEmpty() && !tailerRecipient.isEmpty()) {
+            tailer = new LogTailer(this, plugin, tailerRecipient, tailerCtcp, tailerFile);
+        }
+    }
+
+    protected void stopTailer() {
+        if (tailer != null) {
+            tailer.stopTailer();
+        }
     }
 
     private void addListeners() {
@@ -711,6 +731,7 @@ public final class PurpleBot {
             plugin.logDebug("Quit Message => " + quitMessage);
             botChannels.clear();
             opsList.clear();
+            banList.clear();
             voicesList.clear();
             muteList.clear();
             enabledMessages.clear();
@@ -773,6 +794,12 @@ public final class PurpleBot {
             if (channelCmdNotifyRecipients.isEmpty()) {
                 plugin.logInfo(" No command recipients defined.");
             }
+
+            // load tailer settings
+            tailerEnabled = config.getBoolean("file-tailer.enabled", false);
+            tailerFile = config.getString("file-tailer.file", "server.log");
+            tailerRecipient = config.getString("file-tailer.recipient", "");
+            tailerCtcp = config.getBoolean("file-tailer.ctcp", false);
 
             // build command notify ignore list
             for (String command : config.getStringList("command-notify.ignore")) {
@@ -871,6 +898,19 @@ public final class PurpleBot {
                     opsList.put(channelName, cOps);
                     if (opsList.isEmpty()) {
                         plugin.logInfo("No channel ops defined.");
+                    }
+
+                    // build channel ban list
+                    Collection<String> cBans = new ArrayList<>();
+                    for (String channelBan : config.getStringList("channels." + enChannelName + ".banlist")) {
+                        if (!cBans.contains(channelBan)) {
+                            cBans.add(channelBan);
+                        }
+                        plugin.logDebug("  Channel Ban => " + channelBan);
+                    }
+                    banList.put(channelName, cBans);
+                    if (banList.isEmpty()) {
+                        plugin.logInfo("No channel bans defined.");
                     }
 
                     // build channel voice list
@@ -1564,7 +1604,12 @@ public final class PurpleBot {
                     continue;
                 }
             }
-            if (isMessageEnabled(channelName, TemplateName.GAME_JOIN)
+            if (isMessageEnabled(channelName, TemplateName.GAME_FIRST_JOIN)
+                    && !player.hasPlayedBefore()) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(this, channelName, player, plugin
+                                .getMsgTemplate(botNick, channelName, TemplateName.GAME_FIRST_JOIN), message));
+            } else if (isMessageEnabled(channelName, TemplateName.GAME_JOIN)
                     && isPlayerInValidWorld(player, channelName)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(this, channelName, player, plugin
@@ -1856,6 +1901,24 @@ public final class PurpleBot {
      * @param userMask
      * @param sender
      */
+    public void addBan(String channelName, String userMask, CommandSender sender) {
+        if (banList.get(channelName).contains(userMask)) {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is already in the ban list.");
+        } else {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been added to the ban list.");
+            banList.get(channelName).add(userMask);
+        }
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
+    }
+
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
     public void addVoice(String channelName, String userMask, CommandSender sender) {
         if (voicesList.get(channelName).contains(userMask)) {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
@@ -1877,13 +1940,31 @@ public final class PurpleBot {
     public void removeOp(String channelName, String userMask, CommandSender sender) {
         if (opsList.get(channelName).contains(userMask)) {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
-                    + ChatColor.RESET + " has been removed to the ops list.");
+                    + ChatColor.RESET + " has been removed from the ops list.");
             opsList.get(channelName).remove(userMask);
         } else {
             sender.sendMessage("User mask " + ChatColor.WHITE + userMask
                     + ChatColor.RESET + " is not in the ops list.");
         }
         saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".ops", opsList.get(channelName));
+    }
+
+    /**
+     *
+     * @param channelName
+     * @param userMask
+     * @param sender
+     */
+    public void removeBan(String channelName, String userMask, CommandSender sender) {
+        if (banList.get(channelName).contains(userMask)) {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " has been removed from the ban list.");
+            banList.get(channelName).remove(userMask);
+        } else {
+            sender.sendMessage("User mask " + ChatColor.WHITE + userMask
+                    + ChatColor.RESET + " is not in the ban list.");
+        }
+        saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".banlist", banList.get(channelName));
     }
 
     /**
@@ -1919,6 +2000,32 @@ public final class PurpleBot {
                     return;
                 }
             }
+        }
+    }
+
+    /**
+     *
+     * @param channelName
+     * @param mask
+     */
+    public void ban(String channelName, String mask) {
+        Channel channel;
+        channel = getChannel(channelName);
+        if (channel != null) {
+            channel.send().ban(mask);
+        }
+    }
+
+    /**
+     *
+     * @param channelName
+     * @param mask
+     */
+    public void unBan(String channelName, String mask) {
+        Channel channel;
+        channel = getChannel(channelName);
+        if (channel != null) {
+            channel.send().unBan(mask);
         }
     }
 
@@ -1988,6 +2095,25 @@ public final class PurpleBot {
             for (User user : channel.getUsers()) {
                 if (user.getNick().equals(nick)) {
                     channel.send().kick(user);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param channelName
+     * @param nick
+     * @param reason
+     */
+    public void kick(String channelName, String nick, String reason) {
+        Channel channel;
+        channel = getChannel(channelName);
+        if (channel != null) {
+            for (User user : channel.getUsers()) {
+                if (user.getNick().equals(nick)) {
+                    channel.send().kick(user, reason);
                     return;
                 }
             }
@@ -2362,6 +2488,26 @@ public final class PurpleBot {
             if (checkUserMask(user, userMask)) {
                 plugin.logInfo("Giving operator status to " + user.getNick() + " on " + channelName);
                 channel.send().op(user);
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param channel
+     * @param user
+     */
+    public void banIrcUser(Channel channel, User user) {
+        String channelName = channel.getName();
+        if (user.getNick().equals(botNick)) {
+            return;
+        }
+        for (String userMask : banList.get(channelName)) {
+            if (checkUserMask(user, userMask)) {
+                plugin.logInfo("Setting +b for " + userMask + " on " + channelName);
+                ban(channelName, userMask);
+                kick(channelName, user.getNick(), "Banned");
                 break;
             }
         }
@@ -3364,7 +3510,7 @@ public final class PurpleBot {
             if (joinNoticeMessage.startsWith("/")) {
                 plugin.commandQueue.add(new IRCCommand(
                         new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE", "%RESULT%"),
-                        //                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
+                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
                         myMessage.trim().substring(1)));
             } else if (joinNoticeCtcp) {
                 asyncCTCPMessage(target, myMessage);

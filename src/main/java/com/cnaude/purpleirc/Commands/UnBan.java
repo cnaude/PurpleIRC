@@ -16,8 +16,8 @@
  */
 package com.cnaude.purpleirc.Commands;
 
-import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -25,19 +25,19 @@ import org.bukkit.command.CommandSender;
  *
  * @author Chris Naude
  */
-public class Connect implements IRCCommandInterface {
+public class UnBan implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "([bot])";
-    private final String desc = "Connect to configured IRC server.";
-    private final String name = "connect";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String usage = "([bot]) ([channel]) [user(s)]";
+    private final String desc = "Unban IRC user(s).";
+    private final String name = "unban";
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
      * @param plugin the PurpleIRC plugin
      */
-    public Connect(PurpleIRC plugin) {
+    public UnBan(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -48,20 +48,32 @@ public class Connect implements IRCCommandInterface {
      */
     @Override
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length == 1) {
-            for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.asyncConnect(sender);
-            }
+        BotsAndChannels bac;
+        int idx;
+
+        if (args.length >= 4) {
+            bac = new BotsAndChannels(plugin, sender, args[1], args[2]);
+            idx = 3;
         } else if (args.length == 2) {
-            String bot = args[1];
-            if (plugin.ircBots.containsKey(bot)) {
-                plugin.ircBots.get(bot).asyncConnect(sender);
-            } else {
-                sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
-            }
+            bac = new BotsAndChannels(plugin, sender);
+            idx = 1;
         } else {
             sender.sendMessage(fullUsage);
+            return;
         }
+        if (bac.bot.size() > 0 && bac.channel.size() > 0) {
+            for (String botName : bac.bot) {
+                for (String channelName : bac.channel) {
+                    for (int i = idx; i < args.length; i++) {
+                        plugin.ircBots.get(botName).unBan(channelName, args[i]);
+                        sender.sendMessage("Setting -b for "
+                                + ChatColor.WHITE + args[i]
+                                + ChatColor.RESET + " on "
+                                + ChatColor.WHITE + channelName);
+                    }
+                }
+            }
+        }    
     }
 
     @Override

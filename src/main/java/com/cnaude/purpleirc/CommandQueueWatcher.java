@@ -19,6 +19,7 @@ package com.cnaude.purpleirc;
 import com.cnaude.purpleirc.Events.IRCCommandEvent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandException;
 
 /**
@@ -33,7 +34,7 @@ public class CommandQueueWatcher {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public CommandQueueWatcher(final PurpleIRC plugin) {
         this.plugin = plugin;
@@ -54,8 +55,25 @@ public class CommandQueueWatcher {
         IRCCommand ircCommand = queue.poll();
         if (ircCommand != null) {
             try {
-                plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
-                plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+                String cmd = ircCommand.getGameCommand().split(" ")[0];
+                boolean isCommandBookCommand = false;
+                plugin.logDebug("CMD: " + cmd);
+                if (plugin.commandBookHook != null) {
+                    isCommandBookCommand = plugin.commandBookHook.isCommandBookCommand(cmd);
+                    plugin.logDebug("Is this is a CommandBook command? " + Boolean.toString(isCommandBookCommand));
+                }
+                if (plugin.getServer().getVersion().contains("MC: 1.8") 
+                        && plugin.getServer().getVersion().contains("Spigot")
+                        && plugin.getServer().getPluginCommand(cmd) == null
+                        && !isCommandBookCommand) {
+                    plugin.logDebug("Dispatching command as ConsoleSender: " + ircCommand.getGameCommand());
+
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCConsoleCommandSender(), ircCommand.getGameCommand());
+                    ircCommand.getIRCConsoleCommandSender().sendMessage("Command sent: " + ircCommand.getGameCommand());                    
+                } else {
+                    plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+                }
             } catch (CommandException ce) {
                 plugin.logError("Error running command: " + ce.getMessage());
             }

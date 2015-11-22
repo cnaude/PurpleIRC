@@ -20,24 +20,26 @@ import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 /**
  *
  * @author Chris Naude
  */
-public class DeVoice implements IRCCommandInterface {
+public class Ban implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
     private final String usage = "([bot]) ([channel]) [user(s)]";
-    private final String desc = "De-voice IRC user(s).";
-    private final String name = "devoice";
+    private final String desc = "Ban an IRC user from a channel.";
+    private final String name = "ban";
     private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
      * @param plugin the PurpleIRC plugin
      */
-    public DeVoice(PurpleIRC plugin) {
+    public Ban(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -65,15 +67,33 @@ public class DeVoice implements IRCCommandInterface {
             for (String botName : bac.bot) {
                 for (String channelName : bac.channel) {
                     for (int i = idx; i < args.length; i++) {
-                        plugin.ircBots.get(botName).deVoice(channelName, args[i]);
-                        sender.sendMessage("Removing voice status from "
-                                + ChatColor.WHITE + args[i]
-                                + ChatColor.RESET + " in "
+                        
+                        String nick = args[i];
+                        String mask = nick;
+                        Channel channel = plugin.ircBots.get(botName).getChannel(channelName);
+                        if (channel != null) {
+                            for (User user : channel.getUsers()) {
+                                if (user.getNick().equalsIgnoreCase(nick)) {
+                                    mask = "*!*" + user.getLogin() + "@" + user.getHostmask();
+                                }
+                            }
+                        }
+                        if (mask.split("[\\!\\@]", 3).length == 3) {
+                            plugin.ircBots.get(botName).ban(channelName, mask);
+                            plugin.ircBots.get(botName).kick(channelName, nick, "Banned");
+                            sender.sendMessage("Setting +b for " 
+                                + ChatColor.WHITE + mask
+                                + ChatColor.RESET + " on "
                                 + ChatColor.WHITE + channelName);
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "Invalid user or mask: "
+                                    + ChatColor.WHITE + mask);
+                        }
+
                     }
                 }
             }
-        }    
+        }
     }
 
     @Override

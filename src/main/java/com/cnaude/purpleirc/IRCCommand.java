@@ -18,22 +18,26 @@ package com.cnaude.purpleirc;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class IRCCommand {
-    final private IRCCommandSender sender;
-    final private String command;
-    
+
+    private final IRCCommandSender sender;
+    private final IRCConsoleCommandSender consoleSender;
+    private final String command;
+
     /**
      *
      * @param sender
+     * @param consoleSender
      * @param command
      */
-    public IRCCommand(IRCCommandSender sender, String command) {
+    public IRCCommand(IRCCommandSender sender, IRCConsoleCommandSender consoleSender, String command) {
         this.sender = sender;
+        this.consoleSender = consoleSender;
         this.command = command;
     }
-    
+
     /**
      *
      * @return
@@ -41,7 +45,15 @@ public class IRCCommand {
     public IRCCommandSender getIRCCommandSender() {
         return sender;
     }
-    
+
+    /**
+     *
+     * @return
+     */
+    public IRCConsoleCommandSender getIRCConsoleCommandSender() {
+        return consoleSender;
+    }
+
     /**
      *
      * @return

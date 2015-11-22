@@ -27,7 +27,7 @@ import org.pircbotx.User;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class PurpleTabCompleter implements TabCompleter {
 
@@ -35,7 +35,7 @@ public class PurpleTabCompleter implements TabCompleter {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public PurpleTabCompleter(final PurpleIRC plugin) {
         this.plugin = plugin;
@@ -71,11 +71,11 @@ public class PurpleTabCompleter implements TabCompleter {
                                     continue;
                                 }
                             }
-                            list.add(user.getNick());
+                                list.add(user.getNick());
+                            }
                         }
                     }
                 }
-            }
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (plugin.vanishHook != null) {
                     if (plugin.vanishHook.isVanished(player)) {

@@ -32,7 +32,7 @@ import org.pircbotx.User;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class IRCMessageHandler {
 
@@ -40,7 +40,7 @@ public class IRCMessageHandler {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public IRCMessageHandler(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -232,8 +232,9 @@ public class IRCMessageHandler {
                                     try {
                                         plugin.commandQueue.add(new IRCCommand(
                                                 new IRCCommandSender(ircBot, target, plugin, ctcpResponse, senderName, outputTemplate),
-                                                //new IRCConsoleCommandSender(ircBot, target, plugin, ctcpResponse, senderName),
-                                                gameCommand.trim()));
+                                                new IRCConsoleCommandSender(ircBot, target, plugin, ctcpResponse, senderName),
+                                                gameCommand.trim()                                                
+                                        ));
                                     } catch (Exception ex) {
                                         plugin.logError(ex.getMessage());
                                     }

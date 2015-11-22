@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class BotsAndChannels {
 
@@ -31,7 +31,7 @@ public class BotsAndChannels {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param sender
      * @param botName
      * @param channelName
@@ -39,7 +39,7 @@ public class BotsAndChannels {
     public BotsAndChannels(PurpleIRC plugin, CommandSender sender, String botName, String channelName) {
         if (plugin.ircBots.containsKey(botName)) {
             bot.add(botName);
-            if (plugin.ircBots.get(botName).isValidChannel(channelName)) {           
+            if (plugin.ircBots.get(botName).isValidChannel(channelName)) {
                 channel.add(channelName);
             } else {
                 sender.sendMessage(plugin.invalidChannelName.replace("%CHANNEL%", channelName));
@@ -51,7 +51,24 @@ public class BotsAndChannels {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
+     * @param sender
+     * @param botName
+     */
+    public BotsAndChannels(PurpleIRC plugin, CommandSender sender, String botName) {
+        if (plugin.ircBots.containsKey(botName)) {
+            bot.add(botName);
+            for (String channelName : plugin.ircBots.get(botName).botChannels) {
+                channel.add(channelName);
+            }
+        } else {
+            sender.sendMessage(plugin.invalidBotName.replace("%BOT%", botName));
+        }
+    }
+
+    /**
+     *
+     * @param plugin the PurpleIRC plugin
      * @param sender
      */
     public BotsAndChannels(PurpleIRC plugin, CommandSender sender) {
