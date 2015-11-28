@@ -194,6 +194,10 @@ public final class PurpleBot {
     private String tailerFile;
     private String tailerRecipient;
     private boolean tailerCtcp;
+    /**
+     * Map of player names to IRC nicks.
+     */
+    public CaseInsensitiveMap<String> ircPrivateMsgMap;
 
     /**
      *
@@ -257,6 +261,7 @@ public final class PurpleBot {
         this.linkRequests = new CaseInsensitiveMap<>();
         this.remotePlayers = new CaseInsensitiveMap<>();
         this.remoteServerInfo = new CaseInsensitiveMap<>();
+        this.ircPrivateMsgMap = new CaseInsensitiveMap<>();
         config = new YamlConfiguration();
         goodBot = loadConfig();
         if (goodBot) {
@@ -1433,6 +1438,23 @@ public final class PurpleBot {
             if (isMessageEnabled(channelName, messageType)) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .reportRTSTokenizer(sender, message, plugin.getMsgTemplate(botNick, channelName, messageType)));
+            }
+        }
+    }
+
+    public void nTheEndNotify(String messages[], String botNick, String messageType) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String message : messages) {
+            for (String channelName : botChannels) {
+                if (isMessageEnabled(channelName, messageType)) {
+                    asyncIRCMessage(
+                            channelName,
+                            plugin.tokenizer.gameChatToIRCTokenizer(
+                                    plugin.getMsgTemplate(botNick, channelName, messageType),
+                                    message));
+                }
             }
         }
     }
@@ -2805,8 +2827,30 @@ public final class PurpleBot {
         }
     }
 
-    // Send chat messages from IRC to player
     /**
+     * Send chat messages from IRC to player.
+     *
+     * @param user
+     * @param channel
+     * @param target
+     * @param message
+     */
+    public void playerReplyChat(User user, org.pircbotx.Channel channel, String target, String message) {
+        if (message == null) {
+            plugin.logDebug("H: NULL MESSAGE");
+            asyncIRCMessage(target, "No message specified!");
+            return;
+        }
+        for (String name : ircPrivateMsgMap.keySet()) {
+            if (ircPrivateMsgMap.get(name).equals(target)) {
+                playerChat(user, channel, target, name + " " + message);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Send chat messages from IRC to player.
      *
      * @param user
      * @param channel
@@ -2841,6 +2885,7 @@ public final class PurpleBot {
                         }
                         plugin.logDebug("Tokenized message: " + t);
                         player.sendMessage(t);
+                        ircPrivateMsgMap.put(pName, user.getNick());
                     } else {
                         asyncIRCMessage(target, "Player is offline: " + pName);
                     }
@@ -3201,6 +3246,7 @@ public final class PurpleBot {
         String msg = plugin.tokenizer.gameChatToIRCTokenizer(sender,
                 plugin.getMsgTemplate(botNick, "", TemplateName.GAME_PCHAT), message);
         asyncIRCMessage(nick, msg);
+        ircPrivateMsgMap.put(sender.getName(), nick);
     }
 
     /**
