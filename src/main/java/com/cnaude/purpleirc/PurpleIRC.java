@@ -16,6 +16,7 @@
  */
 package com.cnaude.purpleirc;
 
+import com.cnaude.purpleirc.Events.IRCMessageEvent;
 import com.cnaude.purpleirc.GameListeners.AdminChatListener;
 import com.cnaude.purpleirc.GameListeners.CleverNotchListener;
 import com.cnaude.purpleirc.GameListeners.DeathMessagesListener;
@@ -115,6 +116,7 @@ public class PurpleIRC extends JavaPlugin {
     public static long startTime;
     public boolean identServerEnabled;
     private boolean autoSave;
+    public boolean pingFixTemplate;
     private final CaseInsensitiveMap<HashMap<String, String>> messageTmpl;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroChannelMessages;
     private final CaseInsensitiveMap<CaseInsensitiveMap<String>> ircHeroActionChannelMessages;
@@ -588,6 +590,7 @@ public class PurpleIRC extends JavaPlugin {
             logError(ex.getMessage());
         }
         autoSave = getConfig().getBoolean("save-on-shutdown", false);
+        pingFixTemplate = getConfig().getBoolean("chat-ping-fix", false);
         overrideMsgCmd = getConfig().getBoolean("override-msg-cmd", false);
         smsgAlias = getConfig().getString("smsg-alias", "/m");
         smsgReplyAlias = getConfig().getString("smsg-reply-alias", "/r");
@@ -1437,12 +1440,12 @@ public class PurpleIRC extends JavaPlugin {
 
         if (enabled) {
             String version = getServer().getPluginManager().getPlugin(name).getDescription().getVersion();
-            logInfo("Enabling " + name + " support.");
+            logInfo("Hook enabled: " + name);
             message = ChatColor.WHITE + "[" + ChatColor.GREEN + "Y" + ChatColor.WHITE + "]";
             message = message + " [" + ChatColor.GOLD + name + ChatColor.WHITE + "] ["
                     + ChatColor.GOLD + "v" + version + ChatColor.WHITE + "]";
         } else {
-            logInfo("Enabling " + name + " support.");
+            logInfo("Hook NOT enabled: " + name);
             message = ChatColor.WHITE + "[" + ChatColor.RED + "N" + ChatColor.WHITE + "]";
             message = message + " [" + ChatColor.GRAY + name + ChatColor.WHITE + "]";
         }
@@ -1659,6 +1662,7 @@ public class PurpleIRC extends JavaPlugin {
     }
 
     public void broadcastToGame(final String message, final String permission) {
+        getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission));
         if (broadcastChatToConsole) {
             logDebug("Broadcast All [" + permission + "]: " + message);
             getServer().broadcast(message, permission);
