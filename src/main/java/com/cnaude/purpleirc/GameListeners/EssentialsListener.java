@@ -25,7 +25,7 @@ import org.bukkit.event.Listener;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class EssentialsListener implements Listener {
 
@@ -33,7 +33,7 @@ public class EssentialsListener implements Listener {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public EssentialsListener(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -45,10 +45,17 @@ public class EssentialsListener implements Listener {
      */
     @EventHandler
     public void onAfkStatusChangeEvent(AfkStatusChangeEvent event) {
-        IUser user = event.getAffected();
+        final IUser user = event.getAffected();
         plugin.logDebug("AFK: " + user.getName() + ":" + user.isAfk());
-        for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.essentialsAFK(user.getBase(), !user.isAfk());
-        }
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                for (PurpleBot ircBot : plugin.ircBots.values()) {
+                    if (user.getBase().isOnline()) {
+                        ircBot.essentialsAFK(user.getBase(), !user.isAfk());
+                    }
+                }
+            }
+        }, 20);
     }
 }
