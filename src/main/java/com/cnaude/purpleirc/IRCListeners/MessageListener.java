@@ -25,7 +25,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class MessageListener extends ListenerAdapter {
 
@@ -34,7 +34,7 @@ public class MessageListener extends ListenerAdapter {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param ircBot
      */
     public MessageListener(PurpleIRC plugin, PurpleBot ircBot) {
@@ -54,17 +54,22 @@ public class MessageListener extends ListenerAdapter {
         User user = event.getUser();
 
         plugin.logDebug("Message caught <" + user.getNick() + ">: " + message);
-                
-        if (plugin.shortifyHook != null && ircBot.isShortifyEnabled(channel.getName())) {
-            plugin.logDebug("Shortifying message (before): " + message);
-            message = plugin.shortifyHook.shorten(message);
-            plugin.logDebug("Shortifying message (after): " + message);
-        } else {
-            plugin.logDebug("Shortify: false");
-        }
+        try {
+            if (plugin.shortifyHook != null && ircBot.isShortifyEnabled(channel.getName())) {
+                plugin.logDebug("Shortifying message (before): " + message);
+                message = plugin.shortifyHook.shorten(message);
+                plugin.logDebug("Shortifying message (after): " + message);
+            } else {
+                plugin.logDebug("Shortify: false");
+            }
 
-        if (ircBot.isValidChannel(channel.getName())) {
-            plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, false);
+            if (ircBot.isValidChannel(channel.getName())) {
+                plugin.ircMessageHandler.processMessage(ircBot, user, channel, message, false);
+            } else {
+                plugin.logDebug("Channel " + channel.getName() + " is not valid.");
+            }
+        } catch (Exception ex) {
+            plugin.logError("onMessage: " + ex.getMessage());
         }
     }
 }

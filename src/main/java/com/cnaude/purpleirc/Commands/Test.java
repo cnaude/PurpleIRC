@@ -28,7 +28,7 @@ import org.bukkit.command.CommandSender;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class Test implements IRCCommandInterface {
 
@@ -40,7 +40,7 @@ public class Test implements IRCCommandInterface {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public Test(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -82,7 +82,7 @@ public class Test implements IRCCommandInterface {
                     }
                 } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Testing " + playername);
-                sender.sendMessage("displayName     : " + plugin.getDisplayName(name));
+                    sender.sendMessage("displayName     : " + plugin.getDisplayName(name));
                     sender.sendMessage("getGroupPrefix  : " + plugin.getGroupPrefix(plugin.defaultPlayerWorld, playername));
                     sender.sendMessage("getGroupSuffix  : " + plugin.getGroupSuffix(plugin.defaultPlayerWorld, playername));
                     sender.sendMessage("getPlayerPrefix : " + plugin.getPlayerPrefix(plugin.defaultPlayerWorld, playername));

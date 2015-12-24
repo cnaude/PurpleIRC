@@ -24,6 +24,8 @@ import com.dthielke.herochat.ChannelManager;
 import com.gmail.nossr50.util.player.UserManager;
 import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -215,6 +217,34 @@ public class ChatTokenizer {
                 .replace("%HEROCHANNEL%", hChannel)
                 .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
                 .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
+                .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
+                .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
+                .replace("%MESSAGE%", message)
+                .replace("%CHANNEL%", channel.getName()));
+    }
+
+    /**
+     * IRC to Mineverse chat channel tokenizer
+     *
+     * @param ircBot
+     * @param user
+     * @param channel
+     * @param template
+     * @param message
+     * @param hChannel
+     * @return
+     */
+    public String ircChatToMineverseChatTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template, String message, String hChannel) {
+        String ircNick = user.getNick();
+        String tmpl;
+        Player player = this.getPlayer(ircNick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(ircNick, template);
+        }
+        return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(tmpl, user, ircBot)
+                .replace("%MVCHANNEL%", hChannel)
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
                 .replace("%MESSAGE%", message)
@@ -480,13 +510,13 @@ public class ChatTokenizer {
         String template;
         switch (chatMode) {
             case "public":
-                template = plugin.getMsgTemplate(botNick, "", TemplateName.FACTION_PUBLIC_CHAT);
+                template = plugin.getMessageTemplate(botNick, "", TemplateName.FACTION_PUBLIC_CHAT);
                 break;
             case "ally":
-                template = plugin.getMsgTemplate(botNick, "", TemplateName.FACTION_ALLY_CHAT);
+                template = plugin.getMessageTemplate(botNick, "", TemplateName.FACTION_ALLY_CHAT);
                 break;
             case "enemy":
-                template = plugin.getMsgTemplate(botNick, "", TemplateName.FACTION_ENEMY_CHAT);
+                template = plugin.getMessageTemplate(botNick, "", TemplateName.FACTION_ENEMY_CHAT);
                 break;
             default:
                 return "";
@@ -547,6 +577,23 @@ public class ChatTokenizer {
                 .replace("%TITANCHANNEL%", tChannel)
                 .replace("%TITANCOLOR%", plugin.colorConverter.gameColorsToIrc(tColor))
                 .replace("%CHANNEL%", tChannel);
+    }
+
+    /**
+     * MineverseChat to IRC
+     *
+     * @param player
+     * @param mvChannel
+     * @param mvColor
+     * @param message
+     * @param template
+     * @return
+     */
+    public String mineverseChatTokenizer(Player player, String mvChannel, String mvColor, String message, String template) {
+        return gameChatToIRCTokenizer(player, template, message)
+                .replace("%MVCHANNEL%", mvChannel)
+                .replace("%MVCOLOR%", plugin.colorConverter.gameColorsToIrc(mvColor))
+                .replace("%CHANNEL%", mvChannel);
     }
 
     /**
@@ -623,6 +670,76 @@ public class ChatTokenizer {
                 .replace("%TICKETNUMBER%", String.valueOf(id))
                 .replace("%RTSNAME%", name)
                 .replace("%RTSWORLD%", world));
+    }
+
+    /**
+     * SimpleTicketManager notifications to IRC
+     *
+     * @param uuid
+     * @param template
+     * @param ticket
+     * @return
+     */
+    public String simpleTicketTokenizer(UUID uuid, String template,
+            uk.co.joshuawoolley.simpleticketmanager.ticketsystem.Ticket ticket) {
+        Player player = Bukkit.getPlayer(uuid);
+        String playerName;
+        String displayName;
+        if (player == null) {
+            playerName = uuid.toString();
+            displayName = uuid.toString();
+        } else {
+            playerName = player.getName();
+            displayName = player.getCustomName();
+        }
+        String description = ticket.getDescription();
+        String reason = ticket.getReason();
+        String modUUID = ticket.getAssignedTo();
+        String modName;
+        String displayModName;
+        String name = ticket.getReportingPlayer();
+        String world = ticket.getWorld();
+        String modComment = "";
+        int id = ticket.getTicketId();
+        if (description == null) {
+            description = "";
+        }
+        Player modPlayer = null;
+        if (modUUID != null) {
+            modPlayer = Bukkit.getPlayer(UUID.fromString(modUUID));
+        }
+        if (modPlayer != null) {
+            modName = modPlayer.getName();
+            displayModName = modPlayer.getDisplayName();
+        } else {
+            modName = modUUID;
+            displayModName = modName;
+        }
+        if (name == null) {
+            name = "";
+        }
+        if (world == null) {
+            world = "";
+        }
+        if (modComment == null) {
+            modComment = "";
+        }
+        if (modName == null) {
+            modName = "";
+        }
+        if (displayModName == null) {
+            displayModName = "";
+        }
+        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(playerName, template)
+                .replace("%MESSAGE%", description)
+                .replace("%MODNAME%", modName)
+                .replace("%DISPLAYMODNAME%", displayModName)
+                .replace("%MODCOMMENT%", modComment)
+                .replace("%TICKETNUMBER%", String.valueOf(id))
+                .replace("%NAME%", name)
+                .replace("%DISPLAYNAME%", displayName)
+                .replace("%REASON%", reason)
+                .replace("%WORLD%", world));
     }
 
     /**
@@ -889,13 +1006,13 @@ public class ChatTokenizer {
                 .replace("%TARGET%", targetPlayer.getName())
                 .replace("%MESSAGE%", message);
     }
-    
+
     public String logTailerTokenizer(String file, String line, String template) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%FILE%", file)
                 .replace("%LINE%", line));
     }
-    
+
     public String addZeroWidthSpace(String s) {
         if (s.length() > 1) {
             String a = s.substring(0, 1);

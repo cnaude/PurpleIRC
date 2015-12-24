@@ -23,23 +23,23 @@ import org.pircbotx.hooks.events.MotdEvent;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class MotdListener extends ListenerAdapter {
-    
+
     PurpleIRC plugin;
     PurpleBot ircBot;
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param ircBot
      */
     public MotdListener(PurpleIRC plugin, PurpleBot ircBot) {
         this.plugin = plugin;
         this.ircBot = ircBot;
     }
-    
+
     /**
      *
      * @param event

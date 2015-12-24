@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class TownyChatHook {
 
@@ -40,7 +40,7 @@ public class TownyChatHook {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public TownyChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -112,7 +112,7 @@ public class TownyChatHook {
                 String townyChannelName = chat.getChannelsHandler().getActiveChannel(player, ct).getName();
                 if (townyChannel.equalsIgnoreCase(townyChannelName)) {
                     plugin.logDebug("TC [" + townyChannelName + "]: Sending message to " + player + ": " + message);
-                    player.sendMessage(message);
+                    player.sendMessage(message.replace("\u200B", ""));
                     break;
                 } else {
                     plugin.logDebug("TC " + townyChannelName + "]: invalid TC channel name for " + player);
@@ -137,7 +137,7 @@ public class TownyChatHook {
                         || ircBot.isMessageEnabled(channelName, TemplateName.TOWNY_CHANNEL_CHAT)) {
                     ircBot.asyncIRCMessage(channelName, plugin.tokenizer
                             .chatTownyChannelTokenizer(player, townyChannel, message,
-                                    plugin.getMsgTemplate(ircBot.botNick, channelName, TemplateName.TOWNY_CHANNEL_CHAT)));
+                                    plugin.getMessageTemplate(ircBot.botNick, channelName, TemplateName.TOWNY_CHANNEL_CHAT)));
                 }
             }
         }

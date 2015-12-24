@@ -66,7 +66,7 @@ public class IRCCommandSender implements CommandSender {
                 plugin.colorConverter.gameColorsToIrc(message), ctcpResponse));
     }
 
-     /**
+    /**
      *
      * @param ircBot
      * @param target

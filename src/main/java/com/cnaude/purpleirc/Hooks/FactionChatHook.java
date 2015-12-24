@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class FactionChatHook {
 
@@ -30,12 +30,12 @@ public class FactionChatHook {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public FactionChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
     }
-    
+
     /**
      *
      * @param player
@@ -43,7 +43,7 @@ public class FactionChatHook {
      */
     public String getChatMode(Player player) {
         String playerChatMode = null;
-        
+
         try {
             playerChatMode = FactionChatAPI.getChatMode(player);
             plugin.logDebug("fcHook => [CM: " + playerChatMode + "] [" + player.getName() + "]");
@@ -55,7 +55,7 @@ public class FactionChatHook {
         }
         return playerChatMode.toLowerCase();
     }
-    
+
     /**
      *
      * @param player
@@ -64,7 +64,7 @@ public class FactionChatHook {
     public String getFactionName(Player player) {
         String factionName = null;
         try {
-            factionName = FactionChatAPI.getFactionName(player);            
+            factionName = FactionChatAPI.getFactionName(player);
             plugin.logDebug("fcHook => [FN: " + factionName + "] [" + player.getName() + "]");
         } catch (Exception ex) {
             plugin.logError("fcHook ERROR: " + ex.getMessage());

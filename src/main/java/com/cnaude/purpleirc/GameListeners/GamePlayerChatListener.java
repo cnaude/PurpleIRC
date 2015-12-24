@@ -28,7 +28,7 @@ import org.pircbotx.User;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class GamePlayerChatListener implements Listener {
 
@@ -36,7 +36,7 @@ public class GamePlayerChatListener implements Listener {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public GamePlayerChatListener(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -49,9 +49,6 @@ public class GamePlayerChatListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
-        //if(plugin.isPluginEnabled("GriefPrevention")) {
-        //    return;
-        //}
         plugin.logDebug("ChatFormat [" + event.isCancelled() + "]: " + event.getFormat());
         if (message.startsWith(PurpleIRC.TOWNYTAG)) {
             event.setMessage(message.replace(PurpleIRC.TOWNYTAG, ""));
@@ -64,15 +61,15 @@ public class GamePlayerChatListener implements Listener {
             return;
         }
         if (plugin.adminPrivateChatHook != null) {
-        if (event.isCancelled() && plugin.adminPrivateChatHook.ac.toggledPlayers.contains(event.getPlayer().getName())) {
-            plugin.logDebug("Ignore AdminChat message due to event cancellation: " + event.getMessage());
-            return;
-        }
+            if (event.isCancelled() && plugin.adminPrivateChatHook.ac.toggledPlayers.contains(event.getPlayer().getName())) {
+                plugin.logDebug("Ignore AdminChat message due to event cancellation: " + event.getMessage());
+                return;
+            }
         }
         if (event.getPlayer().hasPermission("irc.message.gamechat")) {
             plugin.logDebug("Player " + event.getPlayer().getName() + " has permission irc.message.gamechat");
             for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.gameChat(event.getPlayer(), event.getMessage());
+                ircBot.gameChat(event);
             }
         } else {
             plugin.logDebug("Player " + event.getPlayer().getName() + " does not have irc.message.gamechat permission.");

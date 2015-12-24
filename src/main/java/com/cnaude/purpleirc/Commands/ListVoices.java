@@ -17,24 +17,25 @@
 package com.cnaude.purpleirc.Commands;
 
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.Utilities.BotsAndChannels;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class ListVoices implements IRCCommandInterface {
 
     private final PurpleIRC plugin;
-    private final String usage = "[bot] [channel]";
+    private final String usage = "([bot]) ([channel])";
     private final String desc = "List IRC user mask in auto-voice list.";
     private final String name = "listvoices";
-    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage; 
+    private final String fullUsage = ChatColor.WHITE + "Usage: " + ChatColor.GOLD + "/irc " + name + " " + usage;
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public ListVoices(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -47,24 +48,30 @@ public class ListVoices implements IRCCommandInterface {
      */
     @Override
     public void dispatch(CommandSender sender, String[] args) {
-        if (args.length == 3) {
-            String bot = args[1];
-            String channelName = args[2];
-            if (plugin.ircBots.containsKey(bot)) {
-                if (plugin.ircBots.get(bot).voicesList.containsKey(channelName)) {
-                    sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[  " + ChatColor.WHITE + channelName
-                            + ChatColor.LIGHT_PURPLE + " - " + ChatColor.WHITE + "Auto Voice Masks" + ChatColor.LIGHT_PURPLE + " ]-----");
-                    for (String userMask : plugin.ircBots.get(bot).voicesList.get(channelName)) {
-                        sender.sendMessage(" - " + userMask);
-                    }
-                } else {
-                    sender.sendMessage(plugin.invalidChannel.replace("%CHANNEL%", channelName));
-                }
-            } else {
-                sender.sendMessage(plugin.invalidBotName.replace("%BOT%", bot));
-            }
+        BotsAndChannels bac;
+
+        if (args.length >= 3) {
+            bac = new BotsAndChannels(plugin, sender, args[1], args[2]);
+        } else if (args.length >= 2) {
+            bac = new BotsAndChannels(plugin, sender, args[1]);
+        } else if (args.length == 1) {
+            bac = new BotsAndChannels(plugin, sender);
         } else {
             sender.sendMessage(fullUsage);
+            return;
+        }
+        if (bac.bot.size() > 0 && bac.channel.size() > 0) {
+            for (String botName : bac.bot) {
+                for (String channelName : bac.channel) {
+                    if (plugin.ircBots.get(botName).voicesList.containsKey(channelName)) {
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[  " + ChatColor.WHITE + channelName
+                                + ChatColor.LIGHT_PURPLE + " - " + ChatColor.WHITE + "Auto Voice Masks" + ChatColor.LIGHT_PURPLE + " ]-----");
+                        for (String userMask : plugin.ircBots.get(botName).voicesList.get(channelName)) {
+                            sender.sendMessage(" - " + userMask);
+                        }
+                    }
+                }
+            }
         }
     }
 

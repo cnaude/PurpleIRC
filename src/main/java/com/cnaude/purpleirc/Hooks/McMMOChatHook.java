@@ -16,18 +16,21 @@
  */
 package com.cnaude.purpleirc.Hooks;
 
+import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.TemplateName;
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.datatypes.party.Party;
 import com.gmail.nossr50.locale.LocaleLoader;
 import com.gmail.nossr50.party.PartyManager;
 import com.gmail.nossr50.runnables.party.PartyChatTask;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class McMMOChatHook {
 
@@ -36,7 +39,7 @@ public class McMMOChatHook {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public McMMOChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -48,13 +51,13 @@ public class McMMOChatHook {
             plugin.logDebug("[mcMMOChatHook:sendAdminMessage]: " + message);
             String chatPrefix = Config.getInstance().getAdminChatPrefix();
             message = LocaleLoader.formatString(chatPrefix, sender) + " " + message;
-            plugin.getServer().broadcast(message, "mcmmo.chat.adminchat");
+            plugin.broadcastToGame(message, "mcmmo.chat.adminchat");
         }
     }
 
     public void sendPartyMessage(String sender, String party, String message) {
         if (mcMMOPlugin != null) {
-            for (Party p : PartyAPI.getParties()) {                
+            for (Party p : PartyAPI.getParties()) {
                 if (p.getName().equalsIgnoreCase(party)) {
                     plugin.logDebug("[mcMMOChatHook:sendPartyMessage]: " + party + " : " + message);
                     new PartyChatTask(mcMMOPlugin, PartyManager.getParty(party), sender, sender, message).runTask(mcMMOPlugin);
@@ -63,5 +66,5 @@ public class McMMOChatHook {
             }
         }
     }
-    
+
 }

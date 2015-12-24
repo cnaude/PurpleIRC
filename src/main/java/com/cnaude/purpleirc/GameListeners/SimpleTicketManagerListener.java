@@ -18,15 +18,16 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import java.util.UUID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.dynmap.DynmapWebChatEvent;
+import uk.co.joshuawoolley.simpleticketmanager.events.SimpleTicketEvent;
 
 /**
  *
  * @author Chris Naude
  */
-public class DynmapListener implements Listener {
+public class SimpleTicketManagerListener implements Listener {
 
     private final PurpleIRC plugin;
 
@@ -34,7 +35,7 @@ public class DynmapListener implements Listener {
      *
      * @param plugin the PurpleIRC plugin
      */
-    public DynmapListener(PurpleIRC plugin) {
+    public SimpleTicketManagerListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -43,13 +44,13 @@ public class DynmapListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void onDynmapWebChatEvent(DynmapWebChatEvent event) {
-        String message = event.getMessage();
-        String name = event.getName();
-        String source = event.getSource();
-        plugin.logDebug("DynmapWebChat: " + source + " : " + name + ":" + message);
+    public void onSimpleTicketEvent(SimpleTicketEvent event) {
+        plugin.logDebug("STM: " + event.getAction());
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.dynmapWebChat(source, name, message);
+            ircBot.simpleTicketNotify(UUID.fromString(event.getTicket().getReportingPlayer()),
+                    event.getTicket(), ircBot.botNick, "stm-" + event.getAction());
         }
+
     }
+
 }

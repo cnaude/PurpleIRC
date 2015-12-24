@@ -30,7 +30,7 @@ public class BotWatcher {
     
     /**
      * Run the BotWatcher thread asynchronously at configured interval.
-     *
+     * 
      * @param plugin the PurpleIRC plugin
      */
     public BotWatcher(final PurpleIRC plugin) {

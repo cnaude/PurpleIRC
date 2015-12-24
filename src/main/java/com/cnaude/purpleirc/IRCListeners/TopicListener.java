@@ -26,7 +26,7 @@ import org.pircbotx.hooks.events.TopicEvent;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class TopicListener extends ListenerAdapter {
 
@@ -35,7 +35,7 @@ public class TopicListener extends ListenerAdapter {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param ircBot
      */
     public TopicListener(PurpleIRC plugin, PurpleBot ircBot) {
@@ -58,11 +58,11 @@ public class TopicListener extends ListenerAdapter {
             if (event.isChanged()) {
                 if (ircBot.enabledMessages.get(channel.getName()).contains(TemplateName.IRC_TOPIC)) {
                     String message = plugin.colorConverter.ircColorsToGame(
-                            plugin.getMsgTemplate(ircBot.botNick, channelName, TemplateName.IRC_TOPIC)
+                            plugin.getMessageTemplate(ircBot.botNick, channelName, TemplateName.IRC_TOPIC)
                             .replace("%NAME%", user.getNick())
                             .replace("%TOPIC%", event.getTopic())
                             .replace("%CHANNEL%", channel.getName()));
-                    plugin.logDebug("Sending topic notification due to " 
+                    plugin.logDebug("Sending topic notification due to "
                             + TemplateName.IRC_TOPIC + " being true: " + message);
                     plugin.broadcastToGame(message, "irc.message.topic");
                 }

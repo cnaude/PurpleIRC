@@ -23,7 +23,7 @@ import org.pircbotx.hooks.events.QuitEvent;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class QuitListener extends ListenerAdapter {
 
@@ -32,7 +32,7 @@ public class QuitListener extends ListenerAdapter {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param ircBot
      */
     public QuitListener(PurpleIRC plugin, PurpleBot ircBot) {
@@ -45,7 +45,7 @@ public class QuitListener extends ListenerAdapter {
      * @param event
      */
     @Override
-    public void onQuit(QuitEvent event) {        
+    public void onQuit(QuitEvent event) {
         String nick = event.getUser().getNick();
         for (String channelName : ircBot.channelNicks.keySet()) {
             if (ircBot.channelNicks.get(channelName).contains(nick)) {
@@ -58,4 +58,3 @@ public class QuitListener extends ListenerAdapter {
         }
     }
 }
-

@@ -22,7 +22,7 @@ import org.bukkit.metadata.MetadataValue;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class VanishHook {
 
@@ -30,7 +30,7 @@ public class VanishHook {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public VanishHook(PurpleIRC plugin) {
         this.plugin = plugin;
@@ -44,9 +44,7 @@ public class VanishHook {
     public boolean isVanished(Player player) {
         // Try SuperVanish first
         if (plugin.superVanishHook != null) {
-            boolean isPlayerVanish = plugin.superVanishHook.isVanished(player);
-            plugin.logDebug("isVanished: " + player.getName() + ":" + isPlayerVanish);
-            return isPlayerVanish;
+            return plugin.superVanishHook.isVanished(player);
         } else {
             // Fallback to other Vanish
             if (player.hasMetadata("vanished")) {

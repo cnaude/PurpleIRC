@@ -25,7 +25,7 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class NickChangeListener extends ListenerAdapter {
 
@@ -34,7 +34,7 @@ public class NickChangeListener extends ListenerAdapter {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      * @param ircBot
      */
     public NickChangeListener(PurpleIRC plugin, PurpleBot ircBot) {
@@ -58,7 +58,7 @@ public class NickChangeListener extends ListenerAdapter {
             if (channel != null) {
                 if (ircBot.enabledMessages.get(channelName).contains(TemplateName.IRC_NICK_CHANGE)) {
                     plugin.broadcastToGame(plugin.colorConverter.ircColorsToGame(
-                            plugin.getMsgTemplate(ircBot.botNick, channelName, TemplateName.IRC_NICK_CHANGE)                            
+                            plugin.getMessageTemplate(ircBot.botNick, channelName, TemplateName.IRC_NICK_CHANGE)                            
                             .replace("%NEWNICK%", newNick)
                             .replace("%OLDNICK%", oldNick)
                             .replace("%CHANNEL%", channelName)), "irc.message.nickchange");

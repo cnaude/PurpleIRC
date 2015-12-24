@@ -83,7 +83,7 @@ public class CommandHandlers implements CommandExecutor {
         commands.put("reloadbots", new ReloadBots(plugin));
         commands.put("reloadconfig", new ReloadConfig(plugin));
         commands.put("removeban", new RemoveBan(plugin));
-        commands.put("removeop", new RemoveOp(plugin));
+        commands.put("removeop", new RemoveOp(plugin));        
         commands.put("removevoice", new RemoveVoice(plugin));
         commands.put("save", new Save(plugin));
         commands.put("say", new Say(plugin));

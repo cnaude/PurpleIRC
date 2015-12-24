@@ -21,7 +21,7 @@ import org.dynmap.DynmapCommonAPI;
 
 /**
  *
- * @author cnaude
+ * @author Chris Naude
  */
 public class DynmapHook {
 
@@ -30,13 +30,13 @@ public class DynmapHook {
 
     /**
      *
-     * @param plugin
+     * @param plugin the PurpleIRC plugin
      */
     public DynmapHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        this.dynmapAPI = (DynmapCommonAPI)plugin.getServer().getPluginManager().getPlugin("dynmap");
+        this.dynmapAPI = (DynmapCommonAPI) plugin.getServer().getPluginManager().getPlugin("dynmap");
     }
-    
+
     /**
      *
      * @param nick
@@ -49,6 +49,6 @@ public class DynmapHook {
         if (message == null) {
             return;
         }
-         dynmapAPI.sendBroadcastToWeb(nick, message);
+        dynmapAPI.sendBroadcastToWeb(nick, message);
     }
 }

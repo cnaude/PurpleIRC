@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 cnaude
+ * Copyright (C) 2015 cnaude
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,37 +17,42 @@
 package com.cnaude.purpleirc.Hooks;
 
 import com.cnaude.purpleirc.PurpleIRC;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import mineverse.Aust1n46.chat.api.MineverseChatAPI;
+import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
  *
- * @author Chris Naude
+ * @author cnaude
  */
-public class GriefPreventionHook {
+public class MineverseChatHook {
 
     private final PurpleIRC plugin;
-    public final GriefPrevention gp;
 
     /**
      *
      * @param plugin the PurpleIRC plugin
      */
-    public GriefPreventionHook(PurpleIRC plugin) {
+    public MineverseChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        this.gp = (GriefPrevention) plugin.getServer().getPluginManager().getPlugin("GriefPrevention");
+
     }
 
-    public boolean isMuted(Player player) {
-        plugin.logDebug("GriefPrevention: " + player.getDisplayName());
-        if (gp != null) {
-            try {
-                return gp.dataStore.isSoftMuted(player.getUniqueId());
-            } catch (Exception ex) {
-                plugin.logError(ex.getMessage());
+    public void sendMessage(String channel, String message) {
+        if (channel.isEmpty() || message.isEmpty()) {
+            return;
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MineverseChatPlayer mcp = MineverseChatAPI.getMineverseChatPlayer(player);
+            if (mcp != null) {
+                for (String listen : mcp.getListening()) {
+                    if (listen.equalsIgnoreCase(channel)) {
+                        plugin.broadcastToPlayer(player, message, "irc.message.chat");
+                    }
+                }
             }
         }
-        return false;
     }
 
 }

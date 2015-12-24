@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * This thread checks each for users and updates the
  * internal lists.
- *
+ * 
  * @author Chris Naude 
  */
 public class ChannelWatcher {
