@@ -137,6 +137,12 @@
     </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
+      <artifactId>spigot-19</artifactId>
+      <version>1.9</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bukkit</groupId>
       <artifactId>spigot-184</artifactId>
       <version>1.8.4</version>
       <scope>provided</scope>
