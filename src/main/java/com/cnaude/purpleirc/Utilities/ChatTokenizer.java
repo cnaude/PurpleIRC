@@ -206,17 +206,26 @@ public class ChatTokenizer {
      */
     public String ircChatToHeroChatTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template, String message, ChannelManager channelManager, String hChannel) {
         String ircNick = user.getNick();
+        String heroNick = "";
+        String heroColor = "";
         String tmpl;
+        if (channelManager.getChannel(hChannel) == null) {
+            plugin.logError("Herochat channel is invalid: " + hChannel);
+        } else {
+            heroNick = channelManager.getChannel(hChannel).getNick();
+            heroColor = channelManager.getChannel(hChannel).getColor().toString();
+        }
         Player player = this.getPlayer(ircNick);
         if (player != null) {
             tmpl = playerTokenizer(player, template);
         } else {
             tmpl = playerTokenizer(ircNick, template);
         }
+        plugin.logDebug(message);
         return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(tmpl, user, ircBot)
                 .replace("%HEROCHANNEL%", hChannel)
-                .replace("%HERONICK%", channelManager.getChannel(hChannel).getNick())
-                .replace("%HEROCOLOR%", channelManager.getChannel(hChannel).getColor().toString())
+                .replace("%HERONICK%", heroNick)
+                .replace("%HEROCOLOR%", heroColor)
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
                 .replace("%MESSAGE%", message)
@@ -634,11 +643,11 @@ public class ChatTokenizer {
      */
     public String reportRTSTokenizer(String pName, String template, Ticket ticket) {
         String message = ticket.getMessage();
-        String modName = ticket.getModName();
+        String modName = ticket.getStaffName();
         String displayModName = "";
         String name = ticket.getName();
         String world = ticket.getWorld();
-        String modComment = ticket.getModComment();
+        String modComment = ticket.getComments().last().getComment();
         int id = ticket.getId();
         if (message == null) {
             message = "";
@@ -720,9 +729,6 @@ public class ChatTokenizer {
         }
         if (world == null) {
             world = "";
-        }
-        if (modComment == null) {
-            modComment = "";
         }
         if (modName == null) {
             modName = "";
