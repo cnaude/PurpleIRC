@@ -32,6 +32,7 @@ import com.cnaude.purpleirc.GameListeners.GamePlayerPlayerAchievementAwardedList
 import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
 import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
+import com.cnaude.purpleirc.GameListeners.IRCMessageListener;
 import com.cnaude.purpleirc.GameListeners.McMMOChatListener;
 import com.cnaude.purpleirc.GameListeners.VentureChatListener;
 import com.cnaude.purpleirc.GameListeners.NTheEndAgainListener;
@@ -42,14 +43,17 @@ import com.cnaude.purpleirc.GameListeners.ReportRTSListener;
 import com.cnaude.purpleirc.GameListeners.SimpleTicketManagerListener;
 import com.cnaude.purpleirc.GameListeners.TitanChatListener;
 import com.cnaude.purpleirc.GameListeners.TownyChatListener;
+import com.cnaude.purpleirc.GameListeners.UltimateChatListener;
 import com.cnaude.purpleirc.GameListeners.VanishNoPacketListener;
 import com.cnaude.purpleirc.Hooks.AdminPrivateChatHook;
 import com.cnaude.purpleirc.Hooks.CommandBookHook;
+import com.cnaude.purpleirc.Hooks.DiscordSRVHook;
 import com.cnaude.purpleirc.Hooks.DynmapHook;
 import com.cnaude.purpleirc.Hooks.FactionChatHook;
 import com.cnaude.purpleirc.Hooks.GriefPreventionHook;
 import com.cnaude.purpleirc.Hooks.JobsHook;
 import com.cnaude.purpleirc.Hooks.McMMOChatHook;
+import com.cnaude.purpleirc.Hooks.PlaceholderApiHook;
 import com.cnaude.purpleirc.Hooks.VentureChatHook;
 import com.cnaude.purpleirc.Hooks.ReportRTSHook;
 import com.cnaude.purpleirc.Hooks.ShortifyHook;
@@ -172,7 +176,7 @@ public class PurpleIRC extends JavaPlugin {
     private boolean stripIRCColors;
     private boolean stripIRCBackgroundColors;
     protected boolean stripGameColorsFromIrc;
-    private boolean broadcastChatToConsole;
+    public boolean broadcastChatToConsole;
     public boolean customTabList;
     public String customTabGamemode;
     private boolean listSortByName;
@@ -191,6 +195,7 @@ public class PurpleIRC extends JavaPlugin {
     public FactionChatHook fcHook;
     public TownyChatHook tcHook;
     public VentureChatHook vcHook;
+    public DiscordSRVHook discHook;
     public DynmapHook dynmapHook;
     public JobsHook jobsHook;
     public AdminPrivateChatHook adminPrivateChatHook;
@@ -199,6 +204,7 @@ public class PurpleIRC extends JavaPlugin {
     public ReportRTSHook reportRTSHook;
     public CommandBookHook commandBookHook;
     public McMMOChatHook mcMMOChatHook;
+    public PlaceholderApiHook placeholderApiHook;
     public NetPackets netPackets;
     public CommandHandlers commandHandlers;
     public PurpleTabCompleter ircTabCompleter;
@@ -242,6 +248,9 @@ public class PurpleIRC extends JavaPlugin {
     final String PL_VENTURECHAT = "VentureChat";
     final String PL_HEROCHAT = "Herochat";
     final String PL_GRIEFPREVENTION = "GriefPrevention";
+    final String PL_PLACEHOLDERAPI = "PlaceholderAPI";
+    final String PL_DISCORDSRV = "DiscordSRV";
+    final String PL_UCHAT = "UltimateChat";
     List<String> hookList = new ArrayList<>();
     public static final String PURPLETAG = "UHVycGxlSVJDCg==";
     public static final String TOWNYTAG = "VG93bnlDaGF0Cg==";
@@ -300,6 +309,7 @@ public class PurpleIRC extends JavaPlugin {
                 logError(ex.getMessage());
             }
         }
+        getServer().getPluginManager().registerEvents(new IRCMessageListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerPlayerAchievementAwardedListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerGameModeChangeListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerChatListener(this), this);
@@ -347,6 +357,10 @@ public class PurpleIRC extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        if (discHook != null) {
+            logDebug("Disabling discHook ...");
+            discHook.removeListener();
+        }
         if (channelWatcher != null) {
             logDebug("Disabling channelWatcher ...");
             channelWatcher.cancel();
@@ -505,11 +519,11 @@ public class PurpleIRC extends JavaPlugin {
         return getMessageTemplate(ircHeroActionChannelMessages, botName, channel, TemplateName.IRC_HERO_ACTION);
     }
 
-    public String getVentureChatTemplate(String botName, String channel) {
+    public String getGameVentureChatTemplate(String botName, String channel) {
         return getMessageTemplate(ventureChatChannelMessages, botName, channel, TemplateName.VENTURE_CHAT);
     }
 
-    public String getVentureChatActionTemplate(String botName, String channel) {
+    public String getGameVentureChatActionTemplate(String botName, String channel) {
         return getMessageTemplate(ventureChatActionChannelMessages, botName, channel, TemplateName.VENTURE_CHAT_ACTION);
     }
 
@@ -991,7 +1005,7 @@ public class PurpleIRC extends JavaPlugin {
                 m = "Players on " + host + "("
                         + players.length
                         + "): " + Joiner.on(", ")
-                        .join(players);
+                                .join(players);
             }
             return m;
         } else {
@@ -1736,6 +1750,25 @@ public class PurpleIRC extends JavaPlugin {
         } else {
             hookList.add(hookFormat(PL_ESSENTIALS, false));
         }
+        if (isPluginEnabled(PL_PLACEHOLDERAPI)) {
+            hookList.add(hookFormat(PL_PLACEHOLDERAPI, true));
+            placeholderApiHook = new PlaceholderApiHook(this);
+        } else {
+            hookList.add(hookFormat(PL_PLACEHOLDERAPI, false));
+        }
+
+        if (isPluginEnabled(PL_DISCORDSRV)) {
+            discHook = new DiscordSRVHook(this);
+        } else {
+            hookList.add(hookFormat(PL_DISCORDSRV, false));
+        }
+        
+        if (isPluginEnabled(PL_UCHAT)) {
+            getServer().getPluginManager().registerEvents(new UltimateChatListener(this), this);
+        } else {
+            hookList.add(hookFormat(PL_UCHAT, false));
+        }
+
     }
 
     public void getPurpleHooks(CommandSender sender, boolean colors) {
@@ -1764,26 +1797,10 @@ public class PurpleIRC extends JavaPlugin {
 
     public void broadcastToGame(final String message, final String permission) {
         getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission));
-        String fixedMessage = message.replace("\u200B", "");
-        if (broadcastChatToConsole) {
-            logDebug("Broadcast All [" + permission + "]: " + fixedMessage);
-            messageQueue.add(new Message(fixedMessage, permission));
-        } else {
-            logDebug("Broadcast Players [" + permission + "]: " + fixedMessage);
-            for (Player player : getServer().getOnlinePlayers()) {
-                if (player.hasPermission(permission)) {
-                    player.sendMessage(fixedMessage);
-                }
-            }
-        }
     }
 
     public void broadcastToPlayer(final Player player, final String message, final String permission) {
-        getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission));
-        String fixedMessage = message.replace("\u200B", "");
-        if (player.hasPermission(permission)) {
-            player.sendMessage(fixedMessage);
-        }
+        getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission, player));
     }
 
     /**

@@ -23,6 +23,8 @@ softdepend:
 - SuperVanish
 - PremiumVanish
 - VanishNoPacket
+- PlaceholderAPI
+- DiscordSRV
 commands:
     irc:
         description: Various irc commands

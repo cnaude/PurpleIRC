@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 cnaude
+ * Copyright (C) 2015 cnaude
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,43 @@
  */
 package com.cnaude.purpleirc.Hooks;
 
-import com.ammaraskar.adminonly.AdminChat;
 import com.cnaude.purpleirc.PurpleIRC;
+import br.net.fabiozumbi12.UltimateChat.API.uChatAPI
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 /**
  *
- * @author Chris Naude
+ * @author cnaude
  */
-public class AdminPrivateChatHook {
+public class UltimateChatHook {
 
     private final PurpleIRC plugin;
-    public final AdminChat ac;
 
     /**
      *
      * @param plugin the PurpleIRC plugin
      */
-    public AdminPrivateChatHook(PurpleIRC plugin) {
+    public UltimateChatHook(PurpleIRC plugin) {
         this.plugin = plugin;
-        this.ac = (AdminChat) plugin.getServer().getPluginManager().getPlugin("AdminPrivateChat");
+
     }
 
-    public void sendMessage(String message, String playername) {
-        plugin.logDebug("AdminPrivateChatHook: " + message);
-            ac.methods.SendRawMessage(message, playername, "");
+    public void sendMessage(String channel, String message) {
+        if (channel.isEmpty() || message.isEmpty()) {
+            return;
+        }
+        br.net.fabiozumbi12.UltimateChat
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MineverseChatPlayer mcp = MineverseChatAPI.getMineverseChatPlayer(player);
+            if (mcp != null) {
+                for (String listen : mcp.getListening()) {
+                    if (listen.equalsIgnoreCase(channel)) {
+                        plugin.broadcastToPlayer(player, message, "irc.message.chat");
+                    }
+                }
+            }
         }
     }
+
+}

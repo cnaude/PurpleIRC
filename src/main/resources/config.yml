@@ -43,6 +43,7 @@ chat-ping-fix: false
 #  %CHANNEL%
 #  %MESSAGE%
 #  %KICKER% - IRC kicker name
+#  %OLDTOPIC%
 #  %TOPIC%
 #  %REASON%
 #  %GROUP% - Requires Vault if you want to use this.
@@ -59,6 +60,8 @@ chat-ping-fix: false
 #  %HEROCOLOR% - HeroChat channel color
 #  %TITANCHANNEL% - TitanChat channel name
 #  %TITANCOLOR% - TitanChat channel color
+#  %UCHATCHANNEL% - UltimateChat channel name
+#  %UCHATCOLOR% - UltimateChat channel color
 #  %WORLDALIAS% - World alias name
 #  ReportRTS ticket: %MESSAGE%, %MODNAME% %DISPLAYMODNAME% %RTSNAME% %RTSWORLD% %TICKETNUMBER% %MODCOMMENT%
 #  %TOWNYCHANNEL% - Towny channel name
@@ -147,6 +150,10 @@ message-format:
   game-a-chat: '[%WORLD%] <%NAME%> -> [AdminChat]: %MESSAGE%'
   # AdminPrivateChat message from IRC to game
   irc-a-chat: '[AdminChat] [&4IRC&r] %MESSAGE%'
+  # Messages from Discord
+  discord-chat: '[Discord] %MESSAGE%'
+  # Messages from IRC to Discord
+  irc-discord-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'
   # Message template for Clevernotch bot to IRC messages
   clever-send: '[&4BOT]<%NAME%> %MESSAGE%'
   # Message templates for mcMMO to IRC messages
@@ -183,6 +190,10 @@ message-format:
   titan-chat: '[%CHANNEL%]<%NAME%> %MESSAGE%'
   # Message templates for IRC to TitanChat messages
   irc-titan-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'
+  # Message template for TitanChat to IRC messages
+  ultimatechat-chat: '[%CHANNEL%]<%NAME%> %MESSAGE%'
+  # Message templates for IRC to TitanChat messages
+  irc-ultimatechat-chat: '[&3IRC&r]<%NAME%> %MESSAGE%'  
   # Help reply message
   valid-irc-commands: 'Valid commands: %COMMANDS%'
   # Invalid IRC command message

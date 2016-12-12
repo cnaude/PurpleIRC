@@ -14,27 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.cnaude.purpleirc;
+package com.cnaude.purpleirc.Hooks;
+
+import com.cnaude.purpleirc.PurpleIRC;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Chris Naude
  */
-public class IRCMessage {
-
-    public String target;
-    public String message;
-    public Type type;
-
-    public enum Type {
-        MESSAGE,
-        CTCP,
-        NOTICE
+public class PlaceholderApiHook {
+    
+    private final PurpleIRC plugin;
+    
+    /**
+     *
+     * @param plugin the PurpleIRC plugin
+     */
+    public PlaceholderApiHook(PurpleIRC plugin) {
+        this.plugin = plugin;
     }
 
-    public IRCMessage(String target, String message, Type type) {
-        this.target = target;
-        this.message = message;
-        this.type = type;
+    public String setPlaceholders(Player player, String message) {
+        String m = message;
+        plugin.logDebug("[setPlaceholders: before] " + m);
+        if (player != null && message != null) {
+            m =  PlaceholderAPI.setPlaceholders(player, message);
+        }
+        plugin.logDebug("[setPlaceholders: after] " + m);
+        return m;
     }
 }

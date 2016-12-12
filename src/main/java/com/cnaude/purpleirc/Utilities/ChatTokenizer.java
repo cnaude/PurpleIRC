@@ -20,7 +20,7 @@ import com.cnaude.purpleirc.PlayerList;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
 import com.cnaude.purpleirc.TemplateName;
-import com.dthielke.channel.ChannelManager;
+import com.dthielke.herochat.ChannelManager;
 import com.gmail.nossr50.util.player.UserManager;
 import com.nyancraft.reportrts.data.Ticket;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
@@ -61,9 +61,9 @@ public class ChatTokenizer {
     public String chatIRCTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template) {
         return plugin.colorConverter.ircColorsToGame(
                 ircUserTokenizer(template, user, ircBot)
-                .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
-                .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
-                .replace("%CHANNEL%", channel.getName())
+                        .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
+                        .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
+                        .replace("%CHANNEL%", channel.getName())
         );
     }
 
@@ -201,6 +201,44 @@ public class ChatTokenizer {
     }
 
     /**
+     * Normal IRC to game chat tokenizer
+     *
+     * @param ircBot
+     * @param user
+     * @param channel
+     * @param template
+     * @param oldTopic
+     * @param topic
+     * @return
+     */
+    public String ircTopicToGameTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template, String oldTopic, String topic) {
+        String ircNick = user.getNick();
+        String tmpl;
+        Player player = this.getPlayer(ircNick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        } else {
+            plugin.logDebug("ircTopicToGameTokenizer: null player: " + ircNick);
+            tmpl = playerTokenizer(ircNick, template);
+        }
+        String nickPrefix = ircBot.getNickPrefix(user, channel);
+        String channelPrefix = ircBot.getChannelPrefix(channel);
+        if (nickPrefix == null) {
+            nickPrefix = "";
+        }
+        if (channelPrefix == null) {
+            channelPrefix = "";
+        }
+        return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(tmpl, user, ircBot)
+                .replace("%NICKPREFIX%", nickPrefix)
+                .replace("%CHANNELPREFIX%", channelPrefix)
+                .replace("%MESSAGE%", topic)
+                .replace("%TOPIC%", topic)
+                .replace("%OLDTOPIC%", oldTopic)
+                .replace("%CHANNEL%", channel.getName()));
+    }
+
+    /**
      * IRC to Hero chat channel tokenizer
      *
      * @param ircBot
@@ -262,6 +300,34 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(tmpl, user, ircBot)
                 .replace("%MVCHANNEL%", hChannel)
+                .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
+                .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
+                .replace("%MESSAGE%", message)
+                .replace("%CHANNEL%", channel.getName()));
+    }
+
+    /**
+     * IRC to Discord channel tokenizer
+     *
+     * @param ircBot
+     * @param user
+     * @param channel
+     * @param template
+     * @param message
+     * @param hChannel
+     * @return
+     */
+    public String ircChatToDiscordTokenizer(PurpleBot ircBot, User user, org.pircbotx.Channel channel, String template, String message, String hChannel) {
+        String ircNick = user.getNick();
+        String tmpl;
+        Player player = this.getPlayer(ircNick);
+        if (player != null) {
+            tmpl = playerTokenizer(player, template);
+        } else {
+            tmpl = playerTokenizer(ircNick, template);
+        }
+        return plugin.colorConverter.ircColorsToGame(ircUserTokenizer(tmpl, user, ircBot)
+                .replace("%DISCORDCHANNEL%", hChannel)
                 .replace("%NICKPREFIX%", ircBot.getNickPrefix(user, channel))
                 .replace("%CHANNELPREFIX%", ircBot.getChannelPrefix(channel))
                 .replace("%MESSAGE%", message)
@@ -389,7 +455,9 @@ public class ChatTokenizer {
     public String gameChatToIRCTokenizer(String pName, String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
                 .replace("%NAME%", pName)
-                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message)));
+                .replace("%MESSAGE%", plugin.colorConverter.gameColorsToIrc(message))
+                .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
+        );
     }
 
     /**
@@ -425,7 +493,11 @@ public class ChatTokenizer {
         if (message == null) {
             message = "";
         }
-        return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template).replace("%MESSAGE%", message));
+        return plugin.colorConverter.gameColorsToIrc(
+                playerTokenizer(player, template)
+                        .replace("%MESSAGE%", message)
+                        .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
+        );
     }
 
     /**
@@ -445,6 +517,7 @@ public class ChatTokenizer {
         PlayerList pl = plugin.getMCPlayerList(ircBot, channelName);
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(player, template)
                 .replace("%MESSAGE%", message)
+                .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
                 .replace("%COUNT%", Integer.toString(pl.count))
                 .replace("%MAX%", Integer.toString(pl.max))
                 .replace("%PLAYERS%", pl.list)
@@ -468,8 +541,10 @@ public class ChatTokenizer {
 
         return plugin.colorConverter.gameColorsToIrc(
                 playerTokenizer(name, template)
-                .replace("%SOURCE%", source)
-                .replace("%MESSAGE%", message));
+                        .replace("%SOURCE%", source)
+                        .replace("%MESSAGE%", message)
+                        .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
+        );
     }
 
     /**
@@ -540,8 +615,8 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.gameColorsToIrc(
                 gameChatToIRCTokenizer(player, template, message)
-                .replace("%FACTIONTAG%", chatTag)
-                .replace("%FACTIONMODE%", chatMode));
+                        .replace("%FACTIONTAG%", chatTag)
+                        .replace("%FACTIONMODE%", chatMode));
     }
 
     /**
@@ -597,6 +672,23 @@ public class ChatTokenizer {
     }
 
     /**
+     * UltimateChat to IRC
+     *
+     * @param player
+     * @param uChannel
+     * @param uColor
+     * @param message
+     * @param template
+     * @return
+     */
+    public String ultimateChatTokenizer(Player player, String uChannel, String uColor, String message, String template) {
+        return gameChatToIRCTokenizer(player, template, message)
+                .replace("%UCHATCHANNEL%", uChannel)
+                .replace("%UCHATCOLOR%", plugin.colorConverter.gameColorsToIrc(uColor))
+                .replace("%CHANNEL%", uChannel);
+    }
+
+    /**
      * VentureChat to IRC
      *
      * @param player
@@ -622,7 +714,9 @@ public class ChatTokenizer {
      */
     public String gameChatToIRCTokenizer(String template, String message) {
         return plugin.colorConverter.gameColorsToIrc(template
-                .replace("%MESSAGE%", message));
+                .replace("%MESSAGE%", message)
+                .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
+        );
     }
 
     /**
@@ -637,8 +731,9 @@ public class ChatTokenizer {
     public String gameKickTokenizer(Player player, String template, String message, String reason) {
         return plugin.colorConverter.gameColorsToIrc(
                 gameChatToIRCTokenizer(player, template, message)
-                .replace("%MESSAGE%", message)
-                .replace("%REASON%", reason));
+                        .replace("%MESSAGE%", message)
+                        .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
+                        .replace("%REASON%", reason));
     }
 
     /**
@@ -684,6 +779,7 @@ public class ChatTokenizer {
         }
         return plugin.colorConverter.gameColorsToIrc(playerTokenizer(pName, template)
                 .replace("%MESSAGE%", message)
+                .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
                 .replace("%MODNAME%", modName)
                 .replace("%DISPLAYMODNAME%", displayModName)
                 .replace("%MODCOMMENT%", modComment)
@@ -792,7 +888,7 @@ public class ChatTokenizer {
         String gPrefix = plugin.getGroupPrefix(player);
         String gSuffix = plugin.getGroupSuffix(player);
         String group = plugin.getPlayerGroup(player);
-        
+
         UUID uuid = player.getUniqueId();
         String playerIP = "";
         try {
@@ -839,6 +935,11 @@ public class ChatTokenizer {
             }
         }
         plugin.logDebug("[P]Raw message: " + message);
+
+        if (plugin.placeholderApiHook != null) {
+            message = plugin.placeholderApiHook.setPlaceholders(player, message);
+        }
+
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%UUID%", uuid.toString())
                 .replace("%JOBS%", job)
@@ -926,6 +1027,10 @@ public class ChatTokenizer {
             }
         }
 
+        if (plugin.placeholderApiHook != null) {
+            message = plugin.placeholderApiHook.setPlaceholders(player, message);
+        }
+
         plugin.logDebug("[S]Raw message: " + message);
         return message.replace("%DISPLAYNAME%", displayName)
                 .replace("%UUID%", uuid)
@@ -970,15 +1075,18 @@ public class ChatTokenizer {
 
     /**
      *
+     * @param nick
      * @param target
      * @param message
      * @param template
      * @return
      */
-    public String targetChatResponseTokenizer(String target, String message, String template) {
+    public String targetChatResponseTokenizer(String nick, String target, String message, String template) {
         return plugin.colorConverter.gameColorsToIrc(template
+                .replace("%NICK%", nick)
                 .replace("%TARGET%", target)
                 .replace("%MESSAGE%", message)
+                .replace("%RAWMESSAGE%", ChatColor.stripColor(message))
         );
     }
 
@@ -994,8 +1102,8 @@ public class ChatTokenizer {
         if (sender instanceof Player) {
             return plugin.colorConverter.ircColorsToGame(
                     playerTokenizer((Player) sender, template)
-                    .replace("%TARGET%", target)
-                    .replace("%MESSAGE%", message)
+                            .replace("%TARGET%", target)
+                            .replace("%MESSAGE%", message)
             );
         }
         return plugin.colorConverter.ircColorsToGame(template
@@ -1007,13 +1115,15 @@ public class ChatTokenizer {
 
     /**
      *
+     * @param nick
      * @param target
      * @param message
      * @param template
      * @return
      */
-    public String msgChatResponseTokenizer(String target, String message, String template) {
+    public String msgChatResponseTokenizer(String nick, String target, String message, String template) {
         return plugin.colorConverter.ircColorsToGame(template
+                .replace("%NICK%", nick)
                 .replace("%TARGET%", target)
                 .replace("%MESSAGE%", message)
         );
@@ -1027,7 +1137,7 @@ public class ChatTokenizer {
     public String ircCommandSentTokenizer(String command) {
         return plugin.colorConverter.gameColorsToIrc(
                 plugin.getMessageTemplate(TemplateName.COMMAND_SENT)
-                .replace("%COMMAND%", command));
+                        .replace("%COMMAND%", command));
     }
 
     /**

@@ -17,6 +17,7 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Events.VentureChatEvent;
+import com.cnaude.purpleirc.GameListeners.UltimateChatListener;
 import com.cnaude.purpleirc.IRCListeners.ActionListener;
 import com.cnaude.purpleirc.IRCListeners.AwayListener;
 import com.cnaude.purpleirc.IRCListeners.ConnectListener;
@@ -34,9 +35,13 @@ import com.cnaude.purpleirc.IRCListeners.QuitListener;
 import com.cnaude.purpleirc.IRCListeners.ServerResponseListener;
 import com.cnaude.purpleirc.IRCListeners.TopicListener;
 import com.cnaude.purpleirc.IRCListeners.WhoisListener;
+import com.cnaude.purpleirc.IRCMessage.Type;
+import static com.cnaude.purpleirc.IRCMessage.Type.CTCP;
+import static com.cnaude.purpleirc.IRCMessage.Type.MESSAGE;
+import static com.cnaude.purpleirc.IRCMessage.Type.NOTICE;
 import com.cnaude.purpleirc.Utilities.CaseInsensitiveMap;
-import com.dthielke.Herochat;
-import com.dthielke.api.Chatter;
+import com.dthielke.herochat.Herochat;
+import com.dthielke.herochat.Chatter;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSortedSet;
 import com.massivecraft.factions.entity.Faction;
@@ -153,6 +158,7 @@ public final class PurpleBot {
     public CaseInsensitiveMap<String> heroChannel;
     public CaseInsensitiveMap<String> ventureChatChannel;
     public CaseInsensitiveMap<String> townyChannel;
+    public CaseInsensitiveMap<String> discordChannel;
     public CaseInsensitiveMap<Collection<String>> opsList;
     public CaseInsensitiveMap<Collection<String>> banList;
     public CaseInsensitiveMap<Collection<String>> voicesList;
@@ -182,6 +188,8 @@ public final class PurpleBot {
     boolean joinNoticeEnabled;
     boolean joinNoticePrivate;
     boolean joinNoticeCtcp;
+    boolean joinNoticeNotice;
+    Type joinResponseType;
     String joinNoticeMessage;
     String version;
     String finger;
@@ -239,6 +247,7 @@ public final class PurpleBot {
         this.heroChannel = new CaseInsensitiveMap<>();
         this.ventureChatChannel = new CaseInsensitiveMap<>();
         this.townyChannel = new CaseInsensitiveMap<>();
+        this.discordChannel = new CaseInsensitiveMap<>();
         this.invalidCommandCTCP = new CaseInsensitiveMap<>();
         this.logIrcToHeroChat = new CaseInsensitiveMap<>();
         this.logIrcToVentureChat = new CaseInsensitiveMap<>();
@@ -476,14 +485,14 @@ public final class PurpleBot {
      *
      * @param channelName
      * @param sender
-     * @param user
+     * @param userMask
      */
-    public void mute(String channelName, CommandSender sender, String user) {
-        if (muteList.get(channelName).contains(user)) {
-            sender.sendMessage("User '" + user + "' is already muted.");
+    public void mute(String channelName, CommandSender sender, String userMask) {
+        if (muteList.get(channelName).contains(userMask)) {
+            sender.sendMessage("User '" + userMask + "' is already muted.");
         } else {
-            sender.sendMessage("User '" + user + "' is now muted.");
-            muteList.get(channelName).add(user);
+            sender.sendMessage("User '" + userMask + "' is now muted.");
+            muteList.get(channelName).add(userMask);
             saveConfig("channels." + encodeChannel(getConfigChannelName(channelName)) + ".muted", muteList.get(channelName));
         }
     }
@@ -557,13 +566,19 @@ public final class PurpleBot {
 
     public void asyncIRCMessage(final String target, final String message) {
         plugin.logDebug("Entering aysncIRCMessage");
-        IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), false);
+        IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), MESSAGE);
         messageQueue.add(ircMessage);
     }
 
     public void asyncCTCPMessage(final String target, final String message) {
         plugin.logDebug("Entering asyncCTCPMessage");
-        IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), true);
+        IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), CTCP);
+        messageQueue.add(ircMessage);
+    }
+
+    public void asyncNoticeMessage(final String target, final String message) {
+        plugin.logDebug("Entering asyncNoticeMessage");
+        IRCMessage ircMessage = new IRCMessage(target, plugin.colorConverter.gameColorsToIrc(message), NOTICE);
         messageQueue.add(ircMessage);
     }
 
@@ -950,6 +965,9 @@ public final class PurpleBot {
                     townyChannel.put(channelName, config.getString("channels." + enChannelName + ".towny-channel", ""));
                     plugin.logDebug("  TownyChannel => " + townyChannel.get(channelName));
 
+                    discordChannel.put(channelName, config.getString("channels." + enChannelName + ".discord-channel", ""));
+                    plugin.logDebug("  DiscordChannel => " + discordChannel.get(channelName));
+
                     logIrcToHeroChat.put(channelName, config.getBoolean("channels." + enChannelName + ".log-irc-to-hero-chat", false));
                     plugin.logDebug("  LogIrcToHeroChat => " + logIrcToHeroChat.get(channelName));
 
@@ -1132,8 +1150,16 @@ public final class PurpleBot {
                     joinNoticeCoolDown = config.getInt("channels." + enChannelName + ".join-notice.cooldown", 60);
                     joinNoticeEnabled = config.getBoolean("channels." + enChannelName + ".join-notice.enabled", false);
                     joinNoticePrivate = config.getBoolean("channels." + enChannelName + ".join-notice.private", true);
-                    joinNoticeCtcp = config.getBoolean("channels." + enChannelName + ".join-notice.ctcp", true);
                     joinNoticeMessage = config.getString("channels." + enChannelName + ".join-notice.message", "");
+                    
+                    joinResponseType = Type.MESSAGE;
+                    if (config.getBoolean("channels." + enChannelName + ".join-notice.ctcp", true)) {
+                        joinResponseType = Type.CTCP;
+                    }
+                    if (config.getBoolean("channels." + enChannelName + ".join-notice.notice", false)) {
+                        joinResponseType = Type.NOTICE;
+                    } 
+                    
                     plugin.logDebug("join-notice.cooldown: " + joinNoticeCoolDown);
                     plugin.logDebug("join-notice.enabled: " + joinNoticeEnabled);
                     plugin.logDebug("join-notice.private: " + joinNoticePrivate);
@@ -1161,9 +1187,11 @@ public final class PurpleBot {
                             optionPair.put("modes", config.getString(commandKey + "modes", "*"));
                             optionPair.put("private", config.getString(commandKey + "private", "false"));
                             optionPair.put("ctcp", config.getString(commandKey + "ctcp", "false"));
+                            optionPair.put("notice", config.getString(commandKey + "notice", "false"));
                             optionPair.put("game_command", config.getString(commandKey + "game_command", ""));
                             optionPair.put("cool_down", config.getString(commandKey + "cool_down", "0"));
                             optionPair.put("game_command_usage", config.getString(commandKey + "game_command_usage", ""));
+                            optionPair.put("args_required", config.getString(commandKey + "args_required", "false"));
                             optionPair.put("sender", config.getString(commandKey + "sender", "CONSOLE"));
                             optionPair.put("private_listen", config.getString(commandKey + "private_listen", "true"));
                             optionPair.put("channel_listen", config.getString(commandKey + "channel_listen", "true"));
@@ -1406,6 +1434,40 @@ public final class PurpleBot {
             }
         }
     }
+    
+    /**
+     * Called from UltimateChat listener
+     *
+     * @param sender
+     * @param uChannel
+     * @param uColor
+     * @param message
+     */
+    public void ultimateChat(CommandSender sender, String uChannel, String uColor, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
+        Player player = plugin.getServer().getPlayer(sender.getName());
+        if (floodChecker.isSpam(player)) {
+            sendFloodWarning(player);
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (!isPlayerInValidWorld(player, channelName)) {
+                continue;
+            }
+            plugin.logDebug("UC Channel: " + uChannel);
+            if (isMessageEnabled(channelName, "ultimatechat-" + uChannel + "-chat")
+                    || isMessageEnabled(channelName, TemplateName.ULTIMATE_CHAT)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .ultimateChatTokenizer(player, uChannel, uColor, message,
+                                plugin.getMessageTemplate(botNick, channelName, TemplateName.ULTIMATE_CHAT)));
+            } else {
+                plugin.logDebug("Player " + player.getName() + " is in \""
+                        + uChannel + "\" but ultimatechat-" + uChannel + "-chat is disabled.");
+            }
+        }
+    }
 
     // Called from /irc send
     /**
@@ -1460,6 +1522,28 @@ public final class PurpleBot {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(name, plugin.getMessageTemplate(botNick, channelName, TemplateName.GAME_ADMIN_CHAT), message)
                         .replace("%WORLD%", world)
+                );
+            }
+        }
+    }
+
+    /**
+     * Called from Discord ProcessChatEvent
+     *
+     * @param username
+     * @param channelId
+     * @param message
+     */
+    public void discordChat(String username, String channelId, String message) {
+        if (!this.isConnected()) {
+            return;
+        }
+        for (String channelName : botChannels) {
+            if (isMessageEnabled(channelName, TemplateName.GAME_DISCORD_CHAT)) {
+                asyncIRCMessage(channelName, plugin.tokenizer
+                        .gameChatToIRCTokenizer(username, plugin.getMessageTemplate(
+                                botNick, channelName, TemplateName.GAME_DISCORD_CHAT), message)
+                        .replace("%CHANNEL%", channelId)
                 );
             }
         }
@@ -2328,7 +2412,7 @@ public final class PurpleBot {
                         + " IRC topic for " + ChatColor.WHITE + channelName
                         + ChatColor.RESET + ": \""
                         + ChatColor.WHITE + plugin.colorConverter
-                        .ircColorsToGame(activeTopic.get(channelName))
+                                .ircColorsToGame(activeTopic.get(channelName))
                         + ChatColor.RESET + "\"");
             }
         }
@@ -2675,9 +2759,9 @@ public final class PurpleBot {
      * @param target
      * @param message
      * @param override
-     * @param ctcpResponse
+     * @param responseType
      */
-    public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, boolean ctcpResponse) {
+    public void broadcastChat(User user, org.pircbotx.Channel channel, String target, String message, boolean override, Type responseType) {
         boolean messageSent = false;
         String channelName = channel.getName();
 
@@ -2824,15 +2908,15 @@ public final class PurpleBot {
         if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_CHAT) && plugin.ventureChatEnabled) {
             String vcChannel = ventureChatChannel.get(channelName);
             String vcTemplate = plugin.getIrcVentureChatTemplate(botNick, vcChannel);
-            plugin.logDebug("broadcastChat [MV]: " + vcChannel + ": " + vcTemplate);
-            String rawMvMessage = filterMessage(
+            plugin.logDebug("broadcastChat [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = filterMessage(
                     plugin.tokenizer.ircChatToVentureChatTokenizer(this, user, channel, vcTemplate, message, vcChannel), channelName);
-            if (!rawMvMessage.isEmpty()) {
-                plugin.vcHook.sendMessage(vcChannel, rawMvMessage);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
                 messageSent = true;
                 if (logIrcToVentureChat.containsKey(channelName)) {
                     if (logIrcToVentureChat.get(channelName)) {
-                        plugin.getServer().getConsoleSender().sendMessage(rawMvMessage);
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
                     }
                 }
             }
@@ -2868,16 +2952,37 @@ public final class PurpleBot {
         }
 
         /*
+         Send messages to Discord if enabled
+         */
+        if (isMessageEnabled(channelName, TemplateName.IRC_DISCORD_CHAT) && plugin.discHook != null) {
+            String discordChannelName = discordChannel.get(channelName);
+            String discordTemplate = plugin.getMessageTemplate(botNick, channelName, TemplateName.IRC_DISCORD_CHAT);
+            plugin.logDebug("broadcastChat [Discord]: " + discordChannelName + ": " + discordTemplate);
+            String rawDiscordMessage = filterMessage(
+                    plugin.tokenizer.ircChatToDiscordTokenizer(this, user, channel, discordTemplate, message, discordChannelName), channelName);
+            if (!rawDiscordMessage.isEmpty()) {
+                plugin.discHook.sendMessage(discordChannelName, rawDiscordMessage);
+                messageSent = true;
+            }
+        }
+
+        /*
          Notify IRC user that message was sent.
          */
         if (isMessageEnabled(channelName, TemplateName.IRC_CHAT_RESPONSE) && messageSent && target != null) {
             // Let the sender know the message was sent
             String responseTemplate = plugin.getMessageTemplate(botNick, channelName, TemplateName.IRC_CHAT_RESPONSE);
             if (!responseTemplate.isEmpty()) {
-                if (ctcpResponse) {
-                    asyncCTCPMessage(target, plugin.tokenizer.targetChatResponseTokenizer(target, message, responseTemplate));
-                } else {
-                    asyncIRCMessage(target, plugin.tokenizer.targetChatResponseTokenizer(target, message, responseTemplate));
+                switch (responseType) {
+                    case CTCP:
+                        asyncCTCPMessage(target, plugin.tokenizer.targetChatResponseTokenizer(user.getNick(), target, message, responseTemplate));
+                        break;
+                    case MESSAGE:
+                        asyncIRCMessage(target, plugin.tokenizer.targetChatResponseTokenizer(user.getNick(), target, message, responseTemplate));
+                        break;
+                    case NOTICE:
+                        asyncNoticeMessage(target, plugin.tokenizer.targetChatResponseTokenizer(user.getNick(), target, message, responseTemplate));
+                        break;
                 }
             }
         }
@@ -2921,7 +3026,7 @@ public final class PurpleBot {
                     String responseTemplate = plugin.getMessageTemplate(botNick, channelName, TemplateName.IRC_HCHAT_RESPONSE);
                     if (!responseTemplate.isEmpty()) {
                         asyncIRCMessage(target, plugin.tokenizer
-                                .targetChatResponseTokenizer(hChannel, msg, responseTemplate));
+                                .targetChatResponseTokenizer(user.getNick(), hChannel, msg, responseTemplate));
                     }
                 } else {
                     asyncIRCMessage(target, "Hero channel \"" + hChannel + "\" does not exist!");
@@ -2986,7 +3091,7 @@ public final class PurpleBot {
                                 botNick, channelName, TemplateName.IRC_PCHAT_RESPONSE);
                         if (!responseTemplate.isEmpty()) {
                             asyncIRCMessage(target, plugin.tokenizer
-                                    .targetChatResponseTokenizer(pName, msg, responseTemplate));
+                                    .targetChatResponseTokenizer(user.getNick(), pName, msg, responseTemplate));
                         }
                         plugin.logDebug("Tokenized message: " + t);
                         player.sendMessage(t);
@@ -3036,8 +3141,8 @@ public final class PurpleBot {
         }
     }
 
-// Broadcast action messages from IRC
     /**
+     * Broadcast action messages from IRC
      *
      * @param user
      * @param channel
@@ -3054,6 +3159,9 @@ public final class PurpleBot {
                     + TemplateName.IRC_ACTION + " is false");
         }
 
+        /*
+         Send IRC action messages to HeroChat if enabled
+         */
         if (isMessageEnabled(channelName, TemplateName.IRC_HERO_ACTION)) {
             String hChannel = heroChannel.get(channelName);
             String tmpl = plugin.getIrcHeroActionTemplate(botNick, hChannel);
@@ -3065,6 +3173,25 @@ public final class PurpleBot {
                 if (logIrcToHeroChat.containsKey(channelName)) {
                     if (logIrcToHeroChat.get(channelName)) {
                         plugin.getServer().getConsoleSender().sendMessage(rawHCMessage);
+                    }
+                }
+            }
+        }
+
+        /*
+         Send IRC action messages to VentureChat if enabled
+         */
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_ACTION) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getIrcVentureChatActionTemplate(botNick, vcChannel);
+            plugin.logDebug("broadcastAction [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = filterMessage(
+                    plugin.tokenizer.ircChatToVentureChatTokenizer(this, user, channel, vcTemplate, message, vcChannel), channelName);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
                     }
                 }
             }
@@ -3107,6 +3234,22 @@ public final class PurpleBot {
                                     heroChannel.get(channelName)
                             )
                     );
+        }
+
+        // Broadcast kick message to VentureChat
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_KICK) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getMessageTemplate(botNick, vcChannel, TemplateName.IRC_VENTURE_KICK);
+            plugin.logDebug("broadcastIRCkick [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = plugin.tokenizer.ircKickTokenizer(this, recipient, kicker, reason, channel, vcTemplate);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
+                    }
+                }
+            }
         }
     }
 
@@ -3165,6 +3308,7 @@ public final class PurpleBot {
             plugin.logDebug("[broadcastIRCJoin] NOT broadcasting join message because irc-join is false.");
         }
 
+        // Broadcast join message to HeroChat
         if (isMessageEnabled(channel, TemplateName.IRC_HERO_JOIN)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
                     .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
@@ -3173,6 +3317,23 @@ public final class PurpleBot {
                             Herochat.getChannelManager(),
                             heroChannel.get(channel.getName())));
         }
+
+        // Broadcast join message to VentureChat
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_JOIN) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getMessageTemplate(botNick, vcChannel, TemplateName.IRC_VENTURE_JOIN);
+            plugin.logDebug("broadcastIRCJoin [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = plugin.tokenizer.chatIRCTokenizer(this, user, channel, vcTemplate);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
+                    }
+                }
+            }
+        }
+
     }
 
     public void broadcastIRCPart(User user, org.pircbotx.Channel channel) {
@@ -3195,6 +3356,22 @@ public final class PurpleBot {
                                     botNick, channelName, TemplateName.IRC_HERO_PART),
                             Herochat.getChannelManager(),
                             heroChannel.get(channel.getName())));
+        }
+
+        // Broadcast part message to VentureChat
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_PART) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getMessageTemplate(botNick, vcChannel, TemplateName.IRC_VENTURE_PART);
+            plugin.logDebug("broadcastIRCPart [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = plugin.tokenizer.chatIRCTokenizer(this, user, channel, vcTemplate);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
+                    }
+                }
+            }
         }
     }
 
@@ -3220,6 +3397,22 @@ public final class PurpleBot {
                             heroChannel.get(channel.getName())));
         }
 
+        // Broadcast part message to VentureChat
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_QUIT) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getMessageTemplate(botNick, vcChannel, TemplateName.IRC_VENTURE_QUIT);
+            plugin.logDebug("broadcastIRCQuit [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = plugin.tokenizer.chatIRCTokenizer(this, user, channel, vcTemplate);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -3227,9 +3420,10 @@ public final class PurpleBot {
      *
      * @param user
      * @param channel
-     * @param message
+     * @param oldTopic
+     * @param topic
      */
-    public void broadcastIRCTopic(User user, org.pircbotx.Channel channel, String message) {
+    public void broadcastIRCTopic(User user, org.pircbotx.Channel channel, String oldTopic, String topic) {
         String channelName = channel.getName();
         if (isMessageEnabled(channel, TemplateName.IRC_TOPIC)) {
             plugin.broadcastToGame(plugin.tokenizer.chatIRCTokenizer(
@@ -3240,9 +3434,25 @@ public final class PurpleBot {
         if (isMessageEnabled(channel, TemplateName.IRC_HERO_TOPIC)) {
             Herochat.getChannelManager().getChannel(heroChannel.get(channel.getName()))
                     .sendRawMessage(plugin.tokenizer.ircChatToHeroChatTokenizer(
-                            this, user, channel, plugin.getMessageTemplate(botNick, channelName, TemplateName.IRC_HERO_TOPIC), message,
+                            this, user, channel, plugin.getMessageTemplate(botNick, channelName, TemplateName.IRC_HERO_TOPIC), topic,
                             Herochat.getChannelManager(),
                             heroChannel.get(channel.getName())));
+        }
+
+        // Broadcast topic message to VentureChat
+        if (isMessageEnabled(channelName, TemplateName.IRC_VENTURE_TOPIC) && plugin.ventureChatEnabled) {
+            String vcChannel = ventureChatChannel.get(channelName);
+            String vcTemplate = plugin.getMessageTemplate(botNick, vcChannel, TemplateName.IRC_VENTURE_TOPIC);
+            plugin.logDebug("broadcastIRCTopic [VC]: " + vcChannel + ": " + vcTemplate);
+            String rawVcMessage = plugin.tokenizer.ircTopicToGameTokenizer(this, user, channel, vcTemplate, oldTopic, topic);
+            if (!rawVcMessage.isEmpty()) {
+                plugin.vcHook.sendMessage(vcChannel, rawVcMessage);
+                if (logIrcToVentureChat.containsKey(channelName)) {
+                    if (logIrcToVentureChat.get(channelName)) {
+                        plugin.getServer().getConsoleSender().sendMessage(rawVcMessage);
+                    }
+                }
+            }
         }
     }
 
@@ -3719,8 +3929,8 @@ public final class PurpleBot {
             String myMessage = ChatColor.translateAlternateColorCodes('&', plugin.colorConverter.gameColorsToIrc(joinNoticeMessage.replace("%NAME%", user.getNick())));
             if (joinNoticeMessage.startsWith("/")) {
                 plugin.commandQueue.add(new IRCCommand(
-                        new IRCCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE", "%RESULT%"),
-                        new IRCConsoleCommandSender(this, target, plugin, joinNoticeCtcp, "CONSOLE"),
+                        new IRCCommandSender(this, target, plugin, joinResponseType, "CONSOLE", "%RESULT%"),
+                        new IRCConsoleCommandSender(this, target, plugin, joinResponseType, "CONSOLE"),
                         myMessage.trim().substring(1)));
             } else if (joinNoticeCtcp) {
                 asyncCTCPMessage(target, myMessage);
