@@ -16,9 +16,12 @@
  */
 package com.cnaude.purpleirc.GameListeners;
 
-import be.bendem.orebroadcast.OreBroadcastEvent;
+import be.smexhy.spigot.orebroadcast.OreBroadcast;
+import be.smexhy.spigot.orebroadcast.OreBroadcastEvent;
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -29,6 +32,7 @@ import org.bukkit.event.Listener;
 public class OreBroadcastListener implements Listener {
 
     private final PurpleIRC plugin;
+    public final OreBroadcast ob;
 
     /**
      *
@@ -36,17 +40,34 @@ public class OreBroadcastListener implements Listener {
      */
     public OreBroadcastListener(PurpleIRC plugin) {
         this.plugin = plugin;
+        this.ob = (OreBroadcast) plugin.getServer().getPluginManager().getPlugin("OreBroadcast");
     }
 
     /**
      *
-     * @param event
+     * @param e
      */
     @EventHandler
-    public void onOreBroadcastEvent(OreBroadcastEvent event) {
+    public void onOreBroadcastEvent(OreBroadcastEvent e) {
+
+        String blockName;
+        if (e.getBlockMined().getType().equals(Material.GLOWING_REDSTONE_ORE)) {
+            blockName = "redstone";
+        } else {
+            blockName = e.getBlockMined().getType().name().toLowerCase().replace("_ore", "");
+        }
+        String color = ob.getConfig().getString("colors." + blockName, "white").toUpperCase();
+        ChatColor oreColor = ChatColor.valueOf(color);
+        String oreName = ChatColor.translateAlternateColorCodes('&', translateOre(blockName, color));
+
         plugin.logDebug("onOreBroadcastEvent caught");
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.gameOreBroadcast(event.getPlayer(), event.getMessage());
+            ircBot.gameOreBroadcast(e.getSource(), blockName, oreName, oreColor, e.getVein(), e.getBlockMined().getLocation());
         }
     }
+
+    private String translateOre(String ore, String color) {
+        return "&" + ChatColor.valueOf(color).getChar() + ob.getConfig().getString(new StringBuilder("ore-translations.").append(ore).toString(), ore);
+    }
+
 }

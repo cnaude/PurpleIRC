@@ -18,16 +18,16 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
+import com.cnaude.purpleirc.TemplateName;
+import net.memmove.bukkit.deathmsg.DeathMessagePreparedEvent;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerKickEvent;
 
 /**
  *
  * @author Chris Naude
  */
-public class GamePlayerKickListener implements Listener {
+public class DeathMessagesPrimeListener implements Listener {
 
     private final PurpleIRC plugin;
 
@@ -35,7 +35,7 @@ public class GamePlayerKickListener implements Listener {
      *
      * @param plugin the PurpleIRC plugin
      */
-    public GamePlayerKickListener(PurpleIRC plugin) {
+    public DeathMessagesPrimeListener(PurpleIRC plugin) {
         this.plugin = plugin;
     }
 
@@ -43,21 +43,12 @@ public class GamePlayerKickListener implements Listener {
      *
      * @param event
      */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerKickEvent(PlayerKickEvent event) {
-        plugin.logDebug("KICK: " + event.getPlayer().getName());        
-        if (plugin.kickedPlayers.contains(event.getPlayer().getName())) {
-            plugin.logDebug("Player "
-                    + event.getPlayer().getName()
-                    + " is in the recently kicked list. Not sending kick message.");
-            return;
-        }
+    @EventHandler
+    public void onDeathMessageEvent(DeathMessagePreparedEvent event) {
+        String message = event.getMessage().duplicate().toLegacyText();
+        plugin.logDebug("onDeathMessageBroadcastEvent caught: " + message);
         for (PurpleBot ircBot : plugin.ircBots.values()) {
-            ircBot.gameKick(event.getPlayer(), event.getLeaveMessage(), event.getReason());
-        }
-        if (!plugin.kickedPlayers.contains(event.getPlayer().getName())) {
-            plugin.kickedPlayers.add(event.getPlayer().getName());
+            ircBot.gameDeath(event.getPlayer(), message, TemplateName.DEATH_MESSAGES);
         }
     }
-
 }

@@ -17,7 +17,6 @@
 package com.cnaude.purpleirc;
 
 import com.cnaude.purpleirc.Events.VentureChatEvent;
-import com.cnaude.purpleirc.GameListeners.UltimateChatListener;
 import com.cnaude.purpleirc.IRCListeners.ActionListener;
 import com.cnaude.purpleirc.IRCListeners.AwayListener;
 import com.cnaude.purpleirc.IRCListeners.ConnectListener;
@@ -59,6 +58,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -69,6 +69,8 @@ import me.botsko.prism.events.BlockStateChange;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -133,7 +135,8 @@ public final class PurpleBot {
     public CaseInsensitiveMap<Collection<String>> tabIgnoreNicks;
     public CaseInsensitiveMap<Boolean> tabIgnoreDuplicates;
     public CaseInsensitiveMap<Collection<String>> filters;
-    public ArrayList<String> tailerFilters;
+    public CaseInsensitiveMap<Collection<String>> factionTagFilters;
+    public ArrayList<String> tailerFilters;    
     public CaseInsensitiveMap<String> channelPassword;
     public CaseInsensitiveMap<String> channelTopic;
     public CaseInsensitiveMap<Boolean> channelTopicChanserv;
@@ -267,6 +270,7 @@ public final class PurpleBot {
         this.tabIgnoreDuplicates = new CaseInsensitiveMap<>();
         this.filters = new CaseInsensitiveMap<>();
         this.tailerFilters = new ArrayList<>();
+        this.factionTagFilters = new CaseInsensitiveMap<>();
         this.channelNicks = new CaseInsensitiveMap<>();
         this.rawMessages = new ArrayList<>();
         this.channelTopicChanserv = new CaseInsensitiveMap<>();
@@ -828,6 +832,7 @@ public final class PurpleBot {
             extraCommandMap.clear();
             commandUsermasksMap.clear();
             tailerFilters.clear();
+            factionTagFilters.clear();
 
             channelCmdNotifyEnabled = config.getBoolean("command-notify.enabled", false);
             plugin.logDebug(" CommandNotifyEnabled => " + channelCmdNotifyEnabled);
@@ -1146,20 +1151,33 @@ public final class PurpleBot {
                         plugin.logInfo("Filter list is empty!");
                     }
 
+                    // build faction tag filters 
+                    Collection<String> ft = new ArrayList<>();
+                    for (String word : config.getStringList("channels." + enChannelName + ".faction-tag-filters")) {
+                        if (!ft.contains(word)) {
+                            ft.add(word);
+                        }
+                        plugin.logDebug("  Filtered Faction Tag => " + word);
+                    }
+                    factionTagFilters.put(channelName, ft);
+                    if (factionTagFilters.isEmpty()) {
+                        plugin.logInfo("Faction Filter list is empty!");
+                    }
+
                     // build join notice
                     joinNoticeCoolDown = config.getInt("channels." + enChannelName + ".join-notice.cooldown", 60);
                     joinNoticeEnabled = config.getBoolean("channels." + enChannelName + ".join-notice.enabled", false);
                     joinNoticePrivate = config.getBoolean("channels." + enChannelName + ".join-notice.private", true);
                     joinNoticeMessage = config.getString("channels." + enChannelName + ".join-notice.message", "");
-                    
+
                     joinResponseType = Type.MESSAGE;
                     if (config.getBoolean("channels." + enChannelName + ".join-notice.ctcp", true)) {
                         joinResponseType = Type.CTCP;
                     }
                     if (config.getBoolean("channels." + enChannelName + ".join-notice.notice", false)) {
                         joinResponseType = Type.NOTICE;
-                    } 
-                    
+                    }
+
                     plugin.logDebug("join-notice.cooldown: " + joinNoticeCoolDown);
                     plugin.logDebug("join-notice.enabled: " + joinNoticeEnabled);
                     plugin.logDebug("join-notice.private: " + joinNoticePrivate);
@@ -1305,14 +1323,18 @@ public final class PurpleBot {
                     plugin.logDebug("Faction [Player: " + player.getName()
                             + "] [Tag: " + playerFactionName + "] [Mode: "
                             + playerChatMode + "]");
-                    if (enabledMessages.get(channelName)
-                            .contains(chatName)) {
-                        asyncIRCMessage(channelName, plugin.tokenizer
-                                .chatFactionTokenizer(player, botNick, message,
-                                        playerFactionName, playerChatMode));
+                    if (factionTagFilters.get(channelName).contains(playerFactionName)) {
+                        plugin.logDebug("Filtered out message due to tag filter.");
                     } else {
-                        plugin.logDebug("Player " + player.getName() + " is in chat mode \""
-                                + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
+                        if (enabledMessages.get(channelName)
+                                .contains(chatName)) {
+                            asyncIRCMessage(channelName, plugin.tokenizer
+                                    .chatFactionTokenizer(player, botNick, message,
+                                            playerFactionName, playerChatMode));
+                        } else {
+                            plugin.logDebug("Player " + player.getName() + " is in chat mode \""
+                                    + playerChatMode + "\" but \"" + chatName + "\" is disabled.");
+                        }
                     }
                 } else {
                     plugin.logDebug("No Factions");
@@ -1434,7 +1456,7 @@ public final class PurpleBot {
             }
         }
     }
-    
+
     /**
      * Called from UltimateChat listener
      *
@@ -1531,19 +1553,20 @@ public final class PurpleBot {
      * Called from Discord ProcessChatEvent
      *
      * @param username
-     * @param channelId
+     * @param discordChannel
      * @param message
      */
-    public void discordChat(String username, String channelId, String message) {
+    public void discordChat(String username, String discordChannel, String message) {
         if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
-            if (isMessageEnabled(channelName, TemplateName.GAME_DISCORD_CHAT)) {
+            if (isMessageEnabled(channelName, TemplateName.DISCORD_CHAT)
+                    || isMessageEnabled(channelName, "discord-" + discordChannel + "-chat")) {
                 asyncIRCMessage(channelName, plugin.tokenizer
                         .gameChatToIRCTokenizer(username, plugin.getMessageTemplate(
-                                botNick, channelName, TemplateName.GAME_DISCORD_CHAT), message)
-                        .replace("%CHANNEL%", channelId)
+                                botNick, channelName, TemplateName.DISCORD_CHAT), message)
+                        .replace("%CHANNEL%", discordChannel)
                 );
             }
         }
@@ -1701,18 +1724,19 @@ public final class PurpleBot {
     /**
      *
      * @param player
-     * @param message
+     * @param blockName
+     * @param oreName
+     * @param vein
+     * @param oreColor
+     * @param loc
      */
-    public void gameOreBroadcast(Player player, String message) {
+    public void gameOreBroadcast(Player player, String blockName, String oreName, ChatColor oreColor, Set<Block> vein, Location loc) {
         if (!this.isConnected()) {
             return;
         }
         for (String channelName : botChannels) {
             if (isMessageEnabled(channelName, TemplateName.ORE_BROADCAST)) {
-                asyncIRCMessage(channelName, plugin.tokenizer
-                        .gameChatToIRCTokenizer(player, plugin
-                                .getMessageTemplate(botNick, channelName, TemplateName.ORE_BROADCAST),
-                                ChatColor.translateAlternateColorCodes('&', message)));
+                asyncIRCMessage(channelName, plugin.tokenizer.oreBroadcastTokenizer(player, botNick, blockName, oreName, oreColor, vein, loc));
             }
         }
     }

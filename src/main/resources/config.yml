@@ -41,7 +41,8 @@ chat-ping-fix: false
 #  %DISPLAYNAME% - Player's custom name
 #  %PLAYERIP% - IP address of a player
 #  %CHANNEL%
-#  %MESSAGE%
+#  %MESSAGE% - Message as is (may include colors from other plugins)
+#  %RAWMESSAGE% - Raw message with colors stripped out.
 #  %KICKER% - IRC kicker name
 #  %OLDTOPIC%
 #  %TOPIC%
@@ -151,9 +152,9 @@ message-format:
   # AdminPrivateChat message from IRC to game
   irc-a-chat: '[AdminChat] [&4IRC&r] %MESSAGE%'
   # Messages from Discord
-  discord-chat: '[Discord] %MESSAGE%'
+  discord-chat: '[Discord]<%NAME%> %MESSAGE%'
   # Messages from IRC to Discord
-  irc-discord-chat: '[&4IRC&r]<%NAME%> %MESSAGE%'
+  irc-discord-chat: '[IRC]<%NAME%> %MESSAGE%'
   # Message template for Clevernotch bot to IRC messages
   clever-send: '[&4BOT]<%NAME%> %MESSAGE%'
   # Message templates for mcMMO to IRC messages
@@ -223,7 +224,7 @@ message-format:
   # IRC to dynmap action nick template
   irc-dynmap-action-nick: '[IRC] ***%NICK%'
   # OreBroadcast message
-  ore-broadcast: '[OreBroadcast] %MESSAGE%'
+  ore-broadcast: '[OreBroadcast] &l%NAME%&c has found &6&l%COUNT%&c block%PLURAL% of [&l&k%ORECOLOR%%ORE%&c]'
   # Jobs seperator
   jobs-separator: ', '
   # Message format per hero channel. From IRC to game.
