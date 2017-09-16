@@ -23,6 +23,7 @@ package com.cnaude.purpleirc;
 public class TemplateName {
 
     public final static String GAME_ACHIEVEMENT = "game-achievement";
+    public final static String GAME_ADVANCEMENT = "game-advancement";
     public final static String GAME_ACTION = "game-action";
     public final static String GAME_AFK = "game-afk";
     public final static String GAME_CHAT = "game-chat";
@@ -151,6 +152,7 @@ public class TemplateName {
     
     public final static String DISCORD_CHAT = "discord-chat";
     public final static String IRC_DISCORD_CHAT = "irc-discord-chat";
+    public final static String IRC_DISCORD_ACTION = "irc-discord-action";
 
     public final static String FAKE_JOIN = "fake-join";
     public final static String FAKE_QUIT = "fake-quit";

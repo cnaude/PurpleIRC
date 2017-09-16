@@ -55,42 +55,54 @@ public class CommandQueueWatcher {
         if (ircCommand != null) {
             try {
                 String cmd = ircCommand.getGameCommand().split(" ")[0];
-                boolean isCommandBookCommand = false;
+
                 plugin.logDebug("CMD: " + cmd);
+                /*
+                boolean isCommandBookCommand = false;
                 if (plugin.commandBookHook != null) {
                     isCommandBookCommand = plugin.commandBookHook.isCommandBookCommand(cmd);
                     plugin.logDebug("Is this is a CommandBook command? " + Boolean.toString(isCommandBookCommand));
                 }
-                if (
-                        (plugin.getServer().getVersion().contains("MC: 1.8") 
+                 */
+
+                try {
+                    plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
+                } catch (CommandException ex) {
+                    plugin.logDebug("Falling back to ConsoleSender: " + ircCommand.getGameCommand());
+
+                    plugin.getServer().dispatchCommand(ircCommand.getIRCConsoleCommandSender(), ircCommand.getGameCommand());
+                    ircCommand.getIRCConsoleCommandSender().sendMessage(plugin.tokenizer.ircCommandSentTokenizer(ircCommand.getGameCommand()));
+                }
+
+                /*
+                if ((plugin.getServer().getVersion().contains("MC: 1.8")
                         && (plugin.getServer().getVersion().contains("Spigot"))
                         && plugin.getServer().getPluginCommand(cmd) == null
                         && !isCommandBookCommand)
-                        || 
-                        (plugin.getServer().getVersion().contains("MC: 1.9")
+                        || (plugin.getServer().getVersion().contains("MC: 1.9")
                         && plugin.getServer().getPluginCommand(cmd) == null
                         && !isCommandBookCommand)
-                        || 
-                        (plugin.getServer().getVersion().contains("MC: 1.10")
+                        || (plugin.getServer().getVersion().contains("MC: 1.10")
                         && plugin.getServer().getPluginCommand(cmd) == null
                         && !isCommandBookCommand)
-                        || 
-                        (plugin.getServer().getVersion().contains("MC: 1.11")
+                        || (plugin.getServer().getVersion().contains("MC: 1.11")
                         && plugin.getServer().getPluginCommand(cmd) == null
-                        && !isCommandBookCommand)
-                        ) {
+                        && !isCommandBookCommand)) {
                     plugin.logDebug("Dispatching command as ConsoleSender: " + ircCommand.getGameCommand());
 
                     plugin.getServer().dispatchCommand(ircCommand.getIRCConsoleCommandSender(), ircCommand.getGameCommand());
-                    ircCommand.getIRCConsoleCommandSender().sendMessage(plugin.tokenizer.ircCommandSentTokenizer(ircCommand.getGameCommand()));                    
+                    ircCommand.getIRCConsoleCommandSender().sendMessage(plugin.tokenizer.ircCommandSentTokenizer(ircCommand.getGameCommand()));
                 } else {
                     plugin.logDebug("Dispatching command as IRCCommandSender: " + ircCommand.getGameCommand());
                     plugin.getServer().dispatchCommand(ircCommand.getIRCCommandSender(), ircCommand.getGameCommand());
-                }
+                } 
+                 */
             } catch (CommandException ce) {
                 plugin.logError("Error running command: " + ce.getMessage());
             }
-            plugin.getServer().getPluginManager().callEvent(new IRCCommandEvent(ircCommand));
+            IRCCommandEvent event = new IRCCommandEvent(ircCommand);
+            plugin.getServer().getPluginManager().callEvent(event);
         }
     }
 
@@ -108,7 +120,7 @@ public class CommandQueueWatcher {
 
     /**
      * Add an IRCCommand to the command queue
-     * 
+     *
      * @param command the IRC command to add to the queue
      */
     public void add(IRCCommand command) {

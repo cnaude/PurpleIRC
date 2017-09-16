@@ -18,21 +18,19 @@ package com.cnaude.purpleirc.GameListeners;
 
 import com.cnaude.purpleirc.PurpleBot;
 import com.cnaude.purpleirc.PurpleIRC;
-import com.scarsz.discordsrv.DiscordSRV;
-import com.scarsz.discordsrv.api.DiscordSRVListener;
-import com.scarsz.discordsrv.jda.entities.TextChannel;
-import com.scarsz.discordsrv.jda.events.Event;
-import com.scarsz.discordsrv.jda.events.message.guild.GuildMessageReceivedEvent;
-import java.util.HashMap;
-import java.util.Map;
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.ListenerPriority;
+import github.scarsz.discordsrv.api.Subscribe;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 
 /**
  *
  * @author Chris Naude
  */
-public class DiscordListener extends DiscordSRVListener {
+public class DiscordListener {
 
     private final PurpleIRC plugin;
+    private final DiscordSRV discordPlugin;
 
     /**
      *
@@ -40,18 +38,23 @@ public class DiscordListener extends DiscordSRVListener {
      */
     public DiscordListener(PurpleIRC plugin) {
         this.plugin = plugin;
+        this.discordPlugin = (DiscordSRV) plugin.getServer().getPluginManager().getPlugin("DiscordSRV");
     }
 
-    @Override
-    public void onRawDiscordEventReceived(Event event) {
-        if (event instanceof GuildMessageReceivedEvent) {
-            
-            GuildMessageReceivedEvent guildMessageEvent = (GuildMessageReceivedEvent) event;
-            for (PurpleBot ircBot : plugin.ircBots.values()) {
-                ircBot.discordChat(guildMessageEvent.getMessage().getAuthor().getUsername(),
-                        guildMessageEvent.getChannel().getName(),
-                        guildMessageEvent.getMessage().getContent());
-            }
+    @Subscribe(priority = ListenerPriority.MONITOR)
+    public void onDiscordGuildMessageReceivedEvent(DiscordGuildMessageReceivedEvent event) {
+        if (discordPlugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled")
+                && event.getMessage().getContent().equalsIgnoreCase(discordPlugin.getConfig().getString("DiscordChatChannelListCommandMessage"))) {
+            plugin.logDebug("[onDiscordGuildMessageReceivedEvent] Ignoring DiscordChatChannelListCommandMessage");
+            return;
+        }
+        for (PurpleBot ircBot : plugin.ircBots.values()) {
+            ircBot.discordChat(event.getMessage().getAuthor().getName(),
+                    event.getMember().getNickname(),
+                    event.getMember().getEffectiveName(),
+                    event.getMember().getColor(),
+                    event.getChannel().getName(),
+                    event.getMessage().getContent());
         }
 
     }

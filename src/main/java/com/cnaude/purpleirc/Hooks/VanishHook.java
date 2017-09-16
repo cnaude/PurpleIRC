@@ -48,7 +48,7 @@ public class VanishHook {
         } else {
             // Fallback to other Vanish
             if (player.hasMetadata("vanished")) {
-                plugin.logDebug("Player " + player.getName() + " has vanished metadata.");
+                plugin.logDebug("Player " + player.getName() + " has vanished metadata" + player.getMetadata("vanished").get(0));
                 MetadataValue md = player.getMetadata("vanished").get(0);
                 if (md.asBoolean()) {
                     plugin.logDebug("Player " + player.getName() + " is vanished.");

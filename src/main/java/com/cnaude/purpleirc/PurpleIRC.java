@@ -30,6 +30,7 @@ import com.cnaude.purpleirc.GameListeners.GamePlayerGameModeChangeListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerJoinListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerKickListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerPlayerAchievementAwardedListener;
+import com.cnaude.purpleirc.GameListeners.GamePlayerPlayerAdvancementDoneListener;
 import com.cnaude.purpleirc.GameListeners.GamePlayerQuitListener;
 import com.cnaude.purpleirc.GameListeners.GameServerCommandListener;
 import com.cnaude.purpleirc.GameListeners.HeroChatListener;
@@ -97,6 +98,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -256,8 +258,8 @@ public class PurpleIRC extends JavaPlugin {
     final String PL_DISCORDSRV = "DiscordSRV";
     final String PL_UCHAT = "UltimateChat";
     List<String> hookList = new ArrayList<>();
-    public static final String PURPLETAG = "UHVycGxlSVJDCg==";
-    public static final String TOWNYTAG = "VG93bnlDaGF0Cg==";
+    public static final String PURPLETAG = RandomStringUtils.randomAlphanumeric(10) + "UHVycGxlSVJDCg==";
+    public static final String TOWNYTAG = RandomStringUtils.randomAlphanumeric(10) + "VG93bnlDaGF0Cg==";
     public static final String LINK_CMD = "PurpleIRC-Link:";
     public boolean overrideMsgCmd = false;
     public String smsgAlias = "/m";
@@ -314,7 +316,11 @@ public class PurpleIRC extends JavaPlugin {
             }
         }
         getServer().getPluginManager().registerEvents(new IRCMessageListener(this), this);
-        getServer().getPluginManager().registerEvents(new GamePlayerPlayerAchievementAwardedListener(this), this);
+        if (getServer().getVersion().contains("MC: 1.12")) {
+            getServer().getPluginManager().registerEvents(new GamePlayerPlayerAdvancementDoneListener(this), this);
+        } else {
+            getServer().getPluginManager().registerEvents(new GamePlayerPlayerAchievementAwardedListener(this), this);
+        }
         getServer().getPluginManager().registerEvents(new GamePlayerGameModeChangeListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerChatListener(this), this);
         getServer().getPluginManager().registerEvents(new GamePlayerCommandPreprocessingListener(this), this);
@@ -1009,7 +1015,7 @@ public class PurpleIRC extends JavaPlugin {
                 m = "Players on " + host + "("
                         + players.length
                         + "): " + Joiner.on(", ")
-                        .join(players);
+                                .join(players);
             }
             return m;
         } else {
@@ -1770,16 +1776,17 @@ public class PurpleIRC extends JavaPlugin {
 
         if (isPluginEnabled(PL_DISCORDSRV)) {
             discHook = new DiscordSRVHook(this);
+            hookList.add(hookFormat(PL_DISCORDSRV, true));
         } else {
             hookList.add(hookFormat(PL_DISCORDSRV, false));
         }
-
         if (isPluginEnabled(PL_UCHAT)) {
             getServer().getPluginManager().registerEvents(new UltimateChatListener(this), this);
+            hookList.add(hookFormat(PL_UCHAT, true));
         } else {
             hookList.add(hookFormat(PL_UCHAT, false));
         }
-
+        Collections.sort(hookList);
     }
 
     public void getPurpleHooks(CommandSender sender, boolean colors) {
@@ -1806,12 +1813,14 @@ public class PurpleIRC extends JavaPlugin {
         }
     }
 
-    public void broadcastToGame(final String message, final String permission) {
-        getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission));
+    public void broadcastToGame(final String message, final String channel, final String permission) {
+        IRCMessageEvent event = new IRCMessageEvent(message, channel, permission);
+        getServer().getPluginManager().callEvent(event);
     }
 
-    public void broadcastToPlayer(final Player player, final String message, final String permission) {
-        getServer().getPluginManager().callEvent(new IRCMessageEvent(message, permission, player));
+    public void broadcastToPlayer(final String message, final String channel, final String permission, final Player player) {
+        IRCMessageEvent event = new IRCMessageEvent(message, channel, permission, player);
+        getServer().getPluginManager().callEvent(event);
     }
 
     /**
